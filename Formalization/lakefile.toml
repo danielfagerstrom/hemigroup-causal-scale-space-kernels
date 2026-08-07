@@ -1,0 +1,27 @@
+name = "Hemigroup"
+version = "0.1.0"
+keywords = ["math", "scale-space"]
+defaultTargets = ["Hemigroup"]
+
+[leanOptions]
+pp.unicode.fun = true
+relaxedAutoImplicit = false
+weak.linter.mathlibStandardSet = true
+maxSynthPendingDepth = 3
+
+# The shared core, pinned to a tag. Bumped together with the other articles, deliberately.
+[[require]]
+name = "ScaleSpaceCore"
+git = "https://github.com/danielfagerstrom/scale-space-lean"
+rev = "v0.1.0"
+
+[[require]]
+name = "mathlib"
+scope = "leanprover-community"
+rev = "v4.31.0"
+
+[[lean_lib]]
+name = "Hemigroup"
+# Build every submodule, not just the root's import closure — otherwise a module reachable
+# only from a scratch file would never be recompiled by CI.
+globs = ["Hemigroup.*"]

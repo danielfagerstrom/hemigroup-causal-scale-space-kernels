@@ -1,0 +1,22 @@
+name: Manifest projection
+
+on:
+  push:
+    branches: [main]
+    paths: ["blueprint/**", "Formalization/**", "linkage.toml", ".github/workflows/manifest.yml"]
+  pull_request:
+    paths: ["blueprint/**", "linkage.toml", ".github/workflows/manifest.yml"]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  project:
+    uses: danielfagerstrom/article-kit/.github/workflows/manifest.yml@main
+    with:
+      slug: hcs
+      dry_run: ${{ github.event_name == 'pull_request' }}
+    secrets:
+      NOTES_WIKI_TOKEN: ${{ secrets.NOTES_WIKI_TOKEN }}
+      ARTICLE_KIT_TOKEN: ${{ secrets.ARTICLE_KIT_TOKEN }}

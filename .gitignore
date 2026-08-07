@@ -1,0 +1,28 @@
+# LaTeX build artifacts
+*.aux
+*.log
+*.out
+*.toc
+*.pdf
+*.fls
+*.fdb_latexmk
+*.synctex.gz
+*.bbl
+*.blg
+blueprint/web/
+blueprint/print/
+
+# plasTeX (web build)
+*.paux
+blueprint/lean_decls
+
+# Python
+__pycache__/
+
+# Local manifest preview (the hub's copy is written only by CI)
+.manifest-preview.json
+
+# Lean / lake
+Formalization/.lake/
+Formalization/build/
+*.olean

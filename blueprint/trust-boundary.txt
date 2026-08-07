@@ -1,0 +1,9 @@
+# The trust boundary: the analytic interfaces a headline theorem may depend on.
+#
+# `#print axioms` on this article's proved theorems must reduce to Lean core plus exactly
+# these. CI reads this file via `linkage axioms`, which refuses any name that no AXIOMS.md
+# entry mentions in a `**Lean:**` segment — so the boundary cannot be widened without a
+# reviewed ledger entry behind it.
+#
+# Empty: nothing is proved yet, so nothing is trusted yet. Adding a line here widens the
+# project's trust base and is a review decision, not a fix.

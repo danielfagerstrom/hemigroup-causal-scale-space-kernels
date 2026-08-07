@@ -1,0 +1,21 @@
+name: Lean CI
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  lean:
+    uses: danielfagerstrom/article-kit/.github/workflows/lean.yml@main
+    with:
+      lean_dir: Formalization
+      build_args: Hemigroup
+      sorry_guard_dir: Formalization/Hemigroup
+      axiom_guard_file: ""      # nothing proved yet, so no trust base to guard
+    secrets:
+      # needs Contents:read on article-kit AND scale-space-lean (a private Lake dependency)
+      ARTICLE_KIT_TOKEN: ${{ secrets.ARTICLE_KIT_TOKEN }}

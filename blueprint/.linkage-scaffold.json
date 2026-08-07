@@ -1,0 +1,8 @@
+{
+  "framework_owned": {
+    "blueprint/src/blueprint.sty": "5a7741a78a33",
+    "blueprint/src/theorems.tex": "7fdc3b9c6caf",
+    "blueprint/src/linkage-macros.tex": "5b3626605c3c",
+    "blueprint/src/latexmkrc": "6144b47148bd"
+  }
+}
