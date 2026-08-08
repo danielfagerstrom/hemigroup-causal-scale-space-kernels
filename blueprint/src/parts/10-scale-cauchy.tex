@@ -1,13 +1,253 @@
 % !TEX root = ../print.tex
-% Draft \S10 --- The scale-Cauchy problem (Theorem 3')
+% Draft \S10 --- The scale-Cauchy problem: Theorem 3'
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 386-464.
-% This file is chapter 10 --- The scale-Cauchy problem (Theorem 3') of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 386-463.
+% Chapter 10 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: lem:delay-core, def:phillips-generator, lem:generator-properties, thm:scale-cauchy [T], prop:fixed-scale-semigroup [A]; Example 10.6, Remark 10.7
+% Theorem 3'. This chapter upgrades \ref{prop:scale-evolution} from a distributional identity
+% to a classical Cauchy problem on an explicit operator core, and it is the first of the three
+% primed theorems.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% \ref{thm:scale-cauchy} carries the longest proof in the article. Its two halves use quite
+% different machinery and the formalisation should treat them separately: existence is Fubini
+% plus the fundamental theorem of calculus for Bochner integrals (Mathlib has both), while
+% uniqueness is a SCALAR linear ODE in the Laplace variable -- deliberately not a Hille--Yosida
+% argument. That choice is what keeps the chapter inside the verified core: the only [A] node
+% here is \ref{prop:fixed-scale-semigroup}, which is not used by \ref{thm:scale-cauchy} at all.
+% It records the semigroup reading for its own sake.
+%
+% Notation warning carried from ledger A11: Phillips never writes -\varphi(-A), and he asserts
+% D(B) contains D(A) rather than that D(A) is a core. The two citations in A11 are genuinely
+% complementary, not redundant, and the node says so.
+
+This chapter upgrades \ref{prop:scale-evolution} from a distributional identity to a classical
+Cauchy problem in the scale variable, on an explicit operator core. Throughout we work in the
+canonical gauge and write
+\[
+  \Xz := L^1(\RR_+),
+\]
+identified with the causal elements of $X$; by (A3) every $\Phi_{x,y}$ restricts to $\Xz$. On
+$\Xz$ let $(T_r)_{r \ge 0}$ denote the \emph{delay semigroup},
+$(T_r f)(t) = f(t - r)\mathbf{1}_{t \ge r}$, a strongly continuous semigroup of positive
+isometries, and define the core
+\[
+  \core \;:=\; \bigl\{\, f \in \Xz :\ f \text{ absolutely continuous},\ f' \in \Xz,\ f(0) = 0 \,\bigr\}.
+\]
+
+% draft: Lemma 10.1
+\begin{lemma}[delay derivative]\label{lem:delay-core}
+\uses{lem:convolution-representation,def:cascade-family}
+$\core$ is dense in $\Xz$ and invariant under every $T_r$ and every $\Phi_{x,y}$, and for
+$f \in \core$,
+\[
+  \lim_{h \downarrow 0} \tfrac{1}{h}\bigl(T_h f - f\bigr) = -\,f' \quad \text{in } \Xz,
+  \qquad
+  \bigl\|T_r f - f\bigr\|_1 \le \min\bigl(2\|f\|_1,\ r\,\|f'\|_1\bigr).
+\]
+\statusT
+\end{lemma}
+
+\begin{proof}
+Density is standard.
+
+\emph{Invariance under $T_r$.} $T_r f$ is absolutely continuous, vanishes on $[0, r]$, and
+$(T_r f)' = T_r f'$.
+
+\emph{Invariance under $\Phi_{x,y} = \mu_{x,y} * \cdot$.} From $f = \mathbf{1}_{[0,\infty)} * f'$
+we get $\mu * f = \mathbf{1}_{[0,\infty)} * (\mu * f')$, so $\mu * f$ is absolutely continuous
+with derivative $\mu * f' \in \Xz$ and value $0$ at $0$.
+
+\emph{The limit.} On $[h, \infty)$,
+$\tfrac{1}{h}(f(t-h) - f(t)) + f'(t) = -\tfrac{1}{h}\int_{t-h}^{t}\bigl(f'(\rho) - f'(t)\bigr)d\rho$,
+whose $L^1$-norm tends to $0$ by continuity of translation in $L^1$; on $[0, h)$ the
+contribution is $\tfrac{1}{h}\int_0^h |f| + \int_0^h |f'| \le \sup_{[0,h]}|f| + o(1) \to
+|f(0)| = 0$.
+
+\emph{The estimate.} $T_r f - f = -\int_0^r T_\rho f'\,d\rho$ as a Bochner integral --- the
+integrated form of the limit --- together with $\|T_\rho f'\|_1 = \|f'\|_1$ and the trivial
+bound $\|T_rf - f\|_1 \le 2\|f\|_1$.
+\end{proof}
+
+% draft: Definition 10.2
+\begin{definition}[per-scale generator; Phillips form]\label{def:phillips-generator}
+\uses{lem:selfdecomposable-exponents,lem:delay-core}
+Let $\nu_1$ be the Lebesgue--Stieltjes measure $-dk$ on $(0,\infty)$, with $k$ taken
+right-continuous and $k(\infty) = 0$, so that $\nu_1\bigl((r,\infty)\bigr) = k(r)$; and for
+$x > 0$ put $\nu_x := x^{-1}$ times the pushforward of $\nu_1$ under $r \mapsto xr$, i.e.\
+$\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
+\[
+  \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - T_r f\bigr)\,\nu_x(dr)
+  \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - T_{xr} f\bigr)\,\nu_1(dr).
+\]
+\statusT
+\end{definition}
+
+% draft: Lemma 10.3
+\begin{lemma}[properties of the generator]\label{lem:generator-properties}
+\uses{def:phillips-generator,lem:delay-core,lem:memory-kernel,prop:laplace-uniqueness}
+For $f \in \core$ and $x > 0$:
+\begin{enumerate}
+\item The integral converges absolutely in $\Xz$, with
+$\|\varphi_x(\partial_t) f\|_1 \le b_0 \|f'\|_1 + \int_0^\infty \min\bigl(2\|f\|_1,\, xr\,\|f'\|_1\bigr)\,x^{-1}\nu_1(dr) < \infty$.
+\item $\Lap\bigl[\varphi_x(\partial_t) f\bigr](s) = \varphi_x(s)\,\hat f(s)$ for $s > 0$, where
+$\varphi_x(s) = s F'(xs)$.
+\item $\varphi_x(\partial_t)$ commutes with every $\Phi_{y,z}$ on $\core$.
+\item $x \mapsto \varphi_x(\partial_t) f$ is continuous from $(0,\infty)$ to $\Xz$.
+\item $\kappa^{(x)} * f$ is a.e.\ equal to an absolutely continuous function with
+$\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
+coincides on $\core$ with the memory-kernel operator of Chapter~9.
+\end{enumerate}
+\statusT
+\end{lemma}
+
+\begin{proof}
+(1) Combine \ref{lem:delay-core} with $\int (1 \wedge r)\,\nu_x(dr) < \infty$, which follows
+from $\int_0^1 k < \infty$ and $k(1) < \infty$ by integration by parts.
+
+(2) Termwise: $\Lap[f'] = s\hat f$, using $f(0) = 0$, and $\Lap[f - T_rf] = (1 - e^{-sr})\hat f$.
+Fubini is justified by (1), and $b_0 s + \int(1 - e^{-sr})\nu_x(dr) = \varphi_x(s)$ by
+\ref{lem:memory-kernel} --- the two Bernstein representations of $\varphi_x$ agree.
+
+(3) Convolutions commute; pull $\Phi_{y,z}$ through the Bochner integral.
+
+(4) In the dilated form of \ref{def:phillips-generator} the integrand
+$\tfrac1x(f - T_{xr}f)$ is, for $x$ in a compact subset of $(0,\infty)$, continuous in $x$ for
+each $r$ by strong continuity of $T$, and dominated by $C\min(\|f\|_1,\, r\|f'\|_1)$, which is
+$\nu_1$-integrable. Apply dominated convergence; the drift term is trivial.
+
+(5) Both $\varphi_x(\partial_t)f \in L^1$ and $\kappa^{(x)} * f \in L^1_{\mathrm{loc}}$ are
+causal with finite Laplace transforms. By (2) and \ref{lem:memory-kernel} the causal function
+$V(t) := \int_0^t \bigl(\varphi_x(\partial_t)f\bigr)(\rho)\,d\rho - (\kappa^{(x)} * f)(t)$ has
+transform $\varphi_x(s)\hat f(s)/s - F'(xs)\hat f(s) = 0$ for all $s > 0$, so $V = 0$ a.e.\ by
+\ref{prop:laplace-uniqueness}. That is the claim; the value $(\kappa^{(x)}*f)(\zp) = 0$
+follows from $\kappa^{(x)}([0,t]) \to b_0$ and $\sup_{[0,t]}|f| \to 0$.
+\end{proof}
+
+% draft: Theorem 10.4
+\begin{theorem}[Theorem 3$'$: the scale-Cauchy problem]\label{thm:scale-cauchy}
+\uses{thm:main-characterization,lem:delay-core,def:phillips-generator,lem:generator-properties,prop:scale-evolution,def:cascade-family,prop:laplace-uniqueness}
+Let $(\Phi_{x,y})$ be as in \ref{thm:main-characterization}, in the canonical gauge, and let
+$f \in \core$. Set $u(\cdot, x) := \Phi_{0,x} f$. Then:
+\begin{enumerate}
+\item $u(\cdot, x) \in \core$ for every $x \ge 0$;
+\item $x \mapsto u(\cdot, x)$ belongs to
+$C\bigl([0,\infty); \Xz\bigr) \cap C^1\bigl((0,\infty); \Xz\bigr)$ and satisfies
+\[
+  \partial_x u(\cdot, x) \;=\; -\,\varphi_x(\partial_t)\,u(\cdot, x) \quad (x > 0),
+  \qquad u(\cdot, 0) = f,
+\]
+with $\partial_x$ a norm-derivative in $\Xz$;
+\item $u$ is the \emph{unique} solution in the class of
+$v \in C([0,\infty); \Xz) \cap C^1((0,\infty); \Xz)$ with $v(\cdot, x) \in \core$ for $x > 0$,
+satisfying the equation for $x > 0$ and $v(\cdot, 0) = f$.
+\end{enumerate}
+\statusT\quad\emph{(the hemigroup analogue of \sscite{fagerstrom2005temporal}, Thm.~3, which
+is recovered as the homogeneous case in \ref{rem:recovering-thm3}. Proved here, not cited.)}
+\end{theorem}
+
+\begin{proof}
+(1) is the $\Phi$-invariance of $\core$ (\ref{lem:delay-core}), and continuity at every
+$x \ge 0$ is (A7).
+
+(2) Write $v(\cdot, x) := \varphi_x(\partial_t)\, u(\cdot, x)$. By
+\ref{lem:generator-properties}(3), $v(\cdot, x) = \Phi_{0,x}\,\varphi_x(\partial_t) f$, so by
+\ref{lem:generator-properties}(4), contractivity of $\Phi_{0,x}$, and (A7),
+\[
+  \|v(\cdot,x) - v(\cdot,x')\|_1
+  \;\le\; \bigl\|\varphi_x(\partial_t)f - \varphi_{x'}(\partial_t)f\bigr\|_1
+  + \bigl\|(\Phi_{0,x} - \Phi_{0,x'})\,\varphi_{x'}(\partial_t)f\bigr\|_1
+  \;\longrightarrow\; 0,
+\]
+so $x \mapsto v(\cdot, x)$ is continuous from $(0,\infty)$ to $\Xz$.
+
+By \ref{lem:generator-properties}(5) applied to $u(\cdot,x) \in \core$, each
+$\kappa^{(x)} * u(\cdot, x)$ is absolutely continuous with derivative $v(\cdot, x)$, vanishing
+at $0$; hence for $0 < a \le b$, Fubini gives
+\[
+  \int_a^b \bigl(\kappa^{(x)} * u(\cdot, x)\bigr)(t)\,dx
+  \;=\; \int_0^t \int_a^b v(\rho, x)\,dx\,d\rho ,
+\]
+so the distributional $\partial_t$ in \ref{prop:scale-evolution}(2) evaluates to the Bochner
+integral $\int_a^b v(\cdot, x)\,dx$:
+\[
+  u(\cdot, b) - u(\cdot, a) \;=\; -\int_a^b v(\cdot, x)\,dx .
+\]
+Since the integrand is continuous in $x$, the fundamental theorem of calculus for Bochner
+integrals yields $u \in C^1((0,\infty); \Xz)$ with $\partial_x u = -v$, which is the equation.
+
+(3) Let $v$ be any solution in the stated class and fix $s > 0$. Then $\eta(x) := \hat v(s, x)$
+is continuous on $[0,\infty)$ and $C^1$ on $(0,\infty)$, with
+\[
+  \eta'(x) = \Lap[\partial_x v](s) = -\Lap[\varphi_x(\partial_t) v](s) = -\varphi_x(s)\,\eta(x)
+\]
+by \ref{lem:generator-properties}(2); differentiation and $\Lap$ exchange because
+$|\hat g(s)| \le \|g\|_1$. Solving this scalar linear ODE on $[\varepsilon, x]$ and letting
+$\varepsilon \downarrow 0$, using continuity at $0$, gives $\eta(x) = \hat f(s)\, e^{-F(xs)}$.
+Thus $\hat v(s, x) = \hat u(s, x)$ for all $s > 0$, and $v = u$ by
+\ref{prop:laplace-uniqueness}.
+\end{proof}
+
+% draft: Proposition 10.5
+\begin{proposition}[fixed-scale semigroups; core property]\label{prop:fixed-scale-semigroup}
+\uses{lem:potential-kernel,lem:delay-core,def:phillips-generator}
+For fixed $x > 0$, the operator $-\varphi_x(\partial_t)$ with domain $\core$ is closable, and
+its closure generates the strongly continuous contraction semigroup on $\Xz$ of convolutions
+by the probability measures with Laplace transforms $e^{-\tau \varphi_x(s)}$, $\tau \ge 0$ ---
+the semigroup subordinate to the delay semigroup via $\varphi_x$. Moreover $\core$ is a core
+for that generator.
+\statusA\quad\ledger{A11}\quad\emph{(Phillips' subordination theorem,
+\sscite{phillips1952generation}, Thm.~4.3 with the hypotheses in its equation~(40); and the
+core criterion, \sscite{engel2000one}, Prop.~II.1.7. Cited, not reproven here.
+\textbf{Assignment.} \ledger{A11} carries two complementary halves and neither suffices alone.
+Phillips gives the form of the subordinate generator; he asserts that its domain \emph{contains}
+$\core$, not that $\core$ is a core for it, which is precisely the gap Engel--Nagel closes.
+Two things the citation does not carry, both \textbf{[T]}: that $\core$ is dense and
+semigroup-invariant, proved in \ref{lem:delay-core}, and that $\varphi_x$ is a Bernstein
+function without killing term, proved in \ref{lem:potential-kernel}. A notational caution
+recorded in the ledger: Phillips writes neither $-\varphi(-A)$ nor anything in that notation;
+his displayed form becomes it only after setting the drift and killing parameters to zero.
+Note finally that \ref{thm:scale-cauchy} does \emph{not} use this proposition --- the Cauchy
+problem is solved by a scalar ODE, not by generation theory, so this node adds a reading
+rather than a dependency.)}
+\end{proposition}
+
+\begin{proof}
+$\varphi_x$ is a Bernstein function without killing term by \ref{lem:potential-kernel}, so
+Phillips' subordination theorem applies to the delay semigroup, whose generator extends
+$f \mapsto -f'$ on $\core$ (\ref{lem:delay-core}): the subordinate generator is the closure of
+the Phillips form on the generator's domain. That $\core$ is a core follows from the cited
+criterion, since $\core$ is dense and invariant under the subordinate semigroup, which
+consists of convolutions (\ref{lem:delay-core}).
+\end{proof}
+
+% draft: Example 10.6
+\begin{example}[the Gamma family: time-recursive form]\label{ex:gamma-recursive}
+\uses{prop:gamma-family,def:phillips-generator}
+For $F(s) = \gamma\log(1+s)$ we have $\nu_x(d\rho) = \gamma x^{-2} e^{-\rho/x}\,d\rho$, an
+exponential memory, and $\varphi_x(s) = \gamma s/(1 + xs)$, so
+\[
+  \varphi_x(\partial_t)\,u \;=\; \gamma\,\partial_t\bigl(1 + x\,\partial_t\bigr)^{-1} u
+  \;=\; \gamma\, w', \qquad \text{where } w \text{ solves } w + x\,w' = u,\ \ w(0) = 0 .
+\]
+The auxiliary variable $w$ is computed by one causal first-order ODE, so the scale step is
+realized by a single recursive low-pass filter --- the strongest possible form of the
+time-recursivity requirement of \sscite{fagerstrom2005temporal}, \S5: the observer embodies
+its past in one first-order state per scale.
+\end{example}
+
+% draft: Remark 10.7
+\begin{remark}[recovering Theorem 3 of 2005]\label{rem:recovering-thm3}
+\uses{thm:scale-cauchy,prop:stable-family,rem:gauge-freedom}
+For $F(s) = s^\alpha$ with $0 < \alpha < 1$ we have
+$\nu_x\bigl((\rho,\infty)\bigr) = \alpha x^{\alpha-1}\rho^{-\alpha}/\Gamma(1-\alpha)$ and
+$b_0 = 0$, so $\varphi_x(\partial_t) = \alpha x^{\alpha - 1} D^{\alpha}_{t,+}$ with
+$D^{\alpha}_{t,+}$ the Riemann--Liouville/Marchaud derivative, and \ref{thm:scale-cauchy} reads
+$\partial_x u = -\alpha x^{\alpha-1} D^{\alpha}_{t,+} u$. Under the reparametrization
+$\tau := x^{\alpha}$ this is exactly
+\[
+  \partial_\tau u \;=\; -\,D^{\alpha}_{t,+}\, u,
+\]
+Theorem~3 of \sscite{fagerstrom2005temporal} verbatim --- identifying the scale parameter
+$\tau$ of that paper as the $\alpha$-gauge of \ref{rem:gauge-freedom} applied to the canonical
+scale coordinate.
+\end{remark}
