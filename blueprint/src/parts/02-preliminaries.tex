@@ -61,7 +61,9 @@ $g(\zp) = 0$.
 measure on $[0,\infty)$ if and only if $f$ is completely monotone and $f(\zp) = 1$. More
 generally, $f$ is completely monotone if and only if $f(s) = \int_{[0,\infty)} e^{-st}\,F(dt)$
 for a measure $F$ on $[0,\infty)$, not necessarily finite, and $F$ is then unique.
-\item $g \in \BF$ if and only if $e^{-\tau g}$ is completely monotone for every $\tau > 0$.
+\item For $g : (0,\infty) \to [0,\infty)$ the following are equivalent: $g \in \BF$; the
+composition $h \circ g$ is completely monotone for every completely monotone $h$; and
+$e^{-\tau g}$ is completely monotone for every $\tau > 0$.
 \item Every $g \in \BF$ is nonnegative, nondecreasing and concave, and has the
 Lévy--Khintchine representation
 \[
@@ -78,7 +80,9 @@ classical Bernstein-function toolbox: \sscite{feller2009introduction}, Ch.~XIII 
 \sscite{schilling2012bernstein}, Ch.~1 and~3. Cited, not reproven here.
 \textbf{Assignment.} The four parts are carried by four separate entries, one each.
 Part~(1) is \ledger{A1} entire, in both the probability form and the general measure form
-with uniqueness. Part~(2) is \ledger{A2} entire. Part~(3) is \ledger{A3} entire, including
+with uniqueness. Part~(2) is \ledger{A2} entire --- all three equivalences of the cited
+theorem, not only the exponential one: the composition clause is what
+\ref{lem:potential-kernel} inverts a Bernstein function with. Part~(3) is \ledger{A3} entire, including
 the uniqueness of the triple, which Lemma~7.1 needs and which a representation theorem
 without it would not supply. Part~(4) is \ledger{A4} entire; it is the single external fact
 Theorem~5.2 rests on, and the null-array argument that produces the pointwise limit there is

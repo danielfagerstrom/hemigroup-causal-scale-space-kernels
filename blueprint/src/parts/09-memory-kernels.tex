@@ -1,13 +1,389 @@
 % !TEX root = ../print.tex
-% Draft \S9 --- Memory kernels, Sonine, Volterra
+% Draft \S9 --- Memory kernels, Sonine conservation, and a Volterra derivation
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 280-385.
-% This file is chapter 9 --- Memory kernels, Sonine, Volterra of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 280-384.
+% Chapter 9 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: lem:memory-kernel, prop:scale-evolution, lem:potential-kernel, thm:sonine-conservation, cor:exact-inversion, prop:pair-regularity [A], prop:volterra; Example 9.9, Remarks 9.3/9.10/9.11
+% The largest chapter, eleven numbered items. Its point is that the function k, which entered
+% abstractly as condition (3) of \ref{lem:selfdecomposable-exponents}, IS the memory kernel of
+% the scale evolution -- and that the kernels of \ref{thm:main-characterization} can be
+% obtained from it by Volterra integration, with no Laplace inversion anywhere.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% Two [A] nodes: \ref{prop:pair-regularity} on ledger A9 (four separate SSV anchors) and
+% \ref{prop:volterra} on A10 (Sato). Note what is NOT an [A] node here:
+% \ref{lem:potential-kernel} inverts a Bernstein function using the CM-composition clause and
+% the general-measure form of Bernstein--Widder, both of which are already clauses of
+% \ref{prop:bernstein-toolbox} (ledger A2 and A1). It therefore rests on the trust boundary
+% through that node rather than naming a ledger entry of its own -- which is why part (2) of
+% the toolbox states all three equivalences of the theorem A2 cites, not only the exponential
+% one.
+
+The representation (7.1) attaches to every admissible family a nonincreasing function $k$.
+This chapter shows that $k$ is the \emph{memory kernel} of the evolution across scale; that it
+forms a Sonine pair with the associated potential kernel, through the conservation identity
+$\kappa * \ell \equiv 1$; and that the kernels of \ref{thm:main-characterization} can be
+obtained from $k$ by solving a linear Volterra integral equation, without Laplace inversion.
+The chapter is self-contained: the scale-evolution result it needs is stated and proved as
+\ref{prop:scale-evolution}.
+
+Throughout we work in the canonical gauge. A function $f \in X$ is \emph{causal} if it
+vanishes a.e.\ on $(-\infty, 0)$, in which case $\hat f(s) = \int_0^\infty e^{-st} f(t)\,dt$
+is defined for $s > 0$ and satisfies $|\hat f(s)| \le \|f\|_1$.
+
+% draft: Lemma 9.1
+\begin{lemma}[the kernel behind $F'$]\label{lem:memory-kernel}
+\uses{lem:selfdecomposable-exponents}
+Let $F$ be as in (7.1). Then
+\[
+  F'(s) \;=\; b_0 \;+\; \int_0^\infty e^{-st}\, k(t)\,dt, \qquad s > 0.
+\]
+Consequently, defining for $x > 0$ the locally finite measure
+\[
+  \kappa^{(x)}(dt) \;:=\; b_0\,\delta_0(dt) \;+\; \tfrac{1}{x}\,k\bigl(\tfrac{t}{x}\bigr)\,dt,
+\]
+we have $\partial_x F(xs) = s\,F'(xs) = s\,\widehat{\kappa^{(x)}}(s)$.
+\statusT
+\end{lemma}
+
+\begin{proof}
+Differentiating the integrand of (7.1) in $s$ gives $e^{-st}k(t)$, which for $s \ge s_0 > 0$ is
+dominated by $e^{-s_0 t} k(t)$. That dominating function is integrable near $0$ because
+$\int_0^1 k < \infty$, and at infinity because $k$ is bounded there, being nonincreasing; so
+differentiation under the integral sign is justified. The second statement is the substitution
+$\tau = t/x$ in $F'(xs) = b_0 + \int_0^\infty e^{-xs\tau} k(\tau)\,d\tau$.
+\end{proof}
+
+\bigskip
+
+Thus the memory kernel of the scale flow is the self-decomposability function $k$ itself, in
+$L^1$-normalized dilation to the current scale. The monotonicity of $k$, which entered
+abstractly as condition (3) of \ref{lem:selfdecomposable-exponents}, is precisely the
+admissibility of $\kappa^{(x)}$ as a Lévy tail. In the extremal stable case
+$k(t) = \alpha t^{-\alpha}/\Gamma(1-\alpha)$ and the operator $\partial_t(\kappa^{(x)} * \cdot)$
+below is the Riemann--Liouville derivative $D^{\alpha}_{t,+}$ of
+\sscite{fagerstrom2005temporal}; in the Gamma family $k(t) = \gamma e^{-t}$, a bounded kernel.
+
+% draft: Proposition 9.2
+\begin{proposition}[scale evolution in memory-kernel form]\label{prop:scale-evolution}
+\uses{thm:main-characterization,lem:memory-kernel,prop:laplace-uniqueness,prop:bernstein-toolbox}
+Let $(\Phi_{x,y})$ be as in \ref{thm:main-characterization}, in the canonical gauge, let
+$f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f = \mu_{0,x} * f$. Then:
+\begin{enumerate}
+\item For each $s > 0$, $\hat u(s, x) = e^{-F(xs)} \hat f(s)$ is continuously differentiable
+in $x$ with
+\[
+  \partial_x \hat u(s, x) \;=\; -\,s\,F'(xs)\,\hat u(s, x).
+\]
+\item For each $x > 0$ the causal function $w(\cdot, x) := \kappa^{(x)} * u(\cdot, x)$ lies in
+$L^1_{\mathrm{loc}}$, and for all $0 \le a \le b$,
+\[
+  u(\cdot, b) - u(\cdot, a)
+  \;=\; -\,\partial_t \int_a^b \bigl(\kappa^{(x)} * u(\cdot, x)\bigr)\,dx
+  \qquad \text{in } \Distr(\RR).
+\]
+\end{enumerate}
+Differentiating in $x$, $u$ satisfies, in the distributional sense on
+$\RR_t \times (0,\infty)_x$ and with boundary value $u(\cdot, 0) = f$,
+\[
+  \partial_x u \;=\; -\,\partial_t\bigl(\kappa^{(x)} * u\bigr)
+  \;=\; -\,b_0\,\partial_t u
+  \;-\; \partial_t \int_0^t \tfrac{1}{x}\,k\bigl(\tfrac{t-r}{x}\bigr)\,u(r, x)\,dr .
+\]
+Since $u(\cdot, x)$ is causal, the outer $\partial_t$ may equivalently be moved onto $u$ inside
+the convolution: the Riemann--Liouville and Caputo forms of the operator coincide on this
+family.
+\statusT
+\end{proposition}
+
+\begin{proof}
+(1) is the chain rule, $F$ being smooth on $(0,\infty)$ by
+\ref{prop:bernstein-toolbox}(3).
+
+(2) \emph{Local integrability.} For $T > 0$,
+\[
+  \int_0^T |w(t,x)|\,dt \le \kappa^{(x)}([0,T])\,\|u(\cdot,x)\|_1
+  \le \Bigl(b_0 + \int_0^{T/x} k\Bigr)\|f\|_1 < \infty,
+\]
+locally uniformly in $x > 0$; joint measurability follows from (A7). By Tonelli, for $s > 0$,
+$\hat w(s, x) = \widehat{\kappa^{(x)}}(s)\,\hat u(s, x) = F'(xs)\,\hat u(s, x)$.
+
+\emph{Integration in $x$.} Integrate (1) over $x \in [a, b]$. The exchange of $\int_a^b dx$
+with the Laplace integral is justified by Tonelli, since
+$\int_a^b s\,F'(xs)\,\|u(\cdot,x)\|_1\,dx \le \|f\|_1 \int_a^b s F'(xs)\,dx
+= \|f\|_1\bigl(F(bs) - F(as)\bigr) < \infty$, finite also for $a = 0$. This gives
+\[
+  \hat u(s, b) - \hat u(s, a) \;=\; -\,s \int_a^b \hat w(s, x)\,dx \;=\; -\,s\,\widehat{W}(s),
+  \qquad W := \int_a^b w(\cdot, x)\,dx,
+\]
+with $W \in L^1_{\mathrm{loc}}$ and causal.
+
+\emph{Inversion.} The causal, locally integrable function
+$V(t) := \int_0^t \bigl(u(r, b) - u(r, a)\bigr)\,dr + W(t)$ has Laplace transform
+$\bigl(\hat u(s,b) - \hat u(s,a)\bigr)/s + \widehat W(s) = 0$ for every $s > 0$, so $V = 0$
+a.e.\ by \ref{prop:laplace-uniqueness}. That is the displayed identity. The final statement
+holds because $u(\cdot, x)$ vanishes on $(-\infty, 0)$, so no boundary term arises when moving
+$\partial_t$ through the convolution.
+\end{proof}
+
+% draft: Remark 9.3
+\begin{remark}[reading: a general fractional relaxation equation]\label{rem:general-fractional}
+\uses{prop:scale-evolution}
+\ref{prop:scale-evolution} is the memory-kernel form of the per-scale generator; Theorem~10.4
+below upgrades it to a classical scale-Cauchy problem
+$\partial_x u = -\varphi_x(\partial_t)u$ with $\varphi_x(s) = sF'(xs)$, on an explicit operator
+core. It identifies the scale evolution as a \emph{general fractional} relaxation equation in
+the sense of \sscite{kochubei2011general} and \sscite{luchko2021general}, with scale-dilated
+kernel; the case $k(t) = \alpha t^{-\alpha}/\Gamma(1-\alpha)$ recovers the fractional
+scale-Cauchy problem of \sscite{fagerstrom2005temporal}, Thm.~3.
+\end{remark}
+
+% draft: Lemma 9.4
+\begin{lemma}[potential kernel]\label{lem:potential-kernel}
+\uses{lem:selfdecomposable-exponents,prop:bernstein-toolbox,lem:vanishing}
+For $x > 0$ set $\varphi_x(s) := s F'(xs)$. Then $\varphi_x$ is a nonzero Bernstein function,
+positive on $(0,\infty)$, and there is a unique positive, locally finite measure $\ell^{(x)}$
+on $[0,\infty)$ --- the \emph{potential kernel} --- with
+\[
+  \widehat{\ell^{(x)}}(s) \;=\; \frac{1}{\varphi_x(s)} \;=\; \frac{1}{s\,F'(xs)}, \qquad s > 0.
+\]
+Moreover $\ell^{(x)}$ is $x$ times the pushforward of $\ell^{(1)}$ under $t \mapsto xt$; in
+density form, $\ell^{(x)}(t) = \ell^{(1)}(t/x)$.
+\statusT
+\end{lemma}
+
+\begin{proof}
+With $B(s) := sF'(s) \in \BF \setminus \{0\}$ by \ref{lem:selfdecomposable-exponents}(2), we
+have $\varphi_x(s) = B(xs)/x \in \BF \setminus \{0\}$, and $\varphi_x > 0$ on $(0,\infty)$ by
+\ref{lem:vanishing}.
+
+The function $h(u) = 1/u$ is completely monotone on $(0,\infty)$, and the composition of a
+completely monotone function with a positive Bernstein function is completely monotone by
+\ref{prop:bernstein-toolbox}(2); hence $1/\varphi_x$ is completely monotone. By the general
+form of the Bernstein--Widder theorem, \ref{prop:bernstein-toolbox}(1), it is therefore the
+Laplace transform of a unique positive measure on $[0,\infty)$, locally finite because the
+transform is finite for every $s > 0$.
+
+The scaling law follows by comparing transforms:
+$\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$.
+\end{proof}
+
+% draft: Theorem 9.5
+\begin{theorem}[Sonine conservation]\label{thm:sonine-conservation}
+\uses{lem:memory-kernel,lem:potential-kernel,prop:laplace-uniqueness}
+For every $x > 0$,
+\[
+  \kappa^{(x)} * \ell^{(x)} \;=\; \mathrm{Leb}_{[0,\infty)},
+  \qquad \text{i.e.} \qquad
+  \int_{[0,t]} \ell^{(x)}\bigl([0,\, t - r]\bigr)\,\kappa^{(x)}(dr) \;=\; t
+  \quad \text{for all } t \ge 0.
+\]
+\statusT
+\end{theorem}
+
+\begin{proof}
+Both sides are locally finite measures on $[0,\infty)$ with finite Laplace transforms, and
+those transforms agree:
+\[
+  \widehat{\kappa^{(x)}}(s)\,\widehat{\ell^{(x)}}(s)
+  = \frac{\varphi_x(s)}{s}\cdot\frac{1}{\varphi_x(s)} = \frac{1}{s}
+  = \widehat{\mathrm{Leb}}(s),
+\]
+using \ref{lem:memory-kernel} for the first factor and \ref{lem:potential-kernel} for the
+second. \ref{prop:laplace-uniqueness} concludes.
+\end{proof}
+
+\bigskip
+
+Note the scaling structure: $\kappa^{(x)}$ dilates with $L^1$ normalization and $\ell^{(x)}$
+with sup normalization (\ref{lem:potential-kernel}), and it is exactly this mismatch that
+renders the identity scale-invariant --- the pair $(\kappa^{(x)}, \ell^{(x)})$ is itself
+scale-covariant.
+
+% draft: Corollary 9.6
+\begin{corollary}[exact invertibility; conservation of information]\label{cor:exact-inversion}
+\uses{thm:sonine-conservation}
+Define, on causal $v \in X$, the generalized derivative and integral
+\[
+  D^{(x)} v := \partial_t\bigl(\kappa^{(x)} * v\bigr), \qquad I^{(x)} v := \ell^{(x)} * v .
+\]
+Then $D^{(x)} I^{(x)} v = v$ in $\Distr$, hence a.e.
+\statusT
+\end{corollary}
+
+\begin{proof}
+By \ref{thm:sonine-conservation} and associativity of convolution --- Tonelli on causal
+supports --- $\kappa^{(x)} * \ell^{(x)} * v = \mathrm{Leb} * v = \int_0^{\,\cdot} v(r)\,dr$,
+and $\partial_t \int_0^t v = v$.
+\end{proof}
+
+\bigskip
+
+\ref{cor:exact-inversion} is the conservation content of the axioms in Volterra form: the
+infinitesimal smoothing applied at each scale is exactly invertible, so no single step of the
+cascade destroys information --- it only redistributes it, consistently with (A5), which fixes
+the mass. Probabilistically, $\ell^{(x)}$ is the potential (renewal) measure of the
+subordinator with exponent $\varphi_x$, $\kappa^{(x)}$ is its drift-plus-Lévy-tail, and
+\ref{thm:sonine-conservation} is the renewal identity balancing expected occupation against
+tail decay.
+
+% draft: Proposition 9.7
+\begin{proposition}[regularity of the pair]\label{prop:pair-regularity}
+\uses{lem:memory-kernel,lem:potential-kernel,thm:sonine-conservation,def:completely-monotone}
+Modulo the drift atoms $b_0\delta_0$:
+\begin{enumerate}
+\item For every admissible $F$, the pair $(\kappa^{(x)}, \ell^{(x)})$ exists at the level of
+positive measures (\ref{lem:memory-kernel}, \ref{lem:potential-kernel}) and satisfies
+\ref{thm:sonine-conservation}.
+\item $\ell^{(x)}$ has the form $c\,\delta_0 + (\text{nonincreasing density})$, $c \ge 0$, if
+and only if $1/F'$ is a Bernstein function --- equivalently, $\varphi_x$ is a \emph{special}
+Bernstein function; by dilation invariance the condition does not depend on $x$.
+\item $\kappa^{(x)}$ has a completely monotone density iff $k$ is completely monotone, which
+holds iff $F'$ belongs to the Stieltjes class
+$\mathcal{S} := \bigl\{\,h(s) = \tfrac{a}{s} + b + \int_{(0,\infty)} \tfrac{\sigma(d\tau)}{s + \tau}\,\bigr\}$.
+In that case $\ell^{(x)}$ also has a drift-atom-plus-completely-monotone density, i.e.\
+$(\kappa^{(x)}, \ell^{(x)})$ is a classical Sonine pair of CM kernels; moreover $k$ completely
+monotone implies $F$ is a complete Bernstein function.
+\end{enumerate}
+\statusA\quad\ledger{A9}\quad\emph{(special Bernstein functions, the Stieltjes class and
+complete Bernstein functions; \sscite{schilling2012bernstein}, Thm.~11.3, Thm.~7.3 and
+Thm.~6.2, with $\mathcal{S}$ defined in Ch.~2. Cited, not reproven here.
+\textbf{Assignment.} \ledger{A9} carries three separate facts, and clause~(2) is carried by it
+\emph{entire}: the characterization of the potential measures of special subordinators is
+SSV~Thm.~11.3 and is not proved here. Within clause~(3) the ledger carries the two structural
+inputs --- that $1/h \in \CBF$ for $h \in \mathcal{S}\setminus\{0\}$ (Thm.~7.3), and that a
+complete Bernstein function has a completely monotone Lévy density (Thm.~6.2) --- while the
+computations joining them are \textbf{[T]} and given below. Clause~(1) is \textbf{[T]}
+outright, being a restatement of \ref{lem:memory-kernel},
+\ref{lem:potential-kernel} and \ref{thm:sonine-conservation}. Note the edition hazard recorded
+in the ledger: SSV's Thm.~11.3 is Thm.~10.3 in the first edition, a chapter having been
+inserted at position~10 in the second.)}
+\end{proposition}
+
+\begin{proof}
+(1) is \ref{lem:memory-kernel}, \ref{lem:potential-kernel} and
+\ref{thm:sonine-conservation} restated. (2) is the cited characterization of potential
+measures of special subordinators.
+
+(3) Dilation preserves complete monotonicity, so the first equivalence reduces to a statement
+about $k$. If $k$ is completely monotone then $k(t) = \int e^{-\tau t}\sigma(d\tau)$ for a
+positive measure $\sigma$, and \ref{lem:memory-kernel} gives
+$F'(s) = b_0 + \int \sigma(d\tau)/(s+\tau) \in \mathcal{S}$. Conversely, an
+$\mathcal{S}$-representation of $F'$ must have $a = 0$ --- an $a/s$ term corresponds to an
+additive constant in $k$, contradicting $\int_1^\infty k(t)t^{-1}dt < \infty$ --- and then
+$k(t) = \int e^{-\tau t}\sigma(d\tau)$ is completely monotone.
+
+For the second assertion, $1/h \in \CBF$ for $h \in \mathcal{S}\setminus\{0\}$, so
+$g := 1/F'(x\,\cdot) \in \CBF$ and $\widehat{\ell^{(x)}}(s) = g(s)/s$. Writing the
+Lévy--Khintchine triple of $g$ as $(a_g, b_g, \nu_g)$, with completely monotone Lévy density
+because $g \in \CBF$, gives
+$g(s)/s = \tfrac{a_g}{s} + b_g + \widehat{\bar\nu_g}(s)$, that is
+$\ell^{(x)} = b_g\,\delta_0 + \bigl(a_g + \bar\nu_g(t)\bigr)\,dt$; and
+$a_g + \bar\nu_g(t) = a_g + \int_t^\infty(\text{completely monotone})$ is completely monotone.
+
+Finally, $k$ completely monotone implies the Lévy density $k(t)/t$ of $F$ is completely
+monotone, being a product of completely monotone functions, hence $F \in \CBF$.
+\end{proof}
+
+\bigskip
+
+Part (3) delineates exactly where the classical Sonine calculus with completely monotone
+kernel pairs --- the standing hypothesis of most of the general-fractional-calculus literature
+--- applies: on the complete-Bernstein subfamily, which Chapter~12 identifies with the
+locality corner of the memory-line realization. For general admissible $F$ the pair, and
+\ref{thm:sonine-conservation}, live at the level of measures.
+
+% draft: Proposition 9.8
+\begin{proposition}[Volterra equation for the kernels]\label{prop:volterra}
+\uses{lem:memory-kernel,thm:main-characterization,rem:sato-reading,prop:laplace-uniqueness}
+Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. Then, as measures on
+$[0,\infty)$,
+\[
+  t\,\mu_x(dt) \;=\; \bigl(\theta_x * \mu_x\bigr)(dt),
+  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt, \tag{9.1}
+\]
+and $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1). If
+$k \not\equiv 0$ then $\mu_x$ is absolutely continuous, with density $\phi_x$ solving the
+linear Volterra equation of the second kind
+\[
+  \bigl(t - b_0 x\bigr)\,\phi_x(t)
+  \;=\; \int_0^t k\bigl(\tfrac{u}{x}\bigr)\,\phi_x(t - u)\,du
+  \qquad \text{for a.e.\ } t > 0. \tag{9.2}
+\]
+\statusA\quad\ledger{A10}\quad\emph{(absolute continuity of nondegenerate self-decomposable
+laws; \sscite{sato1999levy}, Thm.~27.13. Cited, not reproven here.
+\textbf{Assignment.} \ledger{A10} carries one clause only: that $\mu_x$ is absolutely
+continuous when $k \not\equiv 0$, which is what lets the measure identity (9.1) descend to the
+density equation (9.2) --- and (9.2) is the point of the proposition, being the inversion-free
+forward scheme. Everything else is \textbf{[T]} and proved below: the identity (9.1) itself is
+a transform computation, and uniqueness among probability measures follows from a scalar
+linear ODE in the Laplace variable. The hypothesis $k \not\equiv 0$ is nondegeneracy, and
+excluding the degenerate case --- the pure drift $F(s) = b_0 s$, whose kernel is the atom
+$\delta_{b_0 x}$ --- is ours, not the citation's.)}
+\end{proposition}
+
+\begin{proof}
+\emph{The identity (9.1).} Taking Laplace transforms,
+$\Lap[t\,\mu_x](s) = -\tfrac{d}{ds} e^{-F(xs)} = x F'(xs)\, e^{-F(xs)}$, while by
+\ref{lem:memory-kernel} with the substitution $\tau = t/x$,
+$\widehat{\theta_x}(s) = b_0 x + \int_0^\infty e^{-st} k(t/x)\,dt = x F'(xs)$. So both sides of
+(9.1) have the finite transform $x F'(xs)e^{-F(xs)}$ and coincide by
+\ref{prop:laplace-uniqueness}.
+
+\emph{Uniqueness.} If $\nu$ is a probability measure on $[0,\infty)$ with
+$t\,\nu(dt) = \theta_x * \nu$, then $\hat\nu$ is differentiable on $(0,\infty)$ with
+$-\hat\nu'(s) = \Lap[t\nu](s) = xF'(xs)\,\hat\nu(s)$. Solving this linear ODE with
+$\hat\nu(\zp) = 1$ gives $\hat\nu(s) = e^{-F(xs)}$, hence $\nu = \mu_x$.
+
+\emph{Absolute continuity.} When $k \not\equiv 0$, $\mu_x$ is a nondegenerate
+self-decomposable law by \ref{rem:sato-reading}, and \ledger{A10} makes it absolutely
+continuous. Restricting (9.1) to densities yields (9.2).
+\end{proof}
+
+\bigskip
+
+Equation (9.2) is the constructive counterpart of the inverse Laplace transform in
+\ref{thm:main-characterization}: the kernels are \emph{derived} from the memory kernel $k$ by
+Volterra integration. Note the role of the axioms in closing the derivation. Equation (9.2) is
+linear and homogeneous, so it determines $\phi_x$ only up to a multiplicative constant --- it
+is the unit-area axiom (A5) that selects the solution. Positivity of that solution is manifest
+from Picard iteration, all of whose terms are nonnegative.
+
+% draft: Example 9.9
+\begin{example}[verification: the Gamma family]\label{ex:gamma-volterra}
+\uses{prop:gamma-family,prop:volterra}
+For $F(s) = \gamma\log(1+s)$ we have $b_0 = 0$, $k(u) = \gamma e^{-u}$, and
+$\phi_x(t) = t^{\gamma-1}e^{-t/x}/(\Gamma(\gamma)x^\gamma)$ by \ref{prop:gamma-family}.
+Indeed, since $e^{-u/x}e^{-(t-u)/x} = e^{-t/x}$,
+\[
+  \int_0^t \gamma e^{-u/x}\,\frac{(t-u)^{\gamma-1} e^{-(t-u)/x}}{\Gamma(\gamma)\,x^{\gamma}}\,du
+  \;=\; \frac{\gamma\, e^{-t/x}}{\Gamma(\gamma)\,x^{\gamma}} \cdot \frac{t^{\gamma}}{\gamma}
+  \;=\; t\,\phi_x(t),
+\]
+which is (9.2) for this family, as required.
+\end{example}
+
+% draft: Remark 9.10
+\begin{remark}[computation; relation to the 2005 series]\label{rem:volterra-computation}
+\uses{prop:volterra,prop:stable-family}
+For $F(s) = s^\alpha$, i.e.\ $k(u) = \alpha u^{-\alpha}/\Gamma(1-\alpha)$, Picard iteration of
+(9.2) regenerates term by term the series expansion following Theorem~2 of
+\sscite{fagerstrom2005temporal}; the Volterra route thus contains the original series as its
+homogeneous special case. Numerically, (9.2) is a weakly singular Volterra equation of the
+second kind, amenable to standard product-integration quadrature, and it provides an
+inversion-free forward scheme for the kernels for arbitrary admissible $k$.
+\end{remark}
+
+% draft: Remark 9.11
+\begin{remark}[literature]\label{rem:sonine-literature}
+\uses{prop:pair-regularity,thm:sonine-conservation}
+Kernel pairs satisfying $\kappa * \ell \equiv 1$ go back to \sscite{sonine1884sur}; the
+operator calculus built on them is the general fractional calculus of
+\sscite{kochubei2011general} and \sscite{luchko2021general}, usually developed under
+completely monotone or Sonine-class kernel hypotheses, which by
+\ref{prop:pair-regularity}(3) delineate the complete-Bernstein subfamily. In
+Volterra-equation theory the kernels $\kappa^{(x)}$ are the \emph{completely positive} kernels
+of \sscite{clement1981asymptotic}; the resolvent theory of \sscite{pruss1993evolutionary} then
+yields well-posedness and positivity of the evolution in \ref{prop:scale-evolution} by purely
+deterministic arguments. The integral equation (9.1) is the classical characterization of
+infinitely divisible laws on the half-line of \sscite{steutel2004infinite}.
+\end{remark}
