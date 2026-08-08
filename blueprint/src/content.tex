@@ -26,13 +26,18 @@
 % Scope is \S\S2-12, the mathematics. \S1 (introduction), \S13 (implementation), \S14
 % (the temporal N-jet) and \S15 (concluding remarks) stay in the draft.
 
-% The .tex extensions on the \input lines below are load-bearing, not house style.
-% plasTeX resolves an extensionless \input through kpsewhich, which a CI runner with
-% no TeX installation does not have -- the web build then silently drops every part
-% file ("WARNING: File not found: parts/...") and renders an empty dependency graph,
-% while still emitting a plausible-looking site. Same-directory inputs happen to
-% resolve without it; the parts/ subdirectory does not. pdflatex and `linkage`
-% (which appends .tex when absent) both accept the explicit form.
+% The .tex extensions below are explicit for the reader's sake; all three consumers
+% accept either form (pdflatex natively, `linkage` by appending .tex when absent,
+% plasTeX through kpsewhich).
+%
+% What IS load-bearing, and cost several CI runs to find: plasTeX resolves every
+% \input through kpsewhich, and its fallback when that binary is missing is an exact
+% filename match against a directory listing -- which can never resolve a name
+% containing a separator. So on a machine without a working kpsewhich, web.tex and
+% content.tex resolve while every parts/* file is silently dropped, and the web build
+% renders a complete-looking site with no statement nodes in it. The shared docs
+% workflow installs texlive-base for this and asserts kpsewhich before building.
+% Adding .tex does not help; the separator is the issue.
 \input{theorems-extra.tex}
 
 \setcounter{chapter}{1}
