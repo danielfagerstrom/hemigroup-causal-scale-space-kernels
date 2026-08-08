@@ -1,13 +1,192 @@
 % !TEX root = ../print.tex
 % Draft \S7 --- Self-decomposability and the main theorem
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 198-253.
-% This file is chapter 7 --- Self-decomposability and the main theorem of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 198-252.
+% Chapter 7 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: lem:selfdecomposable-exponents [T], thm:main-characterization [T], cor:semigroup-case [T]; Remarks 7.2, 7.5
+% The headline. \ref{thm:main-characterization} is the article's Theorem 7.3, the variant of
+% [Fagerstrom 2005, Thm. 2], and everything in chapters 2-6 exists to serve it.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% Note the asymmetry of the two directions, which matters for the Lean ladder:
+%
+%   (=>)  is a COLLATION. It cites nine earlier nodes and adds one new step (that the
+%         increments of F over dilations are Bernstein, hence Lemma 7.1 applies). No new
+%         analysis. Formalising it is assembly, and it is M6 -- last, because it needs
+%         everything.
+%
+%   (<=)  is a CONSTRUCTION, and the only place in the chapter where real analysis happens:
+%         building the kernel measures from F and verifying (A7) needs the continuity theorem
+%         for Laplace transforms, ledger A5, plus a tightness argument that is ours. It is M2
+%         of the ladder and the first artifact worth publishing, because it certifies "these
+%         kernels exist and satisfy the axioms" without depending on the analysis direction.
+%
+% This is also where prop:laplace-continuity finally enters the dependency graph, having sat
+% isolated since chapter 2 -- its Assignment clause was written against exactly this use.
+
+By \ref{prop:canonical-gauge} the exponent of every kernel is an increment
+$F(bs) - F(as)$ with $0 \le a \le b$, and by \ref{thm:increments-bernstein} every such
+increment must lie in $\BFz$. That pins down $F$.
+
+% draft: Lemma 7.1
+\begin{lemma}[self-decomposable exponents]\label{lem:selfdecomposable-exponents}
+\uses{def:bernstein-function,prop:bernstein-toolbox}
+For $F \in \BFz$ the following are equivalent:
+\begin{enumerate}
+\item $F(b\,\cdot) - F(a\,\cdot) \in \BFz$ for all $0 < a \le b$;
+\item $B(s) := s\,F'(s)$ is a Bernstein function;
+\item $F$ has the representation
+\[
+  F(s) = b_0\, s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\, \frac{k(t)}{t}\,dt,
+  \qquad b_0 \ge 0, \tag{7.1}
+\]
+with $k : (0,\infty) \to [0,\infty)$ nonincreasing, $\int_0^1 k < \infty$ and
+$\int_1^\infty k(t)/t\,dt < \infty$.
+\end{enumerate}
+\statusT
+\end{lemma}
+
+\begin{proof}
+\emph{(1) $\Rightarrow$ (2).} For $h > 0$ the difference quotient
+$s \mapsto \bigl(F(e^h s) - F(s)\bigr)/h$ lies in $\BF$, being a positive multiple of an
+element of $\BFz$. As $h \downarrow 0$ it converges pointwise to $sF'(s)$, since $F$ is smooth
+on $(0,\infty)$; the limit is therefore Bernstein by \ref{prop:bernstein-toolbox}(4).
+
+\emph{(2) $\Rightarrow$ (1).} $F(bs) - F(as) = \int_{\log a}^{\log b} B(e^u s)\,du$. Each
+integrand is Bernstein in $s$, so the finite mixture is Bernstein by
+\ref{prop:bernstein-toolbox}(4); vanishing at $\zp$ follows by monotone convergence.
+
+\emph{(2) $\Leftrightarrow$ (3).} Write $F(s) = b_0 s + \int (1 - e^{-st})\,\nu(dt)$, with no
+killing term because $F(\zp) = 0$ (\ref{prop:bernstein-toolbox}(3)), so that
+\[
+  B(s) = s F'(s) = b_0 s + \int_0^\infty s\,t\, e^{-st}\, \nu(dt).
+\]
+Note $B(\zp) = 0$, since $0 \le sF'(s) \le F(s)$ by concavity.
+
+Suppose $\nu(dt) = k(t)\,t^{-1}dt$ with $k$ nonincreasing. Write $k(t) = \rho\bigl((t,\infty)\bigr)$
+for the positive measure $\rho = -dk$; right-continuity of $k$ may be assumed, and
+$k(\infty) = 0$ is forced by $\int^\infty k(t)t^{-1}dt < \infty$. Tonelli then gives
+\[
+  \int_0^\infty s\, e^{-st}\, k(t)\, dt
+  = \int_0^\infty \rho(du) \int_0^u s\,e^{-st}\,dt
+  = \int_0^\infty \bigl(1 - e^{-su}\bigr)\,\rho(du),
+\]
+so $B(s) = b_0 s + \int (1 - e^{-su})\rho(du) \in \BFz$.
+
+Conversely, if $B \in \BF$ then $B \in \BFz$ by the remark above, so
+$B(s) = \beta s + \int (1 - e^{-su})\rho(du)$. Running the same computation backwards and
+invoking uniqueness of the Lévy--Khintchine triple (\ref{prop:bernstein-toolbox}(3))
+identifies $\beta = b_0$ and $\nu(dt) = k(t)t^{-1}dt$ with $k(t) = \rho((t,\infty))$
+nonincreasing.
+\end{proof}
+
+% draft: Remark 7.2
+\begin{remark}[the probabilistic reading]\label{rem:sato-reading}
+\uses{lem:selfdecomposable-exponents}
+Condition (3) is the classical characterization of the Laplace exponents of
+\emph{self-decomposable} laws on $[0,\infty)$, the laws of $L$-class; see
+\sscite{sato1999levy}, Ch.~3. Probabilistically, (7.1) together with the similarity structure
+below says that the kernels are the marginal laws of a \emph{self-similar additive process},
+a Sato subordinator: an increasing process $(T_{\tilde x})_{\tilde x \ge 0}$ with independent
+--- but not stationary --- increments, satisfying
+$T_{\sigma \tilde x} \stackrel{d}{=} \sigma\, T_{\tilde x}$.
+\end{remark}
+
+% draft: Theorem 7.3
+\begin{theorem}[Main theorem]\label{thm:main-characterization}
+\uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity,lem:additivity,thm:increments-bernstein,cor:strict-monotonicity,lem:covariance-laplace,lem:action-rigidity,prop:canonical-gauge,lem:selfdecomposable-exponents,prop:bernstein-toolbox,prop:laplace-continuity,lem:vanishing}
+A family $(\Phi_{x,y})_{0 \le x \le y}$ satisfies (A1)--(A8) and (ND) \textbf{iff} there exist
+an increasing bijection $\chi$ of $[0,\infty)$ --- the gauge --- and a function $F$ of the
+form (7.1) with $F \not\equiv 0$ such that
+\[
+  \Phi_{x,y} f = \mu_{x,y} * f, \qquad
+  \hat\mu_{x,y}(s) = \exp\Bigl[-\bigl(F(\chi(y)\,s) - F(\chi(x)\,s)\bigr)\Bigr].
+\]
+In particular, in the canonical gauge the scale-space kernels are
+\[
+  \phi_{x}(t) \;=\; \Lap^{-1}\Bigl[\, e^{-F(x\,s)} \,\Bigr](t),
+  \qquad F \text{ as in } (7.1),
+\]
+and the pair $(\chi, F)$ is unique up to the normalization $\chi(1) = 1$.
+\statusT\quad\emph{(the variant of \sscite{fagerstrom2005temporal}, Thm.~2, for the hemigroup
+axioms. Proved here, not cited: the 2005 theorem is the semigroup statement, recovered below
+as \ref{cor:semigroup-case}.)}
+\end{theorem}
+
+\begin{proof}
+\emph{($\Rightarrow$).} \ref{lem:convolution-representation}, \ref{lem:transform-continuity},
+\ref{lem:additivity}, \ref{thm:increments-bernstein}, \ref{cor:strict-monotonicity},
+\ref{lem:covariance-laplace}, \ref{lem:action-rigidity} and \ref{prop:canonical-gauge}
+together give the representation with $F = G(1,\cdot) \in \BFz$ and $F \not\equiv 0$. Every
+increment $F(\chi(y)s) - F(\chi(x)s)$ lies in $\BFz$ by \ref{thm:increments-bernstein}, and
+$\chi$ is onto $(0,\infty)$ by \ref{prop:canonical-gauge}, so condition~(1) of
+\ref{lem:selfdecomposable-exponents} holds for every pair $0 < a \le b$; that lemma then
+yields (7.1).
+
+\emph{($\Leftarrow$).} Let $F$ be of the form (7.1) with $F \not\equiv 0$, and work in the
+canonical gauge. For $0 \le a \le b$ put $g_{a,b}(s) := F(bs) - F(as)$, which lies in $\BFz$
+by \ref{lem:selfdecomposable-exponents}. Then $e^{-g_{a,b}}$ is completely monotone with value
+$1$ at $\zp$ by \ref{prop:bernstein-toolbox}(2), so by the Bernstein--Widder criterion
+\ref{prop:bernstein-toolbox}(1) it is the Laplace transform of a unique probability measure
+$\mu_{a,b}$ on $[0,\infty)$. Define $\Phi_{a,b} f := \mu_{a,b} * f$. Then:
+\begin{itemize}
+\item (A1)--(A5) hold by the converse direction of \ref{lem:convolution-representation}.
+\item (A6) holds because exponents add, $g_{a,b} + g_{b,c} = g_{a,c}$, and Laplace transforms
+determine measures (\ref{prop:laplace-uniqueness}).
+\item (A8) holds with $\Sact_\sigma x = \sigma x$, by \ref{lem:covariance-laplace}, since
+$\hat\mu_{\sigma a, \sigma b}(s) = \hat\mu_{a,b}(\sigma s)$.
+\item (ND) holds because $F$ is strictly increasing, by \ref{lem:vanishing} applied to $F$.
+\end{itemize}
+
+For (A7): if $(a_n, b_n) \to (a,b)$ then $\hat\mu_{a_n,b_n} \to \hat\mu_{a,b}$ pointwise, by
+continuity of $F$, hence $\mu_{a_n,b_n} \to \mu_{a,b}$ weakly by the continuity theorem for
+Laplace transforms (\ref{prop:laplace-continuity}). Weak convergence of probability measures
+implies $\mu_{a_n,b_n} * f \to \mu_{a,b} * f$ in $L^1$ for every $f \in X$: writing
+$\mu * f = \int \shift_r f\, \mu(dr)$ as an $X$-valued Bochner integral, the map
+$r \mapsto \shift_r f$ is bounded and continuous, weak convergence supplies tightness, and a
+standard $\varepsilon/3$ argument on a compact carrying mass $1 - \varepsilon$ concludes.
+
+\emph{Uniqueness of $(\chi, F)$ with $\chi(1) = 1$.} $F$ is recovered as $g_{0,1}$, and
+$\chi(x)$ as the unique $c$ with $g_{0,x} = F(c\,\cdot)$, which exists and is unique by strict
+monotonicity of $F$.
+\end{proof}
+
+% draft: Corollary 7.4
+\begin{corollary}[recovering the semigroup case]\label{cor:semigroup-case}
+\uses{thm:main-characterization,lem:covariance-laplace,prop:canonical-gauge}
+Assume in addition that the family is one-parameter: $\Phi_{x,y}$ depends only on $y - x$.
+Then, after the normalization $g_{0,1}(1) = 1$,
+\[
+  F(s) = s^{\alpha} \quad \text{for some } 0 < \alpha \le 1,
+\]
+i.e.\ the kernels are exactly the extremal stable densities of
+\sscite{fagerstrom2005temporal}, Thm.~2, together with the boundary case $\alpha = 1$ --- the
+pure delay $\mu_{0,x} = \delta_x$.
+\statusT
+\end{corollary}
+
+\begin{proof}
+Homogeneity gives $g_{x,y} = (y - x)\,g$ with $g := g_{0,1}$, and (6.1) becomes
+$(\Sact_\sigma y - \Sact_\sigma x)\, g(s) = (y - x)\, g(\sigma s)$. Hence $\Sact_\sigma$ is
+affine, and fixing $0$ it is linear: $\Sact_\sigma x = c(\sigma) x$ with
+$c(\sigma) g(s) = g(\sigma s)$.
+
+Then $c$ is a continuous multiplicative homomorphism of $(0,\infty)$, so $c(\sigma) =
+\sigma^\alpha$ by Cauchy's functional equation, as in \sscite{fagerstrom2005temporal},
+Lemma~2. Now $g(\sigma s) = \sigma^\alpha g(s)$ forces $g(s) = g(1) s^\alpha$, and the
+normalization makes $g(1) = 1$. Membership of $\BFz$ restricts $\alpha$ to $(0,1]$. The value
+$\alpha = 1$ gives $sF'(s) = s \in \BF$, so \ref{lem:selfdecomposable-exponents} admits it and
+it is not excluded by the present axioms.
+\end{proof}
+
+% draft: Remark 7.5
+\begin{remark}[the boundary case $\alpha = 1$ and the drift term]\label{rem:drift-boundary}
+\uses{cor:semigroup-case,lem:selfdecomposable-exponents}
+\sscite{fagerstrom2005temporal} excluded $\alpha = 1$ through the pointwise-continuity
+requirement on the kernel functions, which the deterministic delay $\delta(t - x)$ violates.
+Under \ref{def:cascade-family} the delay family --- and more generally the drift term $b_0 s$
+in (7.1), which shifts every kernel by $b_0 x$ --- is admissible.
+
+If that is undesired it is removed by one additional axiom: absolute continuity of the kernels
+for $x > 0$, or the requirement $\lim_{s\to\infty} F(s)/s = 0$, which says there is no
+deterministic front.
+\end{remark}
