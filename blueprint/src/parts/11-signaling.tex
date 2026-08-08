@@ -1,13 +1,331 @@
 % !TEX root = ../print.tex
-% Draft \S11 --- The signaling form (Theorem 4')
+% Draft \S11 --- The signaling form: Theorem 4'
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 465-566.
-% This file is chapter 11 --- The signaling form (Theorem 4') of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 465-565.
+% Chapter 11 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: def:standing-hypothesis, lem:mellin-data, def:inversion-operator, lem:symbol-uniqueness, lem:memory-fractional-integrals, thm:signaling-form [T]; Examples 11.8-11.10, Remarks 11.6/11.7/11.11
+% Theorem 4'. The chapter leaves the Laplace world for the Mellin calculus on the
+% multiplicative group -- and, as \ref{rem:wendel} anticipated, there is no Wendel theorem to
+% appeal to once the group is (0,infty) under multiplication. The inversion operator has to be
+% built, and \ref{lem:symbol-uniqueness} is what earns the definite article in "the" inversion.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% ONE DELIBERATE GAP IN THE GRAPH. The standing hypothesis (H) is UNNUMBERED in the draft, and
+% is left unnumbered here: making it a node would take 11.1 and shift every number in the
+% chapter, which is the one thing this transcription does not trade away. The cost is real and
+% is recorded rather than hidden -- (H) is a genuine hypothesis of 11.1, 11.4 and 11.5, and
+% that dependency now lives in the statement text ("Assume (H)") instead of in a \uses edge.
+% A reader auditing what Theorem 4' rests on must read the hypothesis, not only the graph.
+%
+% A12 sits on \ref{def:inversion-operator} rather than on the theorem: the definition is what
+% asserts that the contour integral recovers anything, and that is the cited fact. Note the
+% ledger's correction -- the draft cited Samko-Kilbas-Marichev here, which gives Mellin
+% inversion only as an unhypothesized display; the anchor is Widder Thm. 9a, and the draft has
+% been corrected to match.
+
+Theorem~4 of \sscite{fagerstrom2005temporal} inverts the scale-Cauchy problem into an
+evolution \emph{in time} over the memory line: $\partial_t u = D^{1/\alpha}_{x,-} u$ with
+boundary data $u(t, 0) = f(t)$ and $u(0, x) = 0$ --- the signaling problem. The operator there
+is translation-invariant in $x$, which is available only in the homogeneous (semigroup) case.
+This chapter constructs the general inversion.
+
+The structural observation that replaces homogeneity is this: writing $H := e^{-F}$, the
+Laplace-domain profiles of the field,
+\[
+  \hat u(s, x) = \hat f(s)\, H(sx),
+\]
+are \emph{dilates of a single profile} $H$, with the eigenvalue $s$ appearing as the dilation
+parameter. Operators diagonal on dilation families are the subject of multiplicative harmonic
+analysis, so the inversion operator lives in the \textbf{Mellin calculus} --- the
+multiplicative-group counterpart of the Wendel step of Chapter~4 on the additive group.
+
+Throughout we work in the canonical gauge, so that $\mu_{0,x}$ is the law of $x\,T_1$ with
+$\Ex[e^{-sT_1}] = H(s)$; we write $\tilde g(z) := \int_0^\infty x^{z-1} g(x)\,dx$ for the
+Mellin transform, $\theta := x\,\partial_x$ for the Euler operator, and
+$(I^z f)(t) := \tfrac{1}{\Gamma(z)}\int_0^t (t-r)^{z-1} f(r)\,dr$ for the Riemann--Liouville
+integral of complex order $z$, $\operatorname{Re} z > 0$ (\sscite{samko1993fractional}).
+
+\textbf{Standing hypothesis (H).} $F(\infty) = \infty$ --- equivalently $b_0 > 0$ or
+$\int_0^\infty k(t)\,t^{-1}dt = \infty$, i.e.\ no atom of the kernels at zero delay --- and
+\[
+  z_* \;:=\; \sup\bigl\{\, \zeta > 0 :\ \Ex\bigl[T_1^{-\zeta}\bigr] < \infty \,\bigr\} \;>\; 1 .
+\]
+The second condition is equivalent to $\int_0^\infty e^{-F(s)}\,ds < \infty$. It holds with
+$z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of
+\ref{prop:bessel-family}; for the Gamma family $z_* = \gamma$, so (H) requires $\gamma > 1$
+there. The construction extends below $z_* = 1$ by meromorphic continuation, which we do not
+pursue.
+
+% draft: Lemma 11.1
+\begin{lemma}[Mellin data of the profile]\label{lem:mellin-data}
+\uses{thm:main-characterization,prop:moments}
+Under (H), for $0 < \operatorname{Re} z < z_*$,
+\[
+  \tilde H(z) \;=\; \Gamma(z)\;\Ex\bigl[T_1^{-z}\bigr],
+\]
+analytic on the strip, with
+$|\tilde H(c + i\tau)| \le \Ex[T_1^{-c}]\,|\Gamma(c+i\tau)|$, hence absolutely integrable on
+every vertical line of the strip. Define the \emph{inversion symbol}
+\[
+  B(-z) \;:=\; \frac{\tilde H(z+1)}{\tilde H(z)}
+  \;=\; z\,\frac{\Ex\bigl[T_1^{-z-1}\bigr]}{\Ex\bigl[T_1^{-z}\bigr]},
+  \qquad 0 < \operatorname{Re} z < z_* - 1,
+\]
+meromorphic on the strip, with poles only at the isolated zeros of $\tilde H$.
+\statusT
+\end{lemma}
+
+\begin{proof}
+By Tonelli,
+\[
+  \tilde H(z) = \int_0^\infty s^{z-1}\,\Ex[e^{-sT_1}]\,ds
+  = \Ex\Bigl[\int_0^\infty s^{z-1}e^{-sT_1}ds\Bigr]
+  = \Ex[T_1^{-z}]\,\Gamma(z).
+\]
+Finiteness on the strip is the definition of $z_*$ together with
+$|T_1^{-z}| = T_1^{-\operatorname{Re}z}$, which also gives the stated bound; and
+$|\Gamma(c+i\tau)|$ decays super-polynomially in $\tau$, so the bound is integrable on vertical
+lines. Analyticity is standard. Finally $\tilde H \not\equiv 0$, so its zeros are isolated and
+$B$ is meromorphic with poles only there.
+\end{proof}
+
+% draft: Definition 11.2
+\begin{definition}[the inversion operator]\label{def:inversion-operator}
+\uses{lem:mellin-data,def:cascade-family}
+Fix $c \in (0, z_* - 1)$. For $g$ such that $\tilde g$ is defined on the line
+$\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ is absolutely integrable there, set
+\[
+  \bigl(A g\bigr)(x) \;:=\; \frac{1}{x}\cdot \frac{1}{2\pi i}\int_{(c)} x^{-z}\, B(-z)\,\tilde g(z)\,dz
+  \;=\; \Bigl(\frac{1}{x}\,B(\theta)\,g\Bigr)(x),
+\]
+the second expression being the functional-calculus reading, the Euler operator having Mellin
+symbol $-z$. Equivalently, at the transform level,
+$\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$. Note the covariant scaling: $A$ commutes with
+dilations up to the weight $x^{-1}$, i.e.\ it scales like $\partial_t$ under
+$(t, x) \mapsto (\sigma t, \sigma x)$, as (A8) requires of any inversion.
+\statusA\quad\ledger{A12}\quad\emph{(Mellin inversion on a line of absolute convergence;
+\sscite{widder1941laplace}, Ch.~VI, \S9, Thm.~9a. Cited, not reproven here.
+\textbf{Assignment.} \ledger{A12} carries exactly the step that makes this a definition of an
+operator rather than of an integral: that absolute integrability on the line
+$\operatorname{Re} z = c$ is sufficient for the contour integral to recover $B(\theta)g$.
+Everything else is \textbf{[T]} --- the symbol $B$ and its strip come from
+\ref{lem:mellin-data}, the transform-level identity is a change of variable, and the covariance
+is a computation. The ledger records a correction to the draft here: it cited
+\sscite{samko1993fractional} for this, which states Mellin inversion only as an unhypothesized
+display, equation~(1.113); Widder states it with the absolute-convergence hypothesis that is
+exactly the one imposed above.)}
+\end{definition}
+
+% draft: Lemma 11.3
+\begin{lemma}[uniqueness of the symbol]\label{lem:symbol-uniqueness}
+\uses{lem:mellin-data,def:inversion-operator}
+If two operators of the form $x^{-1}B_1(\theta)$ and $x^{-1}B_2(\theta)$ both satisfy
+$A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is
+the unique inversion within the covariant Mellin class.
+\statusT
+\end{lemma}
+
+\begin{proof}
+Evaluating both operators on the profiles and taking Mellin transforms gives
+$B_1(-z)\,s^{-z}\tilde H(z) = B_2(-z)\,s^{-z}\tilde H(z)$ on the line. By
+\ref{lem:mellin-data}, $\tilde H \ne 0$ off an isolated set, so $B_1 = B_2$ almost everywhere
+on the line, hence everywhere on the strip by meromorphy.
+\end{proof}
+
+% draft: Lemma 11.4
+\begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
+\uses{lem:mellin-data,thm:main-characterization,lem:delay-core}
+Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
+and $1 < \operatorname{Re} z < z_*$,
+\[
+  \widetilde{u(t, \cdot)}(z) \;=\; \int_0^\infty x^{z-1}\, u(t, x)\,dx
+  \;=\; \tilde H(z)\,\bigl(I^{z} f\bigr)(t),
+\]
+absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ with
+$I^z f$ replaced by $I^z f' = I^{z-1} f$.
+\statusT
+\end{lemma}
+
+\begin{proof}
+In the canonical gauge $u(t, x) = \Ex\bigl[f(t - x T_1)\bigr]$. Tonelli applies, since for
+$c = \operatorname{Re} z > 1$,
+$\Ex[T_1^{-c}]\int_0^t y^{c-1}|f(t-y)|\,dy \le \Ex[T_1^{-c}]\, t^{c-1}\|f\|_1 < \infty$, and
+gives
+\[
+  \int_0^\infty x^{z-1}\,\Ex\bigl[f(t - xT_1)\bigr]\,dx
+  \;=\; \Ex\bigl[T_1^{-z}\bigr]\int_0^t y^{z-1} f(t - y)\,dy
+  \;=\; \Ex\bigl[T_1^{-z}\bigr]\,\Gamma(z)\,(I^z f)(t),
+\]
+which is the claim by \ref{lem:mellin-data}. For $f \in \core$ we have
+$\partial_t u(t, x) = \Ex[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1} f$ using
+$f(0) = 0$.
+\end{proof}
+
+% draft: Theorem 11.5
+\begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
+\uses{lem:mellin-data,def:inversion-operator,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
+Assume (H) and work in the canonical gauge. Then:
+\begin{enumerate}
+\item \emph{(Eigenfunctions.)} For every $s > 0$ the profile $H(s\,\cdot)$ lies in the domain
+of \ref{def:inversion-operator} for every $c \in (0, z_*-1)$, and
+\[
+  A\bigl[H(s\,\cdot)\bigr](x) \;=\; s\, H(sx), \qquad x > 0 .
+\]
+\item \emph{(The field solves the signaling problem.)} Let $f \in \core$ and
+$u(\cdot, x) := \Phi_{0,x} f$. Then $u$ is causal in $t$ with $u(\cdot, x) \to f$ in $\Xz$ as
+$x \downarrow 0$, and
+\begin{itemize}
+\item Laplace form: for every $s > 0$, $A\bigl[\hat u(s, \cdot)\bigr] = s\,\hat u(s, \cdot)$,
+with $\hat u(s, \zp) = \hat f(s)$;
+\item time-domain (Mellin) form: for every $t > 0$ and $1 < \operatorname{Re} z < z_*$,
+\[
+  \widetilde{\partial_t u(t, \cdot)}(z) \;=\; B(1 - z)\;\widetilde{u(t, \cdot)}(z - 1),
+\]
+that is, $\partial_t u = A\,u$ read through the Mellin transform in $x$.
+\end{itemize}
+\item \emph{(Uniqueness.)} $A$ is the unique operator in the covariant Mellin class with
+property (1), hence with property (2).
+\end{enumerate}
+\statusT\quad\emph{(the hemigroup analogue of \sscite{fagerstrom2005temporal}, Thm.~4, whose
+translation-invariant operator is recovered in \ref{ex:stable-signaling} as an accident of
+homogeneity. Proved here, not cited.)}
+\end{theorem}
+
+\begin{proof}
+(1) $\widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so
+$B(-z)\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z+1)$, which is absolutely integrable on the
+line $(c)$ by \ref{lem:mellin-data}; no pole of $B$ intervenes, the product containing no
+division. Then
+\[
+  A\bigl[H(s\cdot)\bigr](x)
+  = \frac{1}{x}\cdot\frac{1}{2\pi i}\int_{(c)} (xs)^{-z}\,\tilde H(z+1)\,dz
+  = \frac{1}{x}\,(xs)\cdot\frac{1}{2\pi i}\int_{(c+1)} (xs)^{-w}\,\tilde H(w)\,dw
+  = s\,H(sx),
+\]
+by the substitution $w = z + 1$ and Mellin inversion on the line
+$c + 1 \in (1, z_*)$, valid since $\tilde H$ is integrable there and $H$ is continuous.
+
+(2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied
+to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form combines
+\ref{lem:memory-fractional-integrals} with \ref{lem:mellin-data}:
+\[
+  B(1-z)\,\widetilde{u(t,\cdot)}(z-1)
+  = \frac{\tilde H(z)}{\tilde H(z-1)}\cdot\tilde H(z-1)\,(I^{z-1}f)(t)
+  = \tilde H(z)\,(I^{z-1}f)(t)
+  = \widetilde{\partial_t u(t,\cdot)}(z).
+\]
+
+(3) is \ref{lem:symbol-uniqueness}.
+\end{proof}
+
+% draft: Remark 11.6
+\begin{remark}[reading of Lemma 11.4; embodiment]\label{rem:embodiment}
+\uses{lem:memory-fractional-integrals}
+\ref{lem:memory-fractional-integrals} gives the motivation of
+\sscite{fagerstrom2005temporal}, \S5, an exact form: at each instant $t$, the Mellin analysis
+of the memory line holds precisely the analytic family of Riemann--Liouville integrals
+$\{(I^z f)(t)\}$ of the \emph{past} signal, weighted by the negative delay-moments
+$\Ex[T_1^{-z}]$. The observer's embodiment of its past is fractional integration, with the
+admissible weightings classified by \ref{thm:main-characterization}.
+\end{remark}
+
+% draft: Remark 11.7
+\begin{remark}[classical interpretation; poles]\label{rem:poles}
+\uses{thm:signaling-form,lem:mellin-data}
+The time-domain equation in \ref{thm:signaling-form}(2) is stated at the level of Mellin
+transforms, and that is the honest general formulation: $B$ may have poles, at zeros of
+$\tilde H$, and polynomial growth along vertical lines, so $A u(t, \cdot)$ need not be given by
+an absolutely convergent integral for rough $f$. On the field the identity is nevertheless
+regular, the factor $\tilde H(z-1)$ cancelling every denominator.
+
+When the symbol $B$ is a \emph{polynomial}, $A$ is a local differential operator and the
+equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in Chapter~12,
+and of \ref{ex:bessel-quadratic} below.
+\end{remark}
+
+% draft: Example 11.8
+\begin{example}[extremal stable; recovering Theorem 4 of 2005]\label{ex:stable-signaling}
+\uses{prop:stable-family,lem:mellin-data,thm:signaling-form}
+For $F(s) = s^\alpha$ we have $\tilde H(z) = \Gamma(z/\alpha)/\alpha$ and
+\[
+  B(-z) \;=\; \frac{\Gamma\bigl(\tfrac{z+1}{\alpha}\bigr)}{\Gamma\bigl(\tfrac{z}{\alpha}\bigr)}
+  \;\sim\; \Bigl(\tfrac{z}{\alpha}\Bigr)^{1/\alpha} \quad (z \to \infty),
+\]
+a symbol of order $1/\alpha$. On the profiles $e^{-(sx)^\alpha}$ the right-sided Liouville
+derivative acts by $D^{1/\alpha}_{x,-} e^{-cx} = c^{1/\alpha} e^{-cx}$ with $c = s^\alpha$,
+i.e.\ it also produces the eigenvalue $s$; so the Mellin representative and the operator of
+\sscite{fagerstrom2005temporal}, Thm.~4, agree on the span of the field profiles. The
+translation-invariant representative is a coincidence of homogeneity; the Mellin
+representative is the one that survives in general.
+\end{example}
+
+% draft: Example 11.9
+\begin{example}[the Gamma family; scale-recursive form]\label{ex:gamma-signaling}
+\uses{prop:gamma-family,ex:gamma-recursive,def:inversion-operator}
+For $F(s) = \gamma \log(1+s)$ with $\gamma > 1$ we have
+$\tilde H(z) = \Gamma(z)\Gamma(\gamma - z)/\Gamma(\gamma)$ and $B(-z) = z/(\gamma - 1 - z)$,
+i.e.
+\[
+  B(\theta) = -\,\theta\,\bigl(\theta + \gamma - 1\bigr)^{-1},
+  \qquad A = -\,\frac{1}{x}\,\theta\,\bigl(\theta + \gamma - 1\bigr)^{-1},
+\]
+a \emph{rational} Mellin symbol --- the memory-line mirror of the time-side resolvent
+$\gamma\,\partial_t(1 + x\partial_t)^{-1}$ of \ref{ex:gamma-recursive}. Explicitly,
+$w := (\theta + \gamma - 1)^{-1} u$ solves $x\,w_x + (\gamma-1)w = u$, with the regular-at-$0$
+solution
+\[
+  w(t, x) = x^{-(\gamma-1)}\int_0^x y^{\gamma - 2}\, u(t, y)\,dy,
+\]
+so the time evolution at scale $x$ is computed from the field at \emph{finer} scales by a
+single weighted average --- scale-recursive, one-sided from the boundary, matching the causal
+architecture of the time side.
+\end{example}
+
+% draft: Example 11.10
+\begin{example}[parabolic gauge; the Bessel family is the quadratic case]\label{ex:bessel-quadratic}
+\uses{prop:bessel-family,rem:gauge-freedom,def:inversion-operator,rem:poles}
+In the $\alpha$-gauge (similarity variable $x^{1/\alpha} s$; \ref{rem:gauge-freedom}) the
+profiles are $H(x^{1/\alpha}s)$, the Euler operator acts on the profile through
+$\alpha^{-1}\theta$, and the inversion becomes $A = x^{-1/\alpha}\,B(\alpha\,\theta)$. Take the
+parabolic gauge $\alpha = \tfrac12$ and the Bessel-K family of \ref{prop:bessel-family},
+$T_1 = 1/(2\gamma_a)$: then $\Ex[T_1^{-z}] = 2^z\,\Gamma(a + z)/\Gamma(a)$, so
+\[
+  B(-z) = 2z(z + a), \qquad
+  A = x^{-2}\Bigl(\tfrac{\theta^2}{2} - a\theta\Bigr)
+  = \tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x, \quad \beta = \tfrac12 - a .
+\]
+The symbol is a \emph{quadratic polynomial}, so $A$ is local: the signaling form of the
+Bessel-K scale space is exactly the Bessel diffusion-with-drift medium, and
+\ref{thm:signaling-form}(2) becomes the classical signaling problem
+$\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$ with $u(t,0) = f(t)$ and $u(0,x) = 0$.
+\end{example}
+
+% draft: Remark 11.11
+\begin{remark}[Markov media]\label{rem:markov-media}
+\uses{thm:signaling-form,ex:stable-signaling,ex:gamma-signaling}
+Within the class of \ref{thm:signaling-form}, the operators $A$ that additionally satisfy the
+positive maximum principle --- i.e.\ generate a sub-Markov process on the memory half-line, so
+that the medium is a physical transport medium --- are, after the logarithmic substitution
+$x = e^\xi$, exactly those whose symbol $B$ is the Laplace exponent of a Lévy process. By the
+Lamperti correspondence (\sscite{lamperti1972semi}) these media are positive self-similar
+Markov processes absorbed at the boundary, and the kernels are the boundary-arrival times
+$T_x \stackrel{d}{=}$ absorption time from depth $x$.
+
+The spectral orientation of the jumps is \emph{not} constrained. For spectrally positive media
+the process creeps downward through every level and the hemigroup (A6) holds \emph{pathwise},
+the kernels being genuine level-passage times; but media with downward jumps are also
+admissible, the factorization then holding in law though not pathwise, being inherited from
+the exponent $F$ rather than from the paths.
+
+The Gamma family is the standard example: unfolding \ref{ex:gamma-signaling}, its medium is
+the multiplicative jump process that waits at scale $x$ an $\mathrm{Exp}(\text{mean } x)$ time
+and jumps to $\sigma x$ with $\sigma \sim \mathrm{Beta}(\gamma-1, 1)$, reaching the boundary by
+accumulation of jumps; a first-jump computation confirms
+$\Ex_x[e^{-s\tau_0}] = (1+sx)^{-\gamma}$.
+
+A necessary condition in all cases is quadratic symbol growth, $B(\theta) = O(\theta^2)$; by
+\ref{ex:stable-signaling} the homogeneous members with $\alpha < \tfrac12$, of symbol order
+$1/\alpha > 2$, admit \emph{no} Markov medium, although \ref{thm:signaling-form} always
+supplies the analytic signaling form --- the operator exists, the process does not. The
+classification of which admissible $F$ are Markov-realizable is the memory-line inverse
+problem, and is taken up with Theorem~5$'$.
+\end{remark}
