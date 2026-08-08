@@ -1,13 +1,102 @@
 % !TEX root = ../print.tex
 % Draft \S4 --- Convolution representation
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 93-120.
-% This file is chapter 4 --- Convolution representation of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 93-119.
+% Chapter 4 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: lem:convolution-representation [T], lem:transform-continuity [T]
+% The first two \textbf{[T]} nodes carrying real proofs. Both are proved from scratch: this is
+% the Wendel step (translation-invariant operators on $L^1$ are convolutions), and \S1 and \S11
+% of the draft name it as such, but the argument here is self-contained -- an approximate
+% identity plus a weak-* subnet -- and cites nothing. \sscite{wendel1952left} is therefore
+% mentioned in the remark for provenance, NOT as a \ledger{} interface: nothing here is taken
+% on trust.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% Banach--Alaoglu and Riesz--Markov (the weak-* extraction) are likewise held [T]. They are
+% deliberately not ledger entries -- Mathlib has both, so the Lean development can prove this
+% rather than assume it, which is exactly the verified-core/axiomatized-analysis split working
+% as intended.
+
+% draft: Lemma 4.1
+\begin{lemma}[representation]\label{lem:convolution-representation}
+\uses{def:cascade-family,prop:laplace-uniqueness}
+Under (A1)--(A5), for each pair $x \le y$ there is a unique probability measure $\mu_{x,y}$ on
+$[0,\infty)$ with
+\[
+  \Phi_{x,y} f = \mu_{x,y} * f, \qquad f \in X,
+\]
+and conversely every such measure defines an operator satisfying (A1)--(A5).
+\statusT
+\end{lemma}
+
+\begin{proof}
+Fix $(x,y)$ and write $\Phi = \Phi_{x,y}$. Choose an approximate identity
+$\rho_\varepsilon \in X_+$ with $\int \rho_\varepsilon = 1$ and
+$\supp \rho_\varepsilon \subseteq [0,\varepsilon]$. By (A4) and (A5),
+$h_\varepsilon := \Phi \rho_\varepsilon \in X_+$ with $\int h_\varepsilon = 1$; by (A3),
+$h_\varepsilon$ vanishes a.e.\ on $(-\infty, 0)$. Regarding $h_\varepsilon\,dt$ as elements of
+the unit ball of $M(\RR) = C_0(\RR)^*$, extract a subnet converging weak-$*$ to some
+$\mu \ge 0$ with $\|\mu\| \le 1$ and $\supp \mu \subseteq [0,\infty)$.
+
+For $f, g \in X$ we have $f * g = \int \shift_r g\, f(r)\,dr$ as a Bochner integral, so
+(A1)--(A2) give $\Phi(f * g) = f * \Phi g$. Hence for $f \in C_c(\RR)$,
+\[
+  \Phi(f * \rho_\varepsilon) = f * h_\varepsilon
+  \xrightarrow{\ \varepsilon \to 0\ } f * \mu \quad \text{pointwise},
+\]
+using $f(t - \cdot) \in C_0(\RR)$ and weak-$*$ convergence, while
+$\Phi(f * \rho_\varepsilon) \to \Phi f$ in $X$ by (A1). Therefore $\Phi f = \mu * f$ for
+$f \in C_c$, and by density for all $f \in X$.
+
+Finally, for $f \in X_+$, Tonelli gives $\int \mu * f = \|\mu\|\int f$, so (A5) forces
+$\|\mu\| = 1$. Uniqueness holds because a finite measure on $[0,\infty)$ is determined by its
+Laplace transform (\ref{prop:laplace-uniqueness}) and $\widehat{\mu * f} = \hat\mu\,\hat f$
+with $\hat f \not\equiv 0$ for some $f \in X_+$. For the converse, a probability measure
+$\mu$ on $[0,\infty)$ makes $f \mapsto \mu * f$ bounded with norm $\le 1$ by Young's
+inequality (A1), translation-commuting because convolution is (A2), support-preserving on
+$[t_0,\infty)$ because $\supp\mu \subseteq [0,\infty)$ (A3), positive (A4), and mass-preserving
+by Tonelli (A5).
+\end{proof}
+
+% draft: Lemma 4.2
+\begin{lemma}[continuity of transforms]\label{lem:transform-continuity}
+\uses{def:cascade-family,lem:convolution-representation}
+Under (A1)--(A5) and (A7), the function
+\[
+  g_{x,y}(s) := -\log \hat\mu_{x,y}(s) \in [0,\infty), \qquad s \ge 0,
+\]
+is well defined, and $(x,y) \mapsto g_{x,y}(s)$ is continuous for each $s \ge 0$; moreover
+$g_{x,y}(\zp) = 0$ and $s \mapsto g_{x,y}(s)$ is continuous.
+\statusT
+\end{lemma}
+
+\begin{proof}
+$\hat\mu(s) \in (0, 1]$ for a probability measure on $[0,\infty)$, so $g$ is well defined and
+nonnegative; $\hat\mu(s) \to 1$ as $s \downarrow 0$ by dominated convergence, and
+$s \mapsto \hat\mu(s)$ is continuous.
+
+For continuity in $(x,y)$: fix a probability density $\rho \in X_+$ supported in $[0,\infty)$,
+so that $\hat\rho(s) > 0$. If $(x_n, y_n) \to (x,y)$, then by (A7)
+$\mu_{x_n,y_n} * \rho \to \mu_{x,y} * \rho$ in $X$; since all functions involved are supported
+in $[0,\infty)$ and $|e^{-st}| \le 1$ there,
+\[
+  \bigl|\hat\mu_{x_n,y_n}(s)\,\hat\rho(s) - \hat\mu_{x,y}(s)\,\hat\rho(s)\bigr|
+  \le \|\mu_{x_n,y_n} * \rho - \mu_{x,y} * \rho\|_1 \longrightarrow 0,
+\]
+and dividing by $\hat\rho(s) > 0$ gives the claim.
+\end{proof}
+
+% Not in the draft as a numbered item; the observation is made in its \S1 and \S11 prose.
+\begin{remark}[what the representation is, and what it is not]\label{rem:wendel}
+\uses{lem:convolution-representation}
+\ref{lem:convolution-representation} is the Wendel step
+(\sscite{wendel1952left}: the translation-invariant operators on $L^1$ of a group are exactly
+convolution by a measure), specialised to $\RR$ and sharpened by (A3)--(A5) to a probability
+measure carried by $[0,\infty)$. It is proved here rather than cited, so nothing in this
+chapter rests on the trust boundary: the weak-$*$ extraction is Banach--Alaoglu together with
+the Riesz--Markov identification $M(\RR) = C_0(\RR)^*$, both of which the formalisation can
+discharge outright.
+
+The multiplicative-group counterpart of this step, for the scale variable rather than time,
+is what Chapter~11 has to build by hand; there is no Wendel theorem to appeal to once the
+group is $(0,\infty)$ under multiplication and the operator is required only to be covariant.
+\end{remark}
