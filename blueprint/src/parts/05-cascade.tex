@@ -1,13 +1,110 @@
 % !TEX root = ../print.tex
-% Draft \S5 --- The cascade
+% Draft \S5 --- The cascade: additivity and infinite divisibility
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 121-160.
-% This file is chapter 5 --- The cascade of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 121-159.
+% Chapter 5 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: lem:additivity [T], thm:increments-bernstein [T], cor:strict-monotonicity [T]
+% \ref{thm:increments-bernstein} is the key technical step of \S\S4-6 and the single place
+% where \ref{prop:bernstein-toolbox}(4) -- ledger A4, closure of BF under pointwise limits --
+% actually earns its keep. Everything else in the chapter is bookkeeping around it.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% Worth stating plainly for the formalisation: the null-array argument below is ELEMENTARY.
+% It needs the inequality 0 <= u - (1 - e^{-u}) <= u^2/2, uniform continuity on a compact, and
+% closure of the cone. It does not need a general triangular-array limit theorem, and it does
+% not need Bernstein--Widder. That is what makes M4 of the Lean ladder tractable.
+
+% draft: Lemma 5.1
+\begin{lemma}[additivity]\label{lem:additivity}
+\uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity}
+Under (A1)--(A7), $\mu_{x,z} = \mu_{y,z} * \mu_{x,y}$ for $x \le y \le z$, hence
+\[
+  g_{x,z}(s) = g_{x,y}(s) + g_{y,z}(s), \qquad g_{x,x} = 0.
+\]
+Consequently, with $G(x, s) := g_{0,x}(s)$,
+\[
+  g_{x,y}(s) = G(y, s) - G(x, s),
+\]
+where $G(0, \cdot) = 0$, $G(\cdot, s)$ is nondecreasing and continuous for each $s$, and
+$G(x, \zp) = 0$.
+\statusT
+\end{lemma}
+
+\begin{proof}
+Immediate from (A6), \ref{lem:convolution-representation} (under which composition of
+operators corresponds to convolution of measures), and \ref{lem:transform-continuity}. In
+detail: (A6) gives $\Phi_{y,z}\Phi_{x,y} = \Phi_{x,z}$, which by
+\ref{lem:convolution-representation} reads $\mu_{y,z} * (\mu_{x,y} * f) = \mu_{x,z} * f$ for
+all $f \in X$, so $\mu_{x,z} = \mu_{y,z} * \mu_{x,y}$ by the uniqueness clause there. Taking
+Laplace transforms turns convolution into multiplication and hence $-\log$ into addition,
+giving the additivity of $g$; $\Phi_{x,x} = \Id$ gives $\mu_{x,x} = \delta_0$ and so
+$g_{x,x} = 0$. Setting $x = 0$ defines $G$, and additivity gives
+$g_{x,y} = G(y,\cdot) - G(x,\cdot)$. Monotonicity in the first argument is the nonnegativity
+of $g_{x,y}$, continuity is \ref{lem:transform-continuity}, and $G(x,\zp) = 0$ is the
+corresponding clause there.
+\end{proof}
+
+\bigskip
+
+The next step upgrades the increments from ``exponents of probability measures'' to Bernstein
+functions. In the semigroup case this is trivial, since there $\mu_\tau = \mu_{\tau/n}^{*n}$
+exhibits every kernel as an $n$-fold convolution power and infinite divisibility is immediate.
+In the hemigroup case there is no such power: the increments over a partition need not be
+equal, or even comparable, and what replaces the argument is a null-array limit. On the half
+line it can be made elementary, and the proof below is the whole of it.
+
+% draft: Theorem 5.2
+\begin{theorem}[increments are Bernstein]\label{thm:increments-bernstein}
+\uses{def:cascade-family,lem:additivity,lem:transform-continuity,prop:bernstein-toolbox,def:bernstein-function}
+Under (A1)--(A7), $g_{x,y} \in \BFz$ for every $x \le y$.
+\statusT
+\end{theorem}
+
+\begin{proof}
+Fix $x < y$ and the uniform partition $t_i = x + \tfrac{i}{n}(y - x)$, $i = 0, \dots, n$.
+Write $\mu_i := \mu_{t_i, t_{i+1}}$ and $g_i := g_{t_i, t_{i+1}}$, so that by
+\ref{lem:additivity}
+\[
+  g_{x,y}(s) = \sum_{i=0}^{n-1} g_i(s) \qquad \text{for every } n.
+\]
+
+Fix $s > 0$. Since $G(\cdot, s)$ is continuous on the compact interval $[x, y]$ it is
+uniformly continuous there, so $m_n := \max_i g_i(s) \to 0$ as $n \to \infty$. Using
+$0 \le u - (1 - e^{-u}) \le u^2/2$ for $u \ge 0$,
+\[
+  \Bigl|\, g_{x,y}(s) - \sum_{i}\bigl(1 - e^{-g_i(s)}\bigr) \Bigr|
+  \;\le\; \tfrac12 \sum_i g_i(s)^2
+  \;\le\; \tfrac{m_n}{2}\, g_{x,y}(s)
+  \;\longrightarrow\; 0 .
+\]
+
+On the other hand, with $\Pi_n := \sum_i \mu_i \in \Mplus([0,\infty))$, a finite measure,
+\[
+  \sum_i \bigl(1 - e^{-g_i(s)}\bigr) = \sum_i \bigl(1 - \hat\mu_i(s)\bigr)
+  = \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\Pi_n(dt),
+\]
+which is a Bernstein function of $s$ vanishing at $\zp$ --- it is in Lévy--Khintchine form
+with finite Lévy measure $\Pi_n$ and no drift or killing term.
+
+Hence $g_{x,y}$ is a finite pointwise limit of elements of $\BFz$, so $g_{x,y} \in \BF$ by
+\ref{prop:bernstein-toolbox}(4), and $g_{x,y}(\zp) = 0$ by \ref{lem:transform-continuity}.
+The case $x = y$ is $g_{x,x} = 0 \in \BFz$.
+\end{proof}
+
+% draft: Corollary 5.3
+\begin{corollary}[strict monotonicity]\label{cor:strict-monotonicity}
+\uses{def:cascade-family,thm:increments-bernstein,lem:vanishing,lem:additivity}
+Assume in addition (ND). Then for every $s > 0$ and $x < y$,
+\[
+  G(y, s) - G(x, s) = g_{x,y}(s) > 0,
+\]
+i.e.\ $G(\cdot, s)$ is strictly increasing for every $s > 0$.
+\statusT
+\end{corollary}
+
+\begin{proof}
+By (ND), $\Phi_{x,y} \ne \Id$, so $\mu_{x,y} \ne \delta_0$ by the uniqueness clause of
+\ref{lem:convolution-representation}, and therefore $g_{x,y} \not\equiv 0$. By
+\ref{thm:increments-bernstein}, $g_{x,y} \in \BFz$; by \ref{lem:vanishing} a member of $\BFz$
+vanishing at a single point of $(0,\infty)$ vanishes identically, so $g_{x,y}(s) > 0$ for all
+$s > 0$. The displayed identity is \ref{lem:additivity}.
+\end{proof}
