@@ -1,0 +1,45 @@
+name: Docs CI
+
+# Thin caller — the Tectonic builds, the orphan `artifacts` branch and the Cloudflare Pages
+# deploy live in the shared framework. This article owns its trigger (paths filters guard
+# private-repo Actions minutes) and its own Pages project.
+#
+# The paper build runs on blueprint/** too: theorem statements are single-sourced between
+# the two, so a blueprint edit must rebuild the paper.
+#
+# Three views are built and deployed to the Pages project: paper.pdf, blueprint.pdf, and the
+# plasTeX web blueprint at /blueprint/ — the only view that renders the \uses dependency
+# graph and the [T]/[A] status tags. `build_web` defaults to true; the web job needs neither
+# TeX nor graphviz (see the framework workflow's header for why). Locally the same three come
+# from `scripts/build-blueprint.sh`.
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - "paper/**"
+      - "blueprint/**"
+      - ".github/workflows/docs.yml"
+  pull_request:
+    paths:
+      - "paper/**"
+      - "blueprint/**"
+      - ".github/workflows/docs.yml"
+  workflow_dispatch:
+
+# `contents: write` because the called workflow's publish job force-pushes the built PDFs
+# to the orphan `artifacts` branch. A caller cannot grant LESS than a called workflow
+# requests: with `contents: read` here the whole run fails as a startup_failure with only
+# "This run likely failed because of a workflow file issue" and no logs.
+permissions:
+  contents: write
+
+jobs:
+  docs:
+    uses: danielfagerstrom/article-kit/.github/workflows/docs.yml@main
+    with:
+      pages_project: hcs-docs
+      dry_run: ${{ github.event_name == 'pull_request' }}
+    secrets:
+      CLOUDFLARE_API_TOKEN: ${{ secrets.CLOUDFLARE_API_TOKEN }}
+      CLOUDFLARE_ACCOUNT_ID: ${{ secrets.CLOUDFLARE_ACCOUNT_ID }}

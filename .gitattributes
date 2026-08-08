@@ -1,0 +1,12 @@
+# Executable text must stay LF, whatever the checkout platform does.
+#
+# This machine has core.autocrlf=true, so without these rules git rewrites shell scripts to
+# CRLF on checkout — and a CRLF shebang line can leave `#!/bin/sh` unresolvable, which
+# presents as the hook or script silently not running rather than as an error anyone can
+# read. (`scale-space-foundations/.githooks/post-commit` is CRLF today for exactly this
+# reason; worth the same guard there.)
+*.sh        text eol=lf
+.githooks/* text eol=lf
+
+# Workflow files are read by the runner on Linux; keep them LF for the same reason.
+*.yml       text eol=lf

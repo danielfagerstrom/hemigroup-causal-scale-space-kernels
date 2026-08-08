@@ -47,12 +47,38 @@ deliverable, and a page that says "the article" cannot say which it means.
 ## Commands
 
 ```bash
+scripts/build-blueprint.sh    # all four views, in order (~25s) — use at a round boundary
+scripts/build-blueprint.sh --quick   # skip the web build (~13s) — the inner loop
+scripts/build-blueprint.sh --serve   # then serve the dependency graph on :8000
+
 linkage check                 # every blueprint / Lean / ledger / paper edge
 linkage manifest              # project blueprint-manifest-hcs.json for the hub
 linkage demand                # unproved nodes the hub's claims rest on
 cd Formalization && lake build
-cd blueprint/src && latexmk   # blueprint PDF
 ```
+
+Activate the post-commit hook once per clone — it re-emits `.manifest-preview.json` after
+any commit touching `blueprint/`, `Formalization/` or `scripts/`:
+
+```bash
+git config core.hooksPath .githooks
+```
+
+### The three views of the blueprint
+
+The same source renders three ways, and only the first two are built by CI:
+
+| View | Built by | Published at | Shows |
+|---|---|---|---|
+| `blueprint/src/print.pdf` | `latexmk`; CI via Tectonic | `/blueprint.pdf` | statements and proofs as typeset mathematics |
+| `blueprint/web/` | `plastex`; CI via the `web` job | `/blueprint/` | the same, plus the **dependency graph** and `[T]`/`[A]` tags |
+| `.manifest-preview.json` | `linkage manifest` | — (the hub's copy is CI-written) | what the hub transcludes, pandoc-rendered |
+
+The web view is the one to look at while transcribing — it is the only one that shows the
+`\uses` graph. It is deployed with the PDFs to this article's gated Cloudflare Pages project
+(`hcs-docs`), so the graph is a link one can send; `blueprint/web/` itself stays gitignored,
+because it is a build product. `scripts/build-blueprint.sh` keeps the three in step locally,
+and the shared `docs.yml` does the same in CI.
 
 The framework lives in [`article-kit`](https://github.com/danielfagerstrom/article-kit);
 `linkage.toml` binds this repo to it. CI needs an `ARTICLE_KIT_TOKEN` secret with

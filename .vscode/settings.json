@@ -1,0 +1,49 @@
+{
+  // ---------------------------------------------------------------------------------
+  // LaTeX Workshop -- previewing the blueprint PDF.
+  //
+  // The problem this solves: the files you actually edit (blueprint/src/parts/*.tex)
+  // are FRAGMENTS. They have no \documentclass and no \begin{document}, so the
+  // extension has to find a root document for them. Three files in this repo carry
+  // \documentclass, and TWO of them \input the parts transitively:
+  //
+  //   blueprint/src/print.tex   the pdflatex driver -- the one to preview
+  //   blueprint/src/web.tex     the plasTeX driver -- NOT built by pdflatex; it is
+  //                             processed by `plastex`, and previewing it is meaningless
+  //   paper/main.tex            the monograph stub, its own root
+  //
+  // print.tex and web.tex both reach the parts through content.tex, so root detection
+  // is ambiguous and the extension may pick web.tex -- or give up and render nothing.
+  //
+  // Belt: every article-owned fragment carries a `% !TEX root = ...` magic comment on
+  // line 1, which LaTeX Workshop honours ahead of any search. Braces: the exclude below
+  // removes the ambiguity for anything that lacks one.
+  // ---------------------------------------------------------------------------------
+
+  // Drop web.tex from root-file search. paper/main.tex stays searchable so it remains
+  // its own root when opened; it does not \input the blueprint parts, so it cannot be
+  // mistaken for theirs.
+  "latex-workshop.latex.search.rootFiles.exclude": ["**/web.tex"],
+
+  // With the ambiguity gone there is nothing to ask about.
+  "latex-workshop.latex.rootFile.doNotPrompt": true,
+
+  // Build settings live in blueprint/src/latexmkrc ($pdf_mode = 1, -synctex=1,
+  // @default_files = ('print.tex')) and are NOT duplicated here -- latexmk reads that
+  // file itself, and a second source of truth is how the two drift. synctex is on, so
+  // ctrl+click in the PDF jumps to the source line and vice versa.
+
+  // Off on purpose. Transcribing a node means many saves mid-statement, and each one
+  // would kick off a full rebuild that fails on half-written LaTeX. Build deliberately
+  // with the extension's Build command.
+  "latex-workshop.latex.autoBuild.run": "never",
+
+  // Artifacts land next to print.tex. .gitignore already covers every extension latexmk
+  // emits here (aux, log, out, toc, pdf, fls, fdb_latexmk, synctex.gz), so there is no
+  // need for a separate outDir -- and pointing one elsewhere would break the latexmkrc.
+  "latex-workshop.latex.autoClean.run": "never",
+
+  // The blueprint deliberately starts at Chapter 2 (chapter number == draft section
+  // number; see content.tex). Not an error, and not something to "fix" in the outline.
+  "latex-workshop.view.pdf.viewer": "tab"
+}

@@ -1,0 +1,28 @@
+#!/bin/sh
+# Re-emit the blueprint manifest after any commit that touches what it projects
+# (blueprint labels, Lean decls, article scripts) — to the article-local, gitignored
+# PREVIEW path, not the vault. The hub's blueprint-manifest-hcs.json is a tracked file
+# written ONLY by CI (the shared manifest workflow); a local emit into the vault would
+# dirty the hub tree and could be swept up by its auto-commit sync. Check un-pushed work
+# against the preview with:
+#     wiki lint --manifest <article>/.manifest-preview.json
+# See LINKAGE.md § "The cross-repo channel". Activate once per clone with:
+#     git config core.hooksPath .githooks
+# Best-effort: never fails the commit.
+#
+# Deliberately NOT the full blueprint rebuild. The plasTeX web build takes ~19s against
+# ~6s for this, which is the difference between a hook you forget about and one you start
+# working around. Rebuild the other views explicitly:
+#     scripts/build-blueprint.sh
+
+# `-m --first-parent` so merge commits are diffed too (against the previous branch tip);
+# plain `diff-tree -r` emits nothing for a merge, which would silently skip the re-emit on
+# every merge to main.
+git diff-tree -m --first-parent --no-commit-id --name-only -r HEAD \
+    | grep -qE '^(blueprint/|Formalization/|scripts/)' || exit 0
+
+command -v linkage >/dev/null 2>&1 || exit 0
+
+linkage manifest .manifest-preview.json \
+    || echo "post-commit: manifest re-emit failed (run \`linkage manifest\` by hand)"
+exit 0
