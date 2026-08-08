@@ -1,13 +1,172 @@
 % !TEX root = ../print.tex
-% Draft \S6 --- Scale covariance
+% Draft \S6 --- Scale covariance: the similarity form
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 161-197.
-% This file is chapter 6 --- Scale covariance of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 161-196.
+% Chapter 6 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: lem:covariance-laplace [T], lem:action-rigidity [T], prop:canonical-gauge [T]; Remark 6.4
+% The chapter that turns "there is some action of the scaling group" into a coordinate. Its
+% two rigidity results are proved in the draft as single dense paragraphs -- Lemma 6.2 argues
+% four numbered claims in one, with the key monotonicity step inside an em-dash aside -- and
+% they are broken out here, statement by statement, with no change of content. That is the
+% one place in this chapter where the blueprint should read differently from the draft: this
+% is the argument a formalisation has to follow line by line, and the draft's compression is
+% the enemy of exactly that. The formalisation note singles out this gauge construction as
+% the most unglamorous stretch of the Lean ladder (its M5); the proofs below are written to
+% be followed rather than admired.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% Equations (6.1) and (6.2) keep the draft's hand-written tags, since its later prose refers
+% to them by number.
+
+% draft: Lemma 6.1
+\begin{lemma}[Laplace form of covariance]\label{lem:covariance-laplace}
+\uses{def:cascade-family,lem:convolution-representation,lem:additivity,prop:laplace-uniqueness}
+Under (A1)--(A5), axiom (A8) is equivalent to
+\[
+  \dil_\sigma\,\mu_{x,y} = \mu_{\Sact_\sigma x,\, \Sact_\sigma y}
+  \qquad \Longleftrightarrow \qquad
+  g_{\Sact_\sigma x,\, \Sact_\sigma y}(s) = g_{x,y}(\sigma s),
+\]
+and in particular
+\[
+  G(\Sact_\sigma x,\, s) = G(x,\, \sigma s)
+  \qquad \text{for all } x \ge 0,\ \sigma, s > 0. \tag{6.1}
+\]
+\statusT
+\end{lemma}
+
+\begin{proof}
+The compatibility $\dil_\sigma(\mu * f) = (\dil_\sigma\mu) * (\dil_\sigma f)$ turns (A8) into
+the statement that $\dil_\sigma\mu_{x,y}$ and $\mu_{\Sact_\sigma x, \Sact_\sigma y}$ represent
+the same operator, and the uniqueness clause of \ref{lem:convolution-representation} makes
+that an identity of measures; this is the first equivalence. For the second,
+$\widehat{\dil_\sigma\mu}(s) = \hat\mu(\sigma s)$, so taking $-\log$ gives
+$g_{\Sact_\sigma x, \Sact_\sigma y}(s) = g_{x,y}(\sigma s)$. Equation (6.1) is the case
+$x = 0$ of that identity together with $\Sact_\sigma 0 = 0$, which holds because an increasing
+bijection of $[0,\infty)$ fixes $0$; $G$ is $g_{0,\cdot}$ by \ref{lem:additivity}.
+\end{proof}
+
+% draft: Lemma 6.2
+\begin{lemma}[rigidity of the action]\label{lem:action-rigidity}
+\uses{def:cascade-family,lem:covariance-laplace,cor:strict-monotonicity,lem:additivity}
+Assume (A1)--(A8) and (ND). Then:
+\begin{enumerate}
+\item For each $\sigma$, $\Sact_\sigma$ is uniquely determined by (6.1).
+\item $\Sact_\sigma \Sact_\tau = \Sact_{\sigma\tau}$ for all $\sigma, \tau > 0$, and
+$\Sact_1 = \Id$.
+\item $\sigma \mapsto \Sact_\sigma x$ is continuous and strictly increasing for each $x > 0$.
+\item The action has no fixed point in $(0,\infty)$: if $\Sact_\sigma x^* = x^*$ for all
+$\sigma$, then $x^* = 0$.
+\end{enumerate}
+\statusT
+\end{lemma}
+
+\begin{proof}
+\emph{(1) Uniqueness.} If $\Sact$ and $\Sact'$ both satisfy (6.1) then
+$G(\Sact_\sigma x, s) = G(x,\sigma s) = G(\Sact'_\sigma x, s)$ for every $s > 0$. By
+\ref{cor:strict-monotonicity}, $G(\cdot, s)$ is strictly increasing, hence injective, so
+$\Sact_\sigma x = \Sact'_\sigma x$.
+
+\emph{(2) The group law.} Applying (6.1) twice,
+\[
+  G(\Sact_\sigma \Sact_\tau x, s) = G(\Sact_\tau x, \sigma s) = G(x, \sigma\tau s)
+  = G(\Sact_{\sigma\tau} x, s),
+\]
+and injectivity of $G(\cdot,s)$ gives $\Sact_\sigma \Sact_\tau = \Sact_{\sigma\tau}$. Taking
+$\sigma = 1$ in (6.1) gives $G(\Sact_1 x, s) = G(x,s)$, whence $\Sact_1 = \Id$.
+
+\emph{(3) Continuity and strict monotonicity in $\sigma$.} Fix $x > 0$ and any $s_0 > 0$. By
+(6.1), $G(\Sact_\sigma x, s_0) = G(x, \sigma s_0) = g_{0,x}(\sigma s_0)$.
+
+The map $\sigma \mapsto g_{0,x}(\sigma s_0)$ is continuous, and it is \emph{strictly}
+increasing: $g_{0,x}$ is a nonzero member of $\BFz$ by \ref{cor:strict-monotonicity}, and a
+nonzero member of $\BFz$ is strictly increasing, because its derivative is completely monotone
+and not identically zero, hence strictly positive on $(0,\infty)$ --- a completely monotone
+function vanishing at one point vanishes beyond it, and vanishing on an interval forces the
+representing measure, and so the function, to be zero.
+
+The map $G(\cdot, s_0)$ is continuous (\ref{lem:additivity}) and strictly increasing
+(\ref{cor:strict-monotonicity}), so it has a continuous strictly increasing inverse on its
+range. Composing,
+$\Sact_\sigma x = G(\cdot,s_0)^{-1}\bigl(g_{0,x}(\sigma s_0)\bigr)$ is continuous and strictly
+increasing in $\sigma$.
+
+\emph{(4) No interior fixed point.} Suppose $\Sact_\sigma x^* = x^*$ for all $\sigma > 0$.
+Then (6.1) gives $G(x^*, s) = G(x^*, \sigma s)$ for all $\sigma, s > 0$, so $G(x^*, \cdot)$ is
+constant on $(0,\infty)$; its value is $G(x^*, \zp) = 0$ by \ref{lem:additivity}. Hence
+$g_{0,x^*} \equiv 0$, i.e.\ $\mu_{0,x^*} = \delta_0$ and $\Phi_{0,x^*} = \Id$. By (ND) this
+forces $x^* = 0$.
+\end{proof}
+
+% draft: Proposition 6.3
+\begin{proposition}[orbit coordinate; the gauge]\label{prop:canonical-gauge}
+\uses{lem:action-rigidity,lem:covariance-laplace,cor:strict-monotonicity,thm:increments-bernstein,def:bernstein-function}
+Assume (A1)--(A8) and (ND). Then $c(\sigma) := \Sact_\sigma 1$ is a continuous strictly
+increasing bijection of $(0,\infty)$ onto $(0,\infty)$ with $c(1) = 1$. Consequently
+\[
+  \chi := c^{-1} : (0,\infty) \to (0,\infty), \qquad \chi(0) := 0,
+\]
+is an increasing bijection --- \emph{the canonical gauge} --- satisfying
+$\chi(\Sact_\sigma x) = \sigma\,\chi(x)$, and
+\[
+  G(x, s) = F\bigl(\chi(x)\, s\bigr), \qquad
+  F := G(1, \cdot) \in \BFz,\ F \not\equiv 0. \tag{6.2}
+\]
+\statusT
+\end{proposition}
+
+\begin{proof}
+\emph{$c$ is continuous} by \ref{lem:action-rigidity}(3), and $c(1) = \Sact_1 1 = 1$ by
+\ref{lem:action-rigidity}(2).
+
+\emph{$c$ is injective.} Suppose $c(\sigma) = c(\tau)$ with $\rho := \sigma/\tau \ne 1$. The
+group law \ref{lem:action-rigidity}(2) gives $\Sact_\rho 1 = 1$, so by (6.1)
+\[
+  F(s) = G(1,s) = G(\Sact_\rho 1, s) = G(1, \rho s) = F(\rho s)
+  \qquad \text{for all } s > 0 .
+\]
+Iterating along $\rho^{\pm n}$ gives $F(s) = F(\rho^n s)$ for every $n \in \ZZ$. Replacing
+$\rho$ by $\rho^{-1}$ if necessary we may take $\rho < 1$, and then $\rho^n s \to 0$, so
+$F(s) = F(\zp) = 0$ for every $s$ by \ref{lem:additivity}. Thus $F \equiv 0$, which
+contradicts \ref{cor:strict-monotonicity} under (ND).
+
+\emph{$c$ is increasing.} Being continuous and injective on the connected set $(0,\infty)$,
+$c$ is strictly monotone, so it suffices to exclude the decreasing case. Suppose $c$ were
+decreasing and fix $\sigma > 1$, so that $\Sact_\sigma 1 < 1$. Since $G(\cdot, s)$ is strictly
+increasing (\ref{cor:strict-monotonicity}),
+\[
+  G(\Sact_\sigma 1, s) < G(1,s) = F(s) \qquad \text{for every } s > 0 .
+\]
+But (6.1) evaluates the left-hand side as $G(1,\sigma s) = F(\sigma s)$, and $F$ is
+nondecreasing, being a Bernstein function, so $F(\sigma s) \ge F(s)$. The two are
+incompatible, so $c$ is increasing.
+
+\emph{$c$ is onto $(0,\infty)$.} Its limits as $\sigma \to \zp$ and $\sigma \to \infty$ exist
+in $[0,\infty]$ by monotonicity, and each is a fixed point of the action or a boundary point;
+by \ref{lem:action-rigidity}(4) there is no fixed point in $(0,\infty)$, so the limits are $0$
+and $\infty$. With continuity, $c$ is a bijection onto $(0,\infty)$.
+
+\emph{The gauge relation.} By the group law, $\Sact_\sigma x = \Sact_\sigma \Sact_{\chi(x)} 1
+= \Sact_{\sigma\chi(x)} 1$, so $\chi(\Sact_\sigma x) = \sigma\chi(x)$.
+
+\emph{The similarity form.} For $x > 0$, writing $x = \Sact_{\chi(x)} 1$ and using (6.1),
+\[
+  G(x, s) = G\bigl(\Sact_{\chi(x)} 1,\, s\bigr) = G\bigl(1,\, \chi(x)\, s\bigr)
+  = F\bigl(\chi(x)\,s\bigr),
+\]
+and $F = g_{0,1} \in \BFz$ by \ref{thm:increments-bernstein}, with $F \not\equiv 0$ by (ND)
+through \ref{cor:strict-monotonicity}. The case $x = 0$ is $G(0,\cdot) = 0 = F(0)$.
+\end{proof}
+
+% draft: Remark 6.4
+\begin{remark}[gauge freedom]\label{rem:gauge-freedom}
+\uses{prop:canonical-gauge}
+In the hemigroup setting the scale coordinate carries no intrinsic parametrization: replacing
+$x$ by any increasing bijection of $[0,\infty)$ yields an equivalent family.
+\ref{prop:canonical-gauge} fixes the \emph{canonical gauge} $\tilde x := \chi(x)$, in which
+$\Sact_\sigma$ acts by multiplication, scale carries the dimension of time, and
+$G(x,s) = F(\tilde x\, s)$.
+
+The powers $\tilde x \mapsto \tilde x^{\,\alpha}$ parametrize the other homogeneous gauges;
+the \emph{parabolic gauge} $\alpha = 1/2$ is the natural one for the diffusive memory-line
+realization and is used in the sequel.
+\end{remark}
