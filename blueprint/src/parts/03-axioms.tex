@@ -2,12 +2,69 @@
 % Draft \S3 --- Axioms
 %
 % Source: draft/hemigroup-causal-scale-space-kernels.md, lines 68-92.
-% This file is chapter 3 --- Axioms of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Chapter 3 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: def:cascade-family (A1)-(A8)+(ND); Remark 3.2
+% One node, and it is the primitive object of the whole article: every later statement is
+% "under (A1)-(A5)" or some such, and cites this definition through \uses{def:cascade-family}.
+% The axiom labels (A1)...(A8), (ND) are internal to the node, not separate nodes -- they are
+% clauses of one definition, and the draft's own habit of naming subsets of them is prose,
+% not a dependency edge the graph should carry.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% Note the collision of vocabulary, which is unfortunate but the draft's and worth keeping:
+% (A1)-(A8) here are the article's AXIOMS ON THE FAMILY, and are \textbf{[T]} -- ours, chosen,
+% nothing cited. A1-A16 in blueprint/AXIOMS.md are LEDGER ENTRIES, the analytic facts taken on
+% trust. They are unrelated, and no ledger entry is named anywhere in this file.
+
+The primitive object is a two-parameter family of operators indexed by ordered pairs of
+scales.
+
+% draft: Definition 3.1
+\begin{definition}[causal cascade measurement family]\label{def:cascade-family}
+A family of linear operators
+\[
+  \Phi_{x,y} : X \to X, \qquad 0 \le x \le y < \infty,
+\]
+is a \emph{causal cascade measurement family} if it satisfies:
+\begin{itemize}
+\item \textbf{(A1) Boundedness.} Each $\Phi_{x,y}$ is a bounded operator on $X$.
+\item \textbf{(A2) Time-translation covariance.} $\Phi_{x,y}\,\shift_a = \shift_a\,\Phi_{x,y}$
+for all $a \in \RR$.
+\item \textbf{(A3) Causality.} If $f \in X$ vanishes a.e.\ on $(-\infty, t_0)$, then so does
+$\Phi_{x,y} f$.
+\item \textbf{(A4) Positivity.} $\Phi_{x,y} X_+ \subseteq X_+$.
+\item \textbf{(A5) Unit area.} $\int \Phi_{x,y} f = \int f$ for all $f \in X_+$.
+\item \textbf{(A6) Cascade (hemigroup).} $\Phi_{x,x} = \Id$, and
+$\Phi_{y,z}\,\Phi_{x,y} = \Phi_{x,z}$ for all $x \le y \le z$.
+\item \textbf{(A7) Continuity.} For every $f \in X$, the map $(x,y) \mapsto \Phi_{x,y} f$ is
+continuous from $\{0 \le x \le y\}$ to $X$.
+\item \textbf{(A8) Scale covariance.} There is a family $(\Sact_\sigma)_{\sigma > 0}$ of
+increasing bijections of $[0,\infty)$ such that
+\[
+  \dil_\sigma\,\Phi_{x,y} = \Phi_{\Sact_\sigma x,\,\Sact_\sigma y}\,\dil_\sigma
+  \qquad \text{for all } 0 \le x \le y,\ \sigma > 0.
+\]
+\item \textbf{(ND) Nondegeneracy.} $\Phi_{x,y} \ne \Id$ whenever $x < y$.
+\end{itemize}
+\statusT
+\end{definition}
+
+% draft: Remark 3.2
+\begin{remark}[provenance of the axioms]\label{rem:axiom-provenance}
+\uses{def:cascade-family}
+(A1)--(A5) and (A7) are as in \sscite{fagerstrom2005temporal}; the diagonal condition in (A6)
+together with (A7) is the two-parameter form of the \emph{extended point} axiom
+$\lim_{\tau\to 0}\phi_\tau = \delta$.
+
+The single change is (A6). In \sscite{fagerstrom2005temporal} the cascade reads
+$\Phi_\tau \Phi_{\tau'} = \Phi_{\tau + \tau'}$, which additionally assumes that the composite
+measurement depends only on the total amount of scale --- that measurement stages are
+interchangeable. (A6) drops exactly that assumption, and nothing else: this is the whole
+difference between the semigroup axiomatics and the present one, and every result that
+follows is a consequence of dropping it.
+
+(A8) is the two-parameter form of scaling covariance; note that an increasing bijection of
+$[0,\infty)$ automatically fixes $0$. (ND) excludes idle stretches of the scale axis.
+
+A \emph{passive} variant replaces (A5) by $\int \Phi_{x,y} f \le \int f$ on $X_+$; all results
+below hold with sub-probability kernels and an extra killing term, and we do not pursue it.
+\end{remark}
