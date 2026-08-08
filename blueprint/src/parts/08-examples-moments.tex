@@ -1,13 +1,166 @@
 % !TEX root = ../print.tex
 % Draft \S8 --- Examples and moments
 %
-% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 254-279.
-% This file is chapter 8 --- Examples and moments of the blueprint; the shared counter makes every number here
-% agree with the draft's own (see content.tex).
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 254-278.
+% Chapter 8 of the blueprint; the shared counter puts every number here on the draft's own.
 %
-% Planned nodes: def:stable-family, def:gamma-family, def:bessel-family (+ a prop each; bessel is [A]), prop:moments; Remark 8.5
+% The draft calls 8.1-8.3 Examples. They are transcribed as PROPOSITIONS, because they are
+% load-bearing rather than illustrative: \ref{thm:locality} classifies the Bessel-K family as
+% the order-2 local case, \ref{prop:local-ladder} builds on the Gamma family, and \S\S13-14
+% (outside this transcription) rest on both. A \uses{} edge must point at a node, and an
+% `example` is not one -- linkage does not count it a statement environment and the dependency
+% graph does not carry it.
 %
-% No nodes yet. Each statement carries \label{kind:name}, \lean{...} with
-% \leanok/\notready, \uses{...}, \notes{slug}, a \statusT or \statusA line, and a
-% "% draft: <kind> N.M" provenance comment; an \statusA node must also declare what its
-% citation carries (\textbf{Assignment.}).
+% One node per family, not a definition/proposition pair. A pair would occupy 8.1-8.6 and push
+% Proposition 8.4 to 8.7, breaking the numbering agreement with the draft for the sake of a
+% distinction the content does not need: each of these states "this F is admissible and its
+% kernels are these", which is one claim. Same reasoning as \ref{prop:bernstein-toolbox}.
+%
+% Two [A] nodes here, the first since chapter 2: \ref{prop:bessel-family} on ledger A8
+% (Halgreen) and \ref{prop:moments} on A7 (Sato). Both say more than their citation carries,
+% so both Assignment clauses divide the statement explicitly.
+
+Throughout this chapter we work in the canonical gauge, so that
+$\phi_x = \Lap^{-1}[e^{-F(x s)}]$, and $T_x$ denotes a random variable with density $\phi_x$.
+
+% draft: Example 8.1
+\begin{proposition}[the extremal stable family; the 2005 kernels]\label{prop:stable-family}
+\uses{lem:selfdecomposable-exponents,cor:semigroup-case,prop:moments}
+For $0 < \alpha < 1$ the exponent $F(s) = s^\alpha$ is of the form (7.1), with Lévy density
+factor
+\[
+  k(t) = \frac{\alpha}{\Gamma(1-\alpha)}\, t^{-\alpha},
+\]
+which is nonincreasing. Every moment of $T_x$ is infinite, so the delay cannot be measured by
+the mean; measured by the mode it scales as $x^{1/\alpha}$.
+\statusT
+\end{proposition}
+
+\begin{proof}
+$s^\alpha = \frac{\alpha}{\Gamma(1-\alpha)}\int_0^\infty (1 - e^{-st})\,t^{-\alpha-1}\,dt$ is
+the standard integral representation, which is (7.1) with $b_0 = 0$ and
+$k(t)/t = \alpha t^{-\alpha-1}/\Gamma(1-\alpha)$; $k$ is a negative power, hence
+nonincreasing. Since $\int_1^\infty t^{n-1}k(t)\,dt = \infty$ already for $n = 1$, all moments
+are infinite by \ref{prop:moments}. The mode scaling is the self-similarity
+$T_x \stackrel{d}{=} x^{1/\alpha} T_1$ of the $\alpha$-stable subordinator, which is the case
+$\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case}.
+\end{proof}
+
+% draft: Example 8.2
+\begin{proposition}[the Gamma family]\label{prop:gamma-family}
+\uses{lem:selfdecomposable-exponents,thm:main-characterization,rem:sato-reading}
+For $\gamma > 0$ the exponent $F(s) = \gamma\,\log(1 + s)$ is of the form (7.1) with
+$k(t) = \gamma\, e^{-t}$, which is nonincreasing. Its kernels are
+\[
+  e^{-F(xs)} = (1 + x s)^{-\gamma}, \qquad
+  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
+\]
+the Gamma density of fixed shape $\gamma$ and scale $x$. All moments are finite, with
+$\Ex\,T_x = \gamma x$ and $\operatorname{Var} T_x = \gamma x^2$. The increment measures
+$\mu_{a,b}$ have Laplace transform $\bigl(\tfrac{1 + as}{1 + bs}\bigr)^{\gamma}$ and are the
+increments of the Gamma-type Sato subordinator.
+\statusT
+\end{proposition}
+
+\begin{proof}
+The Frullani integral gives
+$\log(1+s) = \int_0^\infty (1 - e^{-st})\,e^{-t}\,t^{-1}\,dt$, so $F$ has the form (7.1) with
+$b_0 = 0$ and $k(t) = \gamma e^{-t}$, nonincreasing; hence $F$ is admissible by
+\ref{lem:selfdecomposable-exponents}. Then $e^{-F(xs)} = (1+xs)^{-\gamma}$, which is the
+Laplace transform of the stated Gamma density. The moments are those of a Gamma law, and all
+are finite because $\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$. The increment
+transform is the ratio $e^{-F(bs)}/e^{-F(as)}$, and \ref{rem:sato-reading} identifies the
+family as the marginals of a Sato subordinator.
+\end{proof}
+
+% draft: Example 8.3
+\begin{proposition}[the Bessel-K family; preview of the memory line]\label{prop:bessel-family}
+\uses{lem:selfdecomposable-exponents,thm:main-characterization,prop:moments}
+For $a > 0$ let $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ be the scaled inverse-gamma law, where
+$\gamma_a$ has the Gamma density of shape $a$, and let $F$ be its Laplace exponent. Then
+\[
+  e^{-F(s)} = \frac{2^{1-a}}{\Gamma(a)}\,\bigl(\sqrt{2s}\bigr)^{a} K_a\bigl(\sqrt{2s}\bigr),
+\]
+and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is admissible. In
+the parabolic gauge $\tilde x = x^2/2$ these are the boundary-hitting kernels of the
+Bessel-type media $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with $a = \tfrac12 -
+\beta$, and the moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$. This family is
+the subject of the memory-line development, Theorems 10.4, 11.5 and 12.5.
+\statusA\quad\ledger{A8}\quad\emph{(self-decomposability of the generalized inverse Gaussian
+laws; \sscite{halgreen1979self}. A cited interface, not reproven here.
+\textbf{Assignment.} \ledger{A8} carries exactly one clause: that $T_1$ is self-decomposable,
+which is what makes $F$ admissible and puts the family inside
+\ref{thm:main-characterization}. Everything else is \textbf{[T]} and proved below --- the
+evaluation of the transform in terms of $K_a$ is a classical integral representation, and the
+moment criterion is \ref{prop:moments} applied to this $k$. The parabolic-gauge reading is a
+forward reference to Chapter~11 and is not asserted here. Note also that Halgreen proves the
+stronger statement that the law is a generalized Gamma convolution; self-decomposability
+follows through $\GGC \subset \SDclass$, which is a clause of \ledger{A16} --- so A8 and A16
+rest on the same tower and should be reviewed together.)}
+\end{proposition}
+
+\begin{proof}
+Write $\gamma_a$ for a Gamma$(a,1)$ variable and $T_1 = 1/(2\gamma_a)$. Substituting
+$u = 1/(2t)$ in the Gamma density gives the density of $T_1$,
+\[
+  \phi_1(t) = \frac{t^{-a-1}\,e^{-1/(2t)}}{2^{a}\,\Gamma(a)}, \qquad t > 0 .
+\]
+The classical integral representation
+$\int_0^\infty t^{\nu-1}\exp(-A/t - Bt)\,dt = 2\,(A/B)^{\nu/2}K_\nu\bigl(2\sqrt{AB}\bigr)$,
+taken at $\nu = -a$, $A = \tfrac12$, $B = s$, together with $K_{-a} = K_a$, gives
+\[
+  \Ex\,e^{-sT_1}
+  = \frac{1}{2^{a}\Gamma(a)}\int_0^\infty t^{-a-1}e^{-st - 1/(2t)}\,dt
+  = \frac{2\,(2s)^{a/2}\,K_a\bigl(\sqrt{2s}\bigr)}{2^{a}\Gamma(a)}
+  = \frac{2^{1-a}}{\Gamma(a)}\bigl(\sqrt{2s}\bigr)^{a}K_a\bigl(\sqrt{2s}\bigr).
+\]
+Self-decomposability of $T_1$ is \ledger{A8}; by
+\ref{lem:selfdecomposable-exponents} its exponent is therefore of the form (7.1), and
+\ref{thm:main-characterization} makes the family admissible. Finally, the Lévy density factor
+of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$ at infinity, so
+$\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$; \ref{prop:moments} converts
+that into $\Ex\,T_x^n < \infty$ iff $a > n$.
+\end{proof}
+
+% draft: Proposition 8.4
+\begin{proposition}[moments and the influence curve]\label{prop:moments}
+\uses{lem:selfdecomposable-exponents,thm:main-characterization}
+$\Ex\,T_x = x\,F'(\zp) = x\bigl(b_0 + \int_0^\infty k(t)\,dt\bigr)$, finite if and only if $k$
+is integrable at infinity; more generally $\Ex\,T_x^n < \infty$ if and only if
+$\int_1^\infty t^{\,n-1} k(t)\,dt < \infty$. When the mean is finite, the influence curve of
+\sscite{fagerstrom2005temporal}, \S7, may be defined by the mean delay, and it is exactly
+linear in the canonical gauge:
+\[
+  t_0 - t_m = F'(\zp)\; x .
+\]
+\statusA\quad\ledger{A7}\quad\emph{(the moment criterion for infinitely divisible laws;
+\sscite{sato1999levy}, Thm.~25.3. A cited interface, not reproven here.
+\textbf{Assignment.} \ledger{A7} carries the higher-moment equivalence alone --- that a moment
+of the law is finite exactly when the corresponding integral against the Lévy measure over
+$\{t > 1\}$ is finite. The first-moment identity $\Ex\,T_x = xF'(\zp)$, the evaluation
+$F'(\zp) = b_0 + \int k$, and the exact linearity of the influence curve are \textbf{[T]} and
+proved below from (7.1) by monotone convergence; they need no citation. What is \emph{not}
+claimed here is anything about the mode, which is the delay measure the stable family forces
+one to use --- see \ref{prop:stable-family}.)}
+\end{proposition}
+
+\begin{proof}
+Differentiating the transform at the origin,
+$\Ex\,T_x = -\partial_s e^{-F(xs)}\big|_{s=\zp} = x F'(\zp)$, and monotone convergence in
+(7.1) gives $F'(\zp) = b_0 + \int_0^\infty k(t)\,dt$, finite exactly when $k$ is integrable at
+infinity. For the higher moments, the Lévy measure of $T_x$ is $\nu(dt) = k(t)t^{-1}dt$ up to
+the scaling by $x$, so $\int_{t>1} t^n\,\nu(dt) = \int_1^\infty t^{\,n-1}k(t)\,dt$; \ledger{A7}
+equates finiteness of that integral with finiteness of $\Ex\,T_x^n$. The influence curve is
+then linear in $x$ because $\Ex\,T_x$ is.
+\end{proof}
+
+% draft: Remark 8.5
+\begin{remark}[heavy tails are the semigroup's doing]\label{rem:heavy-tails}
+\uses{thm:main-characterization,cor:semigroup-case,prop:moments,prop:gamma-family}
+The heavy tails of the 2005 kernels are an artifact of the semigroup axiom, not of causality
+together with covariance. Within \ref{thm:main-characterization} the semigroup sub-case
+(\ref{cor:semigroup-case}) is precisely the subset with $k$ a pure power --- the only $k$
+compatible with homogeneity --- and every non-power nonincreasing $k$, for instance
+$k(t) = \gamma e^{-t}$, yields a causal, continuously scale-covariant family with finite
+moments of all orders.
+\end{remark}
