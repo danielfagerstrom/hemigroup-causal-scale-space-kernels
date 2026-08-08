@@ -26,39 +26,46 @@
 % Scope is \S\S2-12, the mathematics. \S1 (introduction), \S13 (implementation), \S14
 % (the temporal N-jet) and \S15 (concluding remarks) stay in the draft.
 
-\input{theorems-extra}
+% The .tex extensions on the \input lines below are load-bearing, not house style.
+% plasTeX resolves an extensionless \input through kpsewhich, which a CI runner with
+% no TeX installation does not have -- the web build then silently drops every part
+% file ("WARNING: File not found: parts/...") and renders an empty dependency graph,
+% while still emitting a plausible-looking site. Same-directory inputs happen to
+% resolve without it; the parts/ subdirectory does not. pdflatex and `linkage`
+% (which appends .tex when absent) both accept the explicit form.
+\input{theorems-extra.tex}
 
 \setcounter{chapter}{1}
 
 \chapter{Preliminaries and notation}
-\input{parts/02-preliminaries}
+\input{parts/02-preliminaries.tex}
 
 \chapter{Axioms}
-\input{parts/03-axioms}
+\input{parts/03-axioms.tex}
 
 \chapter{Convolution representation}
-\input{parts/04-representation}
+\input{parts/04-representation.tex}
 
 \chapter{The cascade: additivity and infinite divisibility}
-\input{parts/05-cascade}
+\input{parts/05-cascade.tex}
 
 \chapter{Scale covariance: the similarity form}
-\input{parts/06-covariance}
+\input{parts/06-covariance.tex}
 
 \chapter{Self-decomposability and the main theorem}
-\input{parts/07-characterization}
+\input{parts/07-characterization.tex}
 
 \chapter{Examples and moments}
-\input{parts/08-examples-moments}
+\input{parts/08-examples-moments.tex}
 
 \chapter{Memory kernels, Sonine conservation, and a Volterra derivation}
-\input{parts/09-memory-kernels}
+\input{parts/09-memory-kernels.tex}
 
 \chapter{The scale-Cauchy problem: Theorem 3$'$}
-\input{parts/10-scale-cauchy}
+\input{parts/10-scale-cauchy.tex}
 
 \chapter{The signaling form: Theorem 4$'$}
-\input{parts/11-signaling}
+\input{parts/11-signaling.tex}
 
 \chapter{The locality theorem: Theorem 5$'$}
-\input{parts/12-locality}
+\input{parts/12-locality.tex}
