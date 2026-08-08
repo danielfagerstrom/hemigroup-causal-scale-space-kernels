@@ -1,17 +1,55 @@
+% !TEX root = print.tex
 % This article's macros.
 %
 % The framework's vocabulary (\lean/\leanok/\uses/\notready, \ledger, \notes, \sscite, and
 % the [T]/[A] status tags) lives in linkage-macros.tex, which the `article-kit` repo owns.
-% Everything below the rule is this article's own NOTATION — yours to change.
+% Everything below the rule is this article's own NOTATION -- yours to change.
 %
 % Anything you add here is automatically render-safe (fatal check 4 reads this file's
 % \newcommand definitions); anything you use but do not define must be vetted in
 % render-allowlist.txt, or the manifest would silently drop it.
+%
+% Note: the extra theorem-like environments (corollary, remark, example) are NOT here --
+% both drivers \input this file before theorems.tex, so `definition` does not exist yet.
+% They live in theorems-extra.tex, \input from content.tex.
 
 \input{linkage-macros}
 
-% -- Notation -----------------------------------------------------------------
+% -- Number systems -----------------------------------------------------------
 \newcommand{\RR}{\mathbb{R}}
 \newcommand{\CC}{\mathbb{C}}
 \newcommand{\NN}{\mathbb{N}}
 \newcommand{\ZZ}{\mathbb{Z}}
+
+% -- Function and measure spaces (draft \S2) ----------------------------------
+\newcommand{\Lone}{L^1(\RR, dt)}          % the ambient space X
+\newcommand{\Mplus}{M_+}                  % finite positive Borel measures
+\newcommand{\supp}{\operatorname{supp}}
+
+% -- Classes of functions -----------------------------------------------------
+% CM = completely monotone (Def. 2.1); BF / BF_0 = Bernstein functions (Def. 2.2).
+\newcommand{\CM}{\mathrm{CM}}
+\newcommand{\BF}{\mathrm{BF}}
+\newcommand{\BFz}{\mathrm{BF}_0}
+\newcommand{\CBF}{\mathrm{CBF}}           % complete Bernstein functions (\S9)
+% The Bondesson tower of \S\S12-13: HCM \subset GGC \subset SD.
+\newcommand{\HCM}{\mathrm{HCM}}
+\newcommand{\GGC}{\mathrm{GGC}}
+\newcommand{\SDclass}{\mathrm{SD}}        % NOT \SD -- amsmath uses that name
+
+% -- Operators and transforms -------------------------------------------------
+% \dil_\sigma f = \sigma^{-1} f(t/\sigma), mass-preserving; also the pushforward on
+% measures. \Sact_\sigma is the scale action of (A8), an increasing bijection of
+% [0,\infty). \shift_a is translation, (\shift_a f)(t) = f(t-a).
+\newcommand{\dil}{D}
+\newcommand{\Sact}{S}
+\newcommand{\shift}{\tau}
+\newcommand{\Id}{\mathrm{Id}}
+\newcommand{\Lap}{\mathcal{L}}            % Laplace transform (\Lap^{-1} inverts)
+\newcommand{\Mel}{\mathcal{M}}            % Mellin transform in the scale variable (\S11)
+\newcommand{\Distr}{\mathcal{D}'}         % distributions, for the weak form of \S9
+\newcommand{\Ex}{\mathbb{E}}
+
+% -- Convenience --------------------------------------------------------------
+% The draft writes g(0+) and s \downarrow 0 constantly; \zp keeps that from drifting.
+\newcommand{\zp}{0{+}}

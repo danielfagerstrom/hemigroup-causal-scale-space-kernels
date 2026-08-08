@@ -1,0 +1,144 @@
+% !TEX root = ../print.tex
+% Draft \S2 --- Preliminaries and notation
+%
+% Source: draft/hemigroup-causal-scale-space-kernels.md, lines 31-67.
+% Chapter 2 of the blueprint; the shared counter puts every number here on the draft's own.
+%
+% TWO DEPARTURES FROM THE DRAFT, both deliberate:
+%
+% 1. Proposition 2.3 stays ONE node with four parts, rather than four nodes. Splitting it
+%    would push Lemma 2.4 to 2.7 and break the numbering alignment for the section the rest
+%    of the article cites most. The per-clause honesty lives in the \textbf{Assignment.}
+%    clause instead, which is what that mechanism is for (LINKAGE.md rule 7).
+%
+% 2. prop:laplace-continuity (2.5) and prop:laplace-uniqueness (2.6) are ADDITIVE -- the
+%    draft uses both facts (Lemma 4.1's uniqueness clause, Lemma 6.1, Theorem 7.3's (A7)
+%    verification, Proposition 9.2, Theorem 9.5, Lemma 10.3(5)) but never states them, so
+%    their trust was invisible to the dependency graph. Appending them leaves 2.1-2.4 alone.
+%
+% \notes{} tags are omitted throughout until the hub's content-note slugs exist; an
+% unresolvable slug fails `linkage check --wiki`.
+
+Time runs over $\RR$. We write $X = \Lone$, real, with positive cone $X_+$ and
+$\int f := \int_{\RR} f(t)\,dt$; $\Mplus(\RR)$ for the finite positive Borel measures on
+$\RR$, with total mass $\|\mu\| = \mu(\RR)$; translations $(\shift_a f)(t) = f(t-a)$ for
+$a \in \RR$; dilations on functions $(\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma)$,
+$\sigma > 0$, which preserve mass, and on measures $\dil_\sigma \mu :=$ the pushforward of
+$\mu$ under $t \mapsto \sigma t$; and convolution
+$(\mu * f)(t) = \int f(t - r)\,\mu(dr)$ for $\mu \in \Mplus(\RR)$, $f \in X$. Then
+$\|\mu * f\|_1 \le \|\mu\|\,\|f\|_1$, and dilation is compatible with convolution:
+\[
+  \dil_\sigma(\mu * f) = (\dil_\sigma \mu) * (\dil_\sigma f).
+\]
+
+For $\mu \in \Mplus$ supported on $[0,\infty)$ the Laplace transform is
+\[
+  \hat\mu(s) = \int_{[0,\infty)} e^{-st}\,\mu(dt), \qquad s \ge 0 .
+\]
+If $\mu \ne 0$ then $\hat\mu(s) > 0$ for all $s \ge 0$.
+
+% draft: Definition 2.1
+\begin{definition}[completely monotone]\label{def:completely-monotone}
+A function $f : (0,\infty) \to \RR$ is \emph{completely monotone} (CM) if $f \in C^\infty$
+and $(-1)^n f^{(n)} \ge 0$ for all $n \ge 0$.
+\statusT
+\end{definition}
+
+% draft: Definition 2.2
+\begin{definition}[Bernstein function]\label{def:bernstein-function}
+\uses{def:completely-monotone}
+A function $g : (0,\infty) \to [0,\infty)$ is a \emph{Bernstein function} if $g \in C^\infty$
+and $g'$ is completely monotone. We write $g \in \BF$, and $g \in \BFz$ if moreover
+$g(\zp) = 0$.
+\statusT
+\end{definition}
+
+% draft: Proposition 2.3 (toolbox)
+\begin{proposition}[the Bernstein-function toolbox]\label{prop:bernstein-toolbox}
+\uses{def:completely-monotone,def:bernstein-function}
+\begin{enumerate}
+\item (Bernstein--Widder / Feller criterion.) $f$ is the Laplace transform of a probability
+measure on $[0,\infty)$ if and only if $f$ is completely monotone and $f(\zp) = 1$. More
+generally, $f$ is completely monotone if and only if $f(s) = \int_{[0,\infty)} e^{-st}\,F(dt)$
+for a measure $F$ on $[0,\infty)$, not necessarily finite, and $F$ is then unique.
+\item $g \in \BF$ if and only if $e^{-\tau g}$ is completely monotone for every $\tau > 0$.
+\item Every $g \in \BF$ is nonnegative, nondecreasing and concave, and has the
+Lévy--Khintchine representation
+\[
+  g(s) = a + b s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu(dt), \qquad
+  a, b \ge 0, \quad \int_0^\infty (1 \wedge t)\,\nu(dt) < \infty,
+\]
+with $g(\zp) = a$. The triple $(a, b, \nu)$ is unique.
+\item $\BF$ is a convex cone, closed under pointwise limits: if $g_n \in \BF$ and
+$g_n(s) \to g(s) < \infty$ for every $s > 0$, then $g \in \BF$. Consequently $\BF$ is closed
+under mixtures $s \mapsto \int g_u(s)\,m(du)$ with $m \ge 0$, whenever the integral is finite.
+\end{enumerate}
+\statusA\quad\ledger{A1}\quad\ledger{A2}\quad\ledger{A3}\quad\ledger{A4}\quad\emph{(the
+classical Bernstein-function toolbox: \sscite{feller2009introduction}, Ch.~XIII and
+\sscite{schilling2012bernstein}, Ch.~1 and~3. Cited, not reproven here.
+\textbf{Assignment.} The four parts are carried by four separate entries, one each.
+Part~(1) is \ledger{A1} entire, in both the probability form and the general measure form
+with uniqueness. Part~(2) is \ledger{A2} entire. Part~(3) is \ledger{A3} entire, including
+the uniqueness of the triple, which Lemma~7.1 needs and which a representation theorem
+without it would not supply. Part~(4) is \ledger{A4} entire; it is the single external fact
+Theorem~5.2 rests on, and the null-array argument that produces the pointwise limit there is
+ours and is held \textbf{[T]}. None of the four carries anything about the hemigroup family:
+they are statements about $\CM$ and $\BF$ as classes of functions, and every step joining
+them to $\Phi_{x,y}$ is \textbf{[T]}.)}
+\end{proposition}
+
+% draft: Lemma 2.4
+\begin{lemma}[vanishing lemma]\label{lem:vanishing}
+\uses{def:bernstein-function,prop:bernstein-toolbox}
+If $g \in \BFz$ and $g(s_0) = 0$ for some $s_0 > 0$, then $g \equiv 0$.
+\statusT
+\end{lemma}
+
+\begin{proof}
+$g$ is nonnegative and concave by \ref{prop:bernstein-toolbox}(3), with
+$g(\zp) = g(s_0) = 0$. A nonnegative concave function vanishing at both ends of $[0, s_0]$
+vanishes on it, so $g \equiv 0$ on $(0, s_0]$ and hence $g' \equiv 0$ on $(0, s_0)$. Now $g'$
+is nonincreasing, being the derivative of a concave function, and nonnegative, being
+completely monotone; a nonnegative nonincreasing function that vanishes on $(0,s_0)$ vanishes
+identically. So $g' \equiv 0$ on $(0,\infty)$, and with $g(\zp) = 0$ this gives $g \equiv 0$.
+\end{proof}
+
+\bigskip
+
+The next two statements are not in the draft, which uses both facts without stating either.
+They are recorded here so that the trust they carry is visible in the dependency graph rather
+than buried inside proofs. Both are classical, and both are cited to the same section of
+\sscite{feller2009introduction}; note that that section states the probability and the measure
+forms as four separate theorems, on four different pages, so the pair a given proof needs must
+be named individually.
+
+% additive: not in the draft. Used by lem:convolution-representation, thm:main-characterization.
+\begin{proposition}[continuity theorem for Laplace transforms]\label{prop:laplace-continuity}
+Let $\mu_n, \mu$ be probability measures on $[0,\infty)$. Then $\mu_n \to \mu$ weakly if and
+only if $\hat\mu_n(s) \to \hat\mu(s)$ for every $s > 0$. The same equivalence holds for
+arbitrary measures on $[0,\infty)$, provided that in the direction from transforms to measures
+the masses $\hat\mu_n(a)$ are bounded for some $a > 0$.
+\statusA\quad\ledger{A5}\quad\emph{(Feller's continuity theorem;
+\sscite{feller2009introduction}, Vol.~2, \S XIII.1, Theorem~2 and Theorem~2a. A cited
+interface, not reproven here. \textbf{Assignment.} \ledger{A5} carries both clauses. The
+boundedness hypothesis in the second is not decoration: Feller gives a counterexample on the
+same page showing it cannot be dropped, and any proof here that invokes the measure form must
+discharge it explicitly. The probability form carries it for free, which is why Theorem~7.3
+uses that one. What \ledger{A5} does not carry is the tightness argument that supplies weak
+convergence in the first place; that is \textbf{[T]}.)}
+\end{proposition}
+
+% additive: not in the draft. Used by lem:convolution-representation, lem:covariance-laplace,
+% prop:scale-evolution, thm:sonine-conservation, lem:generator-properties.
+\begin{proposition}[uniqueness of the Laplace transform]\label{prop:laplace-uniqueness}
+A measure on $[0,\infty)$ is determined by its Laplace transform: if $\hat\mu(s) = \hat\rho(s)$
+for all $s$ in some interval $(a,\infty)$, then $\mu = \rho$.
+\statusA\quad\ledger{A6}\quad\emph{(Feller's uniqueness theorem;
+\sscite{feller2009introduction}, Vol.~2, \S XIII.1, Theorem~1 and Theorem~1a. A cited
+interface, not reproven here. \textbf{Assignment.} \ledger{A6} carries the statement entire,
+for probability measures (Theorem~1) and for arbitrary measures (Theorem~1a). This is what
+licenses every step in the article of the form ``the transforms agree, therefore the measures
+agree'' --- the uniqueness clause of Lemma~4.1, and Lemma~6.1, Proposition~9.2, Theorem~9.5
+and Lemma~10.3(5). It says nothing about existence, and nothing about which functions are
+transforms; that is \ref{prop:bernstein-toolbox}(1).)}
+\end{proposition}

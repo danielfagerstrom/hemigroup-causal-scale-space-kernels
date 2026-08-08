@@ -13,15 +13,26 @@
 # only vet it here if it is standard LaTeX/AMS that pandoc and MathJax both know.
 # One command per line, no backslash. Seeded 2026-07-25 from the full blueprint
 # inventory (97 commands, all standard).
+#
+# 2026-08-07: +22 commands, vetted from the draft's own inventory for the section
+# 2-12 transcription (Big Leftarrow Pi bar big cap cdots chi deg downarrow equiv eta
+# hat ldots longrightarrow not setminus sup tag varepsilon wedge zeta). `tag` is how
+# the blueprint reproduces the draft's hand-numbered equations (6.1), (7.1), (9.1),
+# (9.2), which its prose references by number -- \ref would render as a code span.
+# `checkmark` appeared in the same diff and was NOT vetted: Example 9.9's tick is
+# written out in words instead.
+Big
 Bigl
 Bigr
 Delta
 Gamma
 Lambda
+Leftarrow
 Leftrightarrow
 Longleftrightarrow
 Omega
 Phi
+Pi
 Pr
 Psi
 Rightarrow
@@ -29,24 +40,34 @@ S
 Sigma
 alpha
 ast
+bar
 begin
 beta
+big
 bigl
 bigr
+cap
 cdot
+cdots
+chi
 circ
 cos
 cosh
 cup
+deg
 delta
 dots
+downarrow
 ell
 emph
 end
+equiv
+eta
 exp
 frac
 gamma
 ge
+hat
 in
 infty
 int
@@ -54,10 +75,12 @@ item
 kappa
 lambda
 langle
+ldots
 le
 leftrightarrow
 lim
 log
+longrightarrow
 mapsto
 mathbb
 mathbf
@@ -72,6 +95,7 @@ nabla
 ne
 neq
 ni
+not
 nu
 omega
 operatorname
@@ -89,6 +113,7 @@ quad
 rangle
 ref
 rho
+setminus
 sigma
 sim
 sin
@@ -98,6 +123,8 @@ stackrel
 subset
 subseteq
 sum
+sup
+tag
 tan
 tau
 text
@@ -109,9 +136,12 @@ theta
 tilde
 times
 to
+varepsilon
 varphi
 verb
+wedge
 widehat
 widetilde
 xi
 xrightarrow
+zeta

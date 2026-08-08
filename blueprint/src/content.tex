@@ -1,16 +1,64 @@
-% The blueprint's content, split by chapter. Each part holds the statement nodes; this file
-% only orders them. See the framework's LINKAGE.md for the node conventions.
+% !TEX root = print.tex
+% The blueprint's content, split by chapter. Each part holds the statement nodes; this
+% file only orders them. See the framework's LINKAGE.md for the node conventions.
 %
-% The chapter split follows the draft in draft/hemigroup-causal-scale-space-kernels.md.
+% ---------------------------------------------------------------------------------
+% NUMBERING: one chapter per draft section, chapter number == section number.
+% ---------------------------------------------------------------------------------
+%
+% theorems.tex masters one shared counter off `definition`, reset per chapter. The draft
+% (draft/hemigroup-causal-scale-space-kernels.md) numbers exactly the same way, one
+% shared counter per section: Definition 2.1, Definition 2.2, Proposition 2.3, Lemma 2.4;
+% Lemma 9.1 ... Remark 9.11. So starting the chapter counter at 1 and giving each draft
+% section its own chapter makes the blueprint's numbering IDENTICAL to the draft's --
+% Lemma 4.1 is Lemma 4.1, Theorem 7.3 is Theorem 7.3, Remark 9.11 is Remark 9.11.
+%
+% That is what makes the two documents reviewable side by side, and what will let
+% paper/main.tex share statements without a renumbering table. Every node also carries a
+% `% draft: <kind> N.M` provenance comment, so the correspondence is explicit and does
+% not rest on the counter alone.
+%
+% Consequence, deliberate: the standalone PDF starts at Chapter 2. There is no Chapter 1
+% because \S1 of the draft is the introduction, which is positioning rather than
+% mathematics and is not transcribed. Renumbering to close the gap would cost the
+% draft-alignment above, which is worth far more.
+%
+% Scope is \S\S2-12, the mathematics. \S1 (introduction), \S13 (implementation), \S14
+% (the temporal N-jet) and \S15 (concluding remarks) stay in the draft.
 
-\chapter{Cascade families and their representation}
-\input{parts/01-cascade-representation}
+\input{theorems-extra}
 
-\chapter{Bernstein increments and scale covariance}
-\input{parts/02-bernstein-covariance}
+\setcounter{chapter}{1}
 
-\chapter{The characterization}
-\input{parts/03-characterization}
+\chapter{Preliminaries and notation}
+\input{parts/02-preliminaries}
 
-\chapter{Memory kernels and the scale evolution}
-\input{parts/04-memory-kernels}
+\chapter{Axioms}
+\input{parts/03-axioms}
+
+\chapter{Convolution representation}
+\input{parts/04-representation}
+
+\chapter{The cascade: additivity and infinite divisibility}
+\input{parts/05-cascade}
+
+\chapter{Scale covariance: the similarity form}
+\input{parts/06-covariance}
+
+\chapter{Self-decomposability and the main theorem}
+\input{parts/07-characterization}
+
+\chapter{Examples and moments}
+\input{parts/08-examples-moments}
+
+\chapter{Memory kernels, Sonine conservation, and a Volterra derivation}
+\input{parts/09-memory-kernels}
+
+\chapter{The scale-Cauchy problem: Theorem 3$'$}
+\input{parts/10-scale-cauchy}
+
+\chapter{The signaling form: Theorem 4$'$}
+\input{parts/11-signaling}
+
+\chapter{The locality theorem: Theorem 5$'$}
+\input{parts/12-locality}
