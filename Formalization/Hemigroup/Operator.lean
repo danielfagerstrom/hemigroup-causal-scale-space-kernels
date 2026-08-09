@@ -7,6 +7,8 @@ import Hemigroup.Levy
 import Mathlib.MeasureTheory.Group.Prod
 import Mathlib.MeasureTheory.Group.LIntegral
 import Mathlib.MeasureTheory.Measure.Lebesgue.Basic
+import Mathlib.MeasureTheory.Integral.Prod
+import Mathlib.MeasureTheory.Group.Integral
 
 /-!
 # The operators `Φ_{x,y} f = μ_{x,y} * f`, and axioms (A1)–(A5)
@@ -19,13 +21,13 @@ say nothing about the family — each is a statement about a single convolution.
 analysis in them: (A2) and (A4) are one line each, (A3) is causality of `μ` read through the
 integrand, and (A1) and (A5) are Tonelli plus translation invariance of Lebesgue measure.
 
-**State.** (A1)–(A4) are proved. (A5), unit area, is proved in its `ℝ≥0∞` form — that *is*
-`lintegral_lintegral_sub_eq`, which for `g = ENNReal.ofReal ∘ f` with `f ≥ 0` says exactly that
-convolution preserves mass. What is not written is the Bochner restatement
-`∫ (μ * f) = ‖μ‖ ∫ f`, which needs the integrability bookkeeping to move between the two
-integrals and to know `μ * f` is itself integrable; that in turn wants a
-measurability-of-a-parametric-integral lemma. It is bookkeeping, but it is not free, and it is
-not here.
+**State: all five are proved**, and everything here is Lean core.
+
+`lintegral_lintegral_sub_eq` is the one lemma the two analytic clauses share, and it is used
+twice over in different registers: first to *estimate*, giving (A1); then to establish
+integrability on the product (`integrable_uncurry_sub`), which is what licenses the Bochner swap
+and so gives (A5) as `integral_mconv`, and simultaneously gives `integrable_mconv` — that `Φ`
+maps `L¹` into `L¹`, the other half of (A1).
 
 ## A note on `(A3)`
 
@@ -106,5 +108,41 @@ theorem lintegral_enorm_mconv_le (μ : Measure ℝ) [SFinite μ] {f : ℝ → �
   calc ∫⁻ t, ‖mconv μ f t‖ₑ ≤ ∫⁻ t, (∫⁻ r, ‖f (t - r)‖ₑ ∂μ) :=
         lintegral_mono fun t => enorm_integral_le_lintegral_enorm _
     _ = μ univ * ∫⁻ t, ‖f t‖ₑ := lintegral_lintegral_sub_eq μ hf.enorm
+
+/-! ## (A5) for the Bochner integral
+
+The `ℝ≥0∞` identity above is unit area already. Restating it for `∫` needs the two-variable
+integrand to be integrable on the product — which is exactly what the same Tonelli bound gives,
+now used to *establish* integrability rather than to estimate.
+-/
+
+/-- The two-variable integrand is integrable on `volume ⊗ μ`. This is the hypothesis both the
+Bochner swap and the integrability of `μ * f` are waiting on. -/
+theorem integrable_uncurry_sub (μ : Measure ℝ) [IsFiniteMeasure μ] {f : ℝ → ℝ}
+    (hf : Measurable f) (hfi : Integrable f) :
+    Integrable (Function.uncurry fun t r : ℝ => f (t - r)) (volume.prod μ) := by
+  have hm : Measurable (Function.uncurry fun t r : ℝ => f (t - r)) :=
+    hf.comp (measurable_fst.sub measurable_snd)
+  refine ⟨hm.aestronglyMeasurable, ?_⟩
+  have hprod : ∫⁻ p, ‖Function.uncurry (fun t r : ℝ => f (t - r)) p‖ₑ ∂(volume.prod μ)
+      = ∫⁻ t, (∫⁻ r, ‖f (t - r)‖ₑ ∂μ) := lintegral_prod _ hm.enorm.aemeasurable
+  rw [hasFiniteIntegral_iff_enorm, hprod, lintegral_lintegral_sub_eq μ hf.enorm]
+  exact ENNReal.mul_lt_top (measure_lt_top μ univ) hfi.2
+
+/-- `μ * f` is itself integrable — the statement that `Φ` maps `L¹` into `L¹`, which is the
+other half of (A1). -/
+theorem integrable_mconv (μ : Measure ℝ) [IsFiniteMeasure μ] {f : ℝ → ℝ}
+    (hf : Measurable f) (hfi : Integrable f) : Integrable (mconv μ f) := by
+  exact (integrable_uncurry_sub μ hf hfi).integral_prod_left
+
+/-- **Axiom (A5), unit area**, for the Bochner integral: `∫ (μ * f) = ‖μ‖ ∫ f`. For a
+probability measure this is exactly `∫ Φ f = ∫ f`. -/
+theorem integral_mconv (μ : Measure ℝ) [IsFiniteMeasure μ] {f : ℝ → ℝ}
+    (hf : Measurable f) (hfi : Integrable f) :
+    ∫ t, mconv μ f t = (μ univ).toReal * ∫ t, f t := by
+  simp only [mconv_apply]
+  rw [integral_integral_swap (integrable_uncurry_sub μ hf hfi)]
+  simp_rw [integral_sub_right_eq_self]
+  rw [integral_const, smul_eq_mul, measureReal_def]
 
 end Hemigroup

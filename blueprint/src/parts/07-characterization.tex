@@ -141,11 +141,14 @@ hand and needs a construction rather than a representation theorem. \textbf{(A7)
 $\mu_{a_n,b_n} \to \mu_{a,b}$ weakly. It was the step expected to cost a second interface,
 because on paper it runs through \ref{prop:laplace-continuity}; it does not, because that
 continuity theorem is itself proved for the case used here, and the tightness it needs was
-always ours. \textbf{(A1)--(A4) hold} too (\texttt{Hemigroup/Operator.lean}), with (A5) proved in
-its measure-theoretic form --- the Tonelli identity
-$\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$, which is unit area --- but not yet
-restated for the Bochner integral. The node is still not marked as proved in Lean: that
-restatement, the uniqueness of $(\chi, F)$, and the whole of $(\Rightarrow)$ remain open.)}
+always ours. \textbf{(A1)--(A5) hold} too (\texttt{Hemigroup/Operator.lean}), the two analytic
+ones from a single Tonelli identity
+$\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$ used twice over: once to estimate,
+giving (A1) and that $\Phi$ maps $\Lone$ to $\Lone$; once to establish integrability on the
+product, which licenses the Bochner swap and gives (A5). \textbf{So every axiom of
+\ref{def:cascade-family} is now discharged for the constructed family.} The node is still not
+marked as proved in Lean, because $(\Leftarrow)$ also asserts the uniqueness of $(\chi, F)$,
+which is not formalised, and because $(\Rightarrow)$ is untouched.)}
 \end{theorem}
 
 \begin{proof}
