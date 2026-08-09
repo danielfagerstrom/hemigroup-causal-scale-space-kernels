@@ -163,21 +163,28 @@ articles that have not yet pinned a ledger.
   showing the hypothesis cannot be dropped. Any blueprint proof invoking the measure form must
   discharge boundedness explicitly; the probability form (Theorem 2) carries it for free, which
   is why Theorem 7.3(⇐) uses that one.
-- **⚠️ Possibly avoidable in Lean — not yet settled** (2026-08-09). The tightness half of what
-  this entry serves is now *proved*: `Hemigroup.measureReal_Ioi_mul_le` gives the Markov bound
-  `μ(t>T)(1 - e^{-sT}) ≤ 1 - μ̂(s)` on Lean core alone, and `kernel_tail_le` makes it uniform over
-  the kernel family (`μ_{a,b}(t>T) ≤ F(Bs)/(1-e^{-sT})` for `b ≤ B`). So the **Assignment**
-  clause's claim that tightness is ours is now checked rather than asserted — including
-  `F(0+) = 0` (`exists_exponent_lt`), which is what lets `s` be chosen small. Continuity of the
-  exponent in its argument is also proved (`tendsto_exponent`, dominated convergence against the
-  integrand at the largest argument), the pointwise-convergence-of-transforms ingredient. Convergence of
-  the **increments**, and hence of the transforms, is also proved (`tendsto_laplace_kernel`).
-  Tightness is now also in the form Prokhorov consumes
-  (`isTightMeasureSet_kernel`). What is *not* done is the assembly alone: repackaging the family
-  into `ProbabilityMeasure ℝ`, extracting a convergent subsequence, portmanteau for causality of
-  the limit, and `laplace_injective` to identify it. That is a different API surface — the weak
-  topology on `ProbabilityMeasure`, not integrals. It needs no citation — but until it is
-  written, **A5 stays a live candidate for the trust boundary.** Do not record it as avoided.
+- **⚠️ Not in the Lean trust base — resolved 2026-08-09.** The development *proves* the form it
+  needs instead of citing it: `Hemigroup.tendsto_integral_of_tendsto_laplace`, whose
+  `#print axioms` reduces to Lean core alone. So A5 is **not** in `trust-boundary.txt`, and the
+  boundary stays at one entry.
+- **What is proved, exactly.** For **causal probability** measures on `ℝ`: convergence of the
+  Laplace transforms together with tightness gives convergence of `∫ f dμₙ` for every bounded
+  continuous `f` — i.e. weak convergence, in the transforms-to-measures direction. That is what
+  `thm:main-characterization` (⇐) uses. The general **measure** form of Theorem 2a, with the
+  boundedness hypothesis flagged above, is *not* formalised and would not be safe to assume from
+  memory; the probability form carries that hypothesis for free, which is exactly why the Lean
+  statement is restricted to it.
+- **Supporting pieces, all Lean core.** Tightness is ours as the **Assignment** clause always
+  claimed, and now checked: `measureReal_Ioi_mul_le` (the Markov bound
+  `μ(t>T)(1 - e^{-sT}) ≤ 1 - μ̂(s)`), `kernel_tail_le` (uniform over the family), and
+  `exists_exponent_lt` (`F(0+) = 0`, which is what lets `s` be chosen small).
+  `isTightMeasureSet_kernel` states the same thing in Mathlib's own vocabulary. Transform
+  convergence is `tendsto_exponent` → `tendsto_increment_toReal` → `tendsto_laplace_kernel`.
+- **Prokhorov was not needed.** The expected route — tight set, convergent subsequence,
+  portmanteau, unique cluster point — is not the one taken. Pushing forward along `x = e^{-t}`
+  lands the measures on the compact `[0,1]`, where Weierstrass does the work compactness would
+  have done; the only price is a clamping estimate on the way back, paid by tightness. Mathlib's
+  Prokhorov is never invoked.
 - **Confidence.** ✅ well grounded, with the boundedness caveat recorded above.
 
 ## A6 — Uniqueness: a measure on the half-line is determined by its Laplace transform

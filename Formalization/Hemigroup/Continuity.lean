@@ -35,10 +35,17 @@ delivers `μ̂_{u n, v n}(s) → μ̂_{α,β}(s)`.
 
 So the blueprint's claim that the tightness argument is ours is **checked**, not merely asserted.
 
-## What remains
+## Status of A5 (resolved 2026-08-09)
 
-`isTightMeasureSet_kernel` is stated in exactly the form Prokhorov consumes, so the inputs are
-both in hand. The **assembly** is not:
+**A5 is not needed.** The continuity theorem, in the probability / transforms-to-measures form
+this development uses, is proved in `WeakConvergence.lean` as
+`tendsto_integral_of_tendsto_laplace`, on Lean core alone. The route below — Prokhorov and a
+subsequence argument — turned out to be unnecessary: pushing forward along `x = e^{-t}` lands
+everything on a compact carrier where Weierstrass replaces compactness. `isTightMeasureSet_kernel`
+is kept because it is the tightness statement in Mathlib's own vocabulary and is the natural
+thing for any other consumer to use, but nothing in this development now depends on Prokhorov.
+
+The route that was *expected* to be needed, recorded because it is the standard one:
 
 * repackage the family as a `Set (ProbabilityMeasure ℝ)` — Prokhorov's
   `isCompact_closure_of_isTightMeasureSet` takes the set there and the tightness hypothesis on
@@ -56,8 +63,7 @@ This is a different API surface from everything above — the weak topology on
 `ProbabilityMeasure`, not integrals — which is why it is separated out rather than attempted
 piecemeal.
 
-Until it is written, **A5 remains a live candidate for the trust boundary**: the evidence says
-avoidable, not avoided.
+None of it was needed. See `WeakConvergence.lean`.
 -/
 
 namespace Hemigroup
