@@ -75,6 +75,11 @@ structure SelfDecomposableExponent where
   b₀_nonneg : 0 ≤ b₀
   k_nonneg : ∀ t ∈ Ioi (0 : ℝ), 0 ≤ k t
   k_antitone : AntitoneOn k (Ioi (0 : ℝ))
+  /-- A normalisation, not a constraint: `k` is a density against `dt/t` on `(0,∞)` and every
+  other field leaves `k 0` free. Fixing it to `0` is what makes the family's lower endpoint
+  `x = 0` a special case of the general formula rather than a separate definition — see
+  `increment_zero_left`. -/
+  k_zero : k 0 = 0
   ne_top : ∀ s, 0 ≤ s → levyExponentD b₀ k s ≠ ⊤
 
 namespace SelfDecomposableExponent
@@ -95,27 +100,52 @@ noncomputable def increment (a b : ℝ) (s : ℝ) : ℝ≥0∞ :=
 
 variable {F}
 
-lemma aemeasurable_k_comp_div (hc : 0 < c) :
-    AEMeasurable (fun u => F.k (u / c)) (volume.restrict (Ioi (0 : ℝ))) :=
-  aemeasurable_of_antitoneOn (antitoneOn_comp_div F.k_antitone hc)
+lemma aemeasurable_k_comp_div (hc : 0 ≤ c) :
+    AEMeasurable (fun u => F.k (u / c)) (volume.restrict (Ioi (0 : ℝ))) := by
+  rcases hc.eq_or_lt with rfl | hc'
+  · simp only [div_zero]
+    exact aemeasurable_const
+  · exact aemeasurable_of_antitoneOn (antitoneOn_comp_div F.k_antitone hc')
 
-lemma aemeasurable_incrementDensity (ha : 0 < a) (hb : 0 < b) :
+lemma aemeasurable_incrementDensity (ha : 0 ≤ a) (hb : 0 ≤ b) :
     AEMeasurable (F.incrementDensity a b) (volume.restrict (Ioi (0 : ℝ))) :=
   (aemeasurable_k_comp_div hb).sub (aemeasurable_k_comp_div ha)
 
 /-! ## The increment is an exponent in its own right -/
 
-/-- The defining identity, straight from M1b: `F(as) + g_{a,b}(s) = F(bs)`. -/
-theorem exponent_add_increment (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
-    F.exponent (a * s) + F.increment a b s = F.exponent (b * s) :=
-  levyExponentD_increment F.b₀_nonneg F.k_antitone F.k_nonneg ha hab hs
+/-- **The lower endpoint is not a special case.** `g_{0,b} = F(b·)`, on the nose.
+
+With `k 0 = 0` and Lean's `u / 0 = 0`, the increment density `k(u/b) - k(u/a)` at `a = 0` is
+just `k(u/b)`, and the drift `b₀(b - a)` is `b₀ b`. That is exactly the dilated representation
+of `F(b·)` supplied by `levyJump_comp_mul` — `du/u` being the Haar measure of the dilation
+group, a dilation moves the density and nothing else. So `G(x,s) = g_{0,x}(s)`, the object the
+whole similarity analysis is built on, needs no separate construction. -/
+theorem increment_zero_left (hb : 0 ≤ b) (s : ℝ) : F.increment 0 b s = F.exponent (b * s) := by
+  have hdens : F.incrementDensity 0 b = fun u => F.k (u / b) := by
+    funext u
+    simp only [incrementDensity, div_zero, F.k_zero, sub_zero]
+  rcases hb.eq_or_lt with rfl | hb'
+  · simp [increment, exponent, levyExponentD, levyJump, hdens, div_zero, F.k_zero]
+  · rw [increment, hdens, exponent, levyExponentD, levyExponentD,
+      levyJump_comp_mul F.k hb' s, sub_zero, mul_assoc]
+
+/-- The defining identity, straight from M1b: `F(as) + g_{a,b}(s) = F(bs)`.
+
+Stated for `0 ≤ a`, the index range of `def:cascade-family`: at `a = 0` it reads
+`0 + g_{0,b} = F(b·)`, which is `increment_zero_left`. -/
+theorem exponent_add_increment (ha : 0 ≤ a) (hab : a ≤ b) (hs : 0 ≤ s) :
+    F.exponent (a * s) + F.increment a b s = F.exponent (b * s) := by
+  rcases ha.eq_or_lt with rfl | ha'
+  · rw [zero_mul, increment_zero_left (ha.trans hab) s, exponent, levyExponentD, levyJump]
+    simp
+  · exact levyExponentD_increment F.b₀_nonneg F.k_antitone F.k_nonneg ha' hab hs
 
 /-- Every increment is finite, because `F` is. -/
-theorem increment_ne_top (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
+theorem increment_ne_top (ha : 0 ≤ a) (hab : a ≤ b) (hs : 0 ≤ s) :
     F.increment a b s ≠ ⊤ := by
-  have hb : 0 < b := lt_of_lt_of_le ha hab
+  have hb : 0 ≤ b := ha.trans hab
   have h := exponent_add_increment (F := F) ha hab hs
-  have : F.exponent (b * s) ≠ ⊤ := F.ne_top _ (by positivity)
+  have : F.exponent (b * s) ≠ ⊤ := F.ne_top _ (mul_nonneg hb hs)
   rw [← h] at this
   exact (ENNReal.add_ne_top.mp this).2
 
@@ -125,11 +155,11 @@ theorem increment_ne_top (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
 difference form false in general. Pushed through `ENNReal.toReal` — legitimate because every
 term is finite — it becomes ordinary subtraction, which is the form both the continuity
 argument and the uniqueness argument use. -/
-theorem increment_toReal (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
+theorem increment_toReal (ha : 0 ≤ a) (hab : a ≤ b) (hs : 0 ≤ s) :
     (F.increment a b s).toReal
       = (F.exponent (b * s)).toReal - (F.exponent (a * s)).toReal := by
   have h := exponent_add_increment (F := F) ha hab hs
-  have hfin : F.exponent (a * s) ≠ ⊤ := F.ne_top _ (mul_nonneg ha.le hs)
+  have hfin : F.exponent (a * s) ≠ ⊤ := F.ne_top _ (mul_nonneg ha hs)
   rw [← h, ENNReal.toReal_add hfin (increment_ne_top (F := F) ha hab hs)]
   ring
 
@@ -142,9 +172,9 @@ This is the identity that makes the family a *hemigroup* rather than a semigroup
 additivity in the pair `(a,b)`, with no requirement that the increment depend only on `b - a`.
 Lifting it to `μ_{a,b} ∗ μ_{b,c} = μ_{a,c}` needs Laplace injectivity; see the module
 docstring. -/
-theorem increment_add (ha : 0 < a) (hab : a ≤ b) (hbc : b ≤ c) (hs : 0 ≤ s) :
+theorem increment_add (ha : 0 ≤ a) (hab : a ≤ b) (hbc : b ≤ c) (hs : 0 ≤ s) :
     F.increment a b s + F.increment b c s = F.increment a c s := by
-  have hb : 0 < b := lt_of_lt_of_le ha hab
+  have hb : 0 ≤ b := ha.trans hab
   have hac : a ≤ c := hab.trans hbc
   have h₁ := exponent_add_increment (F := F) ha hab hs
   have h₂ := exponent_add_increment (F := F) hb hbc hs
@@ -186,7 +216,7 @@ theorem exponent_ne_zero (h : ∃ s₁, 0 ≤ s₁ ∧ F.exponent s₁ ≠ 0) (h
 
 /-! ## The kernels -/
 
-/-- **The kernel measures exist.** For `0 < a ≤ b` there is a causal probability measure
+/-- **The kernel measures exist.** For `0 ≤ a ≤ b` there is a causal probability measure
 `μ_{a,b}` on `ℝ` whose Laplace transform is `exp (-g_{a,b}(s))`.
 
 This is `thm:main-characterization` (⇐)'s construction step, and the single point in the
@@ -197,10 +227,10 @@ The blueprint reaches the same measure through Bernstein–Widder, having first 
 completely monotone. Here `g_{a,b}` arrives from `levyExponentD_increment` with its Lévy triple
 attached, so what is needed is a construction from a triple, which is a strictly smaller
 interface — see `Interfaces.lean`. -/
-theorem exists_kernel (ha : 0 < a) (hab : a ≤ b) :
+theorem exists_kernel (ha : 0 ≤ a) (hab : a ≤ b) :
     ∃ μ : Measure ℝ, IsProbabilityMeasure μ ∧ IsCausal μ ∧
       ∀ s, 0 ≤ s → laplace μ s = Real.exp (-(F.increment a b s).toReal) := by
-  have hb : 0 < b := lt_of_lt_of_le ha hab
+  have hb : 0 ≤ b := ha.trans hab
   have hdens := aemeasurable_incrementDensity (F := F) ha hb
   -- Transport the increment to the measure-based `levyExponent` of `Levy.lean`.
   have hbridge : ∀ s, 0 ≤ s → F.increment a b s
@@ -222,30 +252,31 @@ immaterial: any measure with the right transform *is* this one, by `kernel_uniqu
 -/
 
 open Classical in
-/-- The kernel `μ_{a,b}`, chosen once and for all. Junk (the zero measure) outside `0 < a ≤ b`,
-which is the range every result below hypothesises anyway. -/
+/-- The kernel `μ_{a,b}`, chosen once and for all. Junk (the zero measure) outside `0 ≤ a ≤ b`,
+which is the index range of `def:cascade-family` and the range every result below
+hypothesises. -/
 noncomputable def kernel (F : SelfDecomposableExponent) (a b : ℝ) : Measure ℝ :=
-  if h : 0 < a ∧ a ≤ b then (exists_kernel (F := F) h.1 h.2).choose else 0
+  if h : 0 ≤ a ∧ a ≤ b then (exists_kernel (F := F) h.1 h.2).choose else 0
 
-lemma kernel_spec (ha : 0 < a) (hab : a ≤ b) :
+lemma kernel_spec (ha : 0 ≤ a) (hab : a ≤ b) :
     IsProbabilityMeasure (F.kernel a b) ∧ IsCausal (F.kernel a b) ∧
       ∀ s, 0 ≤ s → laplace (F.kernel a b) s = Real.exp (-(F.increment a b s).toReal) := by
   rw [show F.kernel a b = (exists_kernel (F := F) ha hab).choose from dif_pos ⟨ha, hab⟩]
   exact (exists_kernel (F := F) ha hab).choose_spec
 
-lemma isProbabilityMeasure_kernel (ha : 0 < a) (hab : a ≤ b) :
+lemma isProbabilityMeasure_kernel (ha : 0 ≤ a) (hab : a ≤ b) :
     IsProbabilityMeasure (F.kernel a b) := (kernel_spec ha hab).1
 
-lemma isCausal_kernel (ha : 0 < a) (hab : a ≤ b) : IsCausal (F.kernel a b) :=
+lemma isCausal_kernel (ha : 0 ≤ a) (hab : a ≤ b) : IsCausal (F.kernel a b) :=
   (kernel_spec ha hab).2.1
 
-lemma laplace_kernel (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
+lemma laplace_kernel (ha : 0 ≤ a) (hab : a ≤ b) (hs : 0 ≤ s) :
     laplace (F.kernel a b) s = Real.exp (-(F.increment a b s).toReal) :=
   (kernel_spec ha hab).2.2 s hs
 
 /-- The choice made in `kernel` is immaterial: the transform pins the measure down. -/
 theorem kernel_unique {μ : Measure ℝ} [IsFiniteMeasure μ] (hμ : IsCausal μ)
-    (ha : 0 < a) (hab : a ≤ b)
+    (ha : 0 ≤ a) (hab : a ≤ b)
     (ht : ∀ s, 0 ≤ s → laplace μ s = Real.exp (-(F.increment a b s).toReal)) :
     μ = F.kernel a b := by
   haveI := isProbabilityMeasure_kernel (F := F) ha hab
@@ -257,9 +288,9 @@ theorem kernel_unique {μ : Measure ℝ} [IsFiniteMeasure μ] (hμ : IsCausal μ
 This is `increment_add` transported across the Laplace transform, which turns convolution into
 multiplication (`laplace_conv`) and is injective on causal measures (`laplace_injective`).
 Neither step touches the trust boundary. -/
-theorem kernel_conv (ha : 0 < a) (hab : a ≤ b) (hbc : b ≤ c) :
+theorem kernel_conv (ha : 0 ≤ a) (hab : a ≤ b) (hbc : b ≤ c) :
     F.kernel a b ∗ F.kernel b c = F.kernel a c := by
-  have hb : 0 < b := lt_of_lt_of_le ha hab
+  have hb : 0 ≤ b := ha.trans hab
   haveI := isProbabilityMeasure_kernel (F := F) ha hab
   haveI := isProbabilityMeasure_kernel (F := F) hb hbc
   haveI := isProbabilityMeasure_kernel (F := F) ha (hab.trans hbc)
@@ -276,9 +307,9 @@ theorem kernel_conv (ha : 0 < a) (hab : a ≤ b) (hbc : b ≤ c) :
 
 `increment_comp_mul` transported the same way. On the transform side dilation is a
 reparametrisation (`laplace_map_const_mul`), so this is again pure transport. -/
-theorem kernel_map_const_mul (hσ : 0 < σ) (ha : 0 < a) (hab : a ≤ b) :
+theorem kernel_map_const_mul (hσ : 0 < σ) (ha : 0 ≤ a) (hab : a ≤ b) :
     F.kernel (σ * a) (σ * b) = (F.kernel a b).map (fun t => σ * t) := by
-  have ha' : 0 < σ * a := by positivity
+  have ha' : 0 ≤ σ * a := mul_nonneg hσ.le ha
   have hab' : σ * a ≤ σ * b := by nlinarith
   haveI := isProbabilityMeasure_kernel (F := F) ha hab
   haveI := isProbabilityMeasure_kernel (F := F) ha' hab'

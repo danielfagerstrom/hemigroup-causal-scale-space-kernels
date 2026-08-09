@@ -138,23 +138,23 @@ makes the denominator close to `1`. That is tightness, and every ingredient is o
 theorem kernel_tail_le (ha : 0 < a) (hab : a ≤ b) (hbB : b ≤ B) (hs : 0 < s) (hT : 0 < T) :
     ((F.kernel a b) (Ioi T)).toReal
       ≤ (F.exponent (B * s)).toReal / (1 - Real.exp (-(s * T))) := by
-  haveI := isProbabilityMeasure_kernel (F := F) ha hab
+  haveI := isProbabilityMeasure_kernel (F := F) ha.le hab
   have hden : 0 < 1 - Real.exp (-(s * T)) := by
     have : Real.exp (-(s * T)) < 1 := Real.exp_lt_one_iff.mpr (by nlinarith)
     linarith
   have hB : 0 < B := lt_of_lt_of_le (lt_of_lt_of_le ha hab) hbB
   -- `1 - μ̂(s) ≤ g_{a,b}(s) ≤ F(Bs)`, the second step because exponents add along `a ≤ b ≤ B`.
   have hnum : 1 - laplace (F.kernel a b) s ≤ (F.exponent (B * s)).toReal := by
-    rw [laplace_kernel ha hab hs.le]
+    rw [laplace_kernel ha.le hab hs.le]
     refine (one_sub_exp_neg_le ENNReal.toReal_nonneg).trans ?_
     have hmono : F.increment a b s ≤ F.exponent (B * s) := by
       calc F.increment a b s ≤ F.exponent (b * s) := by
-            rw [← exponent_add_increment (F := F) ha hab hs.le]; exact le_add_self
+            rw [← exponent_add_increment (F := F) ha.le hab hs.le]; exact le_add_self
         _ ≤ F.exponent (B * s) := by
-            rw [← exponent_add_increment (F := F) (lt_of_lt_of_le ha hab) hbB hs.le]
+            rw [← exponent_add_increment (F := F) (ha.le.trans hab) hbB hs.le]
             exact le_self_add
     exact ENNReal.toReal_mono (F.ne_top _ (by positivity)) hmono
-  refine (measureReal_Ioi_le_div (isCausal_kernel ha hab) hs hT).trans ?_
+  refine (measureReal_Ioi_le_div (isCausal_kernel ha.le hab) hs hT).trans ?_
   gcongr
 
 /-! ## `F(0+) = 0`: the dominated-convergence step
@@ -271,7 +271,7 @@ theorem tendsto_increment_toReal (F : SelfDecomposableExponent) {u v : ℕ → �
   -- `g` is the difference of the two exponents, in `ℝ`.
   have hdiff : ∀ {p q : ℝ}, 0 < p → p ≤ q → (F.increment p q s).toReal
       = (F.exponent (q * s)).toReal - (F.exponent (p * s)).toReal :=
-    fun hp hpq => increment_toReal hp hpq hs
+    fun hp hpq => increment_toReal hp.le hpq hs
   simp only [hdiff (hu0 _) (huv _), hdiff hα0 hαβ]
   exact hEv.sub hEu
 
@@ -283,8 +283,8 @@ theorem tendsto_laplace_kernel (F : SelfDecomposableExponent) {u v : ℕ → ℝ
     (hα0 : 0 < α) (hαβ : α ≤ β) :
     Filter.Tendsto (fun n => laplace (F.kernel (u n) (v n)) s) Filter.atTop
       (nhds (laplace (F.kernel α β) s)) := by
-  refine Filter.Tendsto.congr (fun n => (laplace_kernel (hu0 n) (huv n) hs).symm) ?_
-  rw [laplace_kernel hα0 hαβ hs]
+  refine Filter.Tendsto.congr (fun n => (laplace_kernel (hu0 n).le (huv n) hs).symm) ?_
+  rw [laplace_kernel hα0.le hαβ hs]
   exact (Real.continuous_exp.tendsto _).comp
     (tendsto_increment_toReal F hs hB huB hvB hu0 huv hα hβ hα0 hαβ).neg
 
@@ -348,7 +348,7 @@ theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → �
   obtain ⟨T, hT0, hT⟩ := exists_kernel_tail_le F hB he0
   refine ⟨Icc 0 T, isCompact_Icc, ?_⟩
   rintro μ ⟨n, rfl⟩
-  haveI := isProbabilityMeasure_kernel (F := F) (hu0 n) (huv n)
+  haveI := isProbabilityMeasure_kernel (F := F) (hu0 n).le (huv n)
   -- The left tail is null by causality, so only `Ioi T` matters.
   have hsub : (Icc (0 : ℝ) T)ᶜ ⊆ Iio 0 ∪ Ioi T := by
     intro x hx
@@ -357,7 +357,7 @@ theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → �
   have hle : (F.kernel (u n) (v n)) ((Icc (0 : ℝ) T)ᶜ)
       ≤ (F.kernel (u n) (v n)) (Ioi T) := by
     refine (measure_mono hsub).trans ((measure_union_le _ _).trans ?_)
-    rw [isCausal_kernel (hu0 n) (huv n), zero_add]
+    rw [isCausal_kernel (hu0 n).le (huv n), zero_add]
   refine hle.trans ((ENNReal.toReal_le_toReal (measure_ne_top _ _) hεtop).mp ?_)
   exact hT _ _ (hu0 n) (huv n) (hvB n)
 
@@ -372,7 +372,7 @@ a nonnegative quantity. -/
 theorem exponent_mono (F : SelfDecomposableExponent) {s₁ s₂ : ℝ} (h1 : 0 < s₁) (h12 : s₁ ≤ s₂) :
     F.exponent s₁ ≤ F.exponent s₂ := by
   have hc : 1 ≤ s₂ / s₁ := (one_le_div h1).mpr h12
-  have h := exponent_add_increment (F := F) (a := 1) (b := s₂ / s₁) one_pos hc h1.le
+  have h := exponent_add_increment (F := F) (a := 1) (b := s₂ / s₁) zero_le_one hc h1.le
   rw [one_mul, div_mul_cancel₀ _ h1.ne'] at h
   rw [← h]
   exact le_self_add
@@ -394,7 +394,7 @@ theorem exponent_strictMono (F : SelfDecomposableExponent)
   set c : ℝ := s₂ / s₁ with hc_def
   have hc1 : 1 < c := (one_lt_div h1).mpr h12
   have hc0 : 0 < c := lt_trans one_pos hc1
-  have hkey := exponent_add_increment (F := F) (a := 1) (b := c) one_pos hc1.le h1.le
+  have hkey := exponent_add_increment (F := F) (a := 1) (b := c) zero_le_one hc1.le h1.le
   rw [one_mul, hc_def, div_mul_cancel₀ _ h1.ne'] at hkey
   rw [← hkey]
   refine ENNReal.lt_add_right (F.ne_top _ h1.le) ?_
@@ -402,12 +402,12 @@ theorem exponent_strictMono (F : SelfDecomposableExponent)
   intro hzero
   -- Then it vanishes identically, so `F(c s) = F(s)` for every `s ≥ 0`.
   have hdens : AEMeasurable (F.incrementDensity 1 c) (volume.restrict (Ioi (0 : ℝ))) :=
-    aemeasurable_incrementDensity one_pos hc0
+    aemeasurable_incrementDensity zero_le_one hc0.le
   have hInc : ∀ s, 0 ≤ s → F.increment 1 c s = 0 :=
     levyExponentD_eq_zero_of_eq_zero (mul_nonneg F.b₀_nonneg (by linarith)) hdens h1 hzero
   have hfix : ∀ s, 0 ≤ s → F.exponent (c * s) = F.exponent s := by
     intro s hs
-    have h := exponent_add_increment (F := F) (a := 1) (b := c) one_pos hc1.le hs
+    have h := exponent_add_increment (F := F) (a := 1) (b := c) zero_le_one hc1.le hs
     rw [one_mul, hInc s hs, add_zero] at h
     exact h.symm
   -- Iterate downwards: `F(s₀ / cⁿ) = F(s₀)`.
@@ -452,10 +452,10 @@ theorem tendsto_integral_kernel (F : SelfDecomposableExponent) {u v : ℕ → �
     Filter.Tendsto (fun n => ∫ t, f t ∂(F.kernel (u n) (v n))) Filter.atTop
       (nhds (∫ t, f t ∂(F.kernel α β))) := by
   haveI : ∀ n, IsProbabilityMeasure (F.kernel (u n) (v n)) := fun n =>
-    isProbabilityMeasure_kernel (hu0 n) (huv n)
-  haveI : IsProbabilityMeasure (F.kernel α β) := isProbabilityMeasure_kernel hα0 hαβ
-  refine tendsto_integral_of_tendsto_laplace (fun n => isCausal_kernel (hu0 n) (huv n))
-    (isCausal_kernel hα0 hαβ) (fun η hη => ?_) (fun s hs => ?_) f
+    isProbabilityMeasure_kernel (hu0 n).le (huv n)
+  haveI : IsProbabilityMeasure (F.kernel α β) := isProbabilityMeasure_kernel hα0.le hαβ
+  refine tendsto_integral_of_tendsto_laplace (fun n => isCausal_kernel (hu0 n).le (huv n))
+    (isCausal_kernel hα0.le hαβ) (fun η hη => ?_) (fun s hs => ?_) f
   · obtain ⟨T, _, hT⟩ := exists_kernel_tail_le F hB hη
     exact ⟨T, fun n => hT _ _ (hu0 n) (huv n) (hvB n), hT _ _ hα0 hαβ hβB⟩
   · exact tendsto_laplace_kernel F hs hB.le (fun n => (huv n).trans (hvB n)) hvB hu0 huv

@@ -128,7 +128,12 @@ and the pair $(\chi, F)$ is unique up to the normalization $\chi(1) = 1$.
 axioms. Proved here, not cited: the 2005 theorem is the semigroup statement, recovered below
 as \ref{cor:semigroup-case}. \textbf{Formalisation state.} The construction of
 $(\Leftarrow)$ is under way in \texttt{Hemigroup/Construction.lean}: the kernels exist with the
-stated transform (\texttt{exists\_kernel}), and (A6), (A8) and (ND) hold --- now \emph{for the
+stated transform (\texttt{exists\_kernel}), over the index range $0 \le a \le b$ of
+\ref{def:cascade-family} --- the lower endpoint is not a separate construction, because with
+the normalisation $k(0) = 0$ the increment density $k(u/b) - k(u/a)$ at $a = 0$ is $k(u/b)$ and
+the drift is $b_0 b$, which is exactly the dilated representation of $F(b\,\cdot)$
+(\texttt{increment\_zero\_left}). So $G(x,s) = g_{0,x}(s)$, the object the similarity analysis
+of Chapters 5--6 is built on, is available. (A6), (A8) and (ND) hold --- now \emph{for the
 measures}: $\mu_{a,b} * \mu_{b,c} = \mu_{a,c}$ and $\mu_{\sigma a,\sigma b} = \dil_\sigma
 \mu_{a,b}$, with (ND) from \ref{lem:vanishing}. The passage from exponents to measures is pure
 transport, since the transform carries convolution to multiplication and dilation to

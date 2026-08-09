@@ -64,8 +64,8 @@ theorem increment_toReal_eq_of_kernel_eq
     (heq : F'.kernel (χ x) (χ y) = F.kernel x y)
     (hx : 0 < x) (hxy : x ≤ y) (hs : 0 ≤ s) :
     (F'.increment (χ x) (χ y) s).toReal = (F.increment x y s).toReal := by
-  have h1 := laplace_kernel (F := F') (hpos x hx) (hmono hx hxy) hs
-  rw [heq, laplace_kernel (F := F) hx hxy hs] at h1
+  have h1 := laplace_kernel (F := F') (hpos x hx).le (hmono hx hxy) hs
+  rw [heq, laplace_kernel (F := F) hx.le hxy hs] at h1
   exact (neg_inj.mp (Real.exp_eq_exp.mp h1)).symm
 
 /-- **The exponents agree along the gauge.** If the gauged family `μ'_{χ(x),χ(y)}` is the family
@@ -93,7 +93,7 @@ theorem exponent_eq_of_kernel_eq
     intro u hu huy
     have hA := increment_toReal_eq_of_kernel_eq (F := F) (F' := F') hpos hmono
       (heq u y hu huy) hu huy hs
-    rw [increment_toReal (hpos u hu) (hmono hu huy) hs, increment_toReal hu huy hs] at hA
+    rw [increment_toReal (hpos u hu).le (hmono hu huy) hs, increment_toReal hu.le huy hs] at hA
     linarith
   -- Both subtrahends can be made arbitrarily small, so the difference is `0`.
   have hsmall : ∀ ε : ℝ, 0 < ε →
