@@ -124,6 +124,26 @@ theorem isNonneg_mconvL1 [IsFiniteMeasure μ] (f : X) (hf : IsNonneg f) :
   rw [Pi.zero_apply, hcoe, mconv_apply]
   exact integral_nonneg_of_ae ht
 
+/-- **(A6)** for `mconvL1`, the cascade clause: composing the operators convolves the measures.
+
+Note the order — `Φ_{y,z} Φ_{x,y}` corresponds to `μ_{x,y} ∗ μ_{y,z}`, which is what
+`kernel_conv` produces. -/
+theorem mconvL1_comp (μ ν : Measure ℝ) [IsFiniteMeasure μ] [IsFiniteMeasure ν]
+    [IsFiniteMeasure (μ ∗ ν)] :
+    (mconvL1 ν).comp (mconvL1 μ) = mconvL1 (μ ∗ ν) := by
+  refine ContinuousLinearMap.ext fun f => Lp.ext ?_
+  refine (coeFn_mconvL1 ν (mconvL1 μ f)).trans ?_
+  refine (mconv_congr_ae ν (coeFn_mconvL1 μ f)).trans ?_
+  refine (mconv_conv μ ν (Lp.aestronglyMeasurable f) (L1.integrable_coeFn f)).trans ?_
+  exact (coeFn_mconvL1 (μ ∗ ν) f).symm
+
+/-- **(A6)** for `mconvL1`, the diagonal clause: `δ₀ * f = f`. -/
+theorem mconvL1_dirac_zero : mconvL1 (Measure.dirac (0 : ℝ)) = ContinuousLinearMap.id ℝ X := by
+  refine ContinuousLinearMap.ext fun f => Lp.ext ?_
+  refine (coeFn_mconvL1 _ f).trans ?_
+  rw [mconv_dirac_zero]
+  rfl
+
 /-- **(A5)** for `mconvL1`: unit area, for a probability measure.
 
 Stated for every `f`, though `def:cascade-family` only asks it on the positive cone: the

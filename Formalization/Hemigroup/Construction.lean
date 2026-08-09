@@ -302,6 +302,21 @@ theorem kernel_conv (ha : 0 ≤ a) (hab : a ≤ b) (hbc : b ≤ c) :
     ← ENNReal.toReal_add (increment_ne_top (F := F) ha hab hs)
       (increment_ne_top (F := F) hb hbc hs), increment_add ha hab hbc hs]
 
+/-- The increment over a degenerate pair vanishes: the drift factor `b - a` and the density
+`k(u/b) - k(u/a)` are both zero. -/
+@[simp] theorem increment_self (a s : ℝ) : F.increment a a s = 0 := by
+  simp [increment, incrementDensity, levyExponentD, levyJump]
+
+/-- **Axiom (A6), the diagonal**: `μ_{x,x} = δ₀`.
+
+The transform is `exp(-g_{x,x}) = exp 0 = 1`, which is the transform of `δ₀`; `kernel_unique`
+does the rest. -/
+theorem kernel_self (ha : 0 ≤ a) : F.kernel a a = Measure.dirac 0 := by
+  refine (kernel_unique (F := F) (isCausal_dirac le_rfl) ha le_rfl fun s _ => ?_).symm
+  rw [increment_self, ENNReal.toReal_zero, neg_zero, Real.exp_zero, laplace,
+    integral_dirac]
+  simp
+
 /-- **Axiom (A8) for the measures**: dilating the pair dilates the kernel,
 `μ_{σa,σb} = D_σ μ_{a,b}`.
 

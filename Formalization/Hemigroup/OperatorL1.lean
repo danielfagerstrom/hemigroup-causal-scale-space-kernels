@@ -67,6 +67,43 @@ theorem mconv_smul (μ : Measure ℝ) (c : ℝ) (f : ℝ → ℝ) :
   funext t
   simp only [mconv_apply, Pi.smul_apply, smul_eq_mul, integral_const_mul]
 
+/-! ## Composition: (A6) at the level of functions
+
+`Φ_{y,z} Φ_{x,y} = Φ_{x,z}` asks that convolving twice is convolving with the convolution.
+Mathlib has `Measure.lintegral_conv` but no Bochner counterpart, so the route is
+`Measure.conv = map (·.1 + ·.2) (μ ⊗ ν)`, `integral_map`, and Fubini — with the product
+integrability that Fubini needs read off the *already established* one-variable statement
+rather than proved again.
+-/
+
+/-- **(A6) at the level of functions**: `ν * (μ * f) = (μ ∗ ν) * f`.
+
+The `a.e.` is unavoidable — the identity holds at every `t` where the double integral converges,
+which is a.e. `t` and not all of them. -/
+theorem mconv_conv (μ ν : Measure ℝ) [IsFiniteMeasure μ] [IsFiniteMeasure ν] {f : ℝ → ℝ}
+    (hf : AEStronglyMeasurable f) (hfi : Integrable f) :
+    mconv ν (mconv μ f) =ᵐ[volume] mconv (μ ∗ ν) f := by
+  -- For a.e. `t`, `u ↦ f (t - u)` is integrable against `μ ∗ ν`.
+  filter_upwards [(integrable_uncurry_sub (μ ∗ ν) hf hfi).prod_right_ae] with t ht
+  simp only [Function.uncurry] at ht
+  -- Move to the product, where Fubini applies.
+  have hadd : AEMeasurable (fun p : ℝ × ℝ => p.1 + p.2) (μ.prod ν) :=
+    (measurable_fst.add measurable_snd).aemeasurable
+  have hprod : Integrable (fun p : ℝ × ℝ => f (t - (p.1 + p.2))) (μ.prod ν) := by
+    rw [Measure.conv] at ht
+    exact (integrable_map_measure ht.aestronglyMeasurable hadd).mp ht
+  have hmap : ∫ u, f (t - u) ∂(μ ∗ ν) = ∫ p : ℝ × ℝ, f (t - (p.1 + p.2)) ∂(μ.prod ν) := by
+    rw [Measure.conv]
+    exact integral_map hadd (by rw [← Measure.conv]; exact ht.aestronglyMeasurable)
+  simp only [mconv_apply]
+  rw [hmap, integral_prod_symm _ hprod]
+  simp only [sub_add_eq_sub_sub, sub_right_comm]
+
+/-- `δ₀ * f = f`: the diagonal clause of (A6). -/
+theorem mconv_dirac_zero (f : ℝ → ℝ) : mconv (Measure.dirac 0) f = f := by
+  funext t
+  rw [mconv_apply, integral_dirac, sub_zero]
+
 /-! ## The operator on `L¹` -/
 
 /-- `Φ f = μ * f` as a linear map on `L¹`, via the integrable representative. -/
