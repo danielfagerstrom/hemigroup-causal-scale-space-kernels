@@ -99,6 +99,32 @@ theorem mconv_conv (μ ν : Measure ℝ) [IsFiniteMeasure μ] [IsFiniteMeasure �
   rw [hmap, integral_prod_symm _ hprod]
   simp only [sub_add_eq_sub_sub, sub_right_comm]
 
+/-- **Pairing against a bounded function.** `∫ g · (μ * f) = ∫∫ g(t) f(t - r)`.
+
+The integrability Fubini needs is `integrable_uncurry_sub` again, dominated by `C` — which is
+why `g` is asked to be bounded rather than integrable. This is the shape (ND) consumes: choosing
+`g` to be a decaying exponential turns the identity into a statement about Laplace transforms,
+where injectivity can act. -/
+theorem integral_mul_mconv (μ : Measure ℝ) [IsFiniteMeasure μ] {f g : ℝ → ℝ}
+    (hf : AEStronglyMeasurable f) (hfi : Integrable f)
+    (hg : Measurable g) {C : ℝ} (hgb : ∀ t, |g t| ≤ C) :
+    ∫ t, g t * mconv μ f t = ∫ r, (∫ t, g t * f (t - r)) ∂μ := by
+  have hFm : AEStronglyMeasurable (fun p : ℝ × ℝ => g p.1 * f (p.1 - p.2)) (volume.prod μ) :=
+    ((hg.comp measurable_fst).aestronglyMeasurable).mul
+      (hf.comp_quasiMeasurePreserving (quasiMeasurePreserving_sub volume μ))
+  have hdom : Integrable (fun p : ℝ × ℝ => C * ‖f (p.1 - p.2)‖) (volume.prod μ) :=
+    ((integrable_uncurry_sub μ hf hfi).norm).const_mul C
+  have hFi : Integrable (fun p : ℝ × ℝ => g p.1 * f (p.1 - p.2)) (volume.prod μ) := by
+    refine hdom.mono' hFm (Filter.Eventually.of_forall fun p => ?_)
+    rw [norm_mul]
+    exact mul_le_mul_of_nonneg_right (by rw [Real.norm_eq_abs]; exact hgb p.1) (norm_nonneg _)
+  calc ∫ t, g t * mconv μ f t
+      = ∫ t, (∫ r, g t * f (t - r) ∂μ) := by
+        refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+        change g t * mconv μ f t = ∫ r, g t * f (t - r) ∂μ
+        rw [mconv_apply, integral_const_mul]
+    _ = ∫ r, (∫ t, g t * f (t - r)) ∂μ := integral_integral_swap hFi
+
 /-- `δ₀ * f = f`: the diagonal clause of (A6). -/
 theorem mconv_dirac_zero (f : ℝ → ℝ) : mconv (Measure.dirac 0) f = f := by
   funext t
