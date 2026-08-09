@@ -11,10 +11,20 @@
 % mentioned in the remark for provenance, NOT as a \ledger{} interface: nothing here is taken
 % on trust.
 %
-% Banach--Alaoglu and Riesz--Markov (the weak-* extraction) are likewise held [T]. They are
-% deliberately not ledger entries -- Mathlib has both, so the Lean development can prove this
-% rather than assume it, which is exactly the verified-core/axiomatized-analysis split working
-% as intended.
+% Banach--Alaoglu and Riesz--Markov (the weak-* extraction) are likewise held [T], and are
+% deliberately not ledger entries.
+%
+% CORRECTION (2026-08-09, from scouting M6b). The original note here said "Mathlib has both",
+% which is only half right, and the half that is wrong is the one that matters:
+%
+%   * Banach--Alaoglu IS there: WeakDual.isCompact_closedBall.
+%   * Riesz--Markov is there only in the POSITIVE-FUNCTIONAL form -- rieszMeasure takes
+%     Λ : C_c(X, ℝ≥0) →ₗ[ℝ≥0] ℝ≥0. There is no M(X) ≅ C₀(X)* duality anywhere in Mathlib.
+%
+% The conclusion survives, because the functionals here ARE positive (h_ε ≥ 0), so the duality
+% is not actually needed: what is needed is the extraction of a limit functional, and then
+% rieszMeasure applies. But the step is hand-work, not a citation, and the cost estimate for
+% M6b has to reflect that. See the note on the alternative route below.
 
 % draft: Lemma 4.1
 \begin{lemma}[representation]\label{lem:convolution-representation}
@@ -93,8 +103,16 @@ and dividing by $\hat\rho(s) > 0$ gives the claim.
 convolution by a measure), specialised to $\RR$ and sharpened by (A3)--(A5) to a probability
 measure carried by $[0,\infty)$. It is proved here rather than cited, so nothing in this
 chapter rests on the trust boundary: the weak-$*$ extraction is Banach--Alaoglu together with
-the Riesz--Markov identification $M(\RR) = C_0(\RR)^*$, both of which the formalisation can
-discharge outright.
+Riesz--Markov, and the functionals in play are \emph{positive}, which is the form in which the
+representation theorem is available.
+
+\emph{Note for the formalisation.} The extraction admits a second route, and it may be the
+cheaper one. The identity $\Phi(f * \rho_\varepsilon) = f * h_\varepsilon$ used in the proof
+gives $f * h_\varepsilon \to \Phi f$ in $X$ for \emph{every} $f$, and convergence in $X$ of the
+densities makes the family $\{h_\varepsilon\,dt\}$ tight, so a subsequential weak limit is
+available from Prokhorov directly, as a probability measure, with no dual space in sight. The
+mass and support clauses then come for free rather than needing $\|\mu\| = 1$ to be recovered
+afterwards.
 
 The multiplicative-group counterpart of this step, for the scale variable rather than time,
 is what Chapter~11 has to build by hand; there is no Wendel theorem to appeal to once the
