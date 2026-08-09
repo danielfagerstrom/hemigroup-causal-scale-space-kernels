@@ -20,6 +20,12 @@
 %         of the ladder and the first artifact worth publishing, because it certifies "these
 %         kernels exist and satisfy the axioms" without depending on the analysis direction.
 %
+% M1b (2026-08-09) formalised the half of Lemma 7.1 that (<=) consumes -- (3) => (1), as
+% Hemigroup.levyExponentD_increment -- together with the vanishing lemma in the same
+% representation form (Hemigroup.levyExponentD_eq_zero_of_eq_zero), which is what (<=) uses to
+% verify (ND). Both of (<=)'s inputs from this chapter are therefore now in Lean; what M2 still
+% needs from elsewhere is Bernstein--Widder (A1) and the continuity theorem (A5).
+%
 % This is also where prop:laplace-continuity finally enters the dependency graph, having sat
 % isolated since chapter 2 -- its Assignment clause was written against exactly this use.
 
@@ -42,7 +48,18 @@ For $F \in \BFz$ the following are equivalent:
 with $k : (0,\infty) \to [0,\infty)$ nonincreasing, $\int_0^1 k < \infty$ and
 $\int_1^\infty k(t)/t\,dt < \infty$.
 \end{enumerate}
-\statusT
+\statusT\quad\emph{(one implication, $(3) \Rightarrow (1)$, is formalised, in representation
+form, as \texttt{Hemigroup.levyExponentD\_increment}: for $0 < a \le b$ the increment is again a
+Lévy exponent, with drift $b_0(b-a)$ and Lévy density $\bigl(k(u/b) - k(u/a)\bigr)/u$, whose
+nonnegativity is exactly the hypothesis that $k$ is nonincreasing. From the representation that
+is a change of variables --- $du/u$ is the Haar measure of the dilation group, so a dilation
+moves the density and nothing else --- and a sign, with no closure theorem and no derivative.
+The node is deliberately \emph{not} marked as proved in Lean: an equivalence is not established
+by one implication, and the other two are what the analysis direction of
+\ref{thm:main-characterization} uses. They rest on \ref{prop:bernstein-toolbox}(4) and on the
+uniqueness clause of \ref{prop:bernstein-toolbox}(3) --- A4 and A3 --- so formalising them means
+formalising those, which is what the trust boundary declines to do.
+\texttt{\#print axioms} reduces to Lean core only.)}
 \end{lemma}
 
 \begin{proof}
