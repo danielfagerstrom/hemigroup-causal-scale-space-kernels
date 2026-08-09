@@ -166,7 +166,7 @@ articles that have not yet pinned a ledger.
 - **Confidence.** ✅ well grounded, with the boundedness caveat recorded above.
 
 ## A6 — Uniqueness: a measure on the half-line is determined by its Laplace transform
-**Blueprint:** `prop:laplace-uniqueness` · **Lean:** *(not stated yet)*
+**Blueprint:** `prop:laplace-uniqueness` · **Lean:** `Hemigroup.laplace_injective` — a **theorem**, not an axiom; see below
 **Cite:** @feller2009introduction — Vol. 2, §XIII.1, Theorem 1, p. 430 (probability distributions); Theorem 1a, p. 432 (arbitrary measures)
 
 - **Statement as used.** Distinct measures on `[0,∞)` have distinct Laplace transforms. This
@@ -181,7 +181,21 @@ articles that have not yet pinned a ledger.
   probability/measure pairs do **not** sit on adjacent pages: uniqueness is Theorem 1 (p. 430)
   and Theorem 1a (p. 432), continuity is Theorem 2 (p. 431) and Theorem 2a (p. 433). Citing
   "§XIII.1" alone is not an anchor; use the theorem numbers.
-- **Confidence.** ✅ well grounded.
+- **⚠️ Not in the Lean trust base** (2026-08-09). The development *proves* this instead of
+  citing it: `Hemigroup.laplace_injective`, whose `#print axioms` reduces to Lean core alone. So
+  A6 is **not** in `trust-boundary.txt` and nothing proved in Lean rests on it. The `**Lean:**`
+  field above names a theorem, not an `axiom` — the cross-check in `linkage/trust.py` reads
+  these segments only to confirm that a *declared* axiom was reviewed, never to authorise one,
+  so naming a proved declaration here is safe and is the documented use.
+- **⚠️ What Lean proves is weaker than what is stated.** `laplace_injective` assumes the
+  transforms agree on all of `[0,∞)`; Feller's Theorem 1a gives the conclusion from agreement on
+  a tail `(a,∞)`. The blueprint node states the tail form and therefore carries no Lean tag.
+  The gap is genuine: the Lean proof substitutes `x = e^{-t}` and reads `μ̂(n)` as the `n`th moment
+  of the transported measure, and moments from some `n_0` onwards do not pin down an atom at the
+  origin — our measures have none, being carried by `(0,1]`, but that step is only available
+  once `n = 0` is in hand. Anyone needing the tail form in Lean must supply it.
+- **Confidence.** ✅ well grounded as a citation, and superseded in Lean for the case the
+  development uses.
 
 ## A7 — Moment criterion for self-decomposable laws
 **Blueprint:** `prop:moments` · **Lean:** *(not stated yet)*

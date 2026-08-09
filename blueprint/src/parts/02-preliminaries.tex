@@ -151,5 +151,15 @@ for probability measures (Theorem~1) and for arbitrary measures (Theorem~1a). Th
 licenses every step in the article of the form ``the transforms agree, therefore the measures
 agree'' --- the uniqueness clause of Lemma~4.1, and Lemma~6.1, Proposition~9.2, Theorem~9.5
 and Lemma~10.3(5). It says nothing about existence, and nothing about which functions are
-transforms; that is \ref{prop:bernstein-toolbox}(1).)}
+transforms; that is \ref{prop:bernstein-toolbox}(1). \textbf{Not needed in Lean.} The
+development proves this rather than citing it: \texttt{Hemigroup.laplace\_injective}, by the
+classical substitution $x = e^{-t}$, which carries a causal measure onto $[0,1]$, turns
+$\hat\mu(n)$ into the $n$th moment of the image, and closes with the Weierstrass approximation
+theorem. \texttt{\#print axioms} reduces to Lean core, so A6 never enters
+\texttt{trust-boundary.txt} and nothing proved in Lean rests on it. The node keeps \textbf{[A]}
+because that is the \emph{paper's} stance, and it carries no Lean tag because what is proved is
+weaker than what is stated: agreement on all of $[0,\infty)$, not on a tail $(a,\infty)$. That
+gap is not a formality --- equality of the moments from some $n_0$ onwards does not by itself
+pin down an atom at the origin of the transported measure, and the argument that ours has none
+is not formalised.)}
 \end{proposition}
