@@ -143,4 +143,27 @@ lemma coeFn_dilL1 {σ : ℝ} (hσ : 0 < σ) (f : ℝ →₁[volume] ℝ) :
     dilL1 hσ f =ᵐ[volume] dilate σ (f : ℝ → ℝ) :=
   Integrable.coeFn_toL1 (integrable_dilate (L1.integrable_coeFn f) hσ.ne')
 
+/-! ## (A8) at the level of functions -/
+
+/-- **(A8) at the level of functions**: `D_σ (μ * f) = (D_σ μ) * (D_σ f)`, where the dilation
+of the measure is pushforward along `t ↦ σ t`.
+
+Unlike (A6) this is *pointwise*, at every `t`: the change of variables happens inside a single
+integral and no Fubini is involved. `f` is asked to be genuinely measurable because `mconv`
+against an arbitrary `μ` is not blind to null sets of `volume`; the `L¹` statement below moves
+to a measurable representative first. -/
+theorem dilate_mconv {σ : ℝ} (hσ : 0 < σ) (μ : Measure ℝ) {f : ℝ → ℝ} (hf : Measurable f) :
+    dilate σ (mconv μ f) = mconv (μ.map (fun t => σ * t)) (dilate σ f) := by
+  have hmeas : Measurable (dilate σ f) := (hf.comp (measurable_const_mul σ⁻¹)).const_mul σ⁻¹
+  funext t
+  have hcomp : AEStronglyMeasurable (fun u : ℝ => dilate σ f (t - u))
+      (μ.map (fun t => σ * t)) :=
+    (hmeas.comp (measurable_const.sub measurable_id)).aestronglyMeasurable
+  rw [mconv_apply, integral_map (measurable_const_mul σ).aemeasurable hcomp]
+  have harg : ∀ r : ℝ, σ⁻¹ * (t - σ * r) = σ⁻¹ * t - r := fun r => by
+    field_simp
+  simp only [dilate, harg]
+  rw [integral_const_mul]
+  rfl
+
 end Hemigroup

@@ -144,6 +144,33 @@ theorem mconvL1_dirac_zero : mconvL1 (Measure.dirac (0 : ℝ)) = ContinuousLinea
   rw [mconv_dirac_zero]
   rfl
 
+/-- **(A8)** for `mconvL1`: dilating intertwines with dilating the measure.
+
+`dilate_mconv` is pointwise but asks for a genuinely measurable `f`, so the first move is to a
+measurable representative — legitimate because every operation in sight respects a.e. equality
+(`mconv_congr_ae`, `dilate_congr_ae`). -/
+theorem dilL1_comp_mconvL1 {σ : ℝ} (hσ : 0 < σ) (μ : Measure ℝ) [IsFiniteMeasure μ]
+    [IsFiniteMeasure (μ.map (fun t => σ * t))] :
+    (dilL1 hσ).comp (mconvL1 μ) = (mconvL1 (μ.map (fun t => σ * t))).comp (dilL1 hσ) := by
+  refine ContinuousLinearMap.ext fun f => Lp.ext ?_
+  set g := (Lp.aestronglyMeasurable f).mk (f : ℝ → ℝ) with hg_def
+  have hgm : Measurable g := (Lp.aestronglyMeasurable f).stronglyMeasurable_mk.measurable
+  have hfg : (f : ℝ → ℝ) =ᵐ[volume] g := (Lp.aestronglyMeasurable f).ae_eq_mk
+  have hpt : dilate σ (mconv μ g)
+      =ᵐ[volume] mconv (μ.map (fun t => σ * t)) (dilate σ g) := by
+    rw [dilate_mconv hσ μ hgm]
+  simp only [ContinuousLinearMap.comp_apply]
+  have h1 : ((dilL1 hσ (mconvL1 μ f) : X) : ℝ → ℝ)
+      =ᵐ[volume] mconv (μ.map (fun t => σ * t)) (dilate σ (f : ℝ → ℝ)) :=
+    (coeFn_dilL1 hσ (mconvL1 μ f)).trans
+      ((dilate_congr_ae hσ.ne' (coeFn_mconvL1 μ f)).trans
+        ((dilate_congr_ae hσ.ne' (mconv_congr_ae μ hfg)).trans
+          (hpt.trans (mconv_congr_ae _ (dilate_congr_ae hσ.ne' hfg.symm)))))
+  have h2 : ((mconvL1 (μ.map (fun t => σ * t)) (dilL1 hσ f) : X) : ℝ → ℝ)
+      =ᵐ[volume] mconv (μ.map (fun t => σ * t)) (dilate σ (f : ℝ → ℝ)) :=
+    (coeFn_mconvL1 _ (dilL1 hσ f)).trans (mconv_congr_ae _ (coeFn_dilL1 hσ f))
+  exact h1.trans h2.symm
+
 /-- **(A5)** for `mconvL1`: unit area, for a probability measure.
 
 Stated for every `f`, though `def:cascade-family` only asks it on the positive cone: the
