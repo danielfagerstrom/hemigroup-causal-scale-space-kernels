@@ -82,6 +82,50 @@ theorem setLIntegral_enorm_mconv_tail_le (μ : Measure ℝ) [IsFiniteMeasure μ]
     _ = (∫⁻ u, ‖f u‖ₑ) * μ (Ioi T) := by
         rw [setLIntegral_const, mul_comm]
 
+/-- A compactly supported function vanishes outside a bounded window. This is the form the tail
+estimate and the causality argument both consume — the latter needing only the left half. -/
+theorem exists_window_of_hasCompactSupport {f : ℝ → ℝ} (hcs : HasCompactSupport f) :
+    ∃ M : ℝ, 0 ≤ M ∧ ∀ x, M < |x| → f x = 0 := by
+  obtain ⟨R, hR⟩ := hcs.isCompact.isBounded.subset_closedBall (0 : ℝ)
+  refine ⟨max R 0, le_max_right _ _, fun x hx => ?_⟩
+  refine image_eq_zero_of_notMem_tsupport fun hmem => ?_
+  have hle := hR hmem
+  rw [Metric.mem_closedBall, Real.dist_eq, sub_zero] at hle
+  exact absurd hx (by simp only [not_lt]; exact hle.trans (le_max_left _ _))
+
+theorem vanish_left_of_window {f : ℝ → ℝ} {M : ℝ} (hM0 : 0 ≤ M)
+    (hw : ∀ x, M < |x| → f x = 0) (x : ℝ) (hx : x < -M) : f x = 0 :=
+  hw x (by rw [abs_of_neg (by linarith)]; linarith)
+
+theorem vanish_right_of_window {f : ℝ → ℝ} {M : ℝ} (hM0 : 0 ≤ M)
+    (hw : ∀ x, M < |x| → f x = 0) (x : ℝ) (hx : M < x) : f x = 0 :=
+  hw x (by rw [abs_of_pos (by linarith)]; exact hx)
+
+/-- **The left tail costs nothing.** Causality plus a compactly supported `f` make `μ * f` vanish
+identically below `-M` — no estimate, no `ε`. This is the same asymmetry that made `[0,T]` the
+right compact for tightness in `Continuity.lean`. -/
+theorem mconv_eq_zero_of_window {μ : Measure ℝ} (hμ : IsCausal μ) {f : ℝ → ℝ} {M : ℝ}
+    (hM0 : 0 ≤ M) (hw : ∀ x, M < |x| → f x = 0) {t : ℝ} (ht : t < -M) :
+    mconv μ f t = 0 :=
+  mconv_eq_zero_of_lt hμ (vanish_left_of_window hM0 hw) ht
+
+/-- **The tail estimate for a difference.** Both terms are controlled separately, so the tails of
+the two measures add. -/
+theorem setLIntegral_enorm_mconv_sub_tail_le (μ ν : Measure ℝ) [IsFiniteMeasure μ]
+    [IsFiniteMeasure ν] {f : ℝ → ℝ} (hf : AEStronglyMeasurable f) (hfi : Integrable f)
+    {M T : ℝ} (hsupp : ∀ u, M < u → f u = 0) :
+    ∫⁻ t in Ioi (T + M), ‖mconv μ f t - mconv ν f t‖ₑ
+      ≤ (∫⁻ u, ‖f u‖ₑ) * μ (Ioi T) + (∫⁻ u, ‖f u‖ₑ) * ν (Ioi T) := by
+  have hmμ : AEMeasurable (fun t => ‖mconv μ f t‖ₑ) (volume.restrict (Ioi (T + M))) :=
+    ((integrable_mconv μ hf hfi).aestronglyMeasurable.enorm).restrict
+  calc ∫⁻ t in Ioi (T + M), ‖mconv μ f t - mconv ν f t‖ₑ
+      ≤ ∫⁻ t in Ioi (T + M), (‖mconv μ f t‖ₑ + ‖mconv ν f t‖ₑ) :=
+        lintegral_mono fun t => enorm_sub_le
+    _ = (∫⁻ t in Ioi (T + M), ‖mconv μ f t‖ₑ) + ∫⁻ t in Ioi (T + M), ‖mconv ν f t‖ₑ :=
+        lintegral_add_left' hmμ _
+    _ ≤ _ := add_le_add (setLIntegral_enorm_mconv_tail_le μ hf hsupp)
+        (setLIntegral_enorm_mconv_tail_le ν hf hsupp)
+
 /-! ## Pointwise convergence -/
 
 namespace SelfDecomposableExponent
