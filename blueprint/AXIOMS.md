@@ -170,12 +170,12 @@ articles that have not yet pinned a ledger.
   clause's claim that tightness is ours is now checked rather than asserted — including
   `F(0+) = 0` (`exists_exponent_lt`), which is what lets `s` be chosen small. Continuity of the
   exponent in its argument is also proved (`tendsto_exponent`, dominated convergence against the
-  integrand at the largest argument), the pointwise-convergence-of-transforms ingredient. What
-  is *not* done: convergence of the **increments** (cancellation in `ℝ≥0∞` from that continuity
-  — short) and the assembly tight + convergent transforms ⇒ weak convergence (Prokhorov, which
-  Mathlib has, plus A6's Lean replacement `laplace_injective` to identify the limit). Neither
-  needs a citation — but until they are written, **A5 stays a live candidate for the trust
-  boundary.** Do not record it as avoided.
+  integrand at the largest argument), the pointwise-convergence-of-transforms ingredient. Convergence of
+  the **increments**, and hence of the transforms, is also proved (`tendsto_laplace_kernel`).
+  What is *not* done is the assembly alone: tight + convergent transforms ⇒ weak convergence
+  (Prokhorov, which Mathlib has; portmanteau for causality of the limit; and A6's Lean
+  replacement `laplace_injective` to identify it). It needs no citation — but until it is
+  written, **A5 stays a live candidate for the trust boundary.** Do not record it as avoided.
 - **Confidence.** ✅ well grounded, with the boundedness caveat recorded above.
 
 ## A6 — Uniqueness: a measure on the half-line is determined by its Laplace transform

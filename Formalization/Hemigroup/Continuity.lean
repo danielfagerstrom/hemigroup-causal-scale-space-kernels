@@ -25,25 +25,29 @@ made uniform over the kernel family as `μ_{a,b}(t > T) ≤ F(Bs)/(1 - e^{-sT})`
 (`kernel_tail_le`); and the fact that makes it bite, `F(0+) = 0` (`exists_exponent_lt`), so that
 `s` can be chosen to make the numerator as small as wanted. Every step is Lean core.
 
-**Continuity of the exponent** (`tendsto_exponent`): `r n → ρ` with `r n ≤ R` gives
-`F(r n) → F(ρ)`, by dominated convergence against the integrand at `R`. This is the
-pointwise-convergence-of-transforms ingredient.
+**Convergence of the transforms, in full.** `tendsto_exponent` gives continuity of the exponent
+(`r n → ρ` with `r n ≤ R` implies `F(r n) → F(ρ)`, dominated convergence against the integrand
+at `R`); `tendsto_increment_toReal` turns that into convergence of the increments, in `ℝ` rather
+than `ℝ≥0∞` because truncated subtraction is not continuous; and `tendsto_laplace_kernel`
+delivers `μ̂_{u n, v n}(s) → μ̂_{α,β}(s)`.
 
 So the blueprint's claim that the tightness argument is ours is **checked**, not merely asserted.
 
 ## What remains
 
-Two steps, neither needing a citation:
+**One step**, and it needs no citation: the assembly
 
-* convergence of the *increments*: `g_{aₙ,bₙ}(s) → g_{a,b}(s)` when `(aₙ,bₙ) → (a,b)`. The
-  exponents are continuous by `tendsto_exponent` and `F(a s) + g_{a,b}(s) = F(b s)` with every
-  term finite, so this is cancellation in `ℝ≥0∞` — short, but not written here;
-* the assembly: tight + convergent transforms ⇒ weak convergence. Prokhorov (Mathlib has it)
-  gives a convergent subsequence, `laplace_injective` identifies its limit, and
-  compact-plus-unique-limit-point upgrades that to the full sequence.
+  tight + convergent transforms  ⇒  weak convergence.
 
-Until those are written, **A5 remains a live candidate for the trust boundary.** The evidence
-here says it is very likely avoidable; it does not yet say it is avoided.
+Prokhorov (`Mathlib.MeasureTheory.Measure.Prokhorov`) gives a convergent subsequence from
+`kernel_tail_le`; any subsequential limit is causal by portmanteau on the open set `Iio 0`, has
+the limiting transform by testing against the bounded surrogate `t ↦ e^{-s · max t 0}` (which
+agrees with `e^{-st}` where causal measures live), and is therefore *the* limit by
+`laplace_injective`; compact-plus-unique-cluster-point then upgrades the subsequence to the
+sequence.
+
+Every ingredient of that chain is available. Until it is written, **A5 remains a live candidate
+for the trust boundary** — the evidence says avoidable, not avoided.
 -/
 
 namespace Hemigroup
@@ -219,6 +223,57 @@ theorem exists_exponent_lt (F : SelfDecomposableExponent) {ε : ℝ≥0∞} (hε
     ((tendsto_exponent_atZero F hle hr).eventually
       (gt_mem_nhds hε)).exists
   exact ⟨1 / (n + 1), hpos n, hn⟩
+
+/-! ## Convergence of the increments, and of the transforms
+
+The last step before the Prokhorov assembly. Note it is carried out in `ℝ` rather than
+`ℝ≥0∞`: truncated subtraction on `ℝ≥0∞` is not continuous, so the identity
+`F(as) + g_{a,b}(s) = F(bs)` is pushed through `ENNReal.toReal` first, where every term is finite
+and ordinary subtraction applies.
+-/
+
+/-- **The increments converge.** If `u n → α` and `v n → β` inside a bounded range, then
+`g_{u n, v n}(s) → g_{α,β}(s)`. -/
+theorem tendsto_increment_toReal (F : SelfDecomposableExponent) {u v : ℕ → ℝ} {α β B s : ℝ}
+    (hs : 0 ≤ s) (hB : 0 ≤ B) (huB : ∀ n, u n ≤ B) (hvB : ∀ n, v n ≤ B)
+    (hu0 : ∀ n, 0 < u n) (huv : ∀ n, u n ≤ v n)
+    (hα : Filter.Tendsto u Filter.atTop (nhds α)) (hβ : Filter.Tendsto v Filter.atTop (nhds β))
+    (hα0 : 0 < α) (hαβ : α ≤ β) :
+    Filter.Tendsto (fun n => (F.increment (u n) (v n) s).toReal) Filter.atTop
+      (nhds (F.increment α β s).toReal) := by
+  have hBs : (0 : ℝ) ≤ B * s := by positivity
+  -- The two exponents converge, by `tendsto_exponent` with the common bound `B * s`.
+  have hEu : Filter.Tendsto (fun n => (F.exponent (u n * s)).toReal) Filter.atTop
+      (nhds (F.exponent (α * s)).toReal) :=
+    (ENNReal.tendsto_toReal (F.ne_top _ (mul_nonneg hα0.le hs))).comp
+      (tendsto_exponent F (fun n => mul_le_mul_of_nonneg_right (huB n) hs) hBs (hα.mul_const s))
+  have hEv : Filter.Tendsto (fun n => (F.exponent (v n * s)).toReal) Filter.atTop
+      (nhds (F.exponent (β * s)).toReal) :=
+    (ENNReal.tendsto_toReal (F.ne_top _ (mul_nonneg (hα0.le.trans hαβ) hs))).comp
+      (tendsto_exponent F (fun n => mul_le_mul_of_nonneg_right (hvB n) hs) hBs (hβ.mul_const s))
+  -- `g` is the difference of the two exponents, in `ℝ`.
+  have hdiff : ∀ {p q : ℝ}, 0 < p → p ≤ q → (F.increment p q s).toReal
+      = (F.exponent (q * s)).toReal - (F.exponent (p * s)).toReal := by
+    intro p q hp hpq
+    have h := exponent_add_increment (F := F) hp hpq hs
+    have hfin : F.exponent (p * s) ≠ ⊤ := F.ne_top _ (mul_nonneg hp.le hs)
+    rw [← h, ENNReal.toReal_add hfin (increment_ne_top (F := F) hp hpq hs)]
+    ring
+  simp only [hdiff (hu0 _) (huv _), hdiff hα0 hαβ]
+  exact hEv.sub hEu
+
+/-- **The transforms converge** — the input Prokhorov needs, alongside `kernel_tail_le`. -/
+theorem tendsto_laplace_kernel (F : SelfDecomposableExponent) {u v : ℕ → ℝ} {α β B s : ℝ}
+    (hs : 0 ≤ s) (hB : 0 ≤ B) (huB : ∀ n, u n ≤ B) (hvB : ∀ n, v n ≤ B)
+    (hu0 : ∀ n, 0 < u n) (huv : ∀ n, u n ≤ v n)
+    (hα : Filter.Tendsto u Filter.atTop (nhds α)) (hβ : Filter.Tendsto v Filter.atTop (nhds β))
+    (hα0 : 0 < α) (hαβ : α ≤ β) :
+    Filter.Tendsto (fun n => laplace (F.kernel (u n) (v n)) s) Filter.atTop
+      (nhds (laplace (F.kernel α β) s)) := by
+  refine Filter.Tendsto.congr (fun n => (laplace_kernel (hu0 n) (huv n) hs).symm) ?_
+  rw [laplace_kernel hα0 hαβ hs]
+  exact (Real.continuous_exp.tendsto _).comp
+    (tendsto_increment_toReal F hs hB huB hvB hu0 huv hα hβ hα0 hαβ).neg
 
 end SelfDecomposableExponent
 

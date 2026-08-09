@@ -146,11 +146,13 @@ $T$ large yields tightness with no cited input --- and $F(\zp) = 0$, which is wh
 choice possible, is itself proved (\texttt{exists\_exponent\_lt}). The exponent is also
 sequentially continuous in its argument (\texttt{tendsto\_exponent}), by dominated convergence
 against the integrand at the largest argument; that is the pointwise-convergence-of-transforms
-ingredient. What is still missing is convergence of the \emph{increments} --- cancellation in
-$[0,\infty]$ from the continuity just cited --- and then the assembly: Prokhorov for a convergent
-subsequence, with \ref{prop:laplace-uniqueness} identifying its limit. Neither needs a citation.
-Until they are written \ledger{A5} stays a live candidate for the trust boundary: the evidence
-says it is very likely avoidable, not that it is avoided.)}
+ingredient. Convergence of the \emph{increments} and hence of the
+transforms follows (\texttt{tendsto\_laplace\_kernel}), carried out in $\RR$ rather than
+$[0,\infty]$ because truncated subtraction is not continuous. What is left is the assembly
+alone: Prokhorov for a convergent subsequence, portmanteau for causality of the limit, and
+\ref{prop:laplace-uniqueness} to identify it. That needs no citation, but it is not written, so
+\ledger{A5} stays a live candidate for the trust boundary --- the evidence says avoidable, not
+avoided.)}
 \end{proposition}
 
 % additive: not in the draft. Used by lem:convolution-representation, lem:covariance-laplace,
