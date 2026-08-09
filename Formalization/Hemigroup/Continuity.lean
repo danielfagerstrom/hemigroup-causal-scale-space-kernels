@@ -22,8 +22,10 @@ available: Mathlib has Prokhorov, and `prop:laplace-continuity`'s own assignment
   `μ(t > T) · (1 - e^{-sT}) ≤ 1 - μ̂(s)`     (`measureReal_Ioi_mul_le`)
 
 made uniform over the kernel family as `μ_{a,b}(t > T) ≤ F(Bs)/(1 - e^{-sT})` for `b ≤ B`
-(`kernel_tail_le`); and the fact that makes it bite, `F(0+) = 0` (`exists_exponent_lt`), so that
-`s` can be chosen to make the numerator as small as wanted. Every step is Lean core.
+(`kernel_tail_le`); the fact that makes it bite, `F(0+) = 0` (`exists_exponent_lt`), so that `s`
+can be chosen to make the numerator as small as wanted; and the whole thing repackaged as
+`IsTightMeasureSet` (`isTightMeasureSet_kernel`), the form Prokhorov consumes — with `[0,T]` as
+the compact set, since causality kills the left tail outright.
 
 **Convergence of the transforms, in full.** `tendsto_exponent` gives continuity of the exponent
 (`r n → ρ` with `r n ≤ R` implies `F(r n) → F(ρ)`, dominated convergence against the integrand
@@ -35,19 +37,27 @@ So the blueprint's claim that the tightness argument is ours is **checked**, not
 
 ## What remains
 
-**One step**, and it needs no citation: the assembly
+`isTightMeasureSet_kernel` is stated in exactly the form Prokhorov consumes, so the inputs are
+both in hand. The **assembly** is not:
 
-  tight + convergent transforms  ⇒  weak convergence.
+* repackage the family as a `Set (ProbabilityMeasure ℝ)` — Prokhorov's
+  `isCompact_closure_of_isTightMeasureSet` takes the set there and the tightness hypothesis on
+  the coerced measures, which is what `isTightMeasureSet_kernel` supplies;
+* compact closure ⇒ a convergent subsequence (`ℝ` is Polish, so the weak topology on
+  `ProbabilityMeasure ℝ` is metrizable and compactness gives sequential compactness);
+* any subsequential limit is causal by portmanteau on the open set `Iio 0`, and has the limiting
+  transform by testing against the bounded surrogate `t ↦ e^{-s · max t 0}`, which agrees with
+  `e^{-st}` where causal measures live — the surrogate exists precisely because `e^{-st}` itself
+  is unbounded on `ℝ`, the same obstruction `Injectivity.lean` had to route around;
+* `laplace_injective` identifies that limit, and compact-plus-unique-cluster-point upgrades the
+  subsequence to the sequence.
 
-Prokhorov (`Mathlib.MeasureTheory.Measure.Prokhorov`) gives a convergent subsequence from
-`kernel_tail_le`; any subsequential limit is causal by portmanteau on the open set `Iio 0`, has
-the limiting transform by testing against the bounded surrogate `t ↦ e^{-s · max t 0}` (which
-agrees with `e^{-st}` where causal measures live), and is therefore *the* limit by
-`laplace_injective`; compact-plus-unique-cluster-point then upgrades the subsequence to the
-sequence.
+This is a different API surface from everything above — the weak topology on
+`ProbabilityMeasure`, not integrals — which is why it is separated out rather than attempted
+piecemeal.
 
-Every ingredient of that chain is available. Until it is written, **A5 remains a live candidate
-for the trust boundary** — the evidence says avoidable, not avoided.
+Until it is written, **A5 remains a live candidate for the trust boundary**: the evidence says
+avoidable, not avoided.
 -/
 
 namespace Hemigroup
@@ -274,6 +284,69 @@ theorem tendsto_laplace_kernel (F : SelfDecomposableExponent) {u v : ℕ → ℝ
   rw [laplace_kernel hα0 hαβ hs]
   exact (Real.continuous_exp.tendsto _).comp
     (tendsto_increment_toReal F hs hB huB hvB hu0 huv hα hβ hα0 hαβ).neg
+
+/-! ## Tightness in Mathlib's sense
+
+`kernel_tail_le` repackaged as `IsTightMeasureSet`, which is what Prokhorov consumes. The
+compact set is `[0,T]`: causality kills the left tail outright, so the whole content is the
+right tail, and `T` is chosen after `s` — first make `F(Bs)` small, then make the denominator
+at least `1/2`.
+-/
+
+/-- **The kernel family is tight**, for parameters bounded above by `B`. -/
+theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → ℝ} {B : ℝ}
+    (hB : 0 < B) (hu0 : ∀ n, 0 < u n) (huv : ∀ n, u n ≤ v n) (hvB : ∀ n, v n ≤ B) :
+    IsTightMeasureSet {μ : Measure ℝ | ∃ n, μ = F.kernel (u n) (v n)} := by
+  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
+  intro ε hε
+  rcases eq_or_ne ε ⊤ with rfl | hεtop
+  · exact ⟨∅, isCompact_empty, fun μ _ => le_top⟩
+  have he0 : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hεtop
+  -- Make `F(Bs)` smaller than `ε/2` by taking `s` small; this is where `F(0+) = 0` is used.
+  obtain ⟨r, hr0, hrlt⟩ := exists_exponent_lt F (ε := ENNReal.ofReal (ε.toReal / 2))
+    (by simp only [ENNReal.ofReal_pos]; linarith)
+  have hBne : B ≠ 0 := hB.ne'
+  set s : ℝ := r / B with hs_def
+  have hs : 0 < s := div_pos hr0 hB
+  have hsne : s ≠ 0 := hs.ne'
+  have hBs : B * s = r := by rw [hs_def]; field_simp
+  -- Then make the denominator at least `1/2`.
+  have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  set T : ℝ := (Real.log 2 + 1) / s with hT_def
+  have hT0 : 0 < T := by positivity
+  have hsT : s * T = Real.log 2 + 1 := by rw [hT_def]; field_simp
+  have hhalf : (1 : ℝ) / 2 ≤ 1 - Real.exp (-(s * T)) := by
+    have h1 : Real.exp (-(s * T)) ≤ 1 / 2 := by
+      rw [hsT]
+      calc Real.exp (-(Real.log 2 + 1)) ≤ Real.exp (-Real.log 2) :=
+            Real.exp_le_exp.mpr (by linarith)
+        _ = 1 / 2 := by rw [Real.exp_neg, Real.exp_log two_pos]; norm_num
+    linarith
+  refine ⟨Icc 0 T, isCompact_Icc, ?_⟩
+  rintro μ ⟨n, rfl⟩
+  haveI := isProbabilityMeasure_kernel (F := F) (hu0 n) (huv n)
+  -- The left tail is null by causality, so only `Ioi T` matters.
+  have hsub : (Icc (0 : ℝ) T)ᶜ ⊆ Iio 0 ∪ Ioi T := by
+    intro x hx
+    simp only [mem_compl_iff, mem_Icc, not_and_or, not_le] at hx
+    exact hx.imp id id
+  have hle : (F.kernel (u n) (v n)) ((Icc (0 : ℝ) T)ᶜ)
+      ≤ (F.kernel (u n) (v n)) (Ioi T) := by
+    refine (measure_mono hsub).trans ((measure_union_le _ _).trans ?_)
+    rw [isCausal_kernel (hu0 n) (huv n), zero_add]
+  refine hle.trans ?_
+  -- The Markov bound, converted from `ℝ` to `ℝ≥0∞`.
+  have htail := kernel_tail_le (F := F) (hu0 n) (huv n) (hvB n) hs hT0
+  rw [hBs] at htail
+  have hexp_lt : (F.exponent r).toReal < ε.toReal / 2 := by
+    have h := (ENNReal.toReal_lt_toReal (F.ne_top r hr0.le) ENNReal.ofReal_ne_top).mpr hrlt
+    rwa [ENNReal.toReal_ofReal (by linarith)] at h
+  have hquot : (F.exponent r).toReal / (1 - Real.exp (-(s * T))) < ε.toReal := by
+    have hden : (0 : ℝ) < 1 - Real.exp (-(s * T)) := by linarith
+    rw [div_lt_iff₀ hden]
+    nlinarith [ENNReal.toReal_nonneg (a := F.exponent r)]
+  refine (ENNReal.toReal_le_toReal (measure_ne_top _ _) hεtop).mp ?_
+  linarith
 
 end SelfDecomposableExponent
 

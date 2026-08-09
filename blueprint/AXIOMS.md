@@ -172,9 +172,11 @@ articles that have not yet pinned a ledger.
   exponent in its argument is also proved (`tendsto_exponent`, dominated convergence against the
   integrand at the largest argument), the pointwise-convergence-of-transforms ingredient. Convergence of
   the **increments**, and hence of the transforms, is also proved (`tendsto_laplace_kernel`).
-  What is *not* done is the assembly alone: tight + convergent transforms ⇒ weak convergence
-  (Prokhorov, which Mathlib has; portmanteau for causality of the limit; and A6's Lean
-  replacement `laplace_injective` to identify it). It needs no citation — but until it is
+  Tightness is now also in the form Prokhorov consumes
+  (`isTightMeasureSet_kernel`). What is *not* done is the assembly alone: repackaging the family
+  into `ProbabilityMeasure ℝ`, extracting a convergent subsequence, portmanteau for causality of
+  the limit, and `laplace_injective` to identify it. That is a different API surface — the weak
+  topology on `ProbabilityMeasure`, not integrals. It needs no citation — but until it is
   written, **A5 stays a live candidate for the trust boundary.** Do not record it as avoided.
 - **Confidence.** ✅ well grounded, with the boundedness caveat recorded above.
 
