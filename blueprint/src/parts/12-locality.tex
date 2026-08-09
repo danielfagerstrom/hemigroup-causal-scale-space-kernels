@@ -230,10 +230,11 @@ polynomial $Q$; when the roots of $Q$ are real --- necessarily $\le 0$, giving
 $Q(z) = c'\prod(z+a_i)$ with $a_i > 0$ --- this is the family above. Whether
 complex-conjugate root pairs can support an admissible family is left open; we conjecture not.
 
-The Meijer $G$ identification is immediate from the Mellin--Barnes definition
-(\sscite{samko1993fractional}, \S1.3, eq.~(1.95), p.~22): $m$ is a product of gamma factors in
-the numerator alone, which is the case $n = p = 0$, together with the reciprocal and scaling
-rules (1.96) and (1.97) on the same page, which absorb the inversion and the constant $c'$.
+For the Meijer $G$ identification: the product $\gamma_{a_1}\cdots\gamma_{a_{n-1}}$ has a
+$G^{\,n-1,0}_{\,0,n-1}$ density, for arbitrary distinct shapes, by
+\sscite{springer1970distribution}, Thm.~1, p.~722; the reciprocal and the scale factor $c'$ are
+then absorbed by the $G$-function transformation rules (\sscite{samko1993fractional},
+eqs.~(1.96) and (1.97), p.~22).
 \statusA\quad\ledger{A16}\quad\ledger{A15}\quad\emph{(the HCM tower,
 \sscite{bondesson1992generalized}, Thm.~5.1.1 p.~69 and Thm.~4.3.1 p.~57 with its hypotheses
 on p.~56; and Krull--Webster, \sscite{webster1997log}, Thm.~3.1. Cited, not reproven here.
@@ -245,12 +246,17 @@ available here --- and the second inclusion, $\GGC \subset \SDclass$, is asserte
 in a single sentence on p.~30 rather than as a numbered theorem, which makes it the thinnest
 link in this node. \ledger{A15} carries the converse direction only, exactly as in
 \ref{thm:locality}. The Meijer $G$ identification is carried by neither entry and needs
-neither: it follows from the Mellin--Barnes definition and two transformation rules printed on
-the same page of \sscite{samko1993fractional}, as the statement records, and nothing later uses
-it. Note that the parameter list is deliberately not written out --- the $b_j$ depend on
-whether one takes the Mellin transform of the density or the moment function $m$, and they
-differ by one between the two conventions. The conjecture about complex-conjugate roots is
-flagged as open and is claimed by neither entry.)}
+neither: nothing later uses it, and it is cited in the statement to a stated theorem plus two
+printed transformation rules. Two things about it are deliberate. It takes \emph{two} sources
+because \sscite{springer1970distribution} covers products of gamma variables but not
+reciprocals of them --- its only quotient result is for two factors --- so the inversion
+routes through \sscite{samko1993fractional}. And the $G$-parameters of $T_1$ itself are not
+written out: Springer--Thompson use the density convention
+$M\{f\}(s) = \Ex[x^{s-1}]$, under which the parameters are the shapes minus one, whereas the
+$m$ of this proposition is the moment convention $\Ex[X^{z}]$, under which they are the shapes;
+and the reciprocal shifts them again. The order stated above is for the \emph{product}, where
+it is unambiguous. The conjecture about complex-conjugate roots is flagged as open and is
+claimed by neither entry.)}
 \end{proposition}
 
 \begin{proof}
