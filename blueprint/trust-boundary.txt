@@ -5,5 +5,18 @@
 # entry mentions in a `**Lean:**` segment — so the boundary cannot be widened without a
 # reviewed ledger entry behind it.
 #
-# Empty: nothing is proved yet, so nothing is trusted yet. Adding a line here widens the
-# project's trust base and is a review decision, not a fix.
+# Adding a line here widens the project's trust base and is a review decision, not a fix.
+#
+# A17 (2026-08-09), reviewed in AXIOMS.md against SSV Theorem 5.2, p. 49. The existence half of
+# the subordinator correspondence: a Levy triple is realised by a finite measure with the
+# matching Laplace transform. It is what thm:main-characterization's constructive direction
+# needs to build the kernels, and the only thing it needs that is not proved here.
+#
+# Note what is NOT on this line. The source's theorem gives sub-probability measures; the
+# upgrade to a probability measure is prose in SSV and is proved here instead. Uniqueness of the
+# measure is likewise proved, not trusted. And the axiom is stated in this development's own
+# vocabulary -- levyExponent, laplace, IsCausal, no CompletelyMonotone -- so that the day the
+# compound-Poisson construction is carried out it can be demoted to a lemma and this file
+# returned to empty, without touching a single downstream statement.
+
+Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent

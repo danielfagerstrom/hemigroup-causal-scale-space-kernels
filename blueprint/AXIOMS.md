@@ -34,8 +34,40 @@ acquisition note in that entry is kept, because anyone re-verifying will hit the
 11.3 on 2026-08-08 together with the missing Lamperti, Krein and Thorin references. The draft's
 own SSV and Samko–Kilbas–Marichev citations were checked and are correct as they stand.
 
-Numbering runs in **order of first use** through the draft: A1–A6 are the §2 toolbox,
-A7–A8 serve §8, A9–A10 serve §9, A11 serves §10, A12 serves §11, A13–A16 serve §12.
+**The `AXX` identifiers are opaque and stable** (policy revised 2026-08-09). They are assigned in
+order of introduction, never reused, and **never renumbered** — including when a later entry
+belongs, logically, beside an earlier one. Two reasons:
+
+- They are *published names*. The manifest gives every node a `ledger` array and projects it to
+  the hub, so renumbering silently changes what an existing hub note means, in a place no check
+  can see. A stable identifier must not encode a fact that changes.
+- The earlier rule — numbering in order of first use through the draft — required the ledger to
+  be complete and correctly ordered before any proving began. That is only achievable from a
+  finished dependency graph, and a draft is a proof sketch, not one. Formalisation routinely
+  isolates an interface the draft had not, and under the old rule each such discovery forced a
+  renumbering migration or an entry that lied about its position.
+
+Order of first use is therefore a property of this index, not of the names:
+
+| Serves | Entries |
+|---|---|
+| §2 — the Bernstein-function toolbox | A1–A6 |
+| §8 — moments and the Bessel family | A7–A8 |
+| §9 — memory kernels | A9–A10 |
+| §10 — the scale Cauchy problem | A11 |
+| §11 — the signaling form | A12 |
+| §12 — locality | A13–A16 |
+| §7 — the main theorem, **Lean route only** | A17 |
+
+A17 is the first entry whose number sits outside that order, and it is exactly the case the
+policy above was written for: it grounds no `[A]` node, because the blueprint's own proof of
+`thm:main-characterization` does not use it — the Lean development reaches that theorem by a
+different route.
+
+Mnemonic identifiers would be better still, and `ledger_key` is per-article configurable, so this
+repo could adopt them alone. It does not, because renaming sixteen published identifiers is the
+very breakage the first bullet forbids; the case belongs in `article-kit` as guidance for
+articles that have not yet pinned a ledger.
 
 ---
 
@@ -85,6 +117,15 @@ A7–A8 serve §8, A9–A10 serve §9, A11 serves §10, A12 serves §11, A13–A
   the triple `(a, b, ν)` being **unique**, and `g(0+) = a`.
 - **Primary — SSV Theorem 3.2.** ✅ statement on **p. 21**, running to p. 22. Gives the
   representation and the uniqueness of `(a, b, μ)`. Verified 2026-08-07.
+- **The cited theorem is an *iff*, and carries more than this entry uses** (recorded 2026-08-09).
+  Its printed statement is *"A function `f : (0,∞) → ℝ` is a Bernstein function if, and only if,
+  it admits the representation …"*, ending *"the triplet `(a, b, μ)` determines `f` uniquely and
+  vice versa"*; the proof's converse paragraph (p. 22) closes with *"Therefore, `f` is a
+  Bernstein function"*. The **statement as used** above is worded one-directionally because
+  that is the direction draft Proposition 2.3(3) asserts. The converse leg — a triple with
+  `∫ (1 ∧ t) ν(dt) < ∞` yields a Bernstein function — therefore needs **no new trust**: it is
+  already inside this anchor, and [A17](#a17--existence-every-drift-plus-lévy-measure-pair-is-the-laplace-exponent-of-a-subordinator)
+  relies on it rather than citing a second source for it.
 - **Why uniqueness is load-bearing.** Lemma 7.1's equivalence (2) ⟺ (3) identifies the Lévy
   density of `B(s) = sF'(s)` with `k`; without uniqueness of the triple the identification is
   not available and the self-decomposability characterization does not close.
@@ -412,6 +453,77 @@ A7–A8 serve §8, A9–A10 serve §9, A11 serves §10, A12 serves §11, A13–A
   1946 printing we hold carries 1941 pagination.
 - **Confidence.** ✅ well grounded for the closure and the HCM ⊂ GGC step; ⚠️ the GGC ⊂ SD step
   rests on a one-sentence assertion, flagged above.
+
+---
+
+## A17 — Existence: every drift-plus-Lévy-measure pair is the Laplace exponent of a subordinator
+**Blueprint:** *(none — Lean-side entry, see below)* · **Lean:** `Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent`
+**Cite:** @schilling2012bernstein — Theorem 5.2, p. 49, converse clause (Ch. 5, "A probabilistic
+intermezzo"), 2nd ed.; the triple ⟹ `BF` leg is Theorem 3.2, p. 21, already A3's anchor
+
+- **Statement as used.** Given `b₀ ≥ 0` and a causal measure `ν` whose exponent
+  `g(s) = b₀ s + ∫ (1 − e^{−st}) ν(dt)` is finite for `s ≥ 0`, there exists a causal **finite**
+  measure `μ` on `ℝ` with `μ̂(s) = e^{−g(s)}`. This is the **existence** half of the
+  subordinator correspondence — the converse of A3, which carries the representation half.
+- **The first Lean-side entry** (2026-08-09). It grounds no `[A]` node and no `\ledger{}`
+  reference points at it, which `linkage check` permits: check 2 requires every reference to
+  resolve to an entry, not every entry to be referenced. It exists because the **Lean route
+  differs from the blueprint's**. The blueprint proves `thm:main-characterization` (⇐) through
+  complete monotonicity — `prop:bernstein-toolbox`(2) then Bernstein–Widder, (1) — which is A1
+  and A2. Lean never forms a completely monotone function: `lem:selfdecomposable-exponents`'
+  Lean form hands over the Lévy triple explicitly, so what is needed is a *construction* from a
+  triple, not a *representation theorem*. That is a strictly smaller interface, and it keeps
+  `CompletelyMonotone` out of the development entirely
+  (`blueprint/DESIGN-formalization-strategy.md`).
+- **Primary — SSV Theorem 5.2, converse clause.** ✅ **p. 49**: *"Conversely, given `f ∈ BF`,
+  there exists a unique convolution semigroup of sub-probability measures `(μ_t)_{t≥0}` on
+  `[0,∞)` such that (5.1) holds true"*, where (5.1) is `𝓛μ_t = e^{−tf}`. Existence is an
+  **explicit clause of its own**, not something read off a bijection, and it carries uniqueness
+  of the semigroup. "Convolution semigroup" means *vaguely continuous* by Definition 5.1 and the
+  standing convention on p. 48. Verified against the page image 2026-08-09.
+- **The feeder leg needs no new trust.** `(0, b₀, ν) ⟹ g ∈ BF` is the converse direction of SSV
+  Theorem 3.2, which is printed as an *iff*; see A3, whose note records this. So this entry
+  cites a second theorem but adds only one new fact.
+- **What this entry deliberately does NOT carry: the probability-measure refinement.**
+  Theorem 5.2 yields **sub**-probability measures. That `g(0+) = 0` upgrades them to probability
+  measures has *no numbered statement in SSV* — it is a line of the proof of 5.2
+  (`μ_t[0,∞) = 𝓛(μ_t;0+) = e^{−t f(0+)}`) and a sentence of prose on **p. 51**. Rather than
+  widen the citation to remark-grade material, the axiom claims only what Theorem 5.2 states and
+  the refinement is proved: our `levyExponent` has no killing term by construction
+  (`Hemigroup.levyExponent_zero`), so evaluating the transform at `s = 0`, where it is the total
+  mass, gives `1`. That is `Hemigroup.exists_isProbabilityMeasure_laplace_eq_exp_neg_levyExponent`
+  and it is **[T]**.
+- **Nor uniqueness of `μ`.** Theorem 5.2 supplies it, but taking it here would cancel the M0
+  remainder. It is `prop:laplace-uniqueness` on paper and is intended to become a proved lemma
+  (Laplace injectivity), not a second axiom.
+- **Hypothesis translation.** The Lean statement hypothesises finiteness of the exponent rather
+  than the source's `∫ (1 ∧ t) ν(dt) < ∞`. Equivalent for causal `ν`, and in the safe direction:
+  concavity of `t ↦ 1 − e^{−st}` on `[0,1]` gives `1 − e^{−st} ≥ (1 − e^{−s}) (1 ∧ t)` for
+  `t ≥ 0`, so finiteness at a single `s > 0` already forces the integral condition. The axiom is
+  therefore no stronger than the theorem it is anchored on. `IsCausal ν` also permits mass at
+  `t = 0`, which SSV's `ν` on `(0,∞)` excludes; harmless, since the integrand vanishes there and
+  the exponent does not see it.
+- **Corroboration — Sato, assembled from three numbered statements.** ✅ **Theorem 8.1(iii),
+  p. 38** (§8): *"Conversely, if `A` is a symmetric nonnegative-definite `d × d` matrix, `ν` is a
+  measure satisfying (8.2), and `γ ∈ ℝ^d`, then there exists an infinitely divisible distribution
+  `μ` whose characteristic function is given by (8.1)."* — existence as a labelled clause.
+  ✅ **Corollary 11.6, p. 63** promotes it to a Lévy process, unique up to identity in law.
+  ✅ **Theorem 21.5, p. 137** is the subordinator criterion, a test on an existing process rather
+  than a construction. The half-line Laplace form is **Remark 21.6, formula (21.1), p. 138**,
+  matching our sign convention with `b₀ = γ₀` — but it is a *remark* deferring to the proof of
+  21.5, so Sato has no numbered theorem for it. That is why SSV stays primary. Verified against
+  page images 2026-08-09.
+- **Editions.** @schilling2012bernstein: held copy is the **2nd edition, © 2012 de Gruyter**
+  (ISBN 978-3-11-025229-3) — citekey year correct, unlike the Feller case in A1. The 2nd-edition
+  preface records new material added *within* Chapter 5, so this anchor is edition-specific and
+  says so. @sato1999levy: held copy is the **1st English edition, Cambridge 1999** (ISBN
+  0-521-55302-4, CSAM 68); a revised 2013 edition exists, so the anchor says "1999 ed.".
+- **⚠️ Transcribe from page images for both sources.** SSV's text layer silently drops Greek and
+  script letters (`μ`, `λ`, `𝓛`); Sato's OCR is poor throughout (cf. A7). Every quotation above
+  was read off the rendered image, not the text layer.
+- **Confidence.** ✅ well grounded: existence and semigroup uniqueness are an explicit clause of a
+  numbered theorem, and the one part of the fact that the source states only as prose has been
+  moved out of the trust base and proved.
 
 ---
 
