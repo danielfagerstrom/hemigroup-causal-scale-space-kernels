@@ -270,12 +270,8 @@ theorem tendsto_increment_toReal (F : SelfDecomposableExponent) {u v : ℕ → �
       (tendsto_exponent F (fun n => mul_le_mul_of_nonneg_right (hvB n) hs) hBs (hβ.mul_const s))
   -- `g` is the difference of the two exponents, in `ℝ`.
   have hdiff : ∀ {p q : ℝ}, 0 < p → p ≤ q → (F.increment p q s).toReal
-      = (F.exponent (q * s)).toReal - (F.exponent (p * s)).toReal := by
-    intro p q hp hpq
-    have h := exponent_add_increment (F := F) hp hpq hs
-    have hfin : F.exponent (p * s) ≠ ⊤ := F.ne_top _ (mul_nonneg hp.le hs)
-    rw [← h, ENNReal.toReal_add hfin (increment_ne_top (F := F) hp hpq hs)]
-    ring
+      = (F.exponent (q * s)).toReal - (F.exponent (p * s)).toReal :=
+    fun hp hpq => increment_toReal hp hpq hs
   simp only [hdiff (hu0 _) (huv _), hdiff hα0 hαβ]
   exact hEv.sub hEu
 

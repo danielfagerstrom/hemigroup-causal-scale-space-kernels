@@ -146,15 +146,22 @@ ones from a single Tonelli identity
 $\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$ used twice over: once to estimate,
 giving (A1) and that $\Phi$ maps $\Lone$ to $\Lone$; once to establish integrability on the
 product, which licenses the Bochner swap and gives (A5). \textbf{So every axiom of
-\ref{def:cascade-family} is now discharged for the constructed family.} The uniqueness clause's
-analytic content is there too: $F$ is strictly increasing when $F \not\equiv 0$
-(\texttt{exponent\_strictMono}), which is what makes the $c$ with $g_{0,x} = F(c\,\cdot)$
-unique. Its proof runs \ref{lem:vanishing} on the \emph{increment} --- if $g_{1,c}$ vanished
-anywhere it would vanish identically, giving $F(cs) = F(s)$, and iterating that
-\emph{downwards} sends $s_0/c^n \to 0$, where continuity at the origin forces $F \equiv 0$. The
-node is still not marked as proved in Lean: the uniqueness \emph{statement} quantifies over the
-gauge $\chi$, which the Lean development does not model --- it works in the canonical gauge
-throughout --- and $(\Rightarrow)$ is untouched.)}
+\ref{def:cascade-family} is now discharged for the constructed family.} \textbf{The uniqueness
+clause holds} (\texttt{gauge\_and\_exponent\_unique}): if a gauge $\chi$ normalised by
+$\chi(1) = 1$ and an exponent $F'$ reproduce the family of a nondegenerate $F$, then $\chi$ is
+the identity and $F'$ has the same exponent as $F$. Its analytic content is that $F$ is strictly
+increasing when $F \not\equiv 0$ (\texttt{exponent\_strictMono}), which is what makes the $c$
+with $g_{0,x} = F(c\,\cdot)$ unique; that proof runs \ref{lem:vanishing} on the \emph{increment}
+--- if $g_{1,c}$ vanished anywhere it would vanish identically, giving $F(cs) = F(s)$, and
+iterating that \emph{downwards} sends $s_0/c^n \to 0$, where continuity at the origin forces
+$F \equiv 0$. The gauge enters as \emph{hypotheses} on a bare function --- nondecreasing,
+positive, and $\chi(\zp) = 0$ --- rather than as modelled structure, because the clause only
+quantifies over gauges; it is $(\Rightarrow)$, which \emph{produces} $\chi$ from the scaling
+action, that will need $\chi$ bundled with an inverse and a conjugated action, and that interface
+is better designed against its consumer than guessed at now. The one new step is pinning the
+constant: the hypothesis gives only \emph{differences} of exponents, and the lower index is
+pushed to the origin, where $F(\zp) = 0$ --- the same fact tightness ran on. The node is still
+not marked as proved in Lean, because $(\Rightarrow)$ is untouched.)}
 \end{theorem}
 
 \begin{proof}

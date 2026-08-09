@@ -119,6 +119,20 @@ theorem increment_ne_top (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
   rw [← h] at this
   exact (ENNReal.add_ne_top.mp this).2
 
+/-- The increment as a *difference* of exponents, in `ℝ`.
+
+`exponent_add_increment` is an identity in `ℝ≥0∞`, where truncated subtraction makes the
+difference form false in general. Pushed through `ENNReal.toReal` — legitimate because every
+term is finite — it becomes ordinary subtraction, which is the form both the continuity
+argument and the uniqueness argument use. -/
+theorem increment_toReal (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
+    (F.increment a b s).toReal
+      = (F.exponent (b * s)).toReal - (F.exponent (a * s)).toReal := by
+  have h := exponent_add_increment (F := F) ha hab hs
+  have hfin : F.exponent (a * s) ≠ ⊤ := F.ne_top _ (mul_nonneg ha.le hs)
+  rw [← h, ENNReal.toReal_add hfin (increment_ne_top (F := F) ha hab hs)]
+  ring
+
 /-! ## Axiom (A6): the hemigroup law -/
 
 /-- **Axiom (A6)**, at the level of exponents: increments compose along a cascade,
