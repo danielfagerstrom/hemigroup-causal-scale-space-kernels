@@ -163,6 +163,16 @@ articles that have not yet pinned a ledger.
   showing the hypothesis cannot be dropped. Any blueprint proof invoking the measure form must
   discharge boundedness explicitly; the probability form (Theorem 2) carries it for free, which
   is why Theorem 7.3(⇐) uses that one.
+- **⚠️ Possibly avoidable in Lean — not yet settled** (2026-08-09). The tightness half of what
+  this entry serves is now *proved*: `Hemigroup.measureReal_Ioi_mul_le` gives the Markov bound
+  `μ(t>T)(1 - e^{-sT}) ≤ 1 - μ̂(s)` on Lean core alone, and `kernel_tail_le` makes it uniform over
+  the kernel family (`μ_{a,b}(t>T) ≤ F(Bs)/(1-e^{-sT})` for `b ≤ B`). So the **Assignment**
+  clause's claim that tightness is ours is now checked rather than asserted. What is *not* done
+  is the rest of the route to (A7): pointwise convergence of the transforms (dominated
+  convergence on the Lévy integral), and the passage tight + convergent transforms ⇒ weak
+  convergence (Prokhorov, which Mathlib has, plus A6's Lean replacement `laplace_injective` to
+  identify the limit). Both look reachable and neither needs a citation — but until they are
+  written, **A5 stays a live candidate for the trust boundary.** Do not record it as avoided.
 - **Confidence.** ✅ well grounded, with the boundedness caveat recorded above.
 
 ## A6 — Uniqueness: a measure on the half-line is determined by its Laplace transform

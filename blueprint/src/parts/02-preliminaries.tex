@@ -137,7 +137,16 @@ boundedness hypothesis in the second is not decoration: Feller gives a counterex
 same page showing it cannot be dropped, and any proof here that invokes the measure form must
 discharge it explicitly. The probability form carries it for free, which is why Theorem~7.3
 uses that one. What \ledger{A5} does not carry is the tightness argument that supplies weak
-convergence in the first place; that is \textbf{[T]}.)}
+convergence in the first place; that is \textbf{[T]}. \textbf{Confirmed in Lean} (2026-08-09):
+the tightness estimate is \texttt{Hemigroup.measureReal\_Ioi\_mul\_le}, the Markov bound
+$\mu(t>T)\,(1 - e^{-sT}) \le 1 - \hat\mu(s)$, whose \texttt{\#print axioms} is Lean core; for the
+kernel family it gives $\mu_{a,b}(t>T) \le F(Bs)/(1-e^{-sT})$ uniformly over $b \le B$
+(\texttt{kernel\_tail\_le}), so choosing $s$ small --- possible because $F(\zp) = 0$ --- and then
+$T$ large yields tightness with no cited input. That does \emph{not} yet make \ledger{A5}
+avoidable: turning tightness into (A7) still needs pointwise convergence of the transforms, a
+dominated-convergence argument on the Lévy integral, and then Prokhorov together with
+\ref{prop:laplace-uniqueness} to identify the limit. Both are within reach and neither needs a
+citation, but neither is written.)}
 \end{proposition}
 
 % additive: not in the draft. Used by lem:convolution-representation, lem:covariance-laplace,
