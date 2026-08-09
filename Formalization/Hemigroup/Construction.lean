@@ -267,6 +267,14 @@ lemma kernel_spec (ha : 0 ≤ a) (hab : a ≤ b) :
 lemma isProbabilityMeasure_kernel (ha : 0 ≤ a) (hab : a ≤ b) :
     IsProbabilityMeasure (F.kernel a b) := (kernel_spec ha hab).1
 
+/-- Finiteness holds for *every* pair, junk included — the zero measure is finite. This is what
+lets `Φ` be a total function of `(x,y)`, with the axioms carrying the index restriction. -/
+instance isFiniteMeasure_kernel (F : SelfDecomposableExponent) (a b : ℝ) :
+    IsFiniteMeasure (F.kernel a b) := by
+  by_cases h : 0 ≤ a ∧ a ≤ b
+  · haveI := isProbabilityMeasure_kernel (F := F) h.1 h.2; infer_instance
+  · rw [kernel, dif_neg h]; infer_instance
+
 lemma isCausal_kernel (ha : 0 ≤ a) (hab : a ≤ b) : IsCausal (F.kernel a b) :=
   (kernel_spec ha hab).2.1
 

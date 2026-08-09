@@ -151,7 +151,19 @@ ones from a single Tonelli identity
 $\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$ used twice over: once to estimate,
 giving (A1) and that $\Phi$ maps $\Lone$ to $\Lone$; once to establish integrability on the
 product, which licenses the Bochner swap and gives (A5). \textbf{So every axiom of
-\ref{def:cascade-family} is now discharged for the constructed family.} \textbf{The uniqueness
+\ref{def:cascade-family} is now discharged for the constructed family} --- and, since
+2026-08-09, at the level the definition states them: \ref{def:cascade-family} is a Lean
+structure over $X = \Lone(\RR)$ and the kernels are exhibited as an instance of it
+(\texttt{cascadeFamily}). The check was worth making. It caught two things reading the
+structure would not have: that the family is indexed from $x = 0$ while the construction began
+at $x > 0$ --- repaired at the source by the normalisation $k(0) = 0$, not by narrowing the
+specification --- and that each axiom must carry its index restriction $0 \le x \le y$
+explicitly, without which (A5) would be \emph{false} for the constructed family, $\mu_{x,y}$
+being the zero measure off the range. (A7) was the only clause needing more than transport: the
+weak convergence of \texttt{tendsto\_integral\_kernel} is not continuity into $\Lone$, and the
+bridge is the $\varepsilon/3$ argument of the proof below, with the compact supplied by
+tightness, the left tail by causality, and the extension from $C_c$ to $\Lone$ by density
+against the contraction bound. \textbf{The uniqueness
 clause holds} (\texttt{gauge\_and\_exponent\_unique}): if a gauge $\chi$ normalised by
 $\chi(1) = 1$ and an exponent $F'$ reproduce the family of a nondegenerate $F$, then $\chi$ is
 the identity and $F'$ has the same exponent as $F$. Its analytic content is that $F$ is strictly

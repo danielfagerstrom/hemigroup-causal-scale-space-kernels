@@ -58,13 +58,13 @@ structure CascadeFamily where
   /-- The scaling action `S_σ` of (A8), carried as data. -/
   S : ℝ → ℝ → ℝ
   /-- **(A2)** Time-translation covariance. -/
-  translation : ∀ x y a f, Φ x y (transL1 a f) = transL1 a (Φ x y f)
+  translation : ∀ x y, 0 ≤ x → x ≤ y → ∀ a f, Φ x y (transL1 a f) = transL1 a (Φ x y f)
   /-- **(A3)** Causality. -/
-  causal : ∀ x y t₀ f, VanishesBefore t₀ f → VanishesBefore t₀ (Φ x y f)
+  causal : ∀ x y, 0 ≤ x → x ≤ y → ∀ t₀ f, VanishesBefore t₀ f → VanishesBefore t₀ (Φ x y f)
   /-- **(A4)** Positivity. -/
-  positive : ∀ x y f, IsNonneg f → IsNonneg (Φ x y f)
+  positive : ∀ x y, 0 ≤ x → x ≤ y → ∀ f, IsNonneg f → IsNonneg (Φ x y f)
   /-- **(A5)** Unit area, on the positive cone. -/
-  unit_area : ∀ x y f, IsNonneg f →
+  unit_area : ∀ x y, 0 ≤ x → x ≤ y → ∀ f, IsNonneg f →
     ∫ t, ((Φ x y f : X) : ℝ → ℝ) t = ∫ t, (f : ℝ → ℝ) t
   /-- **(A6)** The diagonal is the identity. -/
   refl : ∀ x, 0 ≤ x → Φ x x = ContinuousLinearMap.id ℝ X
@@ -84,6 +84,36 @@ structure CascadeFamily where
     (dilL1 hσ).comp (Φ x y) = (Φ (S σ x) (S σ y)).comp (dilL1 hσ)
   /-- **(ND)** Nondegeneracy. -/
   nondegenerate : ∀ x y, 0 ≤ x → x < y → Φ x y ≠ ContinuousLinearMap.id ℝ X
+
+/-- The `L¹` norm of a difference, as a lower integral — the form every convergence estimate
+below speaks in. -/
+theorem norm_sub_eq_lintegral (a b : X) :
+    ‖a - b‖ = (∫⁻ t, ‖(a : ℝ → ℝ) t - (b : ℝ → ℝ) t‖ₑ).toReal := by
+  rw [Lp.norm_def, eLpNorm_one_eq_lintegral_enorm]
+  congr 1
+  refine lintegral_congr_ae ?_
+  filter_upwards [Lp.coeFn_sub a b] with t ht
+  rw [ht]
+  rfl
+
+/-- Equal measures give equal operators. Needed because `mconvL1` carries an `IsFiniteMeasure`
+instance argument, so `rw` on the measure produces an ill-typed motive. -/
+theorem mconvL1_congr {μ ν : Measure ℝ} [IsFiniteMeasure μ] [IsFiniteMeasure ν] (h : μ = ν) :
+    mconvL1 μ = mconvL1 ν := by
+  subst h
+  congr 1
+
+/-- **`Φ` is a contraction** for a probability measure — (A1) with the constant made explicit.
+This is what lets the density argument for (A7) not lose control of the approximation error. -/
+theorem norm_mconvL1_le (μ : Measure ℝ) [IsProbabilityMeasure μ] (f : X) :
+    ‖mconvL1 μ f‖ ≤ ‖f‖ := by
+  have hop : ‖mconvL1 μ‖ ≤ 1 := by
+    rw [mconvL1]
+    refine le_trans (LinearMap.mkContinuous_norm_le _ ENNReal.toReal_nonneg _) ?_
+    rw [measure_univ, ENNReal.toReal_one]
+  calc ‖mconvL1 μ f‖ ≤ ‖mconvL1 μ‖ * ‖f‖ := ContinuousLinearMap.le_opNorm _ _
+    _ ≤ 1 * ‖f‖ := by nlinarith [norm_nonneg f]
+    _ = ‖f‖ := one_mul _
 
 /-! ## Transport: the axioms for `Φ f = μ * f`
 
