@@ -35,13 +35,18 @@ open scoped ENNReal
 
 /-! ## Descent to a.e.-equivalence classes -/
 
-/-- **`mconv` respects a.e. equality.** The null-set transfer described in the module docstring:
-`(t,r) ↦ t - r` is quasi-measure-preserving from `volume ⊗ μ` to `volume`. -/
+/-- **The null-set transfer.** A property holding `volume`-a.e. holds at `t - r` for a.e. `t`
+and `μ`-a.e. `r`. This is the one fact every descent argument below uses: `(t,r) ↦ t - r` is
+quasi-measure-preserving from `volume ⊗ μ` to `volume`, so a null set pulls back to a null set
+on the product, and `ae_ae_of_ae_prod` turns that into an iterated statement. -/
+theorem ae_ae_sub_of_ae (μ : Measure ℝ) [SFinite μ] {p : ℝ → Prop} (h : ∀ᵐ u ∂volume, p u) :
+    ∀ᵐ t ∂volume, ∀ᵐ r ∂μ, p (t - r) :=
+  Measure.ae_ae_of_ae_prod ((quasiMeasurePreserving_sub volume μ).ae h)
+
+/-- **`mconv` respects a.e. equality**, so it descends to `L¹`. -/
 theorem mconv_congr_ae (μ : Measure ℝ) [SFinite μ] {f g : ℝ → ℝ} (h : f =ᵐ[volume] g) :
     mconv μ f =ᵐ[volume] mconv μ g := by
-  have hprod : ∀ᵐ p : ℝ × ℝ ∂(volume.prod μ), f (p.1 - p.2) = g (p.1 - p.2) :=
-    (quasiMeasurePreserving_sub volume μ).ae h
-  filter_upwards [Measure.ae_ae_of_ae_prod hprod] with t ht
+  filter_upwards [ae_ae_sub_of_ae μ h] with t ht
   exact integral_congr_ae ht
 
 /-- Additivity, for a.e. `t`. Not pointwise: splitting the integral needs `r ↦ f(t - r)` and
