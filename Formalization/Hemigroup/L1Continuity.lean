@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.Nondegeneracy
+import Hemigroup.Continuity
 
 /-!
 # (A7): the tail estimate
@@ -80,5 +81,33 @@ theorem setLIntegral_enorm_mconv_tail_le (μ : Measure ℝ) [IsFiniteMeasure μ]
           simp [hsupp u (by simp only [mem_Ioi] at hu; linarith)]
     _ = (∫⁻ u, ‖f u‖ₑ) * μ (Ioi T) := by
         rw [setLIntegral_const, mul_comm]
+
+/-! ## Pointwise convergence -/
+
+namespace SelfDecomposableExponent
+
+open Filter
+
+/-- **Pointwise convergence of `μ_n * f`.** For bounded continuous `f`, the integrand
+`r ↦ f (t - r)` is itself bounded continuous, which is exactly what weak convergence of the
+kernels tests against — so `tendsto_integral_kernel` applies directly, with no partition of the
+parameter interval and no continuity-set condition on `μ`.
+
+Note the index range: `0 ≤ u n`, not `0 < u n`. The lower endpoint of `def:cascade-family` is
+inside the range (A7) quantifies over, and since `increment_zero_left` made `x = 0` an ordinary
+point of the construction, the whole tightness-and-transforms chain now covers it. -/
+theorem tendsto_mconv_kernel_apply (F : SelfDecomposableExponent) {u v : ℕ → ℝ} {α β B : ℝ}
+    (hB : 0 < B) (hu0 : ∀ n, 0 ≤ u n) (huv : ∀ n, u n ≤ v n) (hvB : ∀ n, v n ≤ B)
+    (hα : Tendsto u atTop (nhds α)) (hβ : Tendsto v atTop (nhds β))
+    (hα0 : 0 ≤ α) (hαβ : α ≤ β) (hβB : β ≤ B)
+    {f : ℝ → ℝ} (hcont : Continuous f) {C : ℝ} (hbdd : ∀ x, ‖f x‖ ≤ C) (t : ℝ) :
+    Tendsto (fun n => mconv (F.kernel (u n) (v n)) f t) atTop
+      (nhds (mconv (F.kernel α β) f t)) := by
+  have h := tendsto_integral_kernel F hB hu0 huv hvB hα hβ hα0 hαβ hβB
+    (BoundedContinuousFunction.ofNormedAddCommGroup (fun r => f (t - r))
+      (hcont.comp (continuous_const.sub continuous_id)) C (fun r => hbdd (t - r)))
+  simpa [mconv_apply] using h
+
+end SelfDecomposableExponent
 
 end Hemigroup
