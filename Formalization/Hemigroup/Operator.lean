@@ -91,19 +91,20 @@ Both (A1) and (A5) are read off this: (A1) by taking `g = ‖f ·‖ₑ` (below)
 `g = ENNReal.ofReal ∘ f` for `f ≥ 0`, where the statement reads
 `∫⁻ (μ * f) = ‖μ‖ · ∫⁻ f` — unit area. -/
 theorem lintegral_lintegral_sub_eq (μ : Measure ℝ) [SFinite μ] {g : ℝ → ℝ≥0∞}
-    (hg : Measurable g) :
+    (hg : AEMeasurable g) :
     ∫⁻ t, (∫⁻ r, g (t - r) ∂μ) = μ univ * ∫⁻ t, g t := by
-  have huncurry : Measurable (Function.uncurry fun t r : ℝ => g (t - r)) :=
-    hg.comp (measurable_fst.sub measurable_snd)
+  have huncurry : AEMeasurable (Function.uncurry fun t r : ℝ => g (t - r)) (volume.prod μ) :=
+    hg.comp_quasiMeasurePreserving (quasiMeasurePreserving_sub volume μ)
   calc ∫⁻ t, (∫⁻ r, g (t - r) ∂μ)
       = ∫⁻ r, (∫⁻ t, g (t - r) ∂volume) ∂μ :=
-        lintegral_lintegral_swap huncurry.aemeasurable
+        lintegral_lintegral_swap huncurry
     _ = ∫⁻ _, (∫⁻ t, g t) ∂μ := lintegral_congr fun r => lintegral_sub_right_eq_self _ r
     _ = μ univ * ∫⁻ t, g t := by rw [lintegral_const, mul_comm]
 
 /-- **Axiom (A1)**, as an `L¹` bound: `∫ ‖μ * f‖ ≤ ‖μ‖ · ∫ ‖f‖`. For a probability measure the
 factor is `1`, so `Φ` is a contraction. -/
-theorem lintegral_enorm_mconv_le (μ : Measure ℝ) [SFinite μ] {f : ℝ → ℝ} (hf : Measurable f) :
+theorem lintegral_enorm_mconv_le (μ : Measure ℝ) [SFinite μ] {f : ℝ → ℝ}
+    (hf : AEStronglyMeasurable f) :
     ∫⁻ t, ‖mconv μ f t‖ₑ ≤ μ univ * ∫⁻ t, ‖f t‖ₑ := by
   calc ∫⁻ t, ‖mconv μ f t‖ₑ ≤ ∫⁻ t, (∫⁻ r, ‖f (t - r)‖ₑ ∂μ) :=
         lintegral_mono fun t => enorm_integral_le_lintegral_enorm _
@@ -119,26 +120,26 @@ now used to *establish* integrability rather than to estimate.
 /-- The two-variable integrand is integrable on `volume ⊗ μ`. This is the hypothesis both the
 Bochner swap and the integrability of `μ * f` are waiting on. -/
 theorem integrable_uncurry_sub (μ : Measure ℝ) [IsFiniteMeasure μ] {f : ℝ → ℝ}
-    (hf : Measurable f) (hfi : Integrable f) :
+    (hf : AEStronglyMeasurable f) (hfi : Integrable f) :
     Integrable (Function.uncurry fun t r : ℝ => f (t - r)) (volume.prod μ) := by
-  have hm : Measurable (Function.uncurry fun t r : ℝ => f (t - r)) :=
-    hf.comp (measurable_fst.sub measurable_snd)
-  refine ⟨hm.aestronglyMeasurable, ?_⟩
+  have hm : AEStronglyMeasurable (Function.uncurry fun t r : ℝ => f (t - r)) (volume.prod μ) :=
+    hf.comp_quasiMeasurePreserving (quasiMeasurePreserving_sub volume μ)
+  refine ⟨hm, ?_⟩
   have hprod : ∫⁻ p, ‖Function.uncurry (fun t r : ℝ => f (t - r)) p‖ₑ ∂(volume.prod μ)
-      = ∫⁻ t, (∫⁻ r, ‖f (t - r)‖ₑ ∂μ) := lintegral_prod _ hm.enorm.aemeasurable
+      = ∫⁻ t, (∫⁻ r, ‖f (t - r)‖ₑ ∂μ) := lintegral_prod _ hm.enorm
   rw [hasFiniteIntegral_iff_enorm, hprod, lintegral_lintegral_sub_eq μ hf.enorm]
   exact ENNReal.mul_lt_top (measure_lt_top μ univ) hfi.2
 
 /-- `μ * f` is itself integrable — the statement that `Φ` maps `L¹` into `L¹`, which is the
 other half of (A1). -/
 theorem integrable_mconv (μ : Measure ℝ) [IsFiniteMeasure μ] {f : ℝ → ℝ}
-    (hf : Measurable f) (hfi : Integrable f) : Integrable (mconv μ f) := by
-  exact (integrable_uncurry_sub μ hf hfi).integral_prod_left
+    (hf : AEStronglyMeasurable f) (hfi : Integrable f) : Integrable (mconv μ f) :=
+  (integrable_uncurry_sub μ hf hfi).integral_prod_left
 
 /-- **Axiom (A5), unit area**, for the Bochner integral: `∫ (μ * f) = ‖μ‖ ∫ f`. For a
 probability measure this is exactly `∫ Φ f = ∫ f`. -/
 theorem integral_mconv (μ : Measure ℝ) [IsFiniteMeasure μ] {f : ℝ → ℝ}
-    (hf : Measurable f) (hfi : Integrable f) :
+    (hf : AEStronglyMeasurable f) (hfi : Integrable f) :
     ∫ t, mconv μ f t = (μ univ).toReal * ∫ t, f t := by
   simp only [mconv_apply]
   rw [integral_integral_swap (integrable_uncurry_sub μ hf hfi)]
