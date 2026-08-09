@@ -142,11 +142,15 @@ the tightness estimate is \texttt{Hemigroup.measureReal\_Ioi\_mul\_le}, the Mark
 $\mu(t>T)\,(1 - e^{-sT}) \le 1 - \hat\mu(s)$, whose \texttt{\#print axioms} is Lean core; for the
 kernel family it gives $\mu_{a,b}(t>T) \le F(Bs)/(1-e^{-sT})$ uniformly over $b \le B$
 (\texttt{kernel\_tail\_le}), so choosing $s$ small --- possible because $F(\zp) = 0$ --- and then
-$T$ large yields tightness with no cited input. That does \emph{not} yet make \ledger{A5}
-avoidable: turning tightness into (A7) still needs pointwise convergence of the transforms, a
-dominated-convergence argument on the Lévy integral, and then Prokhorov together with
-\ref{prop:laplace-uniqueness} to identify the limit. Both are within reach and neither needs a
-citation, but neither is written.)}
+$T$ large yields tightness with no cited input --- and $F(\zp) = 0$, which is what makes that
+choice possible, is itself proved (\texttt{exists\_exponent\_lt}). The exponent is also
+sequentially continuous in its argument (\texttt{tendsto\_exponent}), by dominated convergence
+against the integrand at the largest argument; that is the pointwise-convergence-of-transforms
+ingredient. What is still missing is convergence of the \emph{increments} --- cancellation in
+$[0,\infty]$ from the continuity just cited --- and then the assembly: Prokhorov for a convergent
+subsequence, with \ref{prop:laplace-uniqueness} identifying its limit. Neither needs a citation.
+Until they are written \ledger{A5} stays a live candidate for the trust boundary: the evidence
+says it is very likely avoidable, not that it is avoided.)}
 \end{proposition}
 
 % additive: not in the draft. Used by lem:convolution-representation, lem:covariance-laplace,

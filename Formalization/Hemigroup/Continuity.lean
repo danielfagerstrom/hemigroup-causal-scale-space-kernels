@@ -17,35 +17,39 @@ available: Mathlib has Prokhorov, and `prop:laplace-continuity`'s own assignment
 
 ## What this file establishes
 
-The tightness half, and it is elementary — a Markov bound read off the transform:
+**Tightness, in full.** A Markov bound read off the transform,
 
   `μ(t > T) · (1 - e^{-sT}) ≤ 1 - μ̂(s)`     (`measureReal_Ioi_mul_le`)
 
-and, for the kernel family with `b` bounded above, the uniform tail estimate that follows
-(`kernel_tail_le`). No compactness, no limit theorem — the whole content is that `1 - e^{-st}`
-dominates `(1 - e^{-sT}) · 1_{t > T}`, which is monotonicity of the exponential.
+made uniform over the kernel family as `μ_{a,b}(t > T) ≤ F(Bs)/(1 - e^{-sT})` for `b ≤ B`
+(`kernel_tail_le`); and the fact that makes it bite, `F(0+) = 0` (`exists_exponent_lt`), so that
+`s` can be chosen to make the numerator as small as wanted. Every step is Lean core.
 
-So the blueprint's claim that tightness is ours is **correct**, and A5 is not needed for it.
+**Continuity of the exponent** (`tendsto_exponent`): `r n → ρ` with `r n ≤ R` gives
+`F(r n) → F(ρ)`, by dominated convergence against the integrand at `R`. This is the
+pointwise-convergence-of-transforms ingredient.
 
-## What remains, and why the question is not yet closed
+So the blueprint's claim that the tightness argument is ours is **checked**, not merely asserted.
 
-Turning tightness into (A7) still needs two things this file does not have:
+## What remains
 
-* pointwise convergence of the transforms, i.e. continuity of `F` in its argument. That is a
-  dominated-convergence argument on the Lévy integral — the dominating function is `F` itself at
-  the largest argument, so it is available, but it is not written here;
-* the passage from "tight, with convergent transforms" to weak convergence: Prokhorov gives a
-  convergent subsequence, `laplace_injective` identifies its limit, and the usual
-  compact-plus-unique-limit-point argument upgrades that to the full sequence.
+Two steps, neither needing a citation:
 
-Neither step needs a cited interface. What they need is work. The honest status is therefore
-that **A5 looks avoidable rather than proved avoidable**, and this file is the part of the
-evidence that can be checked rather than asserted.
+* convergence of the *increments*: `g_{aₙ,bₙ}(s) → g_{a,b}(s)` when `(aₙ,bₙ) → (a,b)`. The
+  exponents are continuous by `tendsto_exponent` and `F(a s) + g_{a,b}(s) = F(b s)` with every
+  term finite, so this is cancellation in `ℝ≥0∞` — short, but not written here;
+* the assembly: tight + convergent transforms ⇒ weak convergence. Prokhorov (Mathlib has it)
+  gives a convergent subsequence, `laplace_injective` identifies its limit, and
+  compact-plus-unique-limit-point upgrades that to the full sequence.
+
+Until those are written, **A5 remains a live candidate for the trust boundary.** The evidence
+here says it is very likely avoidable; it does not yet say it is avoided.
 -/
 
 namespace Hemigroup
 
 open MeasureTheory Set
+open scoped ENNReal
 
 /-! ## A Markov bound from the transform -/
 
@@ -131,6 +135,90 @@ theorem kernel_tail_le (ha : 0 < a) (hab : a ≤ b) (hbB : b ≤ B) (hs : 0 < s)
     exact ENNReal.toReal_mono (F.ne_top _ (by positivity)) hmono
   refine (measureReal_Ioi_le_div (isCausal_kernel ha hab) hs hT).trans ?_
   gcongr
+
+/-! ## `F(0+) = 0`: the dominated-convergence step
+
+`kernel_tail_le` turns tightness into "make `F(Bs)` small by taking `s` small", which needs the
+exponent to vanish at the origin. `levyExponentD` gives `F(0) = 0` outright, but the tail
+argument needs the *limit*, and that is a dominated-convergence argument on the Lévy integral:
+the integrand `(1 - e^{-rt}) k t / t` increases in `r`, so the value at `r = 1` dominates the
+whole family and is finite because `F` is.
+-/
+
+/-- **The exponent is sequentially continuous** on any bounded set of arguments: if `r n → ρ`
+with `r n ≤ R`, then `F(r n) → F(ρ)`.
+
+Dominated convergence on the Lévy integral. The integrand `(1 - e^{-rt}) k t / t` increases in
+`r`, so the value at `R` dominates the whole family, and it is finite because `F` is. No
+hypothesis that `r n ≥ 0` is needed: where `r n < 0` the integrand is negative and
+`ENNReal.ofReal` truncates it to zero, which the bound still covers. -/
+theorem tendsto_exponent (F : SelfDecomposableExponent) {r : ℕ → ℝ} {ρ R : ℝ}
+    (hrR : ∀ n, r n ≤ R) (hR : 0 ≤ R) (hlim : Filter.Tendsto r Filter.atTop (nhds ρ)) :
+    Filter.Tendsto (fun n => F.exponent (r n)) Filter.atTop (nhds (F.exponent ρ)) := by
+  have hk : AEMeasurable F.k (volume.restrict (Ioi (0 : ℝ))) :=
+    aemeasurable_of_antitoneOn F.k_antitone
+  have hdrift : Filter.Tendsto (fun n => ENNReal.ofReal (F.b₀ * r n)) Filter.atTop
+      (nhds (ENNReal.ofReal (F.b₀ * ρ))) := ENNReal.tendsto_ofReal (hlim.const_mul F.b₀)
+  have hfin : levyJump F.k R ≠ ⊤ := by
+    have h := F.ne_top R hR
+    rw [levyExponentD] at h
+    exact (ENNReal.add_ne_top.mp h).2
+  have hbnd : ∀ n : ℕ,
+      (fun t => ENNReal.ofReal ((1 - Real.exp (-(r n * t))) * F.k t / t))
+        ≤ᵐ[volume.restrict (Ioi (0 : ℝ))]
+        fun t => ENNReal.ofReal ((1 - Real.exp (-(R * t))) * F.k t / t) := by
+    intro n
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    have ht' : 0 < t := ht
+    have hnum : 1 - Real.exp (-(r n * t)) ≤ 1 - Real.exp (-(R * t)) := by
+      have : Real.exp (-(R * t)) ≤ Real.exp (-(r n * t)) :=
+        Real.exp_le_exp.mpr (by nlinarith [hrR n])
+      linarith
+    refine ENNReal.ofReal_le_ofReal ?_
+    have hkt : 0 ≤ F.k t := F.k_nonneg t ht
+    gcongr
+  have hlm : ∀ᵐ t ∂(volume.restrict (Ioi (0 : ℝ))),
+      Filter.Tendsto (fun n => ENNReal.ofReal ((1 - Real.exp (-(r n * t))) * F.k t / t))
+        Filter.atTop (nhds (ENNReal.ofReal ((1 - Real.exp (-(ρ * t))) * F.k t / t))) := by
+    filter_upwards with t
+    have h0 : Filter.Tendsto (fun n => -(r n * t)) Filter.atTop (nhds (-(ρ * t))) :=
+      (hlim.mul_const t).neg
+    have hr : Filter.Tendsto (fun n => 1 - Real.exp (-(r n * t))) Filter.atTop
+        (nhds (1 - Real.exp (-(ρ * t)))) :=
+      ((Real.continuous_exp.tendsto _).comp h0).const_sub 1
+    exact ENNReal.tendsto_ofReal ((hr.mul_const (F.k t)).div_const t)
+  have hdom := tendsto_lintegral_of_dominated_convergence'
+    (μ := volume.restrict (Ioi (0 : ℝ)))
+    (F := fun n t => ENNReal.ofReal ((1 - Real.exp (-(r n * t))) * F.k t / t))
+    (f := fun t => ENNReal.ofReal ((1 - Real.exp (-(ρ * t))) * F.k t / t))
+    (fun t => ENNReal.ofReal ((1 - Real.exp (-(R * t))) * F.k t / t))
+    (fun n => aemeasurable_levyJump_integrand hk (r n)) hbnd (by rw [← levyJump]; exact hfin) hlm
+  have hjump : Filter.Tendsto (fun n => levyJump F.k (r n)) Filter.atTop
+      (nhds (levyJump F.k ρ)) := by simpa [levyJump] using hdom
+  simpa [exponent, levyExponentD] using hdrift.add hjump
+
+/-- The special case tightness consumes: `F(0+) = 0`. -/
+theorem tendsto_exponent_atZero (F : SelfDecomposableExponent) {r : ℕ → ℝ}
+    (hr1 : ∀ n, r n ≤ 1) (hlim : Filter.Tendsto r Filter.atTop (nhds 0)) :
+    Filter.Tendsto (fun n => F.exponent (r n)) Filter.atTop (nhds 0) := by
+  have h0 : F.exponent 0 = 0 := by simp [exponent, levyExponentD, levyJump]
+  have h := tendsto_exponent F hr1 zero_le_one hlim
+  rwa [h0] at h
+
+/-- **What tightness consumes**: the exponent can be made arbitrarily small near the origin. -/
+theorem exists_exponent_lt (F : SelfDecomposableExponent) {ε : ℝ≥0∞} (hε : 0 < ε) :
+    ∃ r : ℝ, 0 < r ∧ F.exponent r < ε := by
+  have hr : Filter.Tendsto (fun n : ℕ => (1 : ℝ) / (n + 1)) Filter.atTop (nhds 0) :=
+    tendsto_one_div_add_atTop_nhds_zero_nat
+  have hpos : ∀ n : ℕ, (0 : ℝ) < 1 / (n + 1) := fun n => by positivity
+  have hle : ∀ n : ℕ, (1 : ℝ) / (n + 1) ≤ 1 := fun n => by
+    rw [div_le_one (by positivity)]
+    have : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+    linarith
+  obtain ⟨n, hn⟩ :=
+    ((tendsto_exponent_atZero F hle hr).eventually
+      (gt_mem_nhds hε)).exists
+  exact ⟨1 / (n + 1), hpos n, hn⟩
 
 end SelfDecomposableExponent
 
