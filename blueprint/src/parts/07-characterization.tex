@@ -126,7 +126,18 @@ In particular, in the canonical gauge the scale-space kernels are
 and the pair $(\chi, F)$ is unique up to the normalization $\chi(1) = 1$.
 \statusT\quad\emph{(the variant of \sscite{fagerstrom2005temporal}, Thm.~2, for the hemigroup
 axioms. Proved here, not cited: the 2005 theorem is the semigroup statement, recovered below
-as \ref{cor:semigroup-case}.)}
+as \ref{cor:semigroup-case}. \textbf{Formalisation state.} The construction of
+$(\Leftarrow)$ is under way in \texttt{Hemigroup/Construction.lean}: the kernels exist with the
+stated transform (\texttt{exists\_kernel}), and (A6), (A8) and (ND) hold --- the first two as
+identities between \emph{exponents}, $g_{a,b} + g_{b,c} = g_{a,c}$ and
+$g_{\sigma a,\sigma b}(s) = g_{a,b}(\sigma s)$, the third from \ref{lem:vanishing}. All three are
+Lean core; the single crossing of the trust boundary is the existence step, which is A17 rather
+than the Bernstein--Widder route this proof takes, because the Lean development has the Lévy
+triple in hand and needs a construction rather than a representation theorem. The node is not
+marked as proved in Lean: (A1)--(A5), (A7), the passage from exponents to measures, the
+uniqueness of $(\chi, F)$ and the whole of $(\Rightarrow)$ are all still open. Lifting (A6) and
+(A8) to the measures waits on injectivity of the Laplace transform, which is intended to be
+proved rather than added to the boundary.)}
 \end{theorem}
 
 \begin{proof}

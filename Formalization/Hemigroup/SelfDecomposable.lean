@@ -91,14 +91,21 @@ lemma antitoneOn_comp_div (hk : AntitoneOn k (Ioi (0 : ℝ))) (hc : 0 < c) :
   hk (mem_Ioi.mpr (div_pos (mem_Ioi.mp hx) hc)) (mem_Ioi.mpr (div_pos (mem_Ioi.mp hy) hc))
     (by gcongr)
 
+/-- A function nonincreasing on the half-line is a.e. measurable there. This is the only route
+by which `AntitoneOn` enters the measurability side; everything downstream takes the resulting
+`AEMeasurable` hypothesis instead, because the *increment* densities M2 builds are differences
+of two such functions and are not themselves nonincreasing. -/
+lemma aemeasurable_of_antitoneOn (hk : AntitoneOn k (Ioi (0 : ℝ))) :
+    AEMeasurable k (volume.restrict (Ioi (0 : ℝ))) :=
+  aemeasurable_restrict_of_antitoneOn measurableSet_Ioi hk
+
 /-- The integrand of `levyJump` is a.e. measurable for the restricted measure. -/
-lemma aemeasurable_levyJump_integrand (hk : AntitoneOn k (Ioi (0 : ℝ))) (s : ℝ) :
+lemma aemeasurable_levyJump_integrand (hk : AEMeasurable k (volume.restrict (Ioi (0 : ℝ))))
+    (s : ℝ) :
     AEMeasurable (fun t : ℝ => ENNReal.ofReal ((1 - Real.exp (-(s * t))) * k t / t))
       (volume.restrict (Ioi (0 : ℝ))) := by
-  have hk' : AEMeasurable k (volume.restrict (Ioi (0 : ℝ))) :=
-    aemeasurable_restrict_of_antitoneOn measurableSet_Ioi hk
   have hw : Measurable fun t : ℝ => 1 - Real.exp (-(s * t)) := by fun_prop
-  exact (((hw.aemeasurable).mul hk').div aemeasurable_id).ennreal_ofReal
+  exact (((hw.aemeasurable).mul hk).div aemeasurable_id).ennreal_ofReal
 
 /-! ## Dilation acts on the density alone -/
 
@@ -179,7 +186,8 @@ lemma levyJump_add_increment (hk : AntitoneOn k (Ioi (0 : ℝ)))
       = levyJump (fun u => k (u / b)) s := by
   have hb : 0 < b := lt_of_lt_of_le ha hab
   rw [levyJump, levyJump, levyJump,
-    ← lintegral_add_left' (aemeasurable_levyJump_integrand (antitoneOn_comp_div hk ha) s)]
+    ← lintegral_add_left'
+      (aemeasurable_levyJump_integrand (aemeasurable_of_antitoneOn (antitoneOn_comp_div hk ha)) s)]
   refine setLIntegral_congr_fun measurableSet_Ioi fun u hu => ?_
   have hu' : 0 < u := hu
   -- `1 - e^{-su} ≥ 0` because `s ≥ 0` and `u > 0`.
@@ -229,11 +237,11 @@ density `k t / t` on `(0,∞)`.
 
 No sign hypothesis on `k` is needed. Where `k` is negative both sides are zero, because
 `1 - e^{-st} ≥ 0` for `s ≥ 0` and `ENNReal.ofReal` truncates. -/
-lemma levyExponentD_eq_levyExponent (b₀ : ℝ) (hk : AntitoneOn k (Ioi (0 : ℝ))) (hs : 0 ≤ s) :
+lemma levyExponentD_eq_levyExponent (b₀ : ℝ)
+    (hk : AEMeasurable k (volume.restrict (Ioi (0 : ℝ)))) (hs : 0 ≤ s) :
     levyExponentD b₀ k s = levyExponent b₀ (levyMeasureOfDensity k) s := by
   have hf : AEMeasurable (fun t : ℝ => ENNReal.ofReal (k t / t)) (volume.restrict (Ioi (0 : ℝ))) :=
-    ((aemeasurable_restrict_of_antitoneOn measurableSet_Ioi hk).div
-      aemeasurable_id).ennreal_ofReal
+    (hk.div aemeasurable_id).ennreal_ofReal
   have hg : AEMeasurable (fun t : ℝ => ENNReal.ofReal (1 - Real.exp (-(s * t))))
       (volume.restrict (Ioi (0 : ℝ))) := by fun_prop
   rw [levyExponent, levyExponentD, levyMeasureOfDensity,
@@ -252,7 +260,8 @@ lemma levyExponentD_eq_levyExponent (b₀ : ℝ) (hk : AntitoneOn k (Ioi (0 : �
 the bridge. A Lévy exponent of the self-decomposable form that vanishes at one positive point
 vanishes identically — which is how the main theorem's constructive direction verifies (ND),
 and equivalently says that a nonzero `F` is strictly increasing. -/
-theorem levyExponentD_eq_zero_of_eq_zero (hb₀ : 0 ≤ b₀) (hk : AntitoneOn k (Ioi (0 : ℝ)))
+theorem levyExponentD_eq_zero_of_eq_zero (hb₀ : 0 ≤ b₀)
+    (hk : AEMeasurable k (volume.restrict (Ioi (0 : ℝ))))
     {s₀ : ℝ} (hs₀ : 0 < s₀) (h : levyExponentD b₀ k s₀ = 0) :
     ∀ s, 0 ≤ s → levyExponentD b₀ k s = 0 := by
   intro s hs

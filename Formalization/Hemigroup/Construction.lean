@@ -1,0 +1,200 @@
+/-
+Copyright (c) 2026 Daniel Fagerström. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Daniel Fagerström
+-/
+import Hemigroup.SelfDecomposable
+import Hemigroup.Interfaces
+
+/-!
+# Constructing the kernel family from a self-decomposable exponent
+
+M2 of the formalisation ladder: the constructive direction of `thm:main-characterization`
+(Theorem 7.3 ⇐). Given `F` of the blueprint's form (7.1), build the kernels and verify the
+axioms they satisfy.
+
+This is the half of the main theorem that certifies *these kernels exist and satisfy the
+axioms*, and it is worth having on its own — it does not depend on the analysis direction, which
+is a collation of nine earlier nodes and is M6.
+
+## What is established here
+
+* `exists_kernel` — for `0 < a ≤ b` there is a causal probability measure `μ_{a,b}` with
+  `μ̂_{a,b}(s) = exp (-(F(bs) - F(as)))`. This is where ledger A17 enters, and it is the only
+  place in the file that leaves Lean core.
+* `increment_add` — **axiom (A6)**, the hemigroup law, at the level of exponents:
+  `g_{a,b} + g_{b,c} = g_{a,c}`.
+* `increment_comp_mul` — **axiom (A8)**, scale covariance: `g_{σa,σb}(s) = g_{a,b}(σs)`.
+  Pure algebra, needing no hypothesis on `a`, `b` at all.
+* `exponent_ne_zero` — **(ND)**, nondegeneracy, from M1a's vanishing lemma.
+
+## What is deliberately left for later
+
+(A6) and (A8) are proved for the *exponents*, not yet for the measures. Lifting them —
+`μ_{a,b} ∗ μ_{b,c} = μ_{a,c}` — needs injectivity of the Laplace transform, which is the M0
+remainder and is intended to be proved, not axiomatised (see `Interfaces.lean`). Mathlib's
+`Measure.conv` and `lintegral_conv` supply the other half of that step.
+
+(A7), continuity in `(a,b)`, needs the continuity theorem for Laplace transforms — ledger A5 on
+paper. Mathlib has Prokhorov and tightness, and the blueprint already holds the tightness
+argument as ours, so it is an open question whether A5 must become a second axiom. It is not
+settled here.
+
+## The subtlety that forced a refactor
+
+`levyExponentD_increment` produces an increment whose Lévy density is `k(u/b) - k(u/a)`, which
+is nonnegative but **not** nonincreasing. So the increment is a Lévy exponent without being a
+self-decomposable one, and every lemma that had assumed `AntitoneOn` to get measurability had to
+be loosened to an `AEMeasurable` hypothesis. `aemeasurable_of_antitoneOn` is now the single
+bridge, applied once per factor and then closed under subtraction.
+-/
+
+namespace Hemigroup
+
+open MeasureTheory Set
+open scoped ENNReal
+
+variable {a b c s σ : ℝ}
+
+/-- The data of the blueprint's (7.1): a drift `b₀ ≥ 0` and a nonincreasing, nonnegative `k`,
+whose exponent `s ↦ b₀ s + ∫ (1 - e^{-st}) k t / t dt` is finite.
+
+Finiteness is carried as a field rather than derived from `∫₀¹ k < ∞` and `∫₁^∞ k(t)/t dt < ∞`
+because it is what every result below actually uses; the two are equivalent, and the comparison
+is recorded in ledger A17's hypothesis-translation note. -/
+structure SelfDecomposableExponent where
+  /-- The drift coefficient. -/
+  b₀ : ℝ
+  /-- The Lévy density, against `dt / t`. -/
+  k : ℝ → ℝ
+  b₀_nonneg : 0 ≤ b₀
+  k_nonneg : ∀ t ∈ Ioi (0 : ℝ), 0 ≤ k t
+  k_antitone : AntitoneOn k (Ioi (0 : ℝ))
+  ne_top : ∀ s, 0 ≤ s → levyExponentD b₀ k s ≠ ⊤
+
+namespace SelfDecomposableExponent
+
+variable (F : SelfDecomposableExponent)
+
+/-- `F` as a function of `s`: the exponent of (7.1). -/
+noncomputable def exponent (s : ℝ) : ℝ≥0∞ := levyExponentD F.b₀ F.k s
+
+/-- The Lévy density of the dilation increment, `u ↦ k(u/b) - k(u/a)`. Nonnegative because `k`
+is nonincreasing, but not itself nonincreasing — see the module docstring. -/
+noncomputable def incrementDensity (a b : ℝ) : ℝ → ℝ := fun u => F.k (u / b) - F.k (u / a)
+
+/-- The exponent of the kernel `μ_{a,b}`: the blueprint's `g_{a,b} = F(b·) - F(a·)`, in the
+representation form supplied by `levyExponentD_increment`. -/
+noncomputable def increment (a b : ℝ) (s : ℝ) : ℝ≥0∞ :=
+  levyExponentD (F.b₀ * (b - a)) (F.incrementDensity a b) s
+
+variable {F}
+
+lemma aemeasurable_k_comp_div (hc : 0 < c) :
+    AEMeasurable (fun u => F.k (u / c)) (volume.restrict (Ioi (0 : ℝ))) :=
+  aemeasurable_of_antitoneOn (antitoneOn_comp_div F.k_antitone hc)
+
+lemma aemeasurable_incrementDensity (ha : 0 < a) (hb : 0 < b) :
+    AEMeasurable (F.incrementDensity a b) (volume.restrict (Ioi (0 : ℝ))) :=
+  (aemeasurable_k_comp_div hb).sub (aemeasurable_k_comp_div ha)
+
+/-! ## The increment is an exponent in its own right -/
+
+/-- The defining identity, straight from M1b: `F(as) + g_{a,b}(s) = F(bs)`. -/
+theorem exponent_add_increment (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
+    F.exponent (a * s) + F.increment a b s = F.exponent (b * s) :=
+  levyExponentD_increment F.b₀_nonneg F.k_antitone F.k_nonneg ha hab hs
+
+/-- Every increment is finite, because `F` is. -/
+theorem increment_ne_top (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
+    F.increment a b s ≠ ⊤ := by
+  have hb : 0 < b := lt_of_lt_of_le ha hab
+  have h := exponent_add_increment (F := F) ha hab hs
+  have : F.exponent (b * s) ≠ ⊤ := F.ne_top _ (by positivity)
+  rw [← h] at this
+  exact (ENNReal.add_ne_top.mp this).2
+
+/-! ## Axiom (A6): the hemigroup law -/
+
+/-- **Axiom (A6)**, at the level of exponents: increments compose along a cascade,
+`g_{a,b} + g_{b,c} = g_{a,c}`.
+
+This is the identity that makes the family a *hemigroup* rather than a semigroup — it is
+additivity in the pair `(a,b)`, with no requirement that the increment depend only on `b - a`.
+Lifting it to `μ_{a,b} ∗ μ_{b,c} = μ_{a,c}` needs Laplace injectivity; see the module
+docstring. -/
+theorem increment_add (ha : 0 < a) (hab : a ≤ b) (hbc : b ≤ c) (hs : 0 ≤ s) :
+    F.increment a b s + F.increment b c s = F.increment a c s := by
+  have hb : 0 < b := lt_of_lt_of_le ha hab
+  have hac : a ≤ c := hab.trans hbc
+  have h₁ := exponent_add_increment (F := F) ha hab hs
+  have h₂ := exponent_add_increment (F := F) hb hbc hs
+  have h₃ := exponent_add_increment (F := F) ha hac hs
+  -- `F(as) + (g_{a,b} + g_{b,c}) = F(cs) = F(as) + g_{a,c}`, then cancel `F(as)`.
+  have hcancel : F.exponent (a * s) + (F.increment a b s + F.increment b c s)
+      = F.exponent (a * s) + F.increment a c s := by
+    rw [h₃, ← h₂, ← h₁, add_assoc]
+  exact (ENNReal.add_right_inj (F.ne_top _ (by positivity))).mp hcancel
+
+/-! ## Axiom (A8): scale covariance -/
+
+/-- **Axiom (A8)**: dilating the pair `(a,b)` dilates the argument,
+`g_{σa,σb}(s) = g_{a,b}(σs)`.
+
+Pure algebra — no hypothesis on `a` or `b`, and no finiteness. Both sides are the same
+`levyExponentD`, because `levyJump_comp_mul` moves a dilation onto the density and
+`u ↦ (u/σ)/b = u/(σb)` matches the two densities up. -/
+theorem increment_comp_mul (hσ : 0 < σ) (a b s : ℝ) :
+    F.increment (σ * a) (σ * b) s = F.increment a b (σ * s) := by
+  rw [increment, increment, levyExponentD_comp_mul _ _ hσ]
+  congr 1
+  · ring
+  · funext u
+    simp only [incrementDensity, div_div]
+
+/-! ## (ND): nondegeneracy -/
+
+/-- **(ND)**: if `F` does not vanish identically it vanishes nowhere on `(0,∞)`.
+
+This is M1a's vanishing lemma read contrapositively, and it is what the blueprint's proof of
+Theorem 7.3 (⇐) uses to discharge (ND) — there phrased as "`F` is strictly increasing". -/
+theorem exponent_ne_zero (h : ∃ s₁, 0 ≤ s₁ ∧ F.exponent s₁ ≠ 0) (hs : 0 < s) :
+    F.exponent s ≠ 0 := by
+  obtain ⟨s₁, hs₁, hne⟩ := h
+  intro hzero
+  exact hne (levyExponentD_eq_zero_of_eq_zero F.b₀_nonneg
+    (aemeasurable_of_antitoneOn F.k_antitone) hs hzero s₁ hs₁)
+
+/-! ## The kernels -/
+
+/-- **The kernel measures exist.** For `0 < a ≤ b` there is a causal probability measure
+`μ_{a,b}` on `ℝ` whose Laplace transform is `exp (-g_{a,b}(s))`.
+
+This is `thm:main-characterization` (⇐)'s construction step, and the single point in the
+development where the trust boundary is crossed: it is ledger **A17**, the existence half of the
+subordinator correspondence. Everything else in this file is Lean core.
+
+The blueprint reaches the same measure through Bernstein–Widder, having first made `e^{-g}`
+completely monotone. Here `g_{a,b}` arrives from `levyExponentD_increment` with its Lévy triple
+attached, so what is needed is a construction from a triple, which is a strictly smaller
+interface — see `Interfaces.lean`. -/
+theorem exists_kernel (ha : 0 < a) (hab : a ≤ b) :
+    ∃ μ : Measure ℝ, IsProbabilityMeasure μ ∧ IsCausal μ ∧
+      ∀ s, 0 ≤ s → laplace μ s = Real.exp (-(F.increment a b s).toReal) := by
+  have hb : 0 < b := lt_of_lt_of_le ha hab
+  have hdens := aemeasurable_incrementDensity (F := F) ha hb
+  -- Transport the increment to the measure-based `levyExponent` of `Levy.lean`.
+  have hbridge : ∀ s, 0 ≤ s → F.increment a b s
+      = levyExponent (F.b₀ * (b - a)) (levyMeasureOfDensity (F.incrementDensity a b)) s :=
+    fun s hs => levyExponentD_eq_levyExponent _ hdens hs
+  obtain ⟨μ, hprob, hcausal, htrans⟩ :=
+    exists_isProbabilityMeasure_laplace_eq_exp_neg_levyExponent
+      (b₀ := F.b₀ * (b - a)) (ν := levyMeasureOfDensity (F.incrementDensity a b))
+      (mul_nonneg F.b₀_nonneg (by linarith))
+      (isCausal_levyMeasureOfDensity _)
+      (fun s hs => by rw [← hbridge s hs]; exact increment_ne_top (F := F) ha hab hs)
+  exact ⟨μ, hprob, hcausal, fun s hs => by rw [htrans s hs, hbridge s hs]⟩
+
+end SelfDecomposableExponent
+
+end Hemigroup
