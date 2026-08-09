@@ -94,8 +94,15 @@ them to $\Phi_{x,y}$ is \textbf{[T]}.)}
 % draft: Lemma 2.4
 \begin{lemma}[vanishing lemma]\label{lem:vanishing}
 \uses{def:bernstein-function,prop:bernstein-toolbox}
+\lean{Hemigroup.levyExponent_eq_zero_of_eq_zero}\leanok
 If $g \in \BFz$ and $g(s_0) = 0$ for some $s_0 > 0$, then $g \equiv 0$.
-\statusT
+\statusT\quad\emph{(the Lean development states this for the \emph{representation}
+$g(s) = b_0 s + \int (1 - e^{-st})\,\nu(dt)$ rather than for the derivative-sign definition
+\ref{def:bernstein-function}, following the formalisation strategy; the two notions agree by
+the Lévy--Khintchine theorem, which is A3 and reaches this node through
+\ref{prop:bernstein-toolbox}(3). From the representation the proof is shorter than the one
+below --- a sum of nonnegative terms vanishes only when each does --- and needs neither
+concavity nor complete monotonicity. \texttt{\#print axioms} reduces to Lean core only.)}
 \end{lemma}
 
 \begin{proof}

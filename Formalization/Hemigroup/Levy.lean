@@ -139,4 +139,63 @@ lemma laplace_pos {μ : Measure ℝ} [IsFiniteMeasure μ] (h : IsCausal μ) (hμ
     rw [this]
     exact (Measure.measure_univ_pos.mpr hμ).bot_lt
 
+/-! ## Lévy exponents, representation-first
+
+`blueprint/DESIGN-formalization-strategy.md` argues for defining admissibility by the
+representation rather than by derivative signs, and this is where that begins to pay: the
+vanishing lemma below is three lines from the representation, against the blueprint's
+concavity argument.
+
+The identification of this notion with the blueprint's Definition 2.2 — smooth with completely
+monotone derivative — is the Lévy–Khintchine theorem, ledger entry A3, and is *not* proved
+here. That is deliberate and is what the trust boundary is for.
+-/
+
+/-- The Lévy exponent with drift `b₀` and Lévy measure `ν`, valued in `ℝ≥0∞`:
+`s ↦ b₀ s + ∫ (1 - e^{-st}) ν(dt)`.
+
+This is the right-hand side of the blueprint's (7.1), before the self-decomposability
+restriction on `ν`. Valued in `ℝ≥0∞` so that no integrability hypothesis is needed. -/
+noncomputable def levyExponent (b₀ : ℝ) (ν : Measure ℝ) (s : ℝ) : ℝ≥0∞ :=
+  ENNReal.ofReal (b₀ * s) + ∫⁻ t, ENNReal.ofReal (1 - Real.exp (-(s * t))) ∂ν
+
+@[simp] lemma levyExponent_zero (b₀ : ℝ) (ν : Measure ℝ) : levyExponent b₀ ν 0 = 0 := by
+  simp [levyExponent]
+
+/-- **The vanishing lemma**, blueprint `lem:vanishing` (Lemma 2.4), in representation form: a
+Lévy exponent that vanishes at a single positive point vanishes identically.
+
+The blueprint proves this from concavity and the monotonicity of a completely monotone
+derivative. Working from the representation instead, it is just the statement that a sum of
+nonnegative terms vanishes only when each does: the drift is killed because `s₀ > 0`, and the
+Lévy measure is killed because `1 - e^{-s₀t} > 0` off `t = 0`. -/
+theorem levyExponent_eq_zero_of_eq_zero {b₀ : ℝ} {ν : Measure ℝ} (hb : 0 ≤ b₀)
+    (hν : IsCausal ν) {s₀ : ℝ} (hs₀ : 0 < s₀) (h : levyExponent b₀ ν s₀ = 0) :
+    ∀ s, 0 ≤ s → levyExponent b₀ ν s = 0 := by
+  have hmeas : ∀ r : ℝ, Measurable fun t : ℝ => ENNReal.ofReal (1 - Real.exp (-(r * t))) :=
+    fun r => (measurable_const.sub ((Real.measurable_exp.comp (by fun_prop)))).ennreal_ofReal
+  -- A sum of two terms of `ℝ≥0∞` vanishes only if both do.
+  rw [levyExponent, add_eq_zero] at h
+  obtain ⟨hdrift, hjump⟩ := h
+  -- The drift dies because `s₀ > 0`.
+  have hb0 : b₀ = 0 := by
+    have := ENNReal.ofReal_eq_zero.mp hdrift
+    nlinarith
+  -- The Lévy measure is carried by `{0}`, where the integrand vanishes for every `s`.
+  have hae : ∀ᵐ t ∂ν, t = 0 := by
+    rw [lintegral_eq_zero_iff (hmeas s₀)] at hjump
+    filter_upwards [hjump, hν.ae_nonneg] with t ht htpos
+    have h1 : 1 - Real.exp (-(s₀ * t)) ≤ 0 := ENNReal.ofReal_eq_zero.mp ht
+    by_contra hne
+    have htpos' : 0 < t := lt_of_le_of_ne htpos (Ne.symm hne)
+    have : Real.exp (-(s₀ * t)) < 1 := Real.exp_lt_one_iff.mpr (by nlinarith)
+    linarith
+  intro s _
+  rw [levyExponent, hb0]
+  have : ∫⁻ t, ENNReal.ofReal (1 - Real.exp (-(s * t))) ∂ν = 0 := by
+    rw [lintegral_eq_zero_iff (hmeas s)]
+    filter_upwards [hae] with t ht
+    simp [ht]
+  simp [this]
+
 end Hemigroup
