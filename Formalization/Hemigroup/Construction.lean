@@ -5,6 +5,7 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.SelfDecomposable
 import Hemigroup.Interfaces
+import Hemigroup.Injectivity
 
 /-!
 # Constructing the kernel family from a self-decomposable exponent
@@ -22,18 +23,23 @@ is a collation of nine earlier nodes and is M6.
 * `exists_kernel` — for `0 < a ≤ b` there is a causal probability measure `μ_{a,b}` with
   `μ̂_{a,b}(s) = exp (-(F(bs) - F(as)))`. This is where ledger A17 enters, and it is the only
   place in the file that leaves Lean core.
-* `increment_add` — **axiom (A6)**, the hemigroup law, at the level of exponents:
-  `g_{a,b} + g_{b,c} = g_{a,c}`.
-* `increment_comp_mul` — **axiom (A8)**, scale covariance: `g_{σa,σb}(s) = g_{a,b}(σs)`.
-  Pure algebra, needing no hypothesis on `a`, `b` at all.
+* `increment_add` / `kernel_conv` — **axiom (A6)**, the hemigroup law, first as
+  `g_{a,b} + g_{b,c} = g_{a,c}` and then as `μ_{a,b} ∗ μ_{b,c} = μ_{a,c}`.
+* `increment_comp_mul` / `kernel_map_const_mul` — **axiom (A8)**, scale covariance, as
+  `g_{σa,σb}(s) = g_{a,b}(σs)` and then as `μ_{σa,σb} = D_σ μ_{a,b}`. The exponent form needs
+  no hypothesis on `a`, `b` at all.
 * `exponent_ne_zero` — **(ND)**, nondegeneracy, from M1a's vanishing lemma.
+* `kernel_unique` — the choice made in `kernel` is immaterial: the transform pins the measure.
+
+The passage from exponents to measures is pure transport, because the Laplace transform turns
+convolution into multiplication and dilation into reparametrisation (`laplace_conv`,
+`laplace_map_const_mul`) and is injective on causal measures (`laplace_injective`). None of
+those three touches the trust boundary.
 
 ## What is deliberately left for later
 
-(A6) and (A8) are proved for the *exponents*, not yet for the measures. Lifting them —
-`μ_{a,b} ∗ μ_{b,c} = μ_{a,c}` — needs injectivity of the Laplace transform, which is the M0
-remainder and is intended to be proved, not axiomatised (see `Interfaces.lean`). Mathlib's
-`Measure.conv` and `lintegral_conv` supply the other half of that step.
+(A1)–(A5) — the `L¹` operator properties — are not here; they are the converse half of
+`lem:convolution-representation` and need no new analysis, only bookkeeping about `μ * f`.
 
 (A7), continuity in `(a,b)`, needs the continuity theorem for Laplace transforms — ledger A5 on
 paper. Mathlib has Prokhorov and tightness, and the blueprint already holds the tightness
@@ -194,6 +200,81 @@ theorem exists_kernel (ha : 0 < a) (hab : a ≤ b) :
       (isCausal_levyMeasureOfDensity _)
       (fun s hs => by rw [← hbridge s hs]; exact increment_ne_top (F := F) ha hab hs)
   exact ⟨μ, hprob, hcausal, fun s hs => by rw [htrans s hs, hbridge s hs]⟩
+
+/-! ## The kernel family, and the axioms at the level of measures
+
+`exists_kernel` only asserts existence, and a convolution identity has to name its measures. So
+fix a choice. Injectivity of the Laplace transform (`Injectivity.lean`) makes the choice
+immaterial: any measure with the right transform *is* this one, by `kernel_unique`.
+-/
+
+open Classical in
+/-- The kernel `μ_{a,b}`, chosen once and for all. Junk (the zero measure) outside `0 < a ≤ b`,
+which is the range every result below hypothesises anyway. -/
+noncomputable def kernel (F : SelfDecomposableExponent) (a b : ℝ) : Measure ℝ :=
+  if h : 0 < a ∧ a ≤ b then (exists_kernel (F := F) h.1 h.2).choose else 0
+
+lemma kernel_spec (ha : 0 < a) (hab : a ≤ b) :
+    IsProbabilityMeasure (F.kernel a b) ∧ IsCausal (F.kernel a b) ∧
+      ∀ s, 0 ≤ s → laplace (F.kernel a b) s = Real.exp (-(F.increment a b s).toReal) := by
+  rw [show F.kernel a b = (exists_kernel (F := F) ha hab).choose from dif_pos ⟨ha, hab⟩]
+  exact (exists_kernel (F := F) ha hab).choose_spec
+
+lemma isProbabilityMeasure_kernel (ha : 0 < a) (hab : a ≤ b) :
+    IsProbabilityMeasure (F.kernel a b) := (kernel_spec ha hab).1
+
+lemma isCausal_kernel (ha : 0 < a) (hab : a ≤ b) : IsCausal (F.kernel a b) :=
+  (kernel_spec ha hab).2.1
+
+lemma laplace_kernel (ha : 0 < a) (hab : a ≤ b) (hs : 0 ≤ s) :
+    laplace (F.kernel a b) s = Real.exp (-(F.increment a b s).toReal) :=
+  (kernel_spec ha hab).2.2 s hs
+
+/-- The choice made in `kernel` is immaterial: the transform pins the measure down. -/
+theorem kernel_unique {μ : Measure ℝ} [IsFiniteMeasure μ] (hμ : IsCausal μ)
+    (ha : 0 < a) (hab : a ≤ b)
+    (ht : ∀ s, 0 ≤ s → laplace μ s = Real.exp (-(F.increment a b s).toReal)) :
+    μ = F.kernel a b := by
+  haveI := isProbabilityMeasure_kernel (F := F) ha hab
+  exact laplace_injective hμ (isCausal_kernel ha hab)
+    fun s hs => by rw [ht s hs, laplace_kernel ha hab hs]
+
+/-- **Axiom (A6) for the measures**: the kernels compose along a cascade under convolution.
+
+This is `increment_add` transported across the Laplace transform, which turns convolution into
+multiplication (`laplace_conv`) and is injective on causal measures (`laplace_injective`).
+Neither step touches the trust boundary. -/
+theorem kernel_conv (ha : 0 < a) (hab : a ≤ b) (hbc : b ≤ c) :
+    F.kernel a b ∗ F.kernel b c = F.kernel a c := by
+  have hb : 0 < b := lt_of_lt_of_le ha hab
+  haveI := isProbabilityMeasure_kernel (F := F) ha hab
+  haveI := isProbabilityMeasure_kernel (F := F) hb hbc
+  haveI := isProbabilityMeasure_kernel (F := F) ha (hab.trans hbc)
+  refine laplace_injective ((isCausal_kernel (F := F) ha hab).conv
+    (isCausal_kernel (F := F) hb hbc)) (isCausal_kernel (F := F) ha (hab.trans hbc))
+    fun s hs => ?_
+  rw [laplace_conv, laplace_kernel ha hab hs, laplace_kernel hb hbc hs,
+    laplace_kernel ha (hab.trans hbc) hs, ← Real.exp_add, ← neg_add,
+    ← ENNReal.toReal_add (increment_ne_top (F := F) ha hab hs)
+      (increment_ne_top (F := F) hb hbc hs), increment_add ha hab hbc hs]
+
+/-- **Axiom (A8) for the measures**: dilating the pair dilates the kernel,
+`μ_{σa,σb} = D_σ μ_{a,b}`.
+
+`increment_comp_mul` transported the same way. On the transform side dilation is a
+reparametrisation (`laplace_map_const_mul`), so this is again pure transport. -/
+theorem kernel_map_const_mul (hσ : 0 < σ) (ha : 0 < a) (hab : a ≤ b) :
+    F.kernel (σ * a) (σ * b) = (F.kernel a b).map (fun t => σ * t) := by
+  have ha' : 0 < σ * a := by positivity
+  have hab' : σ * a ≤ σ * b := by nlinarith
+  haveI := isProbabilityMeasure_kernel (F := F) ha hab
+  haveI := isProbabilityMeasure_kernel (F := F) ha' hab'
+  haveI : IsProbabilityMeasure ((F.kernel a b).map (fun t => σ * t)) :=
+    Measure.isProbabilityMeasure_map (by fun_prop)
+  refine laplace_injective (isCausal_kernel (F := F) ha' hab')
+    ((isCausal_kernel (F := F) ha hab).map_const_mul hσ) fun s hs => ?_
+  rw [laplace_map_const_mul _ hσ, laplace_kernel ha hab (by positivity),
+    laplace_kernel ha' hab' hs, increment_comp_mul hσ]
 
 end SelfDecomposableExponent
 

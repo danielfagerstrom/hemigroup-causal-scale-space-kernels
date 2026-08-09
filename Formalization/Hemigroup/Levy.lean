@@ -8,6 +8,7 @@ import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
 import Mathlib.MeasureTheory.Measure.Dirac
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 import Mathlib.Analysis.SpecialFunctions.Exp
+import Mathlib.MeasureTheory.Group.Convolution
 
 /-!
 # Causal measures and their Laplace transforms
@@ -197,5 +198,71 @@ theorem levyExponent_eq_zero_of_eq_zero {b₀ : ℝ} {ν : Measure ℝ} (hb : 0 
     filter_upwards [hae] with t ht
     simp [ht]
   simp [this]
+
+/-! ## Convolution and dilation
+
+The two operations axiom (A6) and axiom (A8) are stated in terms of. Both act on the Laplace
+transform in the simplest possible way — convolution multiplies it, dilation reparametrises it —
+and that is what lets `Injectivity.lean` turn the exponent identities of `Construction.lean`
+into identities between measures.
+-/
+
+/-- Convolution of causal measures is causal: `x + y < 0` forces `x < 0` or `y < 0`. -/
+lemma IsCausal.conv {μ ν : Measure ℝ} [SFinite μ] [SFinite ν] (hμ : IsCausal μ)
+    (hν : IsCausal ν) : IsCausal (μ ∗ ν) := by
+  rw [IsCausal, Measure.conv, Measure.map_apply (by fun_prop) measurableSet_Iio]
+  have hsub : (fun p : ℝ × ℝ => p.1 + p.2) ⁻¹' Iio 0 ⊆ (Iio 0 ×ˢ univ) ∪ (univ ×ˢ Iio 0) := by
+    rintro ⟨x, y⟩ h
+    simp only [mem_preimage, mem_Iio] at h
+    by_contra hc
+    simp only [mem_union, mem_prod, mem_Iio, mem_univ, and_true, true_and, not_or, not_lt] at hc
+    linarith [hc.1, hc.2]
+  refine measure_mono_null hsub (measure_union_null ?_ ?_)
+  · rw [Measure.prod_prod, hμ, zero_mul]
+  · rw [Measure.prod_prod, hν, mul_zero]
+
+/-- **The Laplace transform turns convolution into multiplication**, with no hypotheses beyond
+what makes the convolution well behaved. This is axiom (A6) reduced to arithmetic. -/
+lemma laplaceL_conv (μ ν : Measure ℝ) [SFinite ν] (s : ℝ) :
+    laplaceL (μ ∗ ν) s = laplaceL μ s * laplaceL ν s := by
+  have hf : Measurable fun z : ℝ => ENNReal.ofReal (Real.exp (-(s * z))) := by fun_prop
+  rw [laplaceL, Measure.lintegral_conv hf]
+  have hinner : ∀ x : ℝ, ∫⁻ y, ENNReal.ofReal (Real.exp (-(s * (x + y)))) ∂ν
+      = ENNReal.ofReal (Real.exp (-(s * x))) * laplaceL ν s := by
+    intro x
+    rw [laplaceL, ← lintegral_const_mul _ (by fun_prop)]
+    refine lintegral_congr fun y => ?_
+    rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add]
+    congr 2
+    ring
+  simp_rw [hinner]
+  rw [lintegral_mul_const _ (by fun_prop)]
+  rfl
+
+/-- The real-valued form. Unconditional, because `ENNReal.toReal` is multiplicative. -/
+lemma laplace_conv (μ ν : Measure ℝ) [SFinite ν] (s : ℝ) :
+    laplace (μ ∗ ν) s = laplace μ s * laplace ν s := by
+  rw [laplace_eq_toReal_laplaceL, laplace_eq_toReal_laplaceL, laplace_eq_toReal_laplaceL,
+    laplaceL_conv, ENNReal.toReal_mul]
+
+/-- Dilation by `σ > 0` preserves causality. -/
+lemma IsCausal.map_const_mul {μ : Measure ℝ} (h : IsCausal μ) {σ : ℝ} (hσ : 0 < σ) :
+    IsCausal (μ.map (fun t => σ * t)) := by
+  rw [IsCausal, Measure.map_apply (by fun_prop) measurableSet_Iio]
+  refine measure_mono_null (fun t ht => ?_) h
+  simp only [mem_preimage, mem_Iio] at ht
+  exact mem_Iio.mpr (by nlinarith)
+
+/-- **Dilation reparametrises the transform**: `(D_σ μ)ˆ(s) = μˆ(σ s)`. This is axiom (A8)
+reduced to arithmetic. -/
+lemma laplace_map_const_mul (μ : Measure ℝ) {σ : ℝ} (hσ : 0 < σ) (s : ℝ) :
+    laplace (μ.map (fun t => σ * t)) s = laplace μ (σ * s) := by
+  have hemb : MeasurableEmbedding (fun t : ℝ => σ * t) :=
+    (Homeomorph.mulLeft₀ σ hσ.ne').toMeasurableEquiv.measurableEmbedding
+  rw [laplace, hemb.integral_map, laplace]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+  dsimp only
+  congr 1
+  ring
 
 end Hemigroup
