@@ -365,6 +365,80 @@ theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → �
   refine hle.trans ((ENNReal.toReal_le_toReal (measure_ne_top _ _) hεtop).mp ?_)
   exact hT _ _ (hu0 n) (huv n) (hvB n)
 
+/-! ## Strict monotonicity of `F`
+
+The last analytic ingredient of `thm:main-characterization` (⇐): its uniqueness clause recovers
+`χ(x)` as the unique `c` with `g_{0,x} = F(c ·)`, and "unique" is exactly strict monotonicity.
+-/
+
+/-- `F` is nondecreasing — immediate from `F(as) + g_{a,b}(s) = F(bs)`, since the increment is
+a nonnegative quantity. -/
+theorem exponent_mono (F : SelfDecomposableExponent) {s₁ s₂ : ℝ} (h1 : 0 < s₁) (h12 : s₁ ≤ s₂) :
+    F.exponent s₁ ≤ F.exponent s₂ := by
+  have hc : 1 ≤ s₂ / s₁ := (one_le_div h1).mpr h12
+  have h := exponent_add_increment (F := F) (a := 1) (b := s₂ / s₁) one_pos hc h1.le
+  rw [one_mul, div_mul_cancel₀ _ h1.ne'] at h
+  rw [← h]
+  exact le_self_add
+
+/-- **If `F` is not identically zero it is strictly increasing on `(0,∞)`.**
+
+Suppose an increment `g_{1,c}` vanished at one point. By `lem:vanishing` — in the Lean form
+`levyExponentD_eq_zero_of_eq_zero` — it vanishes identically, so `F(cs) = F(s)` for every `s`.
+Iterating *downwards* gives `F(s₀) = F(s₀ / cⁿ)` for all `n`, and `s₀ / cⁿ → 0` because `c > 1`,
+so continuity at the origin forces `F(s₀) = F(0) = 0`. Since `s₀` was an arbitrary point,
+`F ≡ 0`.
+
+Note the direction: iterating *upwards* would need monotonicity and a boundedness argument;
+downwards it is just `tendsto_exponent` at `ρ = 0`. -/
+theorem exponent_strictMono (F : SelfDecomposableExponent)
+    (hne : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0)
+    {s₁ s₂ : ℝ} (h1 : 0 < s₁) (h12 : s₁ < s₂) : F.exponent s₁ < F.exponent s₂ := by
+  obtain ⟨s₀, hs₀, hs₀ne⟩ := hne
+  set c : ℝ := s₂ / s₁ with hc_def
+  have hc1 : 1 < c := (one_lt_div h1).mpr h12
+  have hc0 : 0 < c := lt_trans one_pos hc1
+  have hkey := exponent_add_increment (F := F) (a := 1) (b := c) one_pos hc1.le h1.le
+  rw [one_mul, hc_def, div_mul_cancel₀ _ h1.ne'] at hkey
+  rw [← hkey]
+  refine ENNReal.lt_add_right (F.ne_top _ h1.le) ?_
+  -- Suppose the increment vanished at `s₁`.
+  intro hzero
+  -- Then it vanishes identically, so `F(c s) = F(s)` for every `s ≥ 0`.
+  have hdens : AEMeasurable (F.incrementDensity 1 c) (volume.restrict (Ioi (0 : ℝ))) :=
+    aemeasurable_incrementDensity one_pos hc0
+  have hInc : ∀ s, 0 ≤ s → F.increment 1 c s = 0 :=
+    levyExponentD_eq_zero_of_eq_zero (mul_nonneg F.b₀_nonneg (by linarith)) hdens h1 hzero
+  have hfix : ∀ s, 0 ≤ s → F.exponent (c * s) = F.exponent s := by
+    intro s hs
+    have h := exponent_add_increment (F := F) (a := 1) (b := c) one_pos hc1.le hs
+    rw [one_mul, hInc s hs, add_zero] at h
+    exact h.symm
+  -- Iterate downwards: `F(s₀ / cⁿ) = F(s₀)`.
+  have hiter : ∀ n : ℕ, F.exponent (s₀ / c ^ n) = F.exponent s₀ := by
+    intro n
+    induction n with
+    | zero => simp
+    | succ n ih =>
+        have hpos : (0 : ℝ) ≤ s₀ / c ^ (n + 1) := by positivity
+        have hstep : c * (s₀ / c ^ (n + 1)) = s₀ / c ^ n := by
+          field_simp
+          ring
+        rw [← ih, ← hstep, hfix _ hpos]
+  -- `s₀ / cⁿ → 0`, so `F(s₀) = F(0) = 0`, contradicting the hypothesis.
+  have hlim : Filter.Tendsto (fun n : ℕ => s₀ / c ^ n) Filter.atTop (nhds 0) := by
+    have hpow : Filter.Tendsto (fun n : ℕ => (c ^ n)⁻¹) Filter.atTop (nhds 0) :=
+      (tendsto_pow_atTop_atTop_of_one_lt hc1).inv_tendsto_atTop
+    simpa [div_eq_mul_inv] using hpow.const_mul s₀
+  have hbound : ∀ n : ℕ, s₀ / c ^ n ≤ s₀ := by
+    intro n
+    rw [div_le_iff₀ (by positivity)]
+    nlinarith [one_le_pow₀ hc1.le (n := n), hs₀.le]
+  have h0 : F.exponent 0 = 0 := by simp [exponent, levyExponentD, levyJump]
+  have := tendsto_exponent F hbound hs₀.le hlim
+  simp only [hiter, h0] at this
+  exact hs₀ne (tendsto_nhds_unique tendsto_const_nhds this)
+
 /-! ## Axiom (A7) -/
 
 /-- **Axiom (A7)**: the kernel family is weakly continuous in its parameters. If

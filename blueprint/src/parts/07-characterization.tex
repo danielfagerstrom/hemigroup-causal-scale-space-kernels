@@ -146,9 +146,15 @@ ones from a single Tonelli identity
 $\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$ used twice over: once to estimate,
 giving (A1) and that $\Phi$ maps $\Lone$ to $\Lone$; once to establish integrability on the
 product, which licenses the Bochner swap and gives (A5). \textbf{So every axiom of
-\ref{def:cascade-family} is now discharged for the constructed family.} The node is still not
-marked as proved in Lean, because $(\Leftarrow)$ also asserts the uniqueness of $(\chi, F)$,
-which is not formalised, and because $(\Rightarrow)$ is untouched.)}
+\ref{def:cascade-family} is now discharged for the constructed family.} The uniqueness clause's
+analytic content is there too: $F$ is strictly increasing when $F \not\equiv 0$
+(\texttt{exponent\_strictMono}), which is what makes the $c$ with $g_{0,x} = F(c\,\cdot)$
+unique. Its proof runs \ref{lem:vanishing} on the \emph{increment} --- if $g_{1,c}$ vanished
+anywhere it would vanish identically, giving $F(cs) = F(s)$, and iterating that
+\emph{downwards} sends $s_0/c^n \to 0$, where continuity at the origin forces $F \equiv 0$. The
+node is still not marked as proved in Lean: the uniqueness \emph{statement} quantifies over the
+gauge $\chi$, which the Lean development does not model --- it works in the canonical gauge
+throughout --- and $(\Rightarrow)$ is untouched.)}
 \end{theorem}
 
 \begin{proof}
