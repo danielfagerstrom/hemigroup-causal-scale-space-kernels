@@ -141,9 +141,11 @@ hand and needs a construction rather than a representation theorem. \textbf{(A7)
 $\mu_{a_n,b_n} \to \mu_{a,b}$ weakly. It was the step expected to cost a second interface,
 because on paper it runs through \ref{prop:laplace-continuity}; it does not, because that
 continuity theorem is itself proved for the case used here, and the tightness it needs was
-always ours. The node is still not marked as proved in Lean: (A1)--(A5), the uniqueness of
-$(\chi, F)$ and the whole of $(\Rightarrow)$ remain open. What is left of $(\Leftarrow)$ is
-bookkeeping about $\mu * f$ on $\Lone$, with no new analysis in it.)}
+always ours. \textbf{(A1)--(A4) hold} too (\texttt{Hemigroup/Operator.lean}), with (A5) proved in
+its measure-theoretic form --- the Tonelli identity
+$\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$, which is unit area --- but not yet
+restated for the Bochner integral. The node is still not marked as proved in Lean: that
+restatement, the uniqueness of $(\chi, F)$, and the whole of $(\Rightarrow)$ remain open.)}
 \end{theorem}
 
 \begin{proof}
