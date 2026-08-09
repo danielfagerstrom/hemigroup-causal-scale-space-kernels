@@ -20,7 +20,7 @@ $$\phi_x(t) \;=\; \mathcal{L}^{-1}\big[\,e^{-F(xs)}\,\big](t), \qquad F(s) = b_0
 
 the Laplace exponents of the *self-decomposable* laws — equivalently, the kernels are the marginal densities of self-similar additive (Sato) subordinators. The extremal stable family is precisely the sub-case recovered when stage-interchangeability is reimposed, and the heavy tails are thereby exposed as the price of that tacit assumption, not of causality and covariance: the new class contains members with all moments finite, the flagship being the Gamma family $\phi_x(t) = t^{\gamma-1}e^{-t/x}/(\Gamma(\gamma)x^\gamma)$ — mean delay $\gamma x$, exponential tails, exact continuous scale covariance, and a recursive implementation by first-order filter sections.
 
-The remainder develops the memory-line theory in parallel with Theorems 3–5 of [Fagerström 2005], and the embodiment principle, invoked there as motivation, recurs here three times as theorem content. First, the evolution across scale is a general fractional relaxation equation in the sense of Kochubei and Luchko whose memory kernel is the self-decomposability function $k$ itself, dilated to the current scale, and the unit-area axiom becomes an exact Sonine conservation identity, $\kappa * \ell = \mathrm{Leb}$: the infinitesimal smoothing applied at each scale is exactly invertible, destroying no information (§9, Theorem 10.4). Second, the inversion into a signaling problem $\partial_t u = A u$ over the memory half-line is accomplished by a covariant *Mellin* operator — multiplicative harmonic analysis mirroring the Wendel step on the additive group that opens the derivation — and comes with the identity $\mathcal{M}_x[u(t, \cdot)](z) = \tilde H(z)\,(I^z f)(t)$: at each instant, the memory line stores precisely the analytic family of Riemann–Liouville integrals of the past signal (Theorem 11.5, Lemma 11.4). Third, the temporal $N$-jet — the causal analogue of the derivative-of-Gaussian receptive fields — is an instantaneous functional of that same state, $\partial_t^n u = A^n u$: differentiation is re-indexing of the embodied record, and for the Gamma family a binomial subtraction of coexisting filter states, so that no second memory of the scale space is needed to differentiate (§14).
+The remainder develops the memory-line theory in parallel with Theorems 3–5 of [Fagerström 2005], and the embodiment principle, invoked there as motivation, recurs here three times as theorem content. First, the evolution across scale is a general fractional relaxation equation in the sense of Kochubei and Luchko whose memory kernel is the self-decomposability function $k$ itself, dilated to the current scale, and the unit-area axiom becomes an exact Sonine conservation identity, $\kappa * \ell = \mathrm{Leb}$: the infinitesimal smoothing applied at each scale is exactly invertible, destroying no information (§9, Theorem 10.4). Second, the inversion into a signaling problem $\partial_t u = A u$ over the memory half-line is accomplished by a covariant *Mellin* operator — multiplicative harmonic analysis mirroring the Wendel step on the additive group that opens the derivation — and comes with the identity $\mathcal{M}_x[u(t, \cdot)](z) = \tilde H(z)\,(I^z f)(t)$: at each instant, the memory line stores precisely the analytic family of Riemann–Liouville integrals of the past signal (Theorem 11.6, Lemma 11.5). Third, the temporal $N$-jet — the causal analogue of the derivative-of-Gaussian receptive fields — is an instantaneous functional of that same state, $\partial_t^n u = A^n u$: differentiation is re-indexing of the embodied record, and for the Gamma family a binomial subtraction of coexisting filter states, so that no second memory of the scale space is needed to differentiate (§14).
 
 The locality analogue of Theorem 5 becomes a genuine classification (Theorem 12.5). Locality of the memory-line operator alone admits a ladder of every differential order, with reciprocal gamma-product kernels whose depth-homogeneous slice recovers, through Gauss's multiplication formula, the local stable cases $\alpha = 1/n$; the positive maximum principle then closes the ladder at order two, unfolding the isolated heat case $\alpha = \tfrac12$ of [Fagerström 2005, Thm. 5] into the one-parameter Bessel family $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with inverse-gamma kernels, whose drift weight $\beta$ buys any prescribed finite number of kernel moments. On the implementation side (§13), the hemigroup itself is the algorithm: the discrete cascade over any set of scale knots reproduces the continuum family *exactly* at the knots, the Gamma increments are rational — identical pole–zero first-order sections — and, through the Thorin structure of generalized gamma convolutions, finite gamma cascades approximate the entire completely-monotone-kernel subclass from *inside* the axiom class, making the Gamma family the implementation substrate for the whole theory; Example 13.7 quantifies the tail contrast, the $\tfrac12$-stable kernel requiring a window five to six orders of magnitude beyond its typical delay to capture $99.9\%$ of its mass, against a small constant multiple for the Gamma members.
 
@@ -267,7 +267,7 @@ the Gamma density with fixed shape $\gamma$ and scale $x$. All moments are finit
 
 $$e^{-F(s)} = \frac{2^{1-a}}{\Gamma(a)}\,\big(\sqrt{2s}\big)^{a} K_a\big(\sqrt{2s}\big),$$
 
-which is self-decomposable (as a limiting generalized-inverse-Gaussian law, [Halgreen 1979]). In the parabolic gauge $\tilde x = x^2/2$ these are the boundary-hitting kernels of the Bessel-type media $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$, $a = \tfrac12 - \beta$; moments satisfy $\mathbb{E}\,T_x^n < \infty$ iff $a > n$. This family is the subject of the memory-line development (Theorems 10.4, 11.5 and 12.5).
+which is self-decomposable (as a limiting generalized-inverse-Gaussian law, [Halgreen 1979]). In the parabolic gauge $\tilde x = x^2/2$ these are the boundary-hitting kernels of the Bessel-type media $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$, $a = \tfrac12 - \beta$; moments satisfy $\mathbb{E}\,T_x^n < \infty$ iff $a > n$. This family is the subject of the memory-line development (Theorems 10.4, 11.6 and 12.5).
 
 **Proposition 8.4 (moments and the influence curve).** $\mathbb{E}\,T_x = x\,F'(0{+}) = x\Big(b_0 + \int_0^\infty k(t)\,dt\Big)$, finite iff $k$ is integrable at infinity; more generally $\mathbb{E}\,T_x^n < \infty$ iff $\int_1^\infty t^{\,n-1} k(t)\,dt < \infty$. When the mean is finite, the influence curve of [Fagerström 2005, §7] can be defined by the mean delay and is exactly linear in the canonical gauge:
 
@@ -470,13 +470,13 @@ $$\hat u(s, x) = \hat f(s)\, H(sx),$$
 
 are *dilates of a single profile* $H$, with the eigenvalue $s$ appearing as the dilation parameter. Operators diagonal on dilation families are the subject of multiplicative harmonic analysis, so the inversion operator lives in the **Mellin calculus** — the multiplicative-group counterpart of the Wendel step of §4 on the additive group. Throughout: canonical gauge, so that $\mu_{0,x}$ is the law of $x\,T_1$ with $\mathbb{E}[e^{-sT_1}] = H(s)$; Mellin transform $\tilde g(z) := \int_0^\infty x^{z-1} g(x)\,dx$; Euler operator $\theta := x\,\partial_x$; and $(I^z f)(t) := \tfrac{1}{\Gamma(z)}\int_0^t (t-r)^{z-1} f(r)\,dr$ denotes the Riemann–Liouville integral of complex order $z$, $\operatorname{Re} z > 0$ [Samko–Kilbas–Marichev].
 
-**Standing hypothesis (H).** $F(\infty) = \infty$ (equivalently: $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$; no atom of the kernels at zero delay), and
+**Definition 11.1 (the standing hypothesis (H)).** An admissible exponent $F$ satisfies the *standing hypothesis* (H) if $F(\infty) = \infty$ (equivalently: $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$; no atom of the kernels at zero delay), and
 
 $$z_* \;:=\; \sup\big\{\, \zeta > 0 :\ \mathbb{E}\big[T_1^{-\zeta}\big] < \infty \,\big\} \;>\; 1 .$$
 
 The second condition is equivalent to $\int_0^\infty e^{-F(s)}\,ds < \infty$. It holds with $z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of Example 8.3; for the Gamma family $z_* = \gamma$, so (H) requires $\gamma > 1$ there. (The construction extends below $z_* = 1$ by meromorphic continuation; we do not pursue this.)
 
-**Lemma 11.1 (Mellin data of the profile).** Under (H), for $0 < \operatorname{Re} z < z_*$,
+**Lemma 11.2 (Mellin data of the profile).** Under (H), for $0 < \operatorname{Re} z < z_*$,
 
 $$\tilde H(z) \;=\; \Gamma(z)\;\mathbb{E}\big[T_1^{-z}\big],$$
 
@@ -488,17 +488,17 @@ meromorphic on the strip, with poles only at the (isolated) zeros of $\tilde H$.
 
 *Proof.* $\tilde H(z) = \int_0^\infty s^{z-1}\,\mathbb{E}[e^{-sT_1}]\,ds = \mathbb{E}\big[\int_0^\infty s^{z-1}e^{-sT_1}ds\big] = \mathbb{E}[T_1^{-z}]\,\Gamma(z)$ by Tonelli; finiteness on the strip is the definition of $z_*$ together with $|T_1^{-z}| = T_1^{-\operatorname{Re}z}$, which also gives the bound; $|\Gamma(c+i\tau)|$ decays super-polynomially in $\tau$. Analyticity is standard; $\tilde H \not\equiv 0$, so its zeros are isolated. ∎
 
-**Definition 11.2 (the inversion operator).** Fix $c \in (0, z_* - 1)$. For $g$ with $\tilde g$ defined on the line $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ absolutely integrable there, set
+**Definition 11.3 (the inversion operator).** Fix $c \in (0, z_* - 1)$. For $g$ with $\tilde g$ defined on the line $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ absolutely integrable there, set
 
 $$\big(A g\big)(x) \;:=\; \frac{1}{x}\cdot \frac{1}{2\pi i}\int_{(c)} x^{-z}\, B(-z)\,\tilde g(z)\,dz \;=\; \Big(\frac{1}{x}\,B(\theta)\,g\Big)(x),$$
 
 the second expression being the functional-calculus reading (the Euler operator has Mellin symbol $-z$); absolute integrability on the line is exactly the hypothesis under which the inversion integral recovers $B(\theta)g$ [Widder, Ch. VI, §9, Thm. 9a]. Equivalently, at the transform level: $\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$. Note the covariant scaling: $A$ commutes with dilations up to the weight $x^{-1}$, i.e. it scales like $\partial_t$ under $(t, x) \mapsto (\sigma t, \sigma x)$, as (A8) requires of any inversion.
 
-**Lemma 11.3 (uniqueness of the symbol).** If two operators of the form $x^{-1}B_1(\theta)$, $x^{-1}B_2(\theta)$ both satisfy $A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is the unique inversion within the covariant Mellin class.
+**Lemma 11.4 (uniqueness of the symbol).** If two operators of the form $x^{-1}B_1(\theta)$, $x^{-1}B_2(\theta)$ both satisfy $A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is the unique inversion within the covariant Mellin class.
 
 *Proof.* Evaluating both on the profiles and Mellin-transforming gives $B_1(-z)\,s^{-z}\tilde H(z) = B_2(-z)\,s^{-z}\tilde H(z)$ on the line; $\tilde H \ne 0$ off an isolated set, so $B_1 = B_2$ a.e., hence everywhere by meromorphy. ∎
 
-**Lemma 11.4 (the memory line stores fractional integrals).** Under (H), let $f \in X_0$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$ and $1 < \operatorname{Re} z < z_*$,
+**Lemma 11.5 (the memory line stores fractional integrals).** Under (H), let $f \in X_0$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$ and $1 < \operatorname{Re} z < z_*$,
 
 $$\widetilde{u(t, \cdot)}(z) \;=\; \int_0^\infty x^{z-1}\, u(t, x)\,dx \;=\; \tilde H(z)\,\big(I^{z} f\big)(t),$$
 
@@ -508,11 +508,11 @@ absolutely convergent. If moreover $f \in \mathcal{D}$, the same holds for $\par
 
 $$\int_0^\infty x^{z-1}\,\mathbb{E}\big[f(t - xT_1)\big]\,dx \;=\; \mathbb{E}\big[T_1^{-z}\big]\int_0^t y^{z-1} f(t - y)\,dy \;=\; \mathbb{E}\big[T_1^{-z}\big]\,\Gamma(z)\,(I^z f)(t),$$
 
-which is the claim by Lemma 11.1. For $f \in \mathcal{D}$: $\partial_t u(t, x) = \mathbb{E}[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1} f$ using $f(0) = 0$. ∎
+which is the claim by Lemma 11.2. For $f \in \mathcal{D}$: $\partial_t u(t, x) = \mathbb{E}[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1} f$ using $f(0) = 0$. ∎
 
-**Theorem 11.5 (Theorem 4′: the signaling form).** Assume (H), canonical gauge. Then:
+**Theorem 11.6 (Theorem 4′: the signaling form).** Assume (H), canonical gauge. Then:
 
-1. *(Eigenfunctions.)* For every $s > 0$, the profile $H(s\,\cdot)$ is in the domain of Definition 11.2 for every $c \in (0, z_*-1)$, and
+1. *(Eigenfunctions.)* For every $s > 0$, the profile $H(s\,\cdot)$ is in the domain of Definition 11.3 for every $c \in (0, z_*-1)$, and
 
 $$A\big[H(s\,\cdot)\big](x) \;=\; s\, H(sx), \qquad x > 0 .$$
 
@@ -524,29 +524,29 @@ $$\widetilde{\partial_t u(t, \cdot)}(z) \;=\; B(1 - z)\;\widetilde{u(t, \cdot)}(
 
 3. *(Uniqueness.)* $A$ is the unique operator in the covariant Mellin class with property (1), hence with property (2).
 
-*Proof.* (1) $\widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so $B(-z)\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z+1)$, absolutely integrable on the line $(c)$ by Lemma 11.1 (no poles of $B$ intervene: the product contains no division). Then
+*Proof.* (1) $\widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so $B(-z)\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z+1)$, absolutely integrable on the line $(c)$ by Lemma 11.2 (no poles of $B$ intervene: the product contains no division). Then
 
 $$A\big[H(s\cdot)\big](x) = \frac{1}{x}\cdot\frac{1}{2\pi i}\int_{(c)} (xs)^{-z}\,\tilde H(z+1)\,dz = \frac{1}{x}\,(xs)\cdot\frac{1}{2\pi i}\int_{(c+1)} (xs)^{-w}\,\tilde H(w)\,dw = s\,H(sx),$$
 
 by the substitution $w = z + 1$ and Mellin inversion on the line $c + 1 \in (1, z_*)$, valid since $\tilde H$ is integrable there and $H$ is continuous.
 
-(2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form is Lemma 11.4 combined with Lemma 11.1:
+(2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form is Lemma 11.5 combined with Lemma 11.2:
 
 $$B(1-z)\,\widetilde{u(t,\cdot)}(z-1) = \frac{\tilde H(z)}{\tilde H(z-1)}\cdot\tilde H(z-1)\,(I^{z-1}f)(t) = \tilde H(z)\,(I^{z-1}f)(t) = \widetilde{\partial_t u(t,\cdot)}(z).$$
 
-(3) is Lemma 11.3. ∎
+(3) is Lemma 11.4. ∎
 
-**Remark 11.6 (reading of Lemma 11.4; embodiment).** Lemma 11.4 gives the motivation of [Fagerström 2005, §5] an exact form: at each instant $t$, the Mellin analysis of the memory line holds precisely the analytic family of Riemann–Liouville integrals $\{(I^z f)(t)\}$ of the *past* signal, weighted by the negative delay-moments $\mathbb{E}[T_1^{-z}]$. The observer's embodiment of its past is fractional integration, with the admissible weightings classified by Theorem 7.3.
+**Remark 11.7 (reading of Lemma 11.5; embodiment).** Lemma 11.5 gives the motivation of [Fagerström 2005, §5] an exact form: at each instant $t$, the Mellin analysis of the memory line holds precisely the analytic family of Riemann–Liouville integrals $\{(I^z f)(t)\}$ of the *past* signal, weighted by the negative delay-moments $\mathbb{E}[T_1^{-z}]$. The observer's embodiment of its past is fractional integration, with the admissible weightings classified by Theorem 7.3.
 
-**Remark 11.7 (classical interpretation; poles).** The time-domain equation in Theorem 11.5(2) is stated at the level of Mellin transforms; this is the honest general formulation, since $B$ may have poles (at zeros of $\tilde H$) and polynomial growth along vertical lines, so that $A u(t, \cdot)$ need not be given by an absolutely convergent integral for rough $f$ — note that on the field the identity is nevertheless regular, the factor $\tilde H(z-1)$ cancelling every denominator. When the symbol $B$ is a *polynomial*, $A$ is a local differential operator and the equation is a classical PDE; that is precisely the situation of Theorem 5′ (§12) and of Example 11.10 below.
+**Remark 11.8 (classical interpretation; poles).** The time-domain equation in Theorem 11.6(2) is stated at the level of Mellin transforms; this is the honest general formulation, since $B$ may have poles (at zeros of $\tilde H$) and polynomial growth along vertical lines, so that $A u(t, \cdot)$ need not be given by an absolutely convergent integral for rough $f$ — note that on the field the identity is nevertheless regular, the factor $\tilde H(z-1)$ cancelling every denominator. When the symbol $B$ is a *polynomial*, $A$ is a local differential operator and the equation is a classical PDE; that is precisely the situation of Theorem 5′ (§12) and of Example 11.11 below.
 
-**Example 11.8 (extremal stable; recovering Theorem 4 of 2005).** $F(s) = s^\alpha$: $\tilde H(z) = \Gamma(z/\alpha)/\alpha$ and
+**Example 11.9 (extremal stable; recovering Theorem 4 of 2005).** $F(s) = s^\alpha$: $\tilde H(z) = \Gamma(z/\alpha)/\alpha$ and
 
 $$B(-z) \;=\; \frac{\Gamma\big(\tfrac{z+1}{\alpha}\big)}{\Gamma\big(\tfrac{z}{\alpha}\big)} \;\sim\; \Big(\tfrac{z}{\alpha}\Big)^{1/\alpha} \quad (z \to \infty),$$
 
 a symbol of order $1/\alpha$. On the profiles $e^{-(sx)^\alpha}$ the right-sided Liouville derivative acts by $D^{1/\alpha}_{x,-} e^{-cx} = c^{1/\alpha} e^{-cx}$ with $c = s^\alpha$, i.e. also produces the eigenvalue $s$; thus the Mellin representative and the operator of [Fagerström 2005, Thm. 4] agree on the span of the field profiles — the translation-invariant representative is a coincidence of homogeneity, the Mellin representative is the one that survives in general.
 
-**Example 11.9 (Gamma family; scale-recursive form).** $F(s) = \gamma \log(1+s)$, $\gamma > 1$: $\tilde H(z) = \Gamma(z)\Gamma(\gamma - z)/\Gamma(\gamma)$ and $B(-z) = z/(\gamma - 1 - z)$, i.e.
+**Example 11.10 (Gamma family; scale-recursive form).** $F(s) = \gamma \log(1+s)$, $\gamma > 1$: $\tilde H(z) = \Gamma(z)\Gamma(\gamma - z)/\Gamma(\gamma)$ and $B(-z) = z/(\gamma - 1 - z)$, i.e.
 
 $$B(\theta) = -\,\theta\,\big(\theta + \gamma - 1\big)^{-1}, \qquad A = -\,\frac{1}{x}\,\theta\,\big(\theta + \gamma - 1\big)^{-1},$$
 
@@ -556,13 +556,13 @@ $$w(t, x) = x^{-(\gamma-1)}\int_0^x y^{\gamma - 2}\, u(t, y)\,dy, \qquad \partia
 
 so the time evolution at scale $x$ is computed from the field at *finer* scales by a single weighted average — scale-recursive, one-sided from the boundary, matching the causal architecture of the time side.
 
-**Example 11.10 (parabolic gauge; the Bessel family is the quadratic case).** In the $\alpha$-gauge (similarity variable $x^{1/\alpha} s$; Remark 6.4) the profiles are $H(x^{1/\alpha}s)$, the Euler operator acts on the profile through $\alpha^{-1}\theta$, and the inversion becomes $A = x^{-1/\alpha}\,B(\alpha\,\theta)$. Take the parabolic gauge $\alpha = \tfrac12$ and the Bessel-K family of Example 8.3, $T_1 = 1/(2\gamma_a)$: then $\mathbb{E}[T_1^{-z}] = 2^z\,\Gamma(a + z)/\Gamma(a)$, so
+**Example 11.11 (parabolic gauge; the Bessel family is the quadratic case).** In the $\alpha$-gauge (similarity variable $x^{1/\alpha} s$; Remark 6.4) the profiles are $H(x^{1/\alpha}s)$, the Euler operator acts on the profile through $\alpha^{-1}\theta$, and the inversion becomes $A = x^{-1/\alpha}\,B(\alpha\,\theta)$. Take the parabolic gauge $\alpha = \tfrac12$ and the Bessel-K family of Example 8.3, $T_1 = 1/(2\gamma_a)$: then $\mathbb{E}[T_1^{-z}] = 2^z\,\Gamma(a + z)/\Gamma(a)$, so
 
 $$B(-z) = 2z(z + a), \qquad B(\tfrac12\theta)\cdot 2 \big/ 2 = \tfrac{\theta^2}{2} - a\,\theta, \qquad A = x^{-2}\Big(\tfrac{\theta^2}{2} - a\theta\Big) = \tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x, \quad \beta = \tfrac12 - a .$$
 
-The symbol is a *quadratic polynomial*, so $A$ is local: the signaling form of the Bessel-K scale space is exactly the Bessel diffusion-with-drift medium, and Theorem 11.5(2) becomes the classical signaling problem $\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$, $u(t,0) = f(t)$, $u(0,x) = 0$.
+The symbol is a *quadratic polynomial*, so $A$ is local: the signaling form of the Bessel-K scale space is exactly the Bessel diffusion-with-drift medium, and Theorem 11.6(2) becomes the classical signaling problem $\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$, $u(t,0) = f(t)$, $u(0,x) = 0$.
 
-**Remark 11.11 (Markov media).** Within the class of Theorem 11.5, the operators $A$ that additionally satisfy the positive maximum principle — i.e. generate a sub-Markov process on the memory half-line, so that the medium is a physical transport medium — are, after the logarithmic substitution $x = e^\xi$, exactly those whose symbol $B$ is the Laplace exponent of a Lévy process; by the Lamperti correspondence [Lamperti 1972] these media are positive self-similar Markov processes absorbed at the boundary, and the kernels are the boundary-arrival times $T_x \stackrel{d}{=}$ absorption time from depth $x$. The spectral orientation of the jumps is *not* constrained: for spectrally positive media the process creeps downward through every level and the hemigroup (A6) holds *pathwise*, the kernels being genuine level-passage times; but media with downward jumps are also admissible — the factorization then holds in law though not pathwise, being inherited from the exponent $F$ rather than from the paths. The Gamma family is the standard example: unfolding Example 11.9, its medium is the multiplicative jump process that waits at scale $x$ an $\mathrm{Exp}(\text{mean } x)$ time and jumps to $\sigma x$ with $\sigma \sim \mathrm{Beta}(\gamma-1, 1)$, reaching the boundary by accumulation of jumps; a first-jump computation confirms $\mathbb{E}_x[e^{-s\tau_0}] = (1+sx)^{-\gamma}$. A necessary condition in all cases is quadratic symbol growth, $B(\theta) = O(\theta^2)$; by Example 11.8 the homogeneous members with $\alpha < \tfrac12$ (symbol order $1/\alpha > 2$) admit *no* Markov medium, although Theorem 11.5 always supplies the analytic signaling form — the operator exists, the process does not. The classification of which admissible $F$ are Markov-realizable is the memory-line inverse problem and is taken up with Theorem 5′.
+**Remark 11.12 (Markov media).** Within the class of Theorem 11.6, the operators $A$ that additionally satisfy the positive maximum principle — i.e. generate a sub-Markov process on the memory half-line, so that the medium is a physical transport medium — are, after the logarithmic substitution $x = e^\xi$, exactly those whose symbol $B$ is the Laplace exponent of a Lévy process; by the Lamperti correspondence [Lamperti 1972] these media are positive self-similar Markov processes absorbed at the boundary, and the kernels are the boundary-arrival times $T_x \stackrel{d}{=}$ absorption time from depth $x$. The spectral orientation of the jumps is *not* constrained: for spectrally positive media the process creeps downward through every level and the hemigroup (A6) holds *pathwise*, the kernels being genuine level-passage times; but media with downward jumps are also admissible — the factorization then holds in law though not pathwise, being inherited from the exponent $F$ rather than from the paths. The Gamma family is the standard example: unfolding Example 11.10, its medium is the multiplicative jump process that waits at scale $x$ an $\mathrm{Exp}(\text{mean } x)$ time and jumps to $\sigma x$ with $\sigma \sim \mathrm{Beta}(\gamma-1, 1)$, reaching the boundary by accumulation of jumps; a first-jump computation confirms $\mathbb{E}_x[e^{-s\tau_0}] = (1+sx)^{-\gamma}$. A necessary condition in all cases is quadratic symbol growth, $B(\theta) = O(\theta^2)$; by Example 11.9 the homogeneous members with $\alpha < \tfrac12$ (symbol order $1/\alpha > 2$) admit *no* Markov medium, although Theorem 11.6 always supplies the analytic signaling form — the operator exists, the process does not. The classification of which admissible $F$ are Markov-realizable is the memory-line inverse problem and is taken up with Theorem 5′.
 
 ## 12. The locality theorem: Theorem 5′
 
@@ -574,7 +574,7 @@ Theorem 5 of [Fagerström 2005] singles out $\alpha = \tfrac12$ — the heat sig
 
 $$c_j(x) \;=\; \gamma_j\, x^{\,j-1}, \qquad A \;=\; \frac{1}{x}\sum_{j=0}^n \gamma_j\,\theta(\theta-1)\cdots(\theta-j+1) \;=\; \frac{1}{x}\,B(\theta).$$
 
-*Proof.* ($\Leftarrow$) $x^{j}\partial_x^{j} = \theta(\theta-1)\cdots(\theta - j + 1)$, so a polynomial $B$, expanded in falling factorials, gives $x^{-1}B(\theta) = \sum \gamma_j x^{j-1}\partial_x^j$, a differential expression of order $\deg B$. ($\Rightarrow$) Every operator of Definition 11.2 satisfies the covariance $A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, $(\Delta_\sigma g)(x) = g(x/\sigma)$. Imposing this on $\sum c_j(x)\partial_x^j$ and comparing coefficients of $g^{(j)}(x/\sigma)$ gives $c_j(x)\sigma^{-j} = \sigma^{-1}c_j(x/\sigma)$, i.e. $c_j(x) = c_j(1)x^{j-1}$. Rewriting via falling factorials, $A$ agrees on $C_c^\infty$ with $x^{-1}P(\theta)$ for a polynomial $P$; Mellin-transforming on a line and using injectivity, $B = P$. ∎
+*Proof.* ($\Leftarrow$) $x^{j}\partial_x^{j} = \theta(\theta-1)\cdots(\theta - j + 1)$, so a polynomial $B$, expanded in falling factorials, gives $x^{-1}B(\theta) = \sum \gamma_j x^{j-1}\partial_x^j$, a differential expression of order $\deg B$. ($\Rightarrow$) Every operator of Definition 11.3 satisfies the covariance $A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, $(\Delta_\sigma g)(x) = g(x/\sigma)$. Imposing this on $\sum c_j(x)\partial_x^j$ and comparing coefficients of $g^{(j)}(x/\sigma)$ gives $c_j(x)\sigma^{-j} = \sigma^{-1}c_j(x/\sigma)$, i.e. $c_j(x) = c_j(1)x^{j-1}$. Rewriting via falling factorials, $A$ agrees on $C_c^\infty$ with $x^{-1}P(\theta)$ for a polynomial $P$; Mellin-transforming on a line and using injectivity, $B = P$. ∎
 
 **Lemma 12.3 (the moment recursion).** Suppose $A$ is local of order $n$, i.e. $B$ is a polynomial of degree $n$. Then:
 
@@ -582,17 +582,17 @@ $$c_j(x) \;=\; \gamma_j\, x^{\,j-1}, \qquad A \;=\; \frac{1}{x}\sum_{j=0}^n \gam
 2. $z_* = \infty$: all negative moments of $T_1$ are finite;
 3. $m(z+1) = Q(z)\,m(z)$ for all $z > 0$, and $Q > 0$ on $(0,\infty)$.
 
-*Proof.* (1) By Lemma 11.1, $B(-z) = z\,m(z+1)/m(z)$ on the strip; as $z \downarrow 0$, $m(z) \to 1$ (dominated convergence) and $m(z+1) \to m(1) < \infty$ (hypothesis (H)), so $B(0) = 0$; since $B$ is a polynomial, $Q(z) := B(-z)/z$ is one of degree $n-1$.
+*Proof.* (1) By Lemma 11.2, $B(-z) = z\,m(z+1)/m(z)$ on the strip; as $z \downarrow 0$, $m(z) \to 1$ (dominated convergence) and $m(z+1) \to m(1) < \infty$ (hypothesis (H)), so $B(0) = 0$; since $B$ is a polynomial, $Q(z) := B(-z)/z$ is one of degree $n-1$.
 
 (2) On $0 < z < z_* - 1$ we have the identity $\tilde H(z+1) = B(-z)\tilde H(z)$ of functions analytic on the strip $0 < \operatorname{Re} z < z_*$. If $z_* < \infty$, the right side is analytic at $z = z_* - 1 + \varepsilon$ for small $\varepsilon$, extending $\tilde H$ analytically through the real point $z_*$. But $\tilde H$ is the Mellin transform of the nonnegative function $H$, and by the Pringsheim–Landau theorem [Widder, Ch. II] the real endpoint of its convergence strip is a singularity if finite. Hence $z_* = \infty$.
 
-(3) The recursion is now Lemma 11.1 on all of $(0,\infty)$; positivity of $Q$ follows from $m > 0$. ∎
+(3) The recursion is now Lemma 11.2 on all of $(0,\infty)$; positivity of $Q$ follows from $m > 0$. ∎
 
 **Lemma 12.4 (log-convexity).** $z \mapsto m(z)$ is log-convex on $(0, \infty)$.
 
 *Proof.* Cauchy–Schwarz: $m\big(\tfrac{z_1+z_2}{2}\big) = \mathbb{E}\big[T^{-z_1/2}\,T^{-z_2/2}\big] \le m(z_1)^{1/2} m(z_2)^{1/2}$; midpoint log-convexity plus continuity. ∎
 
-**Theorem 12.5 (Theorem 5′: the locality theorem).** Assume (H). The inversion operator $A$ of Theorem 11.5 is local *and* satisfies the positive maximum principle **iff** one of the following holds:
+**Theorem 12.5 (Theorem 5′: the locality theorem).** Assume (H). The inversion operator $A$ of Theorem 11.6 is local *and* satisfies the positive maximum principle **iff** one of the following holds:
 
 1. *(order 1; pure transport, degenerate.)* $B(\theta) = -c'\theta$ with $c' > 0$: $A = -c'\,\partial_x$, the kernels are the deterministic delays $\mu_{0,x} = \delta_{x/c'}$, and the signaling problem is the transport equation. This member has no smoothing and is excluded by requiring absolutely continuous kernels (Remark 7.5).
 
@@ -610,9 +610,9 @@ Within case (2), the depth-homogeneous (semigroup) members are exactly $a = \tfr
 
 $$m(z) \;=\; c_2^{\,z}\,\frac{\Gamma(a + z)}{\Gamma(a)} \;=\; \mathbb{E}\Big[\big(c_2\,\gamma_a\big)^{z}\Big],$$
 
-and $m$ is log-convex by Lemma 12.4, hence equals it. Thus $T_1 \stackrel{d}{=} 1/(c_2\gamma_a)$; the time normalization $c_2 = 2$ gives Example 8.3, the profile is the Bessel-K function, and the operator is computed in Example 11.10: $B(\theta) = 2\theta(\theta - a)$, parabolic-gauge form as displayed.
+and $m$ is log-convex by Lemma 12.4, hence equals it. Thus $T_1 \stackrel{d}{=} 1/(c_2\gamma_a)$; the time normalization $c_2 = 2$ gives Example 8.3, the profile is the Bessel-K function, and the operator is computed in Example 11.11: $B(\theta) = 2\theta(\theta - a)$, parabolic-gauge form as displayed.
 
-($\Leftarrow$) Case (1): admissibility is the pure-drift member $F(s) = s/c'$ of (7.1), and a first-order operator satisfies the PMP trivially ($g'(x_0) = 0$ at an interior maximum). Case (2): admissibility of the inverse-gamma family is Example 8.3 (self-decomposability by [Halgreen]); locality is Example 11.10; and a second-order operator $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with nonnegative leading coefficient satisfies the PMP: at an interior nonnegative maximum, $g' (x_0)= 0$ and $g''(x_0) \le 0$, so $(Ag)(x_0) = \tfrac12 g''(x_0) \le 0$.
+($\Leftarrow$) Case (1): admissibility is the pure-drift member $F(s) = s/c'$ of (7.1), and a first-order operator satisfies the PMP trivially ($g'(x_0) = 0$ at an interior maximum). Case (2): admissibility of the inverse-gamma family is Example 8.3 (self-decomposability by [Halgreen]); locality is Example 11.11; and a second-order operator $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with nonnegative leading coefficient satisfies the PMP: at an interior nonnegative maximum, $g' (x_0)= 0$ and $g''(x_0) \le 0$, so $(Ag)(x_0) = \tfrac12 g''(x_0) \le 0$.
 
 The homogeneity claim: by Corollary 7.4, depth-homogeneous members have $F(s) = c\,s^{\alpha}$; within the inverse-gamma family the exponent is a pure power only for $a = \tfrac12$ (where $K_{1/2}$ is elementary and $H(y) = e^{-\sqrt{2y}}$), the $\tfrac12$-stable/heat case. The moment statement is Example 8.3. ∎
 
@@ -624,7 +624,7 @@ Then the family is admissible (Theorem 7.3) and satisfies (H), and its inversion
 
 $$B(-z) \;=\; c'\,z\prod_{i=1}^{n-1}(z + a_i);$$
 
-the kernels are Meijer $G$-function densities. Conversely, every local admissible family of order $n$ has $m$ equal to the unique log-convex (Krull–Webster) solution of $m(z+1) = Q(z)m(z)$ for its polynomial $Q$; when the roots of $Q$ are real — necessarily $\le 0$, giving $Q(z) = c'\prod(z+a_i)$ with $a_i > 0$ — this is the family above. Whether complex-conjugate root pairs can support an admissible family is left open; we conjecture not.
+the kernels are Meijer $G$-function densities — immediate from the Mellin–Barnes definition [Samko–Kilbas–Marichev, §1.3, eq. (1.95)], since $m$ is a product of gamma factors in the numerator alone, together with the reciprocal and scaling rules (1.96)–(1.97). Conversely, every local admissible family of order $n$ has $m$ equal to the unique log-convex (Krull–Webster) solution of $m(z+1) = Q(z)m(z)$ for its polynomial $Q$; when the roots of $Q$ are real — necessarily $\le 0$, giving $Q(z) = c'\prod(z+a_i)$ with $a_i > 0$ — this is the family above. Whether complex-conjugate root pairs can support an admissible family is left open; we conjecture not.
 
 *Proof.* Admissibility: gamma densities are hyperbolically completely monotone (HCM), and the HCM class is closed under products of independent variables and under reciprocals; HCM laws are generalized gamma convolutions, hence self-decomposable [Bondesson 1992]. So $-\log \mathbb{E}e^{-sT_1}$ is of the form (7.1), and (H) holds since all negative moments are finite and $\mathbb{P}(T_1 = 0) = 0$. The symbol is $B(-z) = z\,m(z+1)/m(z) = c'z\prod(z+a_i)$, polynomial, so $A$ is local of order $n$ by Lemma 12.2. The converse is Lemmas 12.3–12.4 with [Webster], as in the proof of Theorem 12.5; a real root $-a_i \ge 0$ of $Q$ would contradict $Q > 0$ on $(0,\infty)$ together with $Q(0) = m(1) > 0$, so real roots give $a_i > 0$ and the Webster solution is the displayed gamma product. ∎
 
@@ -702,7 +702,7 @@ Every family named in this paper lies in the Thorin subclass. The Gamma family i
 | increment transfer | rational, order $\gamma$ | transcendental (Bessel-K) | transcendental |
 | time-recursive states per knot | $\gamma$ | — (approximation only) | — (approximation only) |
 | scale covariance | continuous | continuous | continuous |
-| medium (Rmk 11.11) | multiplicative jump process | diffusion + drift | $\alpha \ge \tfrac12$: Lévy; $\alpha < \tfrac12$: none |
+| medium (Rmk 11.12) | multiplicative jump process | diffusion + drift | $\alpha \ge \tfrac12$: Lévy; $\alpha < \tfrac12$: none |
 
 The recommendation implicit in the table: the Gamma family as the default measurement front-end; the Bessel family when a local PDE medium or a diffusion interpretation is required; the stable family when strict depth-homogeneity is required and heavy tails are acceptable.
 
@@ -757,9 +757,9 @@ $$\partial_t^n u(t, \cdot) \;=\; A^n\, u(t, \cdot), \qquad A^n = \frac{1}{x^n}\,
 
 In particular the entire temporal jet at time $t$ is an instantaneous linear functional of the single profile $x \mapsto u(t, x)$; no record of past states is required.
 
-*Proof.* (1) $\partial_t^n u(t, x) = \mathbb{E}\big[f^{(n)}(t - x T_1)\big]$, and Lemma 11.4 applied to the causal $f^{(n)} \in X_0$ gives the first equality; the second is $I^{z} f^{(n)} = I^{\,z-n} I^{\,n} f^{(n)} = I^{\,z-n} f$, using the vanishing boundary values in $\mathcal{D}^n$. (2) Telescoping the shift relation of Definition 11.2 $n$ times, $\mathcal{M}[A^n g](z) = \prod_{j=1}^{n} B(j - z)\,\tilde g(z - n) = \tfrac{\tilde H(z)}{\tilde H(z - n)}\,\tilde g(z - n)$; insert $\tilde g = \widetilde{u(t,\cdot)}$ from Lemma 11.4 and compare with (1). ∎
+*Proof.* (1) $\partial_t^n u(t, x) = \mathbb{E}\big[f^{(n)}(t - x T_1)\big]$, and Lemma 11.5 applied to the causal $f^{(n)} \in X_0$ gives the first equality; the second is $I^{z} f^{(n)} = I^{\,z-n} I^{\,n} f^{(n)} = I^{\,z-n} f$, using the vanishing boundary values in $\mathcal{D}^n$. (2) Telescoping the shift relation of Definition 11.3 $n$ times, $\mathcal{M}[A^n g](z) = \prod_{j=1}^{n} B(j - z)\,\tilde g(z - n) = \tfrac{\tilde H(z)}{\tilde H(z - n)}\,\tilde g(z - n)$; insert $\tilde g = \widetilde{u(t,\cdot)}$ from Lemma 11.5 and compare with (1). ∎
 
-**Remark 14.3 (differentiation is re-indexing).** Combined with Remark 11.6, Theorem 14.2(1) says that the memory line stores, once and simultaneously, the analytic family $\{(I^{z} f)(t)\}$ of fractional integrals of the past — and the jet of every order is a *re-reading* of that same stored family at shifted index, order $n$ living at Mellin depth $\operatorname{Re} z > n$ of the strip. Nothing new is stored when one differentiates; the embodiment of the signal already contains its jet, at all orders up to the strip width $z_*$.
+**Remark 14.3 (differentiation is re-indexing).** Combined with Remark 11.7, Theorem 14.2(1) says that the memory line stores, once and simultaneously, the analytic family $\{(I^{z} f)(t)\}$ of fractional integrals of the past — and the jet of every order is a *re-reading* of that same stored family at shifted index, order $n$ living at Mellin depth $\operatorname{Re} z > n$ of the strip. Nothing new is stored when one differentiates; the embodiment of the signal already contains its jet, at all orders up to the strip width $z_*$.
 
 **Proposition 14.4 (the Gamma family: jets by subtraction along the shape column).** For the Gamma family write $u_m(\cdot, x)$ for the field of shape $m$ ($u_0 := f$). From $s(1 + xs)^{-m} = x^{-1}\big[(1 + xs)^{-(m-1)} - (1 + xs)^{-m}\big]$,
 
@@ -783,9 +783,9 @@ the jet read from spatial stencils of order $2n$ on the instantaneous memory pro
 
 ## 15. Concluding remarks
 
-One axiom of [Fagerström 2005] was weakened — the one-parameter semigroup cascade to the two-parameter hemigroup, i.e. the assumption that measurement stages are interchangeable — and the entire derivation was rerun in the same order with the same tools. The kernel characterization (Theorem 7.3) enlarges the extremal stable class to the self-decomposable (Sato) class; the memory-kernel and Sonine structure (§9) identifies the self-decomposability function $k$ as the physical memory kernel and losslessness as an exact conservation identity; the scale-Cauchy problem (Theorem 10.4), the Mellin signaling form (Theorem 11.5), and the locality theorem (Theorem 12.5) are the analogues of Theorems 3–5, with the isolated heat case unfolding into the Bessel family and with the heavy tails of the stable kernels exposed as the price of the semigroup axiom rather than of causality or covariance.
+One axiom of [Fagerström 2005] was weakened — the one-parameter semigroup cascade to the two-parameter hemigroup, i.e. the assumption that measurement stages are interchangeable — and the entire derivation was rerun in the same order with the same tools. The kernel characterization (Theorem 7.3) enlarges the extremal stable class to the self-decomposable (Sato) class; the memory-kernel and Sonine structure (§9) identifies the self-decomposability function $k$ as the physical memory kernel and losslessness as an exact conservation identity; the scale-Cauchy problem (Theorem 10.4), the Mellin signaling form (Theorem 11.6), and the locality theorem (Theorem 12.5) are the analogues of Theorems 3–5, with the isolated heat case unfolding into the Bessel family and with the heavy tails of the stable kernels exposed as the price of the semigroup axiom rather than of causality or covariance.
 
-Four problems remain open. First, the memory-line inverse problem: which admissible exponents $F$ are realized by genuine Markov media (Remark 11.11), i.e. a correspondence of Krein type [Kotani–Watanabe 1982; Dym–McKean 1976] admitting jumps, together with the question of what surface data determine the medium. Second, the complex-root cases of Proposition 12.6. Third, the relaxation of hypothesis (H) by meromorphic continuation, which would admit the slowly growing exponents (e.g. the Gamma family with $\gamma \le 1$) into §§11–12. Fourth, the discrete-covariance branch, whose place in the axiom system is identified in Remark 15.1 below; its structure theorem — the classification of the admissible log-periodic modulations, together with the canonical-selection question for the time-causal limit kernel — is deferred to a companion note.
+Four problems remain open. First, the memory-line inverse problem: which admissible exponents $F$ are realized by genuine Markov media (Remark 11.12), i.e. a correspondence of Krein type [Kotani–Watanabe 1982; Dym–McKean 1976] admitting jumps, together with the question of what surface data determine the medium. Second, the complex-root cases of Proposition 12.6. Third, the relaxation of hypothesis (H) by meromorphic continuation, which would admit the slowly growing exponents (e.g. the Gamma family with $\gamma \le 1$) into §§11–12. Fourth, the discrete-covariance branch, whose place in the axiom system is identified in Remark 15.1 below; its structure theorem — the classification of the admissible log-periodic modulations, together with the canonical-selection question for the time-causal limit kernel — is deferred to a companion note.
 
 **Remark 15.1 (the discrete-covariance stratum and the previous literature).** Weaken (A8) to the subgroup $\sigma \in q^{\mathbb{Z}}$, $q > 1$. Most of §6 survives verbatim: uniqueness of $S_q$, the group law along the subgroup, and the absence of interior fixed points (the orbit argument needs only the powers $q^{\pm n}$). The similarity solution generalizes as follows: in the variables $(\log(xs),\, \log(x/s))$ the covariance relation $G(qx, s) = G(x, qs)$ says precisely that
 

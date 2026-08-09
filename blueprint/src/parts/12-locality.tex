@@ -229,6 +229,11 @@ order $n$ has $m$ equal to the unique log-convex solution of $m(z+1) = Q(z)m(z)$
 polynomial $Q$; when the roots of $Q$ are real --- necessarily $\le 0$, giving
 $Q(z) = c'\prod(z+a_i)$ with $a_i > 0$ --- this is the family above. Whether
 complex-conjugate root pairs can support an admissible family is left open; we conjecture not.
+
+The Meijer $G$ identification is immediate from the Mellin--Barnes definition
+(\sscite{samko1993fractional}, \S1.3, eq.~(1.95), p.~22): $m$ is a product of gamma factors in
+the numerator alone, which is the case $n = p = 0$, together with the reciprocal and scaling
+rules (1.96) and (1.97) on the same page, which absorb the inversion and the constant $c'$.
 \statusA\quad\ledger{A16}\quad\ledger{A15}\quad\emph{(the HCM tower,
 \sscite{bondesson1992generalized}, Thm.~5.1.1 p.~69 and Thm.~4.3.1 p.~57 with its hypotheses
 on p.~56; and Krull--Webster, \sscite{webster1997log}, Thm.~3.1. Cited, not reproven here.
@@ -239,10 +244,13 @@ $\HCM$ is \emph{not} closed under convolution, so only the multiplicative struct
 available here --- and the second inclusion, $\GGC \subset \SDclass$, is asserted by Bondesson
 in a single sentence on p.~30 rather than as a numbered theorem, which makes it the thinnest
 link in this node. \ledger{A15} carries the converse direction only, exactly as in
-\ref{thm:locality}. The Meijer $G$ identification is \textbf{uncited} in the draft and is
-carried here as an aside: nothing later uses it, and it would need a reference before
-publication. The conjecture about complex-conjugate roots is flagged as open and is claimed by
-neither entry.)}
+\ref{thm:locality}. The Meijer $G$ identification is carried by neither entry and needs
+neither: it follows from the Mellin--Barnes definition and two transformation rules printed on
+the same page of \sscite{samko1993fractional}, as the statement records, and nothing later uses
+it. Note that the parameter list is deliberately not written out --- the $b_j$ depend on
+whether one takes the Mellin transform of the density or the moment function $m$, and they
+differ by one between the two conventions. The conjecture about complex-conjugate roots is
+flagged as open and is claimed by neither entry.)}
 \end{proposition}
 
 \begin{proof}

@@ -31,7 +31,7 @@ acquisition note in that entry is kept, because anyone re-verifying will hit the
 
 **One entry supplies a citation the draft lacked**: A12. Mellin inversion is used three times in
 §11 and was referenced nowhere; it is now Widder Theorem 9a, added to the draft at Definition
-11.2 on 2026-08-08 together with the missing Lamperti, Krein and Thorin references. The draft's
+11.3 on 2026-08-08 together with the missing Lamperti, Krein and Thorin references. The draft's
 own SSV and Samko–Kilbas–Marichev citations were checked and are correct as they stand.
 
 Numbering runs in **order of first use** through the draft: A1–A6 are the §2 toolbox,
@@ -253,7 +253,7 @@ A7–A8 serve §8, A9–A10 serve §9, A11 serves §10, A12 serves §11, A13–A
 **Blueprint:** `lem:mellin-data`, `def:inversion-operator` · **Lean:** *(not stated yet)*
 **Cite:** @widder1941laplace — Ch. VI, §9 "The Mellin Transform", Theorem 9a, pp. 246–247
 
-- **Statement as used.** Draft Lemma 11.1 and Definition 11.2: if the Mellin transform
+- **Statement as used.** Draft Lemma 11.2 and Definition 11.3: if the Mellin transform
   converges absolutely on the line `Re z = c`, the inversion integral
   `(2πi)^{-1} ∫_{(c)} x^{−z} \tilde g(z) dz` recovers the function. Everything §11 builds — the
   inversion operator `A`, its symbol `B`, the eigenfunction relation of Theorem 4′ — rests on it.
@@ -267,13 +267,13 @@ A7–A8 serve §8, A9–A10 serve §9, A11 serves §10, A12 serves §11, A13–A
   inversion operator be wanted in the `L²` setting rather than pointwise); Theorem 6a, p. 243
   (uniqueness in a strip).
 - **⚠️ What the gap actually was.** The draft cited nothing at all for Mellin inversion — it
-  invokes the inversion integral in Definition 11.2 and again in the proofs of Lemma 11.3 and
-  Theorem 11.5 without a reference. (Its one `[Samko–Kilbas–Marichev]` citation in §11 is for
+  invokes the inversion integral in Definition 11.3 and again in the proofs of Lemma 11.4 and
+  Theorem 11.6 without a reference. (Its one `[Samko–Kilbas–Marichev]` citation in §11 is for
   the Riemann–Liouville integral of complex order, which is correct and stays: SKM is strong
   there.) Samko–Kilbas–Marichev would *not* have served for the inversion theorem in any case —
   it gives it **only as a bare display, equation (1.113) on p. 25**, introduced with "and its
   inverse is given by the formula": no theorem number, no hypotheses, no convergence conditions.
-  Widder was added to the draft at Definition 11.2 on 2026-08-08.
+  Widder was added to the draft at Definition 11.3 on 2026-08-08.
 - **Confidence.** ✅ well grounded, and better grounded than the draft's own citation. Widder is
   already held and already this ledger's source for A13, so no new trust is introduced.
 

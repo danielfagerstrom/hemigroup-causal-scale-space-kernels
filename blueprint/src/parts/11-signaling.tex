@@ -9,12 +9,14 @@
 % appeal to once the group is (0,infty) under multiplication. The inversion operator has to be
 % built, and \ref{lem:symbol-uniqueness} is what earns the definite article in "the" inversion.
 %
-% ONE DELIBERATE GAP IN THE GRAPH. The standing hypothesis (H) is UNNUMBERED in the draft, and
-% is left unnumbered here: making it a node would take 11.1 and shift every number in the
-% chapter, which is the one thing this transcription does not trade away. The cost is real and
-% is recorded rather than hidden -- (H) is a genuine hypothesis of 11.1, 11.4 and 11.5, and
-% that dependency now lives in the statement text ("Assume (H)") instead of in a \uses edge.
-% A reader auditing what Theorem 4' rests on must read the hypothesis, not only the graph.
+% THE STANDING HYPOTHESIS IS A NODE (2026-08-09). It was unnumbered in the draft, which left
+% Theorem 4' resting on a hypothesis that appeared nowhere in the dependency graph -- the one
+% place in the transcription where an edge existed in the mathematics but not in the manifest.
+% Rather than accept that, \S11 was renumbered in the DRAFT AND THE BLUEPRINT TOGETHER: (H) is
+% now Definition 11.1 and every later item shifted by one, so the two documents still agree
+% number for number. \ref{lem:mellin-data}, \ref{lem:memory-fractional-integrals} and
+% \ref{thm:signaling-form} carry the \uses edge, and an audit of Theorem 4' can now be done
+% from the graph alone.
 %
 % A12 sits on \ref{def:inversion-operator} rather than on the theorem: the definition is what
 % asserts that the contour integral recovers anything, and that is the cited fact. Note the
@@ -44,20 +46,27 @@ Mellin transform, $\theta := x\,\partial_x$ for the Euler operator, and
 $(I^z f)(t) := \tfrac{1}{\Gamma(z)}\int_0^t (t-r)^{z-1} f(r)\,dr$ for the Riemann--Liouville
 integral of complex order $z$, $\operatorname{Re} z > 0$ (\sscite{samko1993fractional}).
 
-\textbf{Standing hypothesis (H).} $F(\infty) = \infty$ --- equivalently $b_0 > 0$ or
-$\int_0^\infty k(t)\,t^{-1}dt = \infty$, i.e.\ no atom of the kernels at zero delay --- and
+% draft: Definition 11.1
+\begin{definition}[the standing hypothesis (H)]\label{def:standing-hypothesis}
+\uses{lem:selfdecomposable-exponents,thm:main-characterization}
+An admissible exponent $F$ satisfies the \emph{standing hypothesis} (H) if
+$F(\infty) = \infty$ --- equivalently $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$,
+i.e.\ no atom of the kernels at zero delay --- and
 \[
   z_* \;:=\; \sup\bigl\{\, \zeta > 0 :\ \Ex\bigl[T_1^{-\zeta}\bigr] < \infty \,\bigr\} \;>\; 1 .
 \]
+\statusT
+\end{definition}
+
 The second condition is equivalent to $\int_0^\infty e^{-F(s)}\,ds < \infty$. It holds with
 $z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of
 \ref{prop:bessel-family}; for the Gamma family $z_* = \gamma$, so (H) requires $\gamma > 1$
 there. The construction extends below $z_* = 1$ by meromorphic continuation, which we do not
 pursue.
 
-% draft: Lemma 11.1
+% draft: Lemma 11.2
 \begin{lemma}[Mellin data of the profile]\label{lem:mellin-data}
-\uses{thm:main-characterization,prop:moments}
+\uses{def:standing-hypothesis,thm:main-characterization,prop:moments}
 Under (H), for $0 < \operatorname{Re} z < z_*$,
 \[
   \tilde H(z) \;=\; \Gamma(z)\;\Ex\bigl[T_1^{-z}\bigr],
@@ -88,7 +97,7 @@ lines. Analyticity is standard. Finally $\tilde H \not\equiv 0$, so its zeros ar
 $B$ is meromorphic with poles only there.
 \end{proof}
 
-% draft: Definition 11.2
+% draft: Definition 11.3
 \begin{definition}[the inversion operator]\label{def:inversion-operator}
 \uses{lem:mellin-data,def:cascade-family}
 Fix $c \in (0, z_* - 1)$. For $g$ such that $\tilde g$ is defined on the line
@@ -115,7 +124,7 @@ display, equation~(1.113); Widder states it with the absolute-convergence hypoth
 exactly the one imposed above.)}
 \end{definition}
 
-% draft: Lemma 11.3
+% draft: Lemma 11.4
 \begin{lemma}[uniqueness of the symbol]\label{lem:symbol-uniqueness}
 \uses{lem:mellin-data,def:inversion-operator}
 If two operators of the form $x^{-1}B_1(\theta)$ and $x^{-1}B_2(\theta)$ both satisfy
@@ -131,9 +140,9 @@ $B_1(-z)\,s^{-z}\tilde H(z) = B_2(-z)\,s^{-z}\tilde H(z)$ on the line. By
 on the line, hence everywhere on the strip by meromorphy.
 \end{proof}
 
-% draft: Lemma 11.4
+% draft: Lemma 11.5
 \begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
-\uses{lem:mellin-data,thm:main-characterization,lem:delay-core}
+\uses{def:standing-hypothesis,lem:mellin-data,thm:main-characterization,lem:delay-core}
 Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
 and $1 < \operatorname{Re} z < z_*$,
 \[
@@ -160,9 +169,9 @@ $\partial_t u(t, x) = \Ex[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1}
 $f(0) = 0$.
 \end{proof}
 
-% draft: Theorem 11.5
+% draft: Theorem 11.6
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
-\uses{lem:mellin-data,def:inversion-operator,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
+\uses{def:standing-hypothesis,lem:mellin-data,def:inversion-operator,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
 Assume (H) and work in the canonical gauge. Then:
 \begin{enumerate}
 \item \emph{(Eigenfunctions.)} For every $s > 0$ the profile $H(s\,\cdot)$ lies in the domain
@@ -217,8 +226,8 @@ to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form combines
 (3) is \ref{lem:symbol-uniqueness}.
 \end{proof}
 
-% draft: Remark 11.6
-\begin{remark}[reading of Lemma 11.4; embodiment]\label{rem:embodiment}
+% draft: Remark 11.7
+\begin{remark}[reading of Lemma 11.5; embodiment]\label{rem:embodiment}
 \uses{lem:memory-fractional-integrals}
 \ref{lem:memory-fractional-integrals} gives the motivation of
 \sscite{fagerstrom2005temporal}, \S5, an exact form: at each instant $t$, the Mellin analysis
@@ -228,7 +237,7 @@ $\Ex[T_1^{-z}]$. The observer's embodiment of its past is fractional integration
 admissible weightings classified by \ref{thm:main-characterization}.
 \end{remark}
 
-% draft: Remark 11.7
+% draft: Remark 11.8
 \begin{remark}[classical interpretation; poles]\label{rem:poles}
 \uses{thm:signaling-form,lem:mellin-data}
 The time-domain equation in \ref{thm:signaling-form}(2) is stated at the level of Mellin
@@ -242,7 +251,7 @@ equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in 
 and of \ref{ex:bessel-quadratic} below.
 \end{remark}
 
-% draft: Example 11.8
+% draft: Example 11.9
 \begin{example}[extremal stable; recovering Theorem 4 of 2005]\label{ex:stable-signaling}
 \uses{prop:stable-family,lem:mellin-data,thm:signaling-form}
 For $F(s) = s^\alpha$ we have $\tilde H(z) = \Gamma(z/\alpha)/\alpha$ and
@@ -258,7 +267,7 @@ translation-invariant representative is a coincidence of homogeneity; the Mellin
 representative is the one that survives in general.
 \end{example}
 
-% draft: Example 11.9
+% draft: Example 11.10
 \begin{example}[the Gamma family; scale-recursive form]\label{ex:gamma-signaling}
 \uses{prop:gamma-family,ex:gamma-recursive,def:inversion-operator}
 For $F(s) = \gamma \log(1+s)$ with $\gamma > 1$ we have
@@ -280,7 +289,7 @@ single weighted average --- scale-recursive, one-sided from the boundary, matchi
 architecture of the time side.
 \end{example}
 
-% draft: Example 11.10
+% draft: Example 11.11
 \begin{example}[parabolic gauge; the Bessel family is the quadratic case]\label{ex:bessel-quadratic}
 \uses{prop:bessel-family,rem:gauge-freedom,def:inversion-operator,rem:poles}
 In the $\alpha$-gauge (similarity variable $x^{1/\alpha} s$; \ref{rem:gauge-freedom}) the
@@ -299,7 +308,7 @@ Bessel-K scale space is exactly the Bessel diffusion-with-drift medium, and
 $\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$ with $u(t,0) = f(t)$ and $u(0,x) = 0$.
 \end{example}
 
-% draft: Remark 11.11
+% draft: Remark 11.12
 \begin{remark}[Markov media]\label{rem:markov-media}
 \uses{thm:signaling-form,ex:stable-signaling,ex:gamma-signaling}
 Within the class of \ref{thm:signaling-form}, the operators $A$ that additionally satisfy the
