@@ -41,10 +41,9 @@ those three touches the trust boundary.
 (A1)–(A5) — the `L¹` operator properties — are not here; they are the converse half of
 `lem:convolution-representation` and need no new analysis, only bookkeeping about `μ * f`.
 
-(A7), continuity in `(a,b)`, needs the continuity theorem for Laplace transforms — ledger A5 on
-paper. Mathlib has Prokhorov and tightness, and the blueprint already holds the tightness
-argument as ours, so it is an open question whether A5 must become a second axiom. It is not
-settled here.
+(A7) is not here either, but it *is* proved: `Continuity.tendsto_integral_kernel`, resting on
+`WeakConvergence.tendsto_integral_of_tendsto_laplace`. It was the step expected to cost a second
+interface axiom (ledger A5); it did not.
 
 ## The subtlety that forced a refactor
 

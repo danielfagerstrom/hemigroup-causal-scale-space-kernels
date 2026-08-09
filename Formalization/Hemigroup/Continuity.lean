@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.Construction
+import Hemigroup.WeakConvergence
 import Mathlib.MeasureTheory.Measure.Prokhorov
 
 /-!
@@ -299,24 +300,23 @@ right tail, and `T` is chosen after `s` — first make `F(Bs)` small, then make 
 at least `1/2`.
 -/
 
-/-- **The kernel family is tight**, for parameters bounded above by `B`. -/
-theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → ℝ} {B : ℝ}
-    (hB : 0 < B) (hu0 : ∀ n, 0 < u n) (huv : ∀ n, u n ≤ v n) (hvB : ∀ n, v n ≤ B) :
-    IsTightMeasureSet {μ : Measure ℝ | ∃ n, μ = F.kernel (u n) (v n)} := by
-  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
-  intro ε hε
-  rcases eq_or_ne ε ⊤ with rfl | hεtop
-  · exact ⟨∅, isCompact_empty, fun μ _ => le_top⟩
-  have he0 : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hεtop
-  -- Make `F(Bs)` smaller than `ε/2` by taking `s` small; this is where `F(0+) = 0` is used.
-  obtain ⟨r, hr0, hrlt⟩ := exists_exponent_lt F (ε := ENNReal.ofReal (ε.toReal / 2))
+/-- **The uniform tail bound**, in `ℝ` and quantified over the whole admissible range: for any
+`η > 0` there is a `T` beyond which every kernel with `b ≤ B` carries mass at most `η`.
+
+This is tightness in the shape `tendsto_integral_of_tendsto_laplace` asks for. The two
+parameters are chosen in order — `s` small enough that `F(Bs) < η/2`, which is where `F(0+) = 0`
+is used, then `T` large enough that the denominator is at least `1/2`. -/
+theorem exists_kernel_tail_le (F : SelfDecomposableExponent) {B : ℝ} (hB : 0 < B)
+    {η : ℝ} (hη : 0 < η) :
+    ∃ T : ℝ, 0 < T ∧ ∀ a b : ℝ, 0 < a → a ≤ b → b ≤ B →
+      ((F.kernel a b) (Ioi T)).toReal ≤ η := by
+  obtain ⟨r, hr0, hrlt⟩ := exists_exponent_lt F (ε := ENNReal.ofReal (η / 2))
     (by simp only [ENNReal.ofReal_pos]; linarith)
   have hBne : B ≠ 0 := hB.ne'
   set s : ℝ := r / B with hs_def
   have hs : 0 < s := div_pos hr0 hB
   have hsne : s ≠ 0 := hs.ne'
   have hBs : B * s = r := by rw [hs_def]; field_simp
-  -- Then make the denominator at least `1/2`.
   have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
   set T : ℝ := (Real.log 2 + 1) / s with hT_def
   have hT0 : 0 < T := by positivity
@@ -328,6 +328,28 @@ theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → �
             Real.exp_le_exp.mpr (by linarith)
         _ = 1 / 2 := by rw [Real.exp_neg, Real.exp_log two_pos]; norm_num
     linarith
+  have hexp_lt : (F.exponent r).toReal < η / 2 := by
+    have h := (ENNReal.toReal_lt_toReal (F.ne_top r hr0.le) ENNReal.ofReal_ne_top).mpr hrlt
+    rwa [ENNReal.toReal_ofReal (by linarith)] at h
+  refine ⟨T, hT0, fun a b ha hab hbB => ?_⟩
+  have htail := kernel_tail_le (F := F) ha hab hbB hs hT0
+  rw [hBs] at htail
+  have hden : (0 : ℝ) < 1 - Real.exp (-(s * T)) := by linarith
+  have hquot : (F.exponent r).toReal / (1 - Real.exp (-(s * T))) ≤ η := by
+    rw [div_le_iff₀ hden]
+    nlinarith [ENNReal.toReal_nonneg (a := F.exponent r)]
+  linarith
+
+/-- **The kernel family is tight**, for parameters bounded above by `B`. -/
+theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → ℝ} {B : ℝ}
+    (hB : 0 < B) (hu0 : ∀ n, 0 < u n) (huv : ∀ n, u n ≤ v n) (hvB : ∀ n, v n ≤ B) :
+    IsTightMeasureSet {μ : Measure ℝ | ∃ n, μ = F.kernel (u n) (v n)} := by
+  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
+  intro ε hε
+  rcases eq_or_ne ε ⊤ with rfl | hεtop
+  · exact ⟨∅, isCompact_empty, fun μ _ => le_top⟩
+  have he0 : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hεtop
+  obtain ⟨T, hT0, hT⟩ := exists_kernel_tail_le F hB he0
   refine ⟨Icc 0 T, isCompact_Icc, ?_⟩
   rintro μ ⟨n, rfl⟩
   haveI := isProbabilityMeasure_kernel (F := F) (hu0 n) (huv n)
@@ -340,19 +362,34 @@ theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → �
       ≤ (F.kernel (u n) (v n)) (Ioi T) := by
     refine (measure_mono hsub).trans ((measure_union_le _ _).trans ?_)
     rw [isCausal_kernel (hu0 n) (huv n), zero_add]
-  refine hle.trans ?_
-  -- The Markov bound, converted from `ℝ` to `ℝ≥0∞`.
-  have htail := kernel_tail_le (F := F) (hu0 n) (huv n) (hvB n) hs hT0
-  rw [hBs] at htail
-  have hexp_lt : (F.exponent r).toReal < ε.toReal / 2 := by
-    have h := (ENNReal.toReal_lt_toReal (F.ne_top r hr0.le) ENNReal.ofReal_ne_top).mpr hrlt
-    rwa [ENNReal.toReal_ofReal (by linarith)] at h
-  have hquot : (F.exponent r).toReal / (1 - Real.exp (-(s * T))) < ε.toReal := by
-    have hden : (0 : ℝ) < 1 - Real.exp (-(s * T)) := by linarith
-    rw [div_lt_iff₀ hden]
-    nlinarith [ENNReal.toReal_nonneg (a := F.exponent r)]
-  refine (ENNReal.toReal_le_toReal (measure_ne_top _ _) hεtop).mp ?_
-  linarith
+  refine hle.trans ((ENNReal.toReal_le_toReal (measure_ne_top _ _) hεtop).mp ?_)
+  exact hT _ _ (hu0 n) (huv n) (hvB n)
+
+/-! ## Axiom (A7) -/
+
+/-- **Axiom (A7)**: the kernel family is weakly continuous in its parameters. If
+`(a_n, b_n) → (α, β)` inside a bounded range, then `μ_{a_n,b_n} → μ_{α,β}` weakly.
+
+Both inputs are proved above and neither is cited: transform convergence is
+`tendsto_laplace_kernel`, tightness is `exists_kernel_tail_le`, and the continuity theorem that
+combines them is `tendsto_integral_of_tendsto_laplace` — ledger A5's content, proved rather than
+assumed. So (A7) costs nothing at the trust boundary. -/
+theorem tendsto_integral_kernel (F : SelfDecomposableExponent) {u v : ℕ → ℝ} {α β B : ℝ}
+    (hB : 0 < B) (hu0 : ∀ n, 0 < u n) (huv : ∀ n, u n ≤ v n) (hvB : ∀ n, v n ≤ B)
+    (hα : Filter.Tendsto u Filter.atTop (nhds α))
+    (hβ : Filter.Tendsto v Filter.atTop (nhds β))
+    (hα0 : 0 < α) (hαβ : α ≤ β) (hβB : β ≤ B) (f : BoundedContinuousFunction ℝ ℝ) :
+    Filter.Tendsto (fun n => ∫ t, f t ∂(F.kernel (u n) (v n))) Filter.atTop
+      (nhds (∫ t, f t ∂(F.kernel α β))) := by
+  haveI : ∀ n, IsProbabilityMeasure (F.kernel (u n) (v n)) := fun n =>
+    isProbabilityMeasure_kernel (hu0 n) (huv n)
+  haveI : IsProbabilityMeasure (F.kernel α β) := isProbabilityMeasure_kernel hα0 hαβ
+  refine tendsto_integral_of_tendsto_laplace (fun n => isCausal_kernel (hu0 n) (huv n))
+    (isCausal_kernel hα0 hαβ) (fun η hη => ?_) (fun s hs => ?_) f
+  · obtain ⟨T, _, hT⟩ := exists_kernel_tail_le F hB hη
+    exact ⟨T, fun n => hT _ _ (hu0 n) (huv n) (hvB n), hT _ _ hα0 hαβ hβB⟩
+  · exact tendsto_laplace_kernel F hs hB.le (fun n => (huv n).trans (hvB n)) hvB hu0 huv
+      hα hβ hα0 hαβ
 
 end SelfDecomposableExponent
 
