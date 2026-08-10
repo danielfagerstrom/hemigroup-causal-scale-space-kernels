@@ -283,6 +283,32 @@ theorem measureReal_weightedPartition_univ (Fam : CascadeCore) (x y : ℝ) (n : 
   simp only [levyRatio_one] at h
   rw [← h, integral_const, smul_eq_mul, mul_one]
 
+/-! ### The two inputs to the compactness lemma
+
+Prokhorov, in the form Mathlib states for finite measures, asks for exactly two things: a
+uniform bound on the masses, and a uniform bound on the mass outside a compact. Here the second
+is trivial — every `ρ_n` is carried by `[0,1]` — and the first is the convergence already
+proved.
+-/
+
+/-- **The masses are uniformly bounded.** No estimate is made: the masses are the `s = 1`
+approximants, which converge, and a convergent real sequence is bounded. -/
+theorem exists_mass_bound (Fam : CascadeCore) {x y : ℝ} (hx : 0 ≤ x) (hxy : x ≤ y) :
+    ∃ C : ℝ, ∀ n : ℕ, (Fam.weightedPartition x y n).real univ ≤ C := by
+  have hconv := tendsto_integral_partitionMeasure (Fam := Fam) hx hxy zero_le_one
+  obtain ⟨C, hC⟩ := hconv.bddAbove_range
+  refine ⟨C, fun n => ?_⟩
+  rw [measureReal_weightedPartition_univ]
+  exact hC ⟨n, rfl⟩
+
+/-- **Every `ρ_n` is carried by `[0,1]`** — the change of variable put it there. -/
+theorem weightedPartition_compl_Icc (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
+    Fam.weightedPartition x y n ((Icc (0 : ℝ) 1)ᶜ) = 0 := by
+  have hnull : ((Fam.partitionMeasure x y n).map expTrans) ((Icc (0 : ℝ) 1)ᶜ) = 0 :=
+    ae_iff.mp (ae_mem_Icc_map_expTrans Fam x y n)
+  rw [weightedPartition, withDensity_apply _ measurableSet_Icc.compl,
+    Measure.restrict_eq_zero.mpr hnull, lintegral_zero_measure]
+
 end CascadeCore
 
 end Hemigroup
