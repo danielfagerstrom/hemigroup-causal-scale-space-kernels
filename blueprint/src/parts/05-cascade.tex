@@ -119,7 +119,11 @@ value is precisely why mass at the origin contributes $b_0 s$ rather than $0$. F
 \texttt{continuous\_levyRatio}, a derivative computation: $k_s$ is the difference quotient at
 $0$ of $v \mapsto 1 - (1-v)^s$, whose derivative there is $s$. Both it and the change-of-variable
 identity $k_s(1 - e^{-t})\,(1 - e^{-t}) = 1 - e^{-st}$ are machine-checked, as is the bounded
-form \texttt{levyRatioBdd} that weak convergence tests against.}
+form \texttt{levyRatioBdd} that weak convergence tests against. The weighted approximants
+themselves are \texttt{weightedPartition}, with the two facts the extraction needs: pairing
+$k_s$ against $\rho_n$ is pairing $1 - e^{-st}$ against $\Pi_n$, and the total mass of $\rho_n$
+is the $s = 1$ approximant --- the latter for free, since $k_1 \equiv 1$, so the mass bound is
+the convergence already proved rather than a separate estimate.}
 
 \emph{\textbf{Open.} Assembling those: extract the weak limit, split it at the two endpoints, and read
 off $(b_0, \nu)$. That limit, not the null-array estimate, is where

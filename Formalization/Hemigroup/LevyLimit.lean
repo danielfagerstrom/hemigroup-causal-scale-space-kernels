@@ -81,6 +81,15 @@ noncomputable def levyRatio (s v : ℝ) : ℝ := if v = 0 then s else (1 - (1 - 
 lemma levyRatio_of_ne {v : ℝ} (hv : v ≠ 0) (s : ℝ) :
     levyRatio s v = (1 - (1 - v) ^ s) / v := if_neg hv
 
+/-- `k_1 \equiv 1`. This is why the total mass of the weighted measure is the `s = 1`
+approximant, with nothing to compute. -/
+@[simp] lemma levyRatio_one (v : ℝ) : levyRatio 1 v = 1 := by
+  rcases eq_or_ne v 0 with rfl | hv
+  · simp
+  · rw [levyRatio_of_ne hv, Real.rpow_one]
+    field_simp
+    ring
+
 /-- **The change of variable, as an identity.** `k_s(1 - e^{-t}) \cdot (1 - e^{-t}) = 1 - e^{-st}`.
 
 This is what lets `∫ (1 - e^{-st})\,d\Pi` be rewritten as `∫ k_s\,d\rho` for the weighted
@@ -186,5 +195,94 @@ lemma levyRatioBdd_of_mem {s : ℝ} (hs : 0 < s) {v : ℝ} (hv : v ∈ Icc (0 : 
 lemma levyRatioBdd_expTrans {s : ℝ} (hs : 0 < s) {t : ℝ} (ht : 0 ≤ t) :
     levyRatioBdd hs (expTrans t) = levyRatio s (expTrans t) :=
   levyRatioBdd_of_mem hs ⟨expTrans_nonneg ht, expTrans_le_one t⟩
+
+/-! ## The weighted approximants
+
+`ρ_n` is `Π_n` transformed by `expTrans` and weighted by `v`. The weighting is what tames the
+divergence: `Π_n(\RR) = n`, while `ρ_n(\RR) = ∫ (1 - e^{-t})\,d\Pi_n` converges. And the
+transform is what puts everything on a fixed compact.
+-/
+
+namespace CascadeCore
+
+variable {Fam : CascadeCore} {x y : ℝ}
+
+/-- `Π_n` is carried by `[0,∞)`: a finite sum of causal measures. -/
+lemma isCausal_partitionMeasure (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
+    IsCausal (Fam.partitionMeasure x y n) := by
+  rw [IsCausal, partitionMeasure, Measure.coe_finsetSum, Finset.sum_apply]
+  exact Finset.sum_eq_zero fun i _ => isCausal_repr Fam _ _
+
+/-- **`ρ_n`**: the `n`-th approximant, moved to `[0,1]` and weighted by `v`. -/
+noncomputable def weightedPartition (Fam : CascadeCore) (x y : ℝ) (n : ℕ) : Measure ℝ :=
+  ((Fam.partitionMeasure x y n).map expTrans).withDensity fun v => ENNReal.ofReal v
+
+/-- Almost every point of the transformed measure lies in `[0,1]` — the change of variable
+maps the half line there, and `Π_n` is carried by the half line. -/
+lemma ae_mem_Icc_map_expTrans (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
+    ∀ᵐ v ∂((Fam.partitionMeasure x y n).map expTrans), v ∈ Icc (0 : ℝ) 1 := by
+  have h : ∀ᵐ t ∂(Fam.partitionMeasure x y n), expTrans t ∈ Icc (0 : ℝ) 1 := by
+    filter_upwards [(isCausal_partitionMeasure Fam x y n).ae_nonneg] with t ht
+    exact ⟨expTrans_nonneg ht, expTrans_le_one t⟩
+  exact (ae_map_iff continuous_expTrans.measurable.aemeasurable measurableSet_Icc).mpr h
+
+instance instIsFiniteMeasureMapExpTrans (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
+    IsFiniteMeasure ((Fam.partitionMeasure x y n).map expTrans) := by
+  constructor
+  rw [Measure.map_apply continuous_expTrans.measurable MeasurableSet.univ]
+  simpa using measure_lt_top (Fam.partitionMeasure x y n) univ
+
+instance instIsFiniteMeasureWeightedPartition (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
+    IsFiniteMeasure (Fam.weightedPartition x y n) := by
+  constructor
+  rw [weightedPartition, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+  calc ∫⁻ v, ENNReal.ofReal v ∂((Fam.partitionMeasure x y n).map expTrans)
+      ≤ ∫⁻ _, 1 ∂((Fam.partitionMeasure x y n).map expTrans) := by
+        refine lintegral_mono_ae ?_
+        filter_upwards [ae_mem_Icc_map_expTrans Fam x y n] with v hv
+        rw [← ENNReal.ofReal_one]
+        exact ENNReal.ofReal_le_ofReal hv.2
+    _ < ⊤ := by
+        rw [lintegral_one]
+        exact measure_lt_top _ _
+
+/-- **The change of variable, at the level of integrals.** Pairing the test function against
+`ρ_n` is pairing `1 - e^{-st}` against `Π_n` — which is what `NullArray.lean` computes. -/
+theorem integral_weightedPartition (Fam : CascadeCore) (x y : ℝ) (n : ℕ) {s : ℝ} (hs : 0 < s) :
+    ∫ v, levyRatio s v ∂(Fam.weightedPartition x y n)
+      = ∫ t, (1 - Real.exp (-(s * t))) ∂(Fam.partitionMeasure x y n) := by
+  rw [weightedPartition,
+    integral_withDensity_eq_integral_toReal_smul₀
+      (Measurable.aemeasurable (by fun_prop))
+      (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+  -- On the transformed measure the density is just `v`.
+  have hstep : ∫ v, (ENNReal.ofReal v).toReal • levyRatio s v
+        ∂((Fam.partitionMeasure x y n).map expTrans)
+      = ∫ v, v * levyRatio s v ∂((Fam.partitionMeasure x y n).map expTrans) := by
+    refine integral_congr_ae ?_
+    filter_upwards [ae_mem_Icc_map_expTrans Fam x y n] with v hv
+    rw [smul_eq_mul, ENNReal.toReal_ofReal hv.1]
+  have hcont : Continuous fun v : ℝ => v * levyRatio s v :=
+    continuous_id.mul (continuous_levyRatio hs)
+  rw [hstep, integral_map continuous_expTrans.measurable.aemeasurable
+    hcont.aestronglyMeasurable]
+  refine integral_congr_ae ?_
+  filter_upwards [(isCausal_partitionMeasure Fam x y n).ae_nonneg] with t ht
+  rw [mul_comm]
+  exact levyRatio_expTrans_mul ht
+
+/-- **The mass of `ρ_n` is the `s = 1` approximant** — the very quantity `NullArray.lean` shows
+converges, hence the uniform bound the extraction needs.
+
+The identity is free rather than computed: `k_1 \equiv 1`, so pairing the test function against
+`ρ_n` at `s = 1` *is* taking its total mass. -/
+theorem measureReal_weightedPartition_univ (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
+    (Fam.weightedPartition x y n).real univ
+      = ∫ t, (1 - Real.exp (-((1 : ℝ) * t))) ∂(Fam.partitionMeasure x y n) := by
+  have h := integral_weightedPartition Fam x y n one_pos
+  simp only [levyRatio_one] at h
+  rw [← h, integral_const, smul_eq_mul, mul_one]
+
+end CascadeCore
 
 end Hemigroup
