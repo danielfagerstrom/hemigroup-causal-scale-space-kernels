@@ -270,4 +270,48 @@ theorem levyExponentD_eq_zero_of_eq_zero (hb₀ : 0 ≤ b₀)
   rw [← levyExponentD_eq_levyExponent b₀ hk hs₀.le]
   exact h
 
+/-! ## The hypothesis of ledger A18 is satisfiable
+
+A18 concludes that a Lévy exponent whose *dilation increments are all Lévy exponents* has a
+nonincreasing density. Nothing in that statement guarantees the hypothesis is ever met, and an
+axiom whose hypothesis is unsatisfiable proves everything about nothing. This section is the
+check: the exponents A18 concludes *about* satisfy the hypothesis it assumes, which is
+`levyExponentD_increment` read in the shape A18 asks for.
+
+It is the sanity check that would catch a hypothesis stated too strongly, and it costs nothing
+beyond restating a theorem already proved. It does **not** use A18.
+-/
+
+/-- **A18's hypothesis, met.** For a self-decomposable exponent — drift `b₀ ≥ 0` and a
+nonincreasing nonnegative density `k` — every dilation increment `F(b\,\cdot) - F(a\,\cdot)` is
+again a Lévy exponent, in exactly the form ledger A18 hypothesises.
+
+This is `levyExponentD_increment` with the additive identity turned into the subtractive one,
+which is legitimate because `F` is finite: `ENNReal` truncation cannot bite. -/
+theorem exists_levyExponent_dilation_increment {F : ℝ → ℝ} (hb₀ : 0 ≤ b₀)
+    (hk : AntitoneOn k (Ioi (0 : ℝ))) (hk₀ : ∀ t ∈ Ioi (0 : ℝ), 0 ≤ k t)
+    (hF : ∀ s : ℝ, 0 ≤ s → ENNReal.ofReal (F s) = levyExponentD b₀ k s)
+    (hFnn : ∀ s : ℝ, 0 ≤ s → 0 ≤ F s) (ha : 0 < a) (hab : a ≤ b) :
+    ∃ c₀ : ℝ, ∃ ρ : Measure ℝ, 0 ≤ c₀ ∧ IsCausal ρ ∧
+      ∀ s : ℝ, 0 ≤ s → ENNReal.ofReal (F (b * s) - F (a * s)) = levyExponent c₀ ρ s := by
+  have hb : 0 < b := lt_of_lt_of_le ha hab
+  -- The increment's own density: a difference of two dilated copies of `k`.
+  set j : ℝ → ℝ := fun u => k (u / b) - k (u / a) with hj
+  have hjmeas : AEMeasurable j (volume.restrict (Ioi (0 : ℝ))) :=
+    (aemeasurable_of_antitoneOn (antitoneOn_comp_div hk hb)).sub
+      (aemeasurable_of_antitoneOn (antitoneOn_comp_div hk ha))
+  refine ⟨b₀ * (b - a), levyMeasureOfDensity j, mul_nonneg hb₀ (by linarith),
+    isCausal_levyMeasureOfDensity j, fun s hs => ?_⟩
+  rw [← levyExponentD_eq_levyExponent _ hjmeas hs]
+  -- `F (a s) + increment = F (b s)`, additively, with every term finite.
+  have hadd := levyExponentD_increment (b₀ := b₀) (k := k) hb₀ hk hk₀ ha hab hs
+  have hfa := hF (a * s) (mul_nonneg ha.le hs)
+  have hfb := hF (b * s) (mul_nonneg hb.le hs)
+  rw [← hfa, ← hfb] at hadd
+  have hne : ENNReal.ofReal (F (a * s)) ≠ ⊤ := ENNReal.ofReal_ne_top
+  have hsub : levyExponentD (b₀ * (b - a)) j s
+      = ENNReal.ofReal (F (b * s)) - ENNReal.ofReal (F (a * s)) := by
+    rw [← hadd, ENNReal.add_sub_cancel_left hne]
+  rw [hsub, ← ENNReal.ofReal_sub _ (hFnn (a * s) (mul_nonneg ha.le hs))]
+
 end Hemigroup

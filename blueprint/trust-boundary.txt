@@ -37,6 +37,10 @@ Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent
 # (1) => (2) leg needs differentiability of Bernstein functions, which is the derivative-sign
 # vocabulary this development excludes by design. The AXIOMS.md entry says so plainly.
 #
-# ANCHOR PENDING: A18's AXIOMS.md entry has no librarian-verified page anchor yet.
+# Anchored on SSV Proposition 5.17, p. 57, with Definition 5.14, p. 55 -- image-verified
+# 2026-08-10. Printed as an iff; we use the hard half. The source allows a killing term and
+# we do not, so our hypothesis is a special case of its. The k(t)/t normalisation is the
+# source's own, from the proof on p. 59. Sato Theorem 15.10, p. 95, is the R^d ancestor and
+# is NOT the anchor: it carries no numbered half-line specialisation.
 
 Hemigroup.exists_antitone_density_of_dilation_increments

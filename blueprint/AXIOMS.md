@@ -592,49 +592,97 @@ already trusts. @dym1976gaussian is the book-length companion.
 
 ---
 
-## A18 — Self-decomposability: a Bernstein function whose dilation increments are Bernstein has a nonincreasing Lévy density
-**Blueprint:** `lem:selfdecomposable-derivative` (the direction (1) ⇒ (3)) · **Lean:** `Hemigroup.exists_antitone_density_of_dilation_increments`
-**Cite:** ⚠️ **ANCHOR NOT YET VERIFIED** — expected @sato1999levy, Theorem 15.10 (self-decomposable ⟺ Lévy measure of the form `k(x)/x dx` with `k` nonincreasing), specialised to subordinators; possibly @schilling2012bernstein instead. **The librarian has not confirmed a page.** This entry is not reviewed until it does.
+## A18 — Self-decomposability: an exponent whose dilation increments are Bernstein has a nonincreasing Levy density
+**Blueprint:** `lem:selfdecomposable-derivative` (the direction (1) => (3)) · **Lean:** `Hemigroup.exists_antitone_density_of_dilation_increments`
+**Cite:** @schilling2012bernstein — Proposition 5.17, p. 57, with Definition 5.14, p. 55 (2nd ed.); the `k(t)/t` normalisation is the source's own, from the proof on p. 59
 
-- **Statement as used.** Let `F ∈ LE`, i.e. `F(s) = b₀ s + ∫ (1 − e^{−st}) ν(dt)` with `b₀ ≥ 0`
-  and `ν` causal. If `F(b·) − F(a·) ∈ LE` for **every** `0 < a ≤ b`, then `F` admits the
-  representation (7.1): there are `c₀ ≥ 0` and `k : (0,∞) → [0,∞)` **nonincreasing** with
-  `F(s) = c₀ s + ∫₀^∞ (1 − e^{−st}) k(t)/t dt`.
-- **The second and last entry on the trust boundary** (2026-08-10). It is what
-  `thm:main-analysis` spends, and the article has always said so: the analysis direction crosses
-  the boundary where the constructive one does not. What is new is that the crossing is now
-  *machine-checked* rather than asserted — `#print axioms` on `main_analysis` shows this name and
-  nothing else, and on `thm:main-construction` and `prop:main-uniqueness` shows A17 and not this.
-- **Why the composite rather than A3 and A4 separately.** The blueprint derives (1) ⇒ (3) from
-  `prop:bernstein-toolbox`(4) — closure of `BF` under pointwise limits, A4, applied to the
-  difference quotient `(F(e^h s) − F(s))/h` — and (2) ⇒ (3) from uniqueness of the
-  Lévy–Khintchine triple, A3. Neither of those can be *stated* in this development: both are
-  statements about `BF`, a class defined by derivative signs, and the development has no
-  `CompletelyMonotone` by design (`blueprint/DESIGN-formalization-strategy.md`). So what is taken
-  is the composite, phrased in `LE`, exactly as A17 is phrased in `levyExponent` rather than as
-  Bernstein–Widder. The paper-side justification remains A3 + A4 via the blueprint's proof.
-- **The converse is proved, not assumed.** (3) ⇒ (1) is
-  `Hemigroup.levyExponentD_increment` — a change of variables and a sign — which is why
-  `thm:main-construction` stays off this entry entirely. The asymmetry is the reason Lemma 7.1
-  was split into `lem:selfdecomposable-increment` and `lem:selfdecomposable-derivative`.
+- **Statement as used.** Let `F(s) = b0 s + INT_0^inf (1 - e^{-st}) nu(dt)` with `b0 >= 0` and
+  `nu` a Levy measure on `(0,inf)` — so `F` is Bernstein with `F(0+) = 0`. If
+  `F(b*) - F(a*)` is Bernstein and vanishes at `0+` for **every** `0 < a <= b`, then `nu` has a
+  density `k(t)/t` with `k : (0,inf) -> [0,inf)` **nonincreasing**.
+- **Primary — SSV Proposition 5.17.** OK **p. 57**, verified against the page image 2026-08-10:
+  *"Let `f` in BF satisfy `L(pi) = e^{-f}` and let `mu` be the Levy measure of `f`. Then the
+  following assertions are equivalent. (i) `mu` has a density `m(t)` such that `t -> t * m(t)` is
+  non-increasing; (ii) `pi` is in SD."* Self-decomposability is **Definition 5.14, p. 55**: *"A
+  completely monotone function `g` in CM with `g(0+) <= 1` is said to be self-decomposable, if
+  `lambda -> g(lambda)/g(c*lambda) = g_c(lambda)` is completely monotone for all `c` in
+  `(0,1)`."*
+- **Printed as an iff; we use the hard half, (ii) => (i)**, proved pp. 57-59.
+- **`k(t)/t` is the source's normalisation, not a reformulation.** The (ii) => (i) proof on p. 59
+  builds `k(v) := l(e^{-v})`, records *"k is non-negative and non-increasing"*, derives
+  `M(t) = INT_t^inf k(v)/v dv`, and closes *"the proof is finished by defining
+  `m(t) := k(t)/t`."* That is exactly `levyExponentD`'s shape.
+- **The hypothesis bridge, and what it costs.** Our hypothesis is *the increment is Bernstein*;
+  Definition 5.14's is *the ratio is completely monotone*. The direction we need — ours implies
+  his — is the cheap one, and SSV performs it inside the same proof on p. 59:
+  *"`g_c(lambda) = g(lambda)/g(c*lambda) = e^{-f(lambda)}/e^{-f(c*lambda)} = e^{-f_c(lambda)}`,
+  proving that `g` is completely monotone."* It uses `f` Bernstein implies `e^{-f}` completely
+  monotone, which is **A2**. So the anchor route for this entry runs through A2 and Proposition
+  5.17 — *not* through A4 and A3, which is how the blueprint's own proof of
+  `lem:selfdecomposable-derivative` gets there. Both are valid; the routes are independent, and
+  this entry is anchored on the first.
+- **Quantifier shape.** Our `for all 0 < a <= b` and the printed `for all c in (0,1)` are the
+  same condition: take `c = a/b` and substitute `lambda = b*s`, a bijection of `(0,inf)`;
+  `a = b` gives the trivial `0` in BF. This is why the Lean statement quantifies over pairs.
+- **The source is more general than we are.** SSV allows a killing term (`g(0+) <= 1`, so
+  sub-probability, `a > 0` in the triplet); our `levyExponent` has none by construction, forcing
+  `a = 0` (Remark 3.3(iv), p. 23: `a = f(0+)`). Our hypothesis is a special case — the safe
+  direction. The clause "increment vanishing at `0+`" is likewise **automatic**, not an extra
+  assumption: `f_c(0+) = F(0+) - F(0+) = 0`.
+- **Right-continuity of `k` is available but not assumed.** **Remark 5.18, p. 59**: *"In the
+  proof one can choose `m(t)` so that `t * m(t)` is right-continuous. Hence, Proposition 5.17 can
+  be stated as `pi` in SD if, and only if, `t*m(t)` is 1-monotone"* — and *1-monotone* is
+  nonnegative, nonincreasing **and right-continuous** (Definition 1.10, p. 8). Our Lean statement
+  asks only `AntitoneOn` and nonnegativity, i.e. strictly less than is available.
+- **Uniqueness of `k` is NOT claimed, and should not be.** `nu` is unique (Theorem 3.2,
+  pp. 21-22, is one-to-one on triplets), so `k` is unique Lebesgue-a.e.; two nonincreasing
+  right-continuous functions agreeing a.e. agree everywhere, so the 1-monotone version is
+  genuinely unique. **That last step is an inference, printed in neither SSV nor Sato.** Our
+  interface existentially quantifies `k` and asserts no uniqueness, so it stays strictly inside
+  the citation.
+- **The two integrability conditions of (7.1) are consequences, not dropped assumptions.** This
+  was flagged as a check to run and is now discharged on paper: Theorem 3.2's Levy measure
+  satisfies `INT (1 ^ t) nu(dt) < inf`, and with `nu(dt) = k(t)/t dt` that reads
+  `INT_0^1 t * k(t)/t dt = INT_0^1 k(t) dt < inf` and `INT_1^inf k(t)/t dt < inf` — exactly the
+  blueprint's pair.
+- **Non-vacuity, checked in Lean.** An axiom whose hypothesis is unsatisfiable proves everything
+  about nothing. `Hemigroup.exists_levyExponent_dilation_increment` shows the exponents A18
+  concludes *about* satisfy the hypothesis it assumes — it is `levyExponentD_increment` restated
+  in A18's shape, and it does not use A18. This was the second outstanding check and it is now
+  run.
+- **The intermediate form `B(s) = s F'(s)` Bernstein has no numbered source.** Searched in both
+  books (2026-08-10): SSV's idiom is uniformly `t*m(t)`, and Sato's is the `k`-function. What
+  underwrites the derivative form is equation (3.3) in Remark 3.3(ii), **p. 23** —
+  `f(lambda) = a + b*lambda + lambda INT_0^inf e^{-lambda*s} M(s) ds` with `M(s) = nu(s,inf)`
+  nonincreasing and right-continuous — combined with the derivative identity in the proof of
+  Theorem 3.2, p. 21. So Lemma 7.1's clause (2) is a **derivation**, and anyone tempted to cite a
+  source for it will not find one. The Lean development never forms it, which is the other reason
+  it does not matter here.
+- **Why not Sato.** OK **Theorem 15.10, p. 95** verified: it is `R^d` with polar decomposition,
+  `nu(B) = INT_S lambda(dxi) INT_0^inf 1_B(r*xi) k_xi(r) dr/r`. **Corollary 15.11, p. 95** is the
+  `R^1` case but on the *whole line* and in characteristic-function form. There is **no numbered
+  half-line or subordinator specialisation** — Sato uses "selfdecomposable subordinator" only in
+  Remarks 53.11 (p. 415) and 54.6 (p. 418), both referring back to Corollary 15.11. Getting from
+  there to `F` means specialising `k = 0` on `(-inf,0)`, `A = 0`, and re-deriving the drift from
+  Sato's `1_{[-1,1]}` cutoff — real work that a citation would hide. SSV is anchored in the right
+  vocabulary and is used instead. Historically the two agree: SSV's Chapter 5 notes, **p. 67**,
+  credit the proof to Levy and say it is *"adapted from Sato [314, p. 95]"* — the page verified
+  above.
+- **A convention worth recording if Sato is ever cited alongside.** Sato's *Remarks on notation*,
+  **p. xi**: *"decreasing means `f(s) >= f(t)` for `s < t`"* — so Sato's "decreasing" is our
+  "nonincreasing", not strict. And Sato normalises the `k`-function **left**-continuous on
+  `(0,inf)` (p. 403) where SSV normalises **right**-continuous. Harmless — they agree a.e. — but
+  do not mix the two.
 - **Retirability: worse than A17, and this should be said plainly.** A17 was phrased so it could
-  be demoted the day the compound-Poisson construction is carried out, which Mathlib's Prokhorov
-  puts within reach. A18 has no comparable path. Its (2) ⇒ (3) leg is arguably reachable —
-  `Hemigroup.laplace_injective` already gives the uniqueness that leg needs — but (1) ⇒ (2)
-  requires differentiability of Bernstein functions and closure under pointwise limits, which is
-  precisely the vocabulary this development excludes. Treat this entry as permanent.
-- **Risk of mis-statement is the real hazard, not soundness.** A17 is a construction: if it were
-  mis-stated, downstream proofs would fail rather than silently succeed. A18 is a
-  characterization with more surface — antitone `k`, nonnegativity, and the hypothesis "*every*
-  dilation increment is in `LE`". A hypothesis stated too strongly makes `thm:main-analysis`
-  vacuous; a conclusion stated too strongly makes it false. Two checks are worth running before
-  this entry is signed off: (i) instantiate it on the constructed family, where the answer is
-  known independently (`SelfDecomposableExponent`), and (ii) confirm that the integrability
-  conditions of (7.1) — `∫₀¹ k < ∞` and `∫₁^∞ k(t)/t dt < ∞` — really are consequences of the
-  conclusion rather than assumptions that were dropped.
-- **Confidence.** ⚠️ **pending** — the mathematics is standard and the ledger's confidence in A3
-  and A4 carries over, but this entry has no verified page anchor yet and the two checks above
-  have not been run.
+  be demoted once the compound-Poisson construction is carried out, which Mathlib's Prokhorov
+  puts within reach. A18 has no comparable path. Its `(2) => (3)` leg is arguably reachable —
+  `Hemigroup.laplace_injective` already gives the uniqueness it needs — but `(1) => (2)` requires
+  differentiability of Bernstein functions, precisely the vocabulary this development excludes.
+  Treat this entry as permanent.
+- **Confidence.** OK well grounded. The anchor is image-verified, the hypotheses match or are
+  weaker than printed, both outstanding checks are discharged, and the two places where we go
+  beyond the printed text — the A2 bridge and the uniqueness inference — are recorded above and
+  neither is needed by the Lean statement.
 
 ## Notes on the sources
 

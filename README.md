@@ -30,10 +30,10 @@ lines, `sorry`-free, and rests on Lean core plus **two** axioms, which do not mi
   direction needs. Phrased so it can be demoted to a lemma without touching a downstream
   statement, the day the compound-Poisson construction is carried out.
 * **A18**, self-decomposability in the direction (1) ⇒ (3) — what the *analysis* direction needs,
-  and nothing else does. Taken as a reviewed decision on 2026-08-10, and expected to be
-  permanent: its hard leg needs differentiability of Bernstein functions, which is the
-  derivative-sign vocabulary this development excludes by design. Its page anchor is **not yet
-  librarian-verified**.
+  and nothing else does. Taken as a reviewed decision on 2026-08-10, anchored on
+  Schilling–Song–Vondraček Prop. 5.17, p. 57, and expected to be permanent: its hard leg needs
+  differentiability of Bernstein functions, which is the derivative-sign vocabulary this
+  development excludes by design.
 
 CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on every push, per
 declaration — so the article's claim that the analysis direction crosses the boundary where the
@@ -61,13 +61,7 @@ that proof reduces to Lean core.
 
 The next work, in order:
 
-1. **Sign off A18.** Its page anchor is not yet verified — the librarian has to confirm the
-   theorem and page (expected Sato Thm 15.10, specialised to subordinators). Two sanity checks on
-   the statement are also outstanding, both listed in the `AXIOMS.md` entry: instantiate it on the
-   constructed family, where the answer is known independently, and confirm that (7.1)'s
-   integrability conditions really are consequences of the conclusion rather than assumptions
-   that were dropped.
-2. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
+1. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
    there, and most of what they cite (Mellin inversion, Sonine pairs, Courrège, the HCM tower)
    has no Mathlib counterpart.
 
