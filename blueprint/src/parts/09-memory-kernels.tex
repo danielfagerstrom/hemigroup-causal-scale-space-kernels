@@ -35,6 +35,7 @@ is defined for $s > 0$ and satisfies $|\hat f(s)| \le \|f\|_1$.
 % draft: Lemma 9.1
 \begin{lemma}[the kernel behind $F'$]\label{lem:memory-kernel}
 \uses{lem:selfdecomposable-exponents}
+\lean{Skeleton.hasDerivAt_toRealExponent}\notready
 Let $F$ be as in (7.1). Then
 \[
   F'(s) \;=\; b_0 \;+\; \int_0^\infty e^{-st}\, k(t)\,dt, \qquad s > 0.
@@ -140,6 +141,7 @@ scale-Cauchy problem of \sscite{fagerstrom2005temporal}, Thm.~3.
 % draft: Lemma 9.4
 \begin{lemma}[potential kernel]\label{lem:potential-kernel}
 \uses{lem:selfdecomposable-exponents,prop:bernstein-toolbox,lem:vanishing}
+\lean{Skeleton.existsUnique_potentialKernel}\notready
 For $x > 0$ set $\varphi_x(s) := s F'(xs)$. Then $\varphi_x$ is a nonzero Bernstein function,
 positive on $(0,\infty)$, and there is a unique positive, locally finite measure $\ell^{(x)}$
 on $[0,\infty)$ --- the \emph{potential kernel} --- with
@@ -170,6 +172,7 @@ $\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$.
 % draft: Theorem 9.5
 \begin{theorem}[Sonine conservation]\label{thm:sonine-conservation}
 \uses{lem:memory-kernel,lem:potential-kernel,prop:laplace-uniqueness}
+\lean{Skeleton.sonine_conservation}\notready
 For every $x > 0$,
 \[
   \kappa^{(x)} * \ell^{(x)} \;=\; \mathrm{Leb}_{[0,\infty)},
@@ -229,6 +232,7 @@ tail decay.
 % draft: Proposition 9.7
 \begin{proposition}[regularity of the pair]\label{prop:pair-regularity}
 \uses{lem:memory-kernel,lem:potential-kernel,thm:sonine-conservation,def:completely-monotone}
+\lean{Skeleton.hasCMDensity_iff}\notready
 Modulo the drift atoms $b_0\delta_0$:
 \begin{enumerate}
 \item $\ell^{(x)}$ has the form $c\,\delta_0 + (\text{nonincreasing density})$, $c \ge 0$, if
@@ -372,6 +376,7 @@ infinitely divisible laws on the half-line of \sscite{steutel2004infinite}.
 % received. Numbered 9.12 and 9.13, numbers the draft does not use, its Section 9 ending at 9.11.
 \begin{proposition}[the Sonine pair exists]\label{prop:sonine-pair-exists}
 \uses{lem:memory-kernel,lem:potential-kernel,thm:sonine-conservation}
+\lean{Skeleton.exists_sonine_pair}\notready
 For every admissible $F$ and every $x > 0$ the pair $(\kappa^{(x)}, \ell^{(x)})$ exists at the
 level of positive measures on $[0,\infty)$ and satisfies
 $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}_{[0,\infty)}$.

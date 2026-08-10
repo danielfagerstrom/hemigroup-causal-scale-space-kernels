@@ -10,6 +10,7 @@ import Hemigroup.Instance
 import Hemigroup.Interfaces
 import Hemigroup.L1Continuity
 import Hemigroup.Levy
+import Hemigroup.MemoryKernel
 import Hemigroup.MainAnalysis
 import Hemigroup.LevyLimit
 import Hemigroup.LevyTriple

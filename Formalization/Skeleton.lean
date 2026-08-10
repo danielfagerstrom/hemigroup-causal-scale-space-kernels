@@ -3,9 +3,10 @@ Copyright (c) 2026 Daniel Fagerström. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
+import Skeleton.Chapter9
 
 /-!
-# The skeleton library — currently empty
+# The skeleton library
 
 *Stated but unproved* targets live here: the Lean type of a blueprint node, with `sorry` for the
 proof, so that the node can carry a `\lean{...}\notready` tag rather than no tag at all. See the
