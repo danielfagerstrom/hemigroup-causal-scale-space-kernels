@@ -13,7 +13,7 @@ different story about what is left:
 | `[A]` ledger entries in play | A1–A4, A17, A18 | **A7–A16** — nine of the twelve |
 | trust-boundary entries spent | 2 (A17, A18) | unknown, plausibly 4–6 |
 | nodes whose conclusion needs vocabulary the development lacks | 2, both restated in `LE` | at least 5 |
-| Mathlib substrate | measure theory, Prokhorov, DCT — all present | Mellin, semigroups, distributions, Sonine — **surveyed separately** |
+| Mathlib substrate | measure theory, Prokhorov, DCT — all present | surveyed 2026-08-11; see below |
 
 The difference is not size, it is *kind*. Chapters 2–7 were about the hemigroup family, and
 almost everything about the family turned out to be provable. Chapters 8–12 are increasingly
@@ -22,7 +22,11 @@ statements about those classes are exactly what the trust boundary exists to hol
 length. Expect the ratio of interface to proof to invert.
 
 Three consequences shape the phases below: the blueprint needs splitting first, the vocabulary
-question has to be settled before any Lean, and the scope should probably be cut.
+question has to be settled before any Lean, and the scope needs a decision.
+
+**Scope decided 2026-08-11: chapters 8–9 now, re-evaluate after.** Chapters 10–12 are not
+abandoned and not scheduled; the survey below re-scopes them, and the re-evaluation happens
+against finished work on 8–9 rather than against a forecast.
 
 ---
 
@@ -44,9 +48,16 @@ what made A18's scope reviewable. Chapters 8–12 have the same defect in eight 
 | `thm:signaling-form` (11.6) | Eigenfunctions / the field solves it / uniqueness in the covariant Mellin class. | three nodes |
 | `thm:locality` (12.5) | Carries **A14 and A15 on two different steps of one direction**, and (⇐) needs neither. Exactly the 7.1 shape. | split (⇒) from (⇐); within (⇒), the order bound (A14) from the Krull–Webster uniqueness (A15) |
 
+**How to split without breaking the numbering.** The blueprint's numbers agree with the draft's,
+and the shared counter renumbers everything after an insertion. Chapter 7 already solved this:
+*narrow the existing node in place, keeping its number, and append the split-off clause at the
+end of the chapter*, where it takes a number the draft does not use (that is how
+`lem:selfdecomposable-increment` and `-derivative` became 7.11 and 7.12). Follow that convention
+here; record the appended numbers in each file's header comment, as chapter 7 does.
+
 Phase 0 output: a blueprint whose `[A]` tags sit on the clauses that actually need them, with
-the numbering agreement against the draft preserved (the shared counter makes added nodes
-renumber — check `linkage check` and the draft's cross-references after each split).
+the draft's numbering untouched. Run `linkage check` and `scripts/build-blueprint.sh` after each
+split.
 
 ---
 
@@ -139,18 +150,64 @@ what Mathlib offers.
 
 ---
 
-## Phase 6 — Chapters 10–12, gated
+## The Mathlib substrate, surveyed 2026-08-11
 
-Do not schedule these until the Mathlib survey is in hand. Each rests on machinery the
-development has never touched: C₀ semigroups, generators and cores (chapter 10, A11); the Mellin
-transform and its inversion (chapter 11, A12); Courrège's classification and Krull–Webster
-(chapter 12, A14/A15).
+The survey changed the shape of this plan, and in the opposite direction from my first guess:
+chapter 11 is far more tractable than assumed and **chapter 10 is the real blocker**.
 
-**Scope recommendation, stated plainly.** Treat chapters 8–9 as the target and 10–12 as
-blueprint-only unless the survey says otherwise. That is a legitimate outcome, not a retreat:
-the blueprint is the text of record, and an article whose Lean development covers §§2–9 with a
-four-entry trust boundary is a stronger artifact than one that claims §§2–12 by importing a
-dozen interfaces. `README.md` should say which it is.
+| Needed for | Mathlib | Consequence |
+|---|---|---|
+| **Mellin transform** (ch. 11) | `Analysis/MellinTransform.lean` — `mellin`, `MellinConvergent`, strip-holomorphy (`mellin_differentiableAt_of_isBigO_rpow`) | present and usable |
+| **Mellin inversion** (ch. 11, A12) | `mellinInv_mellin_eq` — pointwise, one vertical line, L¹ both sides + `ContinuousAt`, derived from Fourier inversion | **A12 may be dischargeable rather than trusted.** No strip version and no contour shift, so "inversion anywhere in the strip" is a derivation |
+| **Mellin convolution** (ch. 11) | absent — no `mellin (f ⋆ g) = mellin f · mellin g`, no packaged `dx/x` Haar measure | build it |
+| **Fractional integrals** (ch. 9, 11) | absent as such, **but** `posConvolution` (the causal half-line convolution) + `betaIntegral_scaled` + `betaIntegral_eq_Gamma_mul_div` compose to the Riemann–Liouville semigroup law almost immediately | much cheaper than "absent" suggests |
+| **Krull–Webster** (ch. 12, A15) | Bohr–Mollerup for Gamma is present (`Real.eq_Gamma_of_log_convex`); the internals `Real.BohrMollerup.tendsto_logGammaSeq` are already abstract in `f`, but hard-wired to the increment `log y` | **A15 is plausibly provable**, by generalising the increment. Tractable work, not reuse |
+| **Pringsheim–Landau** (ch. 12, A13) | absent for integral transforms; the analytic core is present (`Analysis/Complex/Positivity.lean`, `TaylorSeries.lean`) and the Dirichlet-series analogue is proved | plausibly provable with effort |
+| **C₀ semigroups, generators, cores** (ch. 10) | **absent, and so is closed-operator theory.** Only bounded generators via `NormedSpace.exp`, Banach-algebra `resolvent`, and a topological `Flow` with no linearity | **the blocker** |
+| **Phillips subordination** (ch. 10, A11) | absent | interface, unavoidably |
+| **Positive maximum principle, Courrège** (ch. 12, A14) | greenfield | interface, unavoidably |
+| **CM / Bernstein / Stieltjes classes** | absent. `AbsolutelyMonotoneOn` exists with *no* representation theory | **confirms Phase 1's Option B is forced**, not merely preferred |
+| **Laplace transform** | absent as such. `complexMGF` + `ext_of_complexMGF_eq` give genuine injectivity — but for **finite** measures only | Phase 3's locally-finite injectivity gets no help; it is real work or an interface |
+| **Volterra equations** | absent; only ODE Picard–Lindelöf and `ContractingWith` | see below — less bad than it looks |
+| **Log-convexity** | no `LogConvexOn` at all; only the raw `ConvexOn ℝ s (log ∘ f)` idiom, used twice | manual but fine |
+| **Lévy processes, infinite divisibility** | absent | already reflected in the ledger |
+
+### Three false friends, recorded so a future session does not misread a grep
+
+- `MeasureTheory/Measure/Stieltjes.lean`'s `StieltjesFunction` is a **monotone right-continuous
+  function used to build a measure** — *not* the Stieltjes class `S` of Bernstein-function theory.
+- `Analysis/SpecialFunctions/Bernstein.lean` and `RingTheory/Polynomial/Bernstein.lean` are
+  **Bernstein polynomials** (Weierstrass approximation). Unrelated to Bernstein functions.
+- `Measure/LevyConvergence.lean` and `LevyProkhorovMetric.lean` are Lévy's **continuity theorem**
+  and the weak-convergence metric — not Lévy-process theory.
+
+### What this does to `prop:volterra`
+
+"Volterra absent" reads worse than it is. The Lean content of that node, after the Phase 0 split,
+is the identity (9.1) — a transform computation — and uniqueness among probability measures,
+which is a scalar linear ODE in the Laplace variable. Neither needs a Volterra solution theory.
+Only the *numerical* reading in `rem:volterra-computation` does, and remarks carry no Lean tag.
+
+---
+
+## Phase 6 — chapters 10–12, re-scoped by the survey
+
+**Chapter 11 — attempt it.** Mellin exists, inversion exists in a usable if narrow form, and the
+fractional-integral machinery for `lem:memory-fractional-integrals` is nearly free. The gaps —
+Mellin convolution, inversion across a strip — are constructions, not missing theory. There is a
+real prospect of **discharging A12 rather than trusting it**, which would be the same win as A5
+and A6 in chapter 2.
+
+**Chapter 12 — attempt the two provable interfaces, keep A14.** A15 (Krull–Webster) and A13
+(Pringsheim–Landau) both have their machinery present in adjacent form; each is a self-contained
+piece of work worth doing on its own terms. A14 (Courrège) is greenfield and stays an interface.
+Check the HCM representation against Phase 1 before scheduling `prop:local-ladder`.
+
+**Chapter 10 — blueprint-only, on current evidence.** `thm:scale-cauchy` is stated on an operator *core*, with a
+generator and a `C([0,∞); X₀) ∩ C¹((0,∞); X₀)` solution class. Mathlib has no C₀-semigroup
+theory and, more decisively, no closed-operator theory to build one on. Formalising this means
+building Hille–Yosida-adjacent infrastructure first — a separate project, and not this article's.
+Say so in the node annotation rather than leaving it untagged.
 
 ---
 
