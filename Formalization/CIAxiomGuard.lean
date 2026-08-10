@@ -107,3 +107,16 @@ over; nothing in the argument itself leaves Lean core.
 /-! ### `lem:additivity` -/
 
 #print axioms Hemigroup.CascadeCore.additivity
+
+/-! ### `thm:increments-bernstein`
+
+The `LE` reading of Theorem 5.2. Prokhorov and dominated convergence are Mathlib's, so this
+reduces to Lean core: no ledger entry is spent on the null-array limit, which is the point of
+running it elementarily.
+-/
+
+#print axioms Hemigroup.CascadeCore.exponent_hasLevyRep
+
+/-! ### `cor:strict-monotonicity` -/
+
+#print axioms Hemigroup.CascadeCore.strict_monotonicity

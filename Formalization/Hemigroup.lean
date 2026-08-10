@@ -9,6 +9,7 @@ import Hemigroup.Interfaces
 import Hemigroup.L1Continuity
 import Hemigroup.Levy
 import Hemigroup.LevyLimit
+import Hemigroup.LevyTriple
 import Hemigroup.Nondegeneracy
 import Hemigroup.NullArray
 import Hemigroup.Operator

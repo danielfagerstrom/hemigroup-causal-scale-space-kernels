@@ -5,6 +5,7 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.NullArray
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
+import Mathlib.MeasureTheory.Measure.Prokhorov
 
 /-!
 # `thm:increments-bernstein`, part two: the test function
@@ -44,7 +45,7 @@ nothing the measures can see: they are carried by `[0,1]`.
 namespace Hemigroup
 
 open MeasureTheory Set Filter
-open scoped Topology
+open scoped Topology NNReal ENNReal
 
 /-! ## The change of variable -/
 
@@ -196,6 +197,29 @@ lemma levyRatioBdd_expTrans {s : ℝ} (hs : 0 < s) {t : ℝ} (ht : 0 ≤ t) :
     levyRatioBdd hs (expTrans t) = levyRatio s (expTrans t) :=
   levyRatioBdd_of_mem hs ⟨expTrans_nonneg ht, expTrans_le_one t⟩
 
+/-- For a measure carried by `[0,1]`, clamping the test function changes no integral. -/
+lemma integral_levyRatioBdd_of_carried {ν : Measure ℝ} (hν : ν ((Icc (0 : ℝ) 1)ᶜ) = 0)
+    {s : ℝ} (hs : 0 < s) :
+    ∫ v, levyRatioBdd hs v ∂ν = ∫ v, levyRatio s v ∂ν := by
+  refine integral_congr_ae ?_
+  filter_upwards [ae_iff.mpr hν] with v hv
+  exact levyRatioBdd_of_mem hs hv
+
+/-! ## A cluster point is pinned by what already converges
+
+The extraction below produces a *cluster* point rather than a limit, because the space of finite
+measures on `ℝ` carries no metrizability instance in Mathlib and so no subsequence can be pulled
+out. Nothing is lost: every observable this development needs is a continuous real function of
+the measure that *already converges along the full sequence*, and a convergent sequence has only
+one cluster value.
+-/
+
+/-- If `Φ ∘ P` converges and `a` is a cluster point of `P`, then `Φ a` is the limit. -/
+theorem eq_of_mapClusterPt {α : Type*} [TopologicalSpace α] {P : ℕ → α} {a : α} {Φ : α → ℝ}
+    {L : ℝ} (hcl : MapClusterPt a atTop P) (hΦ : Continuous Φ)
+    (hlim : Tendsto (fun n => Φ (P n)) atTop (𝓝 L)) : Φ a = L :=
+  eq_of_nhds_neBot ((hcl.continuousAt_comp hΦ.continuousAt).clusterPt.mono hlim)
+
 /-! ## The weighted approximants
 
 `ρ_n` is `Π_n` transformed by `expTrans` and weighted by `v`. The weighting is what tames the
@@ -308,6 +332,61 @@ theorem weightedPartition_compl_Icc (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
     ae_iff.mp (ae_mem_Icc_map_expTrans Fam x y n)
   rw [weightedPartition, withDensity_apply _ measurableSet_Icc.compl,
     Measure.restrict_eq_zero.mpr hnull, lintegral_zero_measure]
+
+/-! ### The limiting measure
+
+Prokhorov delivers a cluster point of `(ρ_n)` in `FiniteMeasure ℝ`, and pairing it against the
+test function recovers the exponent — for *every* `s > 0` at once, since the cluster point is one
+measure and each `s` supplies its own already-convergent observable.
+-/
+
+/-- **The weak limit of the weighted approximants.** A single finite measure on `[0,1]` whose
+pairing with `k_s` is `g_{x,y}(s)`, for every `s > 0`.
+
+This is the analytic heart of `thm:increments-bernstein`: everything after it is the change of
+variable read backwards, splitting the limit at the two endpoints of `[0,1]`. -/
+theorem exists_limit_measure (Fam : CascadeCore) {x y : ℝ} (hx : 0 ≤ x) (hxy : x ≤ y) :
+    ∃ ρ : Measure ℝ, IsFiniteMeasure ρ ∧ ρ ((Icc (0 : ℝ) 1)ᶜ) = 0 ∧
+      ∀ s : ℝ, 0 < s → ∫ v, levyRatio s v ∂ρ = Fam.exponent x y s := by
+  obtain ⟨C, hC⟩ := exists_mass_bound Fam hx hxy
+  have hC0 : 0 ≤ C := le_trans measureReal_nonneg (hC 0)
+  set P : ℕ → FiniteMeasure ℝ := fun n => ⟨Fam.weightedPartition x y n, inferInstance⟩ with hPdef
+  -- The two Prokhorov inputs, in the shape the lemma states them.
+  have hmass : ∀ n, (P n).mass ≤ C.toNNReal := by
+    intro n
+    rw [← NNReal.coe_le_coe, Real.coe_toNNReal C hC0]
+    have hmass' : ((P n).mass : ℝ≥0∞) = (Fam.weightedPartition x y n) univ :=
+      FiniteMeasure.ennreal_mass
+    have : ((P n).mass : ℝ) = (Fam.weightedPartition x y n).real univ := by
+      rw [measureReal_def, ← hmass', ENNReal.coe_toReal]
+    rw [this]
+    exact hC n
+  have hcar : ∀ n, (P n) ((Icc (0 : ℝ) 1)ᶜ) ≤ (0 : ℝ≥0) :=
+    fun n => le_of_eq ((FiniteMeasure.null_iff_toMeasure_null _ _).mpr
+      (weightedPartition_compl_Icc Fam x y n))
+  -- Prokhorov, with a *constant* compact: the monotonicity side condition is free.
+  have hcpt := isCompact_setOf_finiteMeasure_mass_le_compl_isCompact_le (E := ℝ)
+    (u := fun _ => 0) (K := fun _ : ℕ => Icc (0 : ℝ) 1) C.toNNReal
+    tendsto_const_nhds (fun _ => isCompact_Icc) (Or.inr monotone_const)
+  obtain ⟨a, haS, hcl⟩ := hcpt.exists_mapClusterPt (f := atTop) (u := P)
+    (Filter.tendsto_principal.mpr (Filter.Eventually.of_forall
+      fun n => ⟨hmass n, fun _ => hcar n⟩))
+  have hacar : (a : Measure ℝ) ((Icc (0 : ℝ) 1)ᶜ) = 0 :=
+    (FiniteMeasure.null_iff_toMeasure_null _ _).mp (nonpos_iff_eq_zero.mp (haS.2 0))
+  refine ⟨(a : Measure ℝ), inferInstance, hacar, fun s hs => ?_⟩
+  -- The observable: pairing against the bounded test function, continuous in the measure.
+  have hobs : Tendsto (fun n => ∫ v, levyRatioBdd hs v ∂(P n : Measure ℝ)) atTop
+      (𝓝 (Fam.exponent x y s)) := by
+    have hPcoe : ∀ n, ((P n : FiniteMeasure ℝ) : Measure ℝ) = Fam.weightedPartition x y n :=
+      fun _ => rfl
+    have hEq : ∀ n, ∫ v, levyRatioBdd hs v ∂(P n : Measure ℝ)
+        = ∫ t, (1 - Real.exp (-(s * t))) ∂(Fam.partitionMeasure x y n) := fun n => by
+      rw [hPcoe n, integral_levyRatioBdd_of_carried (weightedPartition_compl_Icc Fam x y n) hs]
+      exact integral_weightedPartition Fam x y n hs
+    simpa only [hEq] using tendsto_integral_partitionMeasure (Fam := Fam) hx hxy hs.le
+  have := eq_of_mapClusterPt hcl
+    (FiniteMeasure.continuous_integral_boundedContinuousFunction (levyRatioBdd hs)) hobs
+  rwa [integral_levyRatioBdd_of_carried hacar hs] at this
 
 end CascadeCore
 

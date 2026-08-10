@@ -81,7 +81,7 @@ line it can be made elementary, and the proof below is the whole of it.
 % draft: Theorem 5.2
 \begin{theorem}[increments are Bernstein]\label{thm:increments-bernstein}
 \uses{def:cascade-family,lem:additivity,lem:transform-continuity,prop:bernstein-toolbox,def:bernstein-function,def:levy-exponent}
-\lean{Skeleton.exponent_hasLevyRep}\notready
+\lean{Hemigroup.CascadeCore.exponent_hasLevyRep}\leanok
 Under (A1)--(A7), $g_{x,y} \in \BFz$ for every $x \le y$. Equivalently, and this is the form the
 proof produces: $g_{x,y} \in \LE$, i.e.\ there are a drift $b_0(x,y) \ge 0$ and a Lévy measure
 $\nu_{x,y}$ on $(0,\infty)$ with
@@ -92,9 +92,9 @@ $\nu_{x,y}$ on $(0,\infty)$ with
 \ref{prop:bernstein-toolbox}(3) --- \ledger{A3} --- and the second is stated because it is the
 only one a Lean tag can point at: the development defines admissibility by the representation
 and has no $\CM$, hence no $\BFz$. Stating both here crosses \ledger{A3} once, in the
-statement, rather than inside every proof that consumes this theorem. \textbf{Half formalised.}}
+statement, rather than inside every proof that consumes this theorem.}
 
-\emph{\textbf{Done.} The null-array estimate, as
+\emph{The null-array estimate is
 \texttt{CascadeCore.tendsto\_integral\_partition\-Measure}: with $\Pi_n$ the sum of the
 partition increments (\texttt{partitionMeasure}, a finite measure at every $n$),
 $\int (1 - e^{-st})\,d\Pi_n \to g_{x,y}(s)$ for every $s \ge 0$. Its three ingredients are
@@ -104,7 +104,7 @@ $0 \le u - (1 - e^{-u}) \le u^2$ rather than the $u^2/2$ written here: the sharp
 needs a derivative argument, $u^2$ follows from $e^u \ge 1 + u$ alone, and the factor multiplies
 a quantity that is going to zero.}
 
-\emph{\textbf{In progress.} The apparatus for extracting the limiting triple. The masses
+\emph{The extraction of the limiting triple runs as follows. The masses
 $\Pi_n(\RR) = n$ diverge --- mass piles up at the origin, and that pile \emph{is} the drift ---
 so the measures are weighted by $1 - e^{-t}$, which vanishes there at exactly the right rate.
 Under the change of variable $v = 1 - e^{-t}$ (\texttt{expTrans}), which carries $[0,\infty]$
@@ -126,18 +126,26 @@ $k_s$ against $\rho_n$ is pairing $1 - e^{-st}$ against $\Pi_n$, and the total m
 is the $s = 1$ approximant --- the latter for free, since $k_1 \equiv 1$, so the mass bound is
 the convergence already proved rather than a separate estimate.}
 
-\emph{\textbf{Open.} Assembling those: extract the weak limit, split it at the two endpoints, and read
-off $(b_0, \nu)$. That limit, not the null-array estimate, is where
-\ref{prop:bernstein-toolbox}(4) is spent --- and it is a proof, not an interface, which is the
-reason \ledger{A4} could in principle be retired.}
+\emph{Those two facts are exactly what Mathlib's Prokhorov theorem asks of a family of finite
+measures, with a \emph{constant} compact carrier, which also discharges its monotonicity side
+condition. What it returns is a cluster point rather than a limit, because Mathlib carries no
+metrizability instance for finite measures on $\RR$ and so no subsequence can be extracted; that
+costs nothing here, since every quantity this proof reads off the limit is a continuous real
+function of the measure that already converges along the full sequence, and a convergent
+sequence has one cluster value. The limit $\rho$ is then split at the three pieces of $[0,1]$:
+the atom at $0$ gives $b_0 = \rho(\{0\})$, because $k_s(0) = s$; the interior transports back
+through $v \mapsto -\log(1-v)$ with density $1/v$ to give $\nu$; and the atom at $1$, the
+killing term, vanishes. That last step is the only genuinely analytic one, and it is short:
+$k_s \le 1$ on $[0,1]$ for $s \le 1$ and $k_s \to \mathbf{1}_{\{1\}}$ pointwise as $s \downarrow
+0$, so dominated convergence against the \emph{finite} $\rho$ reads
+$\rho(\{1\}) = \lim_{s \downarrow 0} g_{x,y}(s) = 0$ by \ref{lem:transform-continuity}.}
 
-\emph{The Lean tag names \texttt{Skeleton.exponent\_hasLevyRep}, the target type, stated and
-\texttt{sorry}-marked in a library outside the one CI's sorry guard scans. So this node is
-marked not-ready rather than left untagged, and the graph distinguishes ``the statement is
-settled, the proof is pending'' from ``nobody has decided what to state''. Here that is the
-distinction worth showing: settling the statement --- the move from $\BFz$, which the
-development cannot express, to $\LE$, which it can --- was the hard part of this node, and it
-is done.)}
+\emph{One divergence from the proof below is worth recording, because it bears on the ledger.
+The text argues that $g_{x,y}$ is a pointwise limit of Bernstein functions and closes with
+\ref{prop:bernstein-toolbox}(4) --- \ledger{A4}. The Lean proof does not: it produces the
+representation directly from the weak limit, and so spends no interface at all. Its
+\texttt{\#print axioms} output is Lean core. \ledger{A4} is therefore not on this node's
+critical path, and is used only where the blueprint's own argument needs it.)}
 \end{theorem}
 
 \begin{proof}
@@ -174,6 +182,7 @@ The case $x = y$ is $g_{x,x} = 0 \in \BFz$.
 % draft: Corollary 5.3
 \begin{corollary}[strict monotonicity]\label{cor:strict-monotonicity}
 \uses{def:cascade-family,thm:increments-bernstein,lem:vanishing,lem:additivity,def:levy-exponent}
+\lean{Hemigroup.CascadeCore.strict_monotonicity}\leanok
 Assume in addition (ND). Then for every $s > 0$ and $x < y$,
 \[
   G(y, s) - G(x, s) = g_{x,y}(s) > 0,
@@ -181,12 +190,14 @@ Assume in addition (ND). Then for every $s > 0$ and $x < y$,
 i.e.\ $G(\cdot, s)$ is strictly increasing for every $s > 0$.
 \statusT\quad\emph{(no vocabulary question in the conclusion, which is a pointwise inequality,
 and none in the proof either: it runs \ref{lem:vanishing}, whose Lean form
-\texttt{levyExponent\_eq\_zero\_of\_eq\_zero} is stated on $\LE$ already. So once
-\ref{thm:increments-bernstein} is available in representation form this corollary follows in
-Lean with no further bridge --- which is worth knowing, because it is what
-\ref{lem:action-rigidity} and \ref{prop:main-uniqueness} both turn on. The Lean development
-already has the special case it needs for the constructed family,
-\texttt{exponent\_strictMono}.)}
+\texttt{levyExponent\_eq\_zero\_of\_eq\_zero} is stated on $\LE$ already, so with
+\ref{thm:increments-bernstein} in representation form this followed with no further bridge and
+in one step --- which was the reason for concluding that theorem in $\LE$ rather than in $\BFz$.
+What (ND) contributes is \texttt{exists\_exponent\_ne\_zero}, ``not identically zero'', proved
+in \ref{lem:additivity}'s file; the vanishing lemma upgrades it to ``nowhere zero on
+$(0,\infty)$''. The Lean development also records the $G$ form,
+\texttt{G\_strictMonoOn}, which is what \ref{lem:action-rigidity} and
+\ref{prop:main-uniqueness} will use.)}
 \end{corollary}
 
 \begin{proof}
