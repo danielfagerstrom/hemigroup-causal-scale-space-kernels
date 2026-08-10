@@ -33,6 +33,14 @@ blueprint.
 
 ## Status
 
-Scaffolded only — see `README.md` for what is written and what is next. The working text is
-`draft/hemigroup-causal-scale-space-kernels.md` (15 sections, Theorems 3′/4′/5′); the
-blueprint is written *from* it.
+Blueprint written through §12; Lean through §4 plus the constructive half and the uniqueness
+clause of the main theorem. See `README.md` for the node-level state and what is next. The
+working text is `draft/hemigroup-causal-scale-space-kernels.md` (15 sections, Theorems 3′/4′/5′);
+the blueprint is written *from* it.
+
+**Two vocabularies, one class.** The paper argues in `BF₀` (derivative signs, Def. 2.2); the Lean
+development argues in `LE` (the Lévy representation, Def. 2.7) and never defines complete
+monotonicity at all — see `blueprint/DESIGN-formalization-strategy.md`. Prop. 2.3(3), ledger A3,
+is the bridge. **A node whose conclusion is stated only in `BF₀` cannot carry a `\lean` tag**, so
+when transcribing or revising a statement that concludes in `BF₀`, give the `\LE` reading
+alongside it. Do that before the Lean is written, not after.

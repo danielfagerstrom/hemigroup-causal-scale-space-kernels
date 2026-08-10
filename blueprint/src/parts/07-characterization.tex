@@ -20,6 +20,22 @@
 %         of the ladder and the first artifact worth publishing, because it certifies "these
 %         kernels exist and satisfy the axioms" without depending on the analysis direction.
 %
+% THE SPLIT (2026-08-10). thm:main-characterization is an IFF, and its three separable halves
+% were finishing at very different times: (<=) and the uniqueness clause are fully formalised,
+% (=>) is untouched. One node cannot show that -- an iff goes green only when all of it does --
+% so ~1800 lines of finished, axiom-guarded Lean were invisible to the dependency graph, which
+% is the graph telling the reader something false.
+%
+% So the three halves are now nodes of their own: thm:main-construction (<=),
+% thm:main-analysis (=>), prop:main-uniqueness. 7.3 keeps its statement verbatim and its proof
+% becomes the collation, which is what that proof always was.
+%
+% They are APPENDED (7.6-7.8) rather than inserted, by the same rule chapter 2 uses for its
+% additive nodes: inserting them would push cor:semigroup-case and rem:drift-boundary off the
+% draft's 7.4 and 7.5, and content.tex's numbering alignment is worth more than reading order
+% in a document whose real structure is the \uses graph. 7.3 therefore refers forward, which is
+% normal in a blueprint and is how the graph reads it anyway.
+%
 % M1b (2026-08-09) formalised the half of Lemma 7.1 that (<=) consumes -- (3) => (1), as
 % Hemigroup.levyExponentD_increment -- together with the vanishing lemma in the same
 % representation form (Hemigroup.levyExponentD_eq_zero_of_eq_zero), which is what (<=) uses to
@@ -110,7 +126,7 @@ $T_{\sigma \tilde x} \stackrel{d}{=} \sigma\, T_{\tilde x}$.
 
 % draft: Theorem 7.3
 \begin{theorem}[Main theorem]\label{thm:main-characterization}
-\uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity,lem:additivity,thm:increments-bernstein,cor:strict-monotonicity,lem:covariance-laplace,lem:action-rigidity,prop:canonical-gauge,lem:selfdecomposable-exponents,prop:bernstein-toolbox,prop:laplace-continuity,lem:vanishing}
+\uses{def:cascade-family,thm:main-construction,thm:main-analysis,prop:main-uniqueness}
 A family $(\Phi_{x,y})_{0 \le x \le y}$ satisfies (A1)--(A8) and (ND) \textbf{iff} there exist
 an increasing bijection $\chi$ of $[0,\infty)$ --- the gauge --- and a function $F$ of the
 form (7.1) with $F \not\equiv 0$ such that
@@ -126,97 +142,18 @@ In particular, in the canonical gauge the scale-space kernels are
 and the pair $(\chi, F)$ is unique up to the normalization $\chi(1) = 1$.
 \statusT\quad\emph{(the variant of \sscite{fagerstrom2005temporal}, Thm.~2, for the hemigroup
 axioms. Proved here, not cited: the 2005 theorem is the semigroup statement, recovered below
-as \ref{cor:semigroup-case}. \textbf{Formalisation state.} The construction of
-$(\Leftarrow)$ is under way in \texttt{Hemigroup/Construction.lean}: the kernels exist with the
-stated transform (\texttt{exists\_kernel}), over the index range $0 \le a \le b$ of
-\ref{def:cascade-family} --- the lower endpoint is not a separate construction, because with
-the normalisation $k(0) = 0$ the increment density $k(u/b) - k(u/a)$ at $a = 0$ is $k(u/b)$ and
-the drift is $b_0 b$, which is exactly the dilated representation of $F(b\,\cdot)$
-(\texttt{increment\_zero\_left}). So $G(x,s) = g_{0,x}(s)$, the object the similarity analysis
-of Chapters 5--6 is built on, is available. (A6), (A8) and (ND) hold --- now \emph{for the
-measures}: $\mu_{a,b} * \mu_{b,c} = \mu_{a,c}$ and $\mu_{\sigma a,\sigma b} = \dil_\sigma
-\mu_{a,b}$, with (ND) from \ref{lem:vanishing}. The passage from exponents to measures is pure
-transport, since the transform carries convolution to multiplication and dilation to
-reparametrisation and is injective on causal measures --- and that injectivity is
-\ref{prop:laplace-uniqueness}, \emph{proved} here rather than cited, so it costs nothing. The
-single crossing of the trust boundary is the existence step, which is A17 rather than the
-Bernstein--Widder route this proof takes, because the Lean development has the Lévy triple in
-hand and needs a construction rather than a representation theorem. \textbf{(A7) also holds}
-(\texttt{tendsto\_integral\_kernel}): if $(a_n,b_n) \to (a,b)$ in a bounded range then
-$\mu_{a_n,b_n} \to \mu_{a,b}$ weakly. It was the step expected to cost a second interface,
-because on paper it runs through \ref{prop:laplace-continuity}; it does not, because that
-continuity theorem is itself proved for the case used here, and the tightness it needs was
-always ours. \textbf{(A1)--(A5) hold} too (\texttt{Hemigroup/Operator.lean}), the two analytic
-ones from a single Tonelli identity
-$\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$ used twice over: once to estimate,
-giving (A1) and that $\Phi$ maps $\Lone$ to $\Lone$; once to establish integrability on the
-product, which licenses the Bochner swap and gives (A5). \textbf{So every axiom of
-\ref{def:cascade-family} is now discharged for the constructed family} --- and, since
-2026-08-09, at the level the definition states them: \ref{def:cascade-family} is a Lean
-structure over $X = \Lone(\RR)$ and the kernels are exhibited as an instance of it
-(\texttt{cascadeFamily}). The check was worth making. It caught two things reading the
-structure would not have: that the family is indexed from $x = 0$ while the construction began
-at $x > 0$ --- repaired at the source by the normalisation $k(0) = 0$, not by narrowing the
-specification --- and that each axiom must carry its index restriction $0 \le x \le y$
-explicitly, without which (A5) would be \emph{false} for the constructed family, $\mu_{x,y}$
-being the zero measure off the range. (A7) was the only clause needing more than transport: the
-weak convergence of \texttt{tendsto\_integral\_kernel} is not continuity into $\Lone$, and the
-bridge is the $\varepsilon/3$ argument of the proof below, with the compact supplied by
-tightness, the left tail by causality, and the extension from $C_c$ to $\Lone$ by density
-against the contraction bound. \textbf{The uniqueness
-clause holds} (\texttt{gauge\_and\_exponent\_unique}): if a gauge $\chi$ normalised by
-$\chi(1) = 1$ and an exponent $F'$ reproduce the family of a nondegenerate $F$, then $\chi$ is
-the identity and $F'$ has the same exponent as $F$. Its analytic content is that $F$ is strictly
-increasing when $F \not\equiv 0$ (\texttt{exponent\_strictMono}), which is what makes the $c$
-with $g_{0,x} = F(c\,\cdot)$ unique; that proof runs \ref{lem:vanishing} on the \emph{increment}
---- if $g_{1,c}$ vanished anywhere it would vanish identically, giving $F(cs) = F(s)$, and
-iterating that \emph{downwards} sends $s_0/c^n \to 0$, where continuity at the origin forces
-$F \equiv 0$. The gauge enters as \emph{hypotheses} on a bare function --- nondecreasing,
-positive, and $\chi(\zp) = 0$ --- rather than as modelled structure, because the clause only
-quantifies over gauges; it is $(\Rightarrow)$, which \emph{produces} $\chi$ from the scaling
-action, that will need $\chi$ bundled with an inverse and a conjugated action, and that interface
-is better designed against its consumer than guessed at now. The one new step is pinning the
-constant: the hypothesis gives only \emph{differences} of exponents, and the lower index is
-pushed to the origin, where $F(\zp) = 0$ --- the same fact tightness ran on. The node is still
-not marked as proved in Lean, because $(\Rightarrow)$ is untouched.)}
+as \ref{cor:semigroup-case}. \textbf{Formalisation state.} This node is a collation, and its
+three halves are \ref{thm:main-construction}, \ref{thm:main-analysis} and
+\ref{prop:main-uniqueness}, where the formalisation state of each is recorded. Two of the three
+are machine-checked; the node itself is not marked as proved in Lean, and cannot be until
+$(\Rightarrow)$ is, because an equivalence is not established by two of its three parts. That
+is the whole reason the halves are stated separately --- see the note at the head of this
+file.)}
 \end{theorem}
 
 \begin{proof}
-\emph{($\Rightarrow$).} \ref{lem:convolution-representation}, \ref{lem:transform-continuity},
-\ref{lem:additivity}, \ref{thm:increments-bernstein}, \ref{cor:strict-monotonicity},
-\ref{lem:covariance-laplace}, \ref{lem:action-rigidity} and \ref{prop:canonical-gauge}
-together give the representation with $F = G(1,\cdot) \in \BFz$ and $F \not\equiv 0$. Every
-increment $F(\chi(y)s) - F(\chi(x)s)$ lies in $\BFz$ by \ref{thm:increments-bernstein}, and
-$\chi$ is onto $(0,\infty)$ by \ref{prop:canonical-gauge}, so condition~(1) of
-\ref{lem:selfdecomposable-exponents} holds for every pair $0 < a \le b$; that lemma then
-yields (7.1).
-
-\emph{($\Leftarrow$).} Let $F$ be of the form (7.1) with $F \not\equiv 0$, and work in the
-canonical gauge. For $0 \le a \le b$ put $g_{a,b}(s) := F(bs) - F(as)$, which lies in $\BFz$
-by \ref{lem:selfdecomposable-exponents}. Then $e^{-g_{a,b}}$ is completely monotone with value
-$1$ at $\zp$ by \ref{prop:bernstein-toolbox}(2), so by the Bernstein--Widder criterion
-\ref{prop:bernstein-toolbox}(1) it is the Laplace transform of a unique probability measure
-$\mu_{a,b}$ on $[0,\infty)$. Define $\Phi_{a,b} f := \mu_{a,b} * f$. Then:
-\begin{itemize}
-\item (A1)--(A5) hold by the converse direction of \ref{lem:convolution-representation}.
-\item (A6) holds because exponents add, $g_{a,b} + g_{b,c} = g_{a,c}$, and Laplace transforms
-determine measures (\ref{prop:laplace-uniqueness}).
-\item (A8) holds with $\Sact_\sigma x = \sigma x$, by \ref{lem:covariance-laplace}, since
-$\hat\mu_{\sigma a, \sigma b}(s) = \hat\mu_{a,b}(\sigma s)$.
-\item (ND) holds because $F$ is strictly increasing, by \ref{lem:vanishing} applied to $F$.
-\end{itemize}
-
-For (A7): if $(a_n, b_n) \to (a,b)$ then $\hat\mu_{a_n,b_n} \to \hat\mu_{a,b}$ pointwise, by
-continuity of $F$, hence $\mu_{a_n,b_n} \to \mu_{a,b}$ weakly by the continuity theorem for
-Laplace transforms (\ref{prop:laplace-continuity}). Weak convergence of probability measures
-implies $\mu_{a_n,b_n} * f \to \mu_{a,b} * f$ in $L^1$ for every $f \in X$: writing
-$\mu * f = \int \shift_r f\, \mu(dr)$ as an $X$-valued Bochner integral, the map
-$r \mapsto \shift_r f$ is bounded and continuous, weak convergence supplies tightness, and a
-standard $\varepsilon/3$ argument on a compact carrying mass $1 - \varepsilon$ concludes.
-
-\emph{Uniqueness of $(\chi, F)$ with $\chi(1) = 1$.} $F$ is recovered as $g_{0,1}$, and
-$\chi(x)$ as the unique $c$ with $g_{0,x} = F(c\,\cdot)$, which exists and is unique by strict
-monotonicity of $F$.
+$(\Rightarrow)$ is \ref{thm:main-analysis}, $(\Leftarrow)$ is \ref{thm:main-construction}, and
+the uniqueness clause is \ref{prop:main-uniqueness}.
 \end{proof}
 
 % draft: Corollary 7.4
@@ -259,3 +196,163 @@ If that is undesired it is removed by one additional axiom: absolute continuity 
 for $x > 0$, or the requirement $\lim_{s\to\infty} F(s)/s = 0$, which says there is no
 deterministic front.
 \end{remark}
+
+\bigskip
+
+The three statements below are the halves of \ref{thm:main-characterization}, stated separately
+because they are proved separately and, in Lean, finished at very different times. They are
+additive --- not in the draft, which states the theorem whole --- and are appended so that
+\ref{cor:semigroup-case} and \ref{rem:drift-boundary} keep the draft's numbers.
+
+% additive: not in the draft. The (<=) half of Theorem 7.3.
+\begin{theorem}[the construction: every admissible $F$ gives a family]\label{thm:main-construction}
+\uses{def:cascade-family,def:levy-exponent,lem:selfdecomposable-exponents,lem:vanishing,prop:bernstein-toolbox,prop:laplace-uniqueness-causal,prop:laplace-continuity-causal,lem:transform-tightness,lem:convolution-representation}
+\lean{Hemigroup.SelfDecomposableExponent.cascadeFamily}\leanok
+Let $F$ be of the form (7.1) with $F \not\equiv 0$. For $0 \le a \le b$ let $\mu_{a,b}$ be the
+probability measure on $[0,\infty)$ with
+\[
+  \hat\mu_{a,b}(s) = \exp\bigl[-g_{a,b}(s)\bigr], \qquad g_{a,b}(s) := F(bs) - F(as),
+\]
+and set $\Phi_{a,b} f := \mu_{a,b} * f$. Then $(\Phi_{a,b})_{0 \le a \le b}$ is a causal cascade
+measurement family in the sense of \ref{def:cascade-family}, with scaling action
+$\Sact_\sigma x = \sigma x$.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.cascadeFamily} --- and at the level the theorem
+states it: not ``the kernels satisfy properties we named (A1)--(A8)'' but ``the kernels
+\emph{are} a causal cascade measurement family'', the Lean structure of
+\ref{def:cascade-family} instantiated. \texttt{\#print axioms} reduces to Lean core plus
+\ledger{A17}, which is the single crossing of the trust boundary and enters at one point only:
+the existence of $\mu_{a,b}$ given its triple. That is A17 rather than the Bernstein--Widder
+route the proof below takes, because the development has the Lévy triple in hand and so needs a
+\emph{construction}, not a representation theorem --- see
+\texttt{Formalization/Hemigroup/Interfaces.lean} for why the interface is phrased so that the
+day the compound-Poisson construction is carried out it becomes a lemma and the trust boundary
+returns to empty, without touching a downstream statement.
+\textbf{What the proof cost, against what was expected.} The passage from exponents to measures
+is pure transport, the transform carrying convolution to multiplication and dilation to
+reparametrisation, and being injective on causal measures --- and that injectivity is
+\ref{prop:laplace-uniqueness-causal}, proved here, so it costs nothing. The lower endpoint
+$a = 0$ is not a separate construction: with the normalisation $k(0) = 0$ the increment density
+$k(u/b) - k(u/a)$ at $a = 0$ is $k(u/b)$ and the drift is $b_0 b$, which is exactly the dilated
+representation of $F(b\,\cdot)$ (\texttt{increment\_zero\_left}). So $G(x,s) = g_{0,x}(s)$, the
+object the similarity analysis of chapters 5--6 is built on, is available.
+(A1)--(A5) come from two applications of one Tonelli identity,
+$\int \bigl(\int g(t-r)\,\mu(dr)\bigr)dt = \|\mu\| \int g$ --- once to estimate, giving (A1);
+once to license the Bochner swap, giving (A5). (A7) was expected to cost a second interface and
+did not: \ref{prop:laplace-continuity-causal} is proved rather than cited, and the tightness it
+needs was always ours (\ref{lem:transform-tightness}). The bridge from weak convergence to
+convergence in $\Lone$ is the $\varepsilon/3$ argument below, with the compact supplied by
+tightness, the left tail by causality, and the extension from $C_c$ to $\Lone$ by density
+against the contraction bound.
+\textbf{Two defects the instantiation caught}, neither visible from reading
+\ref{def:cascade-family}: that the family is indexed from $x = 0$ while the construction began
+at $x > 0$ --- repaired at the source by the normalisation above, not by narrowing the
+specification --- and that each axiom must carry its index restriction $0 \le x \le y$
+explicitly, without which (A5) would be \emph{false} for the constructed family, $\mu_{x,y}$
+being the zero measure off the range. This is the one place in the development where an error is
+silent, a mis-stated axiom making the theorem vacuous rather than unprovable, and an instance is
+the only thing that catches it.)}
+\end{theorem}
+
+\begin{proof}
+Work in the canonical gauge. For $0 \le a \le b$ the function $g_{a,b} = F(b\,\cdot) - F(a\,\cdot)$
+lies in $\BFz$ by \ref{lem:selfdecomposable-exponents}, so $e^{-g_{a,b}}$ is completely monotone
+with value $1$ at $\zp$ by \ref{prop:bernstein-toolbox}(2), and by the Bernstein--Widder
+criterion \ref{prop:bernstein-toolbox}(1) it is the Laplace transform of a unique probability
+measure $\mu_{a,b}$ on $[0,\infty)$. Then:
+\begin{itemize}
+\item (A1)--(A5) hold by the converse direction of \ref{lem:convolution-representation}.
+\item (A6) holds because exponents add, $g_{a,b} + g_{b,c} = g_{a,c}$, and Laplace transforms
+determine measures (\ref{prop:laplace-uniqueness-causal}).
+\item (A8) holds with $\Sact_\sigma x = \sigma x$, since
+$\hat\mu_{\sigma a, \sigma b}(s) = \hat\mu_{a,b}(\sigma s)$.
+\item (ND) holds because $F$ is strictly increasing, by \ref{lem:vanishing} applied to $F$.
+\end{itemize}
+
+For (A7): if $(a_n, b_n) \to (a,b)$ then $\hat\mu_{a_n,b_n} \to \hat\mu_{a,b}$ pointwise, by
+continuity of $F$. The family is tight by \ref{lem:transform-tightness}, uniformly over
+$b_n \le B$, because $F(\zp) = 0$ makes the bound's numerator $F(Bs)$ as small as wanted; so
+$\mu_{a_n,b_n} \to \mu_{a,b}$ weakly by \ref{prop:laplace-continuity-causal}. Weak convergence
+of probability measures implies $\mu_{a_n,b_n} * f \to \mu_{a,b} * f$ in $\Lone$ for every
+$f \in X$: writing $\mu * f = \int \shift_r f\, \mu(dr)$ as an $X$-valued Bochner integral, the
+map $r \mapsto \shift_r f$ is bounded and continuous, and an $\varepsilon/3$ argument on a
+compact carrying mass $1 - \varepsilon$ concludes, first for compactly supported continuous $f$
+and then for all of $X$ by density, the error not growing because each $\Phi_{a,b}$ is a
+contraction.
+\end{proof}
+
+% additive: not in the draft. The (=>) half of Theorem 7.3.
+\begin{theorem}[the analysis: every family comes from an admissible $F$]\label{thm:main-analysis}
+\uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity,lem:additivity,thm:increments-bernstein,cor:strict-monotonicity,lem:covariance-laplace,lem:action-rigidity,prop:canonical-gauge,lem:selfdecomposable-exponents}
+Let $(\Phi_{x,y})_{0 \le x \le y}$ satisfy (A1)--(A8) and (ND). Then there are an increasing
+bijection $\chi$ of $[0,\infty)$ and an $F$ of the form (7.1) with $F \not\equiv 0$ such that
+$\Phi_{x,y} f = \mu_{x,y} * f$ with
+$\hat\mu_{x,y}(s) = \exp\bigl[-\bigl(F(\chi(y)s) - F(\chi(x)s)\bigr)\bigr]$.
+\statusT\quad\emph{(a collation: it cites eight earlier nodes and adds one step. No new
+analysis happens here --- all of it happened in chapters 5 and 6 --- which is why this is M6 of
+the ladder, last, and why the whole cost of formalising it is the cost of formalising those two
+chapters. \textbf{Not formalised.} Nothing in Lean approaches it yet, and it is the only reason
+\ref{thm:main-characterization} is not marked as proved. Two things to settle before starting,
+both structural rather than technical: the conclusions of chapters 5--6 must be read in $\LE$
+rather than $\BFz$ (\ref{def:levy-exponent}), since the development has no derivative-sign
+vocabulary to state them in; and $\chi$, which this direction \emph{produces} out of the scaling
+action rather than quantifies over, needs to be bundled with an inverse and a conjugated action
+--- an interface better designed against this consumer than guessed at in advance, which is why
+\ref{prop:main-uniqueness} deliberately does not guess at it.)}
+\end{theorem}
+
+\begin{proof}
+\ref{lem:convolution-representation}, \ref{lem:transform-continuity}, \ref{lem:additivity},
+\ref{thm:increments-bernstein}, \ref{cor:strict-monotonicity}, \ref{lem:covariance-laplace},
+\ref{lem:action-rigidity} and \ref{prop:canonical-gauge} together give the representation with
+$F = G(1,\cdot) \in \BFz$ and $F \not\equiv 0$. Every increment
+$F(\chi(y)s) - F(\chi(x)s)$ lies in $\BFz$ by \ref{thm:increments-bernstein}, and $\chi$ is
+onto $(0,\infty)$ by \ref{prop:canonical-gauge}, so condition~(1) of
+\ref{lem:selfdecomposable-exponents} holds for every pair $0 < a \le b$; that lemma then yields
+(7.1).
+\end{proof}
+
+% additive: not in the draft. The uniqueness clause of Theorem 7.3.
+\begin{proposition}[uniqueness of the gauge and the exponent]\label{prop:main-uniqueness}
+\uses{thm:main-construction,prop:laplace-uniqueness-causal,lem:vanishing,cor:strict-monotonicity}
+\lean{Hemigroup.SelfDecomposableExponent.gauge_and_exponent_unique}\leanok
+Let $F$ be of the form (7.1) with $F \not\equiv 0$, and let $F'$ be of the same form. Suppose
+$\chi : [0,\infty) \to [0,\infty)$ is nondecreasing and positive on $(0,\infty)$ with
+$\chi(\zp) = 0$ and $\chi(1) = 1$, and that $\mu'_{\chi(x),\chi(y)} = \mu_{x,y}$ for all
+$0 < x \le y$. Then $\chi = \Id$ and $F' = F$.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.gauge\_and\_exponent\_unique};
+\texttt{\#print axioms} is held against \texttt{blueprint/trust-boundary.txt} by CI, with
+\ledger{A17} reaching the statement through the construction of the kernels it quantifies over
+and nothing else. The argument itself adds no analysis to
+\ref{thm:main-construction}.
+\textbf{Why $\chi$ is a bare function here.} \ref{prop:canonical-gauge} produces $\chi$ as an
+increasing bijection with an inverse conjugating the scaling action into multiplication, and
+none of that is needed: this clause only ever \emph{quantifies over} gauges, so $\chi$ enters
+carrying exactly the three properties the argument consumes. That is a strictly stronger
+statement than the bijection form, and it leaves the interface for
+\ref{thm:main-analysis} --- which must \emph{build} $\chi$ --- to be designed by its consumer.
+\textbf{The analytic content} is that $F$ is strictly increasing when $F \not\equiv 0$
+(\texttt{exponent\_strictMono}), which is what makes the $c$ with $g_{0,x} = F(c\,\cdot)$
+unique. That proof runs \ref{lem:vanishing} on the \emph{increment}: if $g_{1,c}$ vanished
+anywhere it would vanish identically, giving $F(cs) = F(s)$, and iterating \emph{downwards}
+sends $s_0/c^n \to 0$, where continuity at the origin forces $F \equiv 0$. The one new step is
+pinning the constant, the hypothesis giving only \emph{differences} of exponents; it is run as
+an $\varepsilon$ argument rather than a limit, since \texttt{exists\_exponent\_lt} is already
+non-sequential.)}
+\end{proposition}
+
+\begin{proof}
+Equal kernels have equal exponents, the transform being injective
+(\ref{prop:laplace-uniqueness-causal}) and $\exp$ injective, so the hypothesis reads
+\[
+  F'(\chi(y)s) - F'(\chi(x)s) = F(ys) - F(xs), \qquad 0 < x \le y,\ s \ge 0 .
+\]
+Let $x \downarrow 0$. Both subtrahends vanish, because $F(\zp) = F'(\zp) = 0$ and
+$\chi(\zp) = 0$, leaving $F'(\chi(y)s) = F(ys)$. At $y = 1$, with $\chi(1) = 1$, this is
+$F' = F$.
+
+Feeding that back gives $F(\chi(y)s) = F(ys)$ for all $y > 0$, $s \ge 0$. At $s = 1$, strict
+monotonicity of $F$ --- which holds because $F \not\equiv 0$, by \ref{lem:vanishing} applied to
+the increments as in \ref{cor:strict-monotonicity} --- forces $\chi(y) = y$.
+\end{proof}

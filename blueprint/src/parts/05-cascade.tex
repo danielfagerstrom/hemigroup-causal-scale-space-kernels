@@ -12,6 +12,20 @@
 % It needs the inequality 0 <= u - (1 - e^{-u}) <= u^2/2, uniform continuity on a compact, and
 % closure of the cone. It does not need a general triangular-array limit theorem, and it does
 % not need Bernstein--Widder. That is what makes M4 of the Lean ladder tractable.
+%
+% VOCABULARY (2026-08-10). Elementary is not the same as tagged. thm:increments-bernstein
+% concludes "g_{x,y} in BF_0", and the Lean development has no BF_0: it never defines
+% def:completely-monotone, by design (DESIGN-formalization-strategy.md). So the conclusion as
+% written cannot carry a \lean tag no matter how the proof goes -- there is nothing on the Lean
+% side for the tag to point at.
+%
+% The fix is in the STATEMENT, and it is cheap: each conclusion is also stated in LE
+% (def:levy-exponent), the same class named by its representation. Prop. 2.3(3) is the
+% identification, and it is crossed once, in the statement, instead of inside the proof. What
+% then has to be formalised is the representation-form claim -- there is a triple -- which is
+% what the null-array argument actually produces anyway: Pi_n is a finite Levy measure and the
+% limit's triple is the vague limit of those. Doing this BEFORE writing the Lean is the point;
+% doing it after means proving the theorem and then discovering it cannot be tagged.
 
 % draft: Lemma 5.1
 \begin{lemma}[additivity]\label{lem:additivity}
@@ -54,9 +68,28 @@ line it can be made elementary, and the proof below is the whole of it.
 
 % draft: Theorem 5.2
 \begin{theorem}[increments are Bernstein]\label{thm:increments-bernstein}
-\uses{def:cascade-family,lem:additivity,lem:transform-continuity,prop:bernstein-toolbox,def:bernstein-function}
-Under (A1)--(A7), $g_{x,y} \in \BFz$ for every $x \le y$.
-\statusT
+\uses{def:cascade-family,lem:additivity,lem:transform-continuity,prop:bernstein-toolbox,def:bernstein-function,def:levy-exponent}
+Under (A1)--(A7), $g_{x,y} \in \BFz$ for every $x \le y$. Equivalently, and this is the form the
+proof produces: $g_{x,y} \in \LE$, i.e.\ there are a drift $b_0(x,y) \ge 0$ and a Lévy measure
+$\nu_{x,y}$ on $(0,\infty)$ with
+\[
+  g_{x,y}(s) = b_0(x,y)\,s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu_{x,y}(dt).
+\]
+\statusT\quad\emph{(the two readings are the same statement, by
+\ref{prop:bernstein-toolbox}(3) --- \ledger{A3} --- and the second is stated because it is the
+only one a Lean tag can point at: the development defines admissibility by the representation
+and has no $\CM$, hence no $\BFz$. Stating both here crosses \ledger{A3} once, in the
+statement, rather than inside every proof that consumes this theorem. \textbf{Not formalised.}
+This node and \ref{prop:canonical-gauge} are the two the analysis direction turns on, and both
+are open; see the note at the head of this file for why the vocabulary had to be settled first.
+The representation form is also the honest one about where the difficulty sits: the null-array
+argument already hands over $\Pi_n$, a \emph{finite} Lévy measure with no drift, at every $n$,
+so what remains is to extract the limiting triple from
+$\bigl(\Pi_n\bigr)$ --- and that limit, not the null-array estimate, is where
+\ref{prop:bernstein-toolbox}(4) is spent. On the Lean side it would be a vague-compactness
+argument on the compactified half-line, mass escaping at $0$ becoming the drift and mass at
+$\infty$ excluded by $g_{x,y}(\zp) = 0$; that is a proof, not an interface, and is the reason
+\ledger{A4} could in principle be retired.)}
 \end{theorem}
 
 \begin{proof}
@@ -92,13 +125,20 @@ The case $x = y$ is $g_{x,x} = 0 \in \BFz$.
 
 % draft: Corollary 5.3
 \begin{corollary}[strict monotonicity]\label{cor:strict-monotonicity}
-\uses{def:cascade-family,thm:increments-bernstein,lem:vanishing,lem:additivity}
+\uses{def:cascade-family,thm:increments-bernstein,lem:vanishing,lem:additivity,def:levy-exponent}
 Assume in addition (ND). Then for every $s > 0$ and $x < y$,
 \[
   G(y, s) - G(x, s) = g_{x,y}(s) > 0,
 \]
 i.e.\ $G(\cdot, s)$ is strictly increasing for every $s > 0$.
-\statusT
+\statusT\quad\emph{(no vocabulary question in the conclusion, which is a pointwise inequality,
+and none in the proof either: it runs \ref{lem:vanishing}, whose Lean form
+\texttt{levyExponent\_eq\_zero\_of\_eq\_zero} is stated on $\LE$ already. So once
+\ref{thm:increments-bernstein} is available in representation form this corollary follows in
+Lean with no further bridge --- which is worth knowing, because it is what
+\ref{lem:action-rigidity} and \ref{prop:main-uniqueness} both turn on. The Lean development
+already has the special case it needs for the constructed family,
+\texttt{exponent\_strictMono}.)}
 \end{corollary}
 
 \begin{proof}

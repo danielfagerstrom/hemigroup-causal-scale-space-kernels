@@ -129,6 +129,14 @@ articles that have not yet pinned a ledger.
 - **Why uniqueness is load-bearing.** Lemma 7.1's equivalence (2) ⟺ (3) identifies the Lévy
   density of `B(s) = sF'(s)` with `k`; without uniqueness of the triple the identification is
   not available and the self-decomposability characterization does not close.
+- **It is also the bridge between the project's two vocabularies** (recorded 2026-08-10). The
+  paper argues in `BF₀`, defined by derivative signs; the Lean development argues in `LE`, the
+  representation, and never defines complete monotonicity at all
+  (`blueprint/DESIGN-formalization-strategy.md`). This part is what says the two classes are the
+  same, and `def:levy-exponent` is the node that names the second one. Every Lean tag in
+  chapters 5–7 crosses this edge exactly once, in a *statement* rather than inside a proof —
+  which is the whole reason the `LE` readings of `thm:increments-bernstein` and
+  `prop:canonical-gauge` are written out alongside the `BF₀` ones.
 - **Confidence.** ✅ well grounded.
 
 ## A4 — Bernstein functions form a convex cone closed under pointwise limits and mixtures
@@ -148,7 +156,7 @@ articles that have not yet pinned a ledger.
 - **Confidence.** ✅ well grounded.
 
 ## A5 — Continuity theorem for Laplace transforms on the half-line
-**Blueprint:** `prop:laplace-continuity` · **Lean:** *(not stated yet)*
+**Blueprint:** `prop:laplace-continuity` · **Lean:** `Hemigroup.tendsto_integral_of_tendsto_laplace` — a **theorem**, not an axiom; see below
 **Cite:** @feller2009introduction — Vol. 2, §XIII.1, Theorem 2, p. 431 (probability distributions); Theorem 2a, p. 433 (arbitrary measures)
 
 - **Statement as used.** Weak convergence of measures on `[0,∞)` is equivalent to pointwise
@@ -173,7 +181,9 @@ articles that have not yet pinned a ledger.
   `thm:main-characterization` (⇐) uses. The general **measure** form of Theorem 2a, with the
   boundedness hypothesis flagged above, is *not* formalised and would not be safe to assume from
   memory; the probability form carries that hypothesis for free, which is exactly why the Lean
-  statement is restricted to it.
+  statement is restricted to it. Since 2026-08-10 that restricted form is a blueprint node of its
+  own, `prop:laplace-continuity-causal`, `[T]` and Lean-tagged, sitting beneath this `[A]` one;
+  the tightness half is `lem:transform-tightness`. The `[A]` node keeps the paper's statement.
 - **Supporting pieces, all Lean core.** Tightness is ours as the **Assignment** clause always
   claimed, and now checked: `measureReal_Ioi_mul_le` (the Markov bound
   `μ(t>T)(1 - e^{-sT}) ≤ 1 - μ̂(s)`), `kernel_tail_le` (uniform over the family), and
@@ -215,7 +225,9 @@ articles that have not yet pinned a ledger.
   The gap is genuine: the Lean proof substitutes `x = e^{-t}` and reads `μ̂(n)` as the `n`th moment
   of the transported measure, and moments from some `n_0` onwards do not pin down an atom at the
   origin — our measures have none, being carried by `(0,1]`, but that step is only available
-  once `n = 0` is in hand. Anyone needing the tail form in Lean must supply it.
+  once `n = 0` is in hand. Anyone needing the tail form in Lean must supply it. Since 2026-08-10
+  the full-half-line form is a blueprint node of its own, `prop:laplace-uniqueness-causal`, `[T]`
+  and Lean-tagged, sitting beneath this `[A]` one; it is what the formalised arguments cite.
 - **Confidence.** ✅ well grounded as a citation, and superseded in Lean for the case the
   development uses.
 
