@@ -20,6 +20,7 @@ scales.
 
 % draft: Definition 3.1
 \begin{definition}[causal cascade measurement family]\label{def:cascade-family}
+\lean{Hemigroup.CascadeFamily}\leanok
 A family of linear operators
 \[
   \Phi_{x,y} : X \to X, \qquad 0 \le x \le y < \infty,
@@ -45,7 +46,13 @@ increasing bijections of $[0,\infty)$ such that
 \]
 \item \textbf{(ND) Nondegeneracy.} $\Phi_{x,y} \ne \Id$ whenever $x < y$.
 \end{itemize}
-\statusT
+\statusT\quad\emph{(Stated in Lean as the structure \texttt{Hemigroup.CascadeFamily}, one field
+per clause, with (A1) carried by the type of bounded linear operators on $X$ and (A8)'s
+$\Sact$ bundled as data. This is the one file in the development where an error would be
+silent --- a mis-stated axiom makes the theorems vacuous rather than unprovable --- so the
+specification is checked against a model: \texttt{Hemigroup.cascadeFamily} exhibits the kernels
+of \ref{thm:main-characterization} as an instance. Doing so caught two defects in an earlier
+statement of this definition; see the note there.)}
 \end{definition}
 
 % draft: Remark 3.2

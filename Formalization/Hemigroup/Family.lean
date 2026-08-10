@@ -211,4 +211,18 @@ theorem integral_mconvL1 [IsProbabilityMeasure μ] (f : X) :
     integral_mconv μ (Lp.aestronglyMeasurable f) (L1.integrable_coeFn f),
     measure_univ, ENNReal.toReal_one, one_mul]
 
+/-- **`lem:convolution-representation`, the converse clause.** A causal probability measure
+defines an operator satisfying (A1)–(A5).
+
+(A1) is the type — `mconvL1 μ` *is* a bounded linear operator, with norm at most `1` by
+`norm_mconvL1_le`. The remaining four are the transport results above, collected here so the
+blueprint node has one Lean name to point at rather than four. -/
+theorem mconvL1_satisfies_axioms (μ : Measure ℝ) [IsProbabilityMeasure μ] (hμ : IsCausal μ) :
+    (∀ (a : ℝ) (f : X), mconvL1 μ (transL1 a f) = transL1 a (mconvL1 μ f)) ∧
+      (∀ (t₀ : ℝ) (f : X), VanishesBefore t₀ f → VanishesBefore t₀ (mconvL1 μ f)) ∧
+      (∀ f : X, IsNonneg f → IsNonneg (mconvL1 μ f)) ∧
+      (∀ f : X, IsNonneg f → ∫ t, ((mconvL1 μ f : X) : ℝ → ℝ) t = ∫ t, (f : ℝ → ℝ) t) :=
+  ⟨fun a f => mconvL1_transL1 a f, fun t₀ f hf => vanishesBefore_mconvL1 hμ t₀ f hf,
+    fun f hf => isNonneg_mconvL1 f hf, fun f _ => integral_mconvL1 f⟩
+
 end Hemigroup

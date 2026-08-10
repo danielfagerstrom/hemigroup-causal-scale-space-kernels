@@ -15,7 +15,7 @@ jobs:
       lean_dir: Formalization
       build_args: Hemigroup
       sorry_guard_dir: Formalization/Hemigroup
-      axiom_guard_file: ""      # nothing proved yet, so no trust base to guard
+      axiom_guard_file: CIAxiomGuard.lean
     secrets:
       # needs Contents:read on article-kit AND scale-space-lean (a private Lake dependency)
       ARTICLE_KIT_TOKEN: ${{ secrets.ARTICLE_KIT_TOKEN }}

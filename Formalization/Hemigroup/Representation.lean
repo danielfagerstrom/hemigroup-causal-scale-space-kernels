@@ -260,6 +260,108 @@ theorem bconv_comm {f : ℝ → ℝ} (hf : Integrable f) (g : X) :
     rw [sub_sub_cancel, mul_comm]
   rw [hswap, hkey]
 
+/-! ## `μ * f` as a Bochner integral
+
+`bconv` writes convolution by a density as `∫ f(r) · τ_r g dr`. The same formula with the
+density replaced by a measure is `μ * f = ∫ τ_r f dμ(r)`, and *that* is the form a bounded
+functional can be moved inside of. Identifying it with `mconvL1` is the argument of
+`coeFn_bconv` again, with `volume` replaced by `μ` in the second factor.
+-/
+
+/-- `r ↦ τ_r f` is `μ`-integrable for every finite `μ`: continuous, hence strongly measurable,
+and bounded by `‖f‖`. -/
+theorem integrable_transL1 (μ : Measure ℝ) [IsFiniteMeasure μ] (f : X) :
+    Integrable (fun r => transL1 r f) μ :=
+  Integrable.mono' (integrable_const ‖f‖) (continuous_transL1 f).aestronglyMeasurable
+    (Filter.Eventually.of_forall fun r => norm_transL1_le r f)
+
+/-- `μ * f = ∫ τ_r f dμ(r)`, as an `X`-valued Bochner integral. -/
+noncomputable def bconvM (μ : Measure ℝ) (f : X) : X := ∫ r, transL1 r f ∂μ
+
+/-- **The Bochner form of `mconvL1`.** Both sides have the same integral over every set of
+finite measure — on the left because `setIntegralCLM` passes through the Bochner integral, on
+the right by Fubini on `volume ⊗ μ`. -/
+theorem bconvM_eq_mconvL1 (μ : Measure ℝ) [IsFiniteMeasure μ] (f : X) :
+    bconvM μ f = mconvL1 μ f := by
+  refine Lp.ext ?_
+  refine Filter.EventuallyEq.trans ?_ (coeFn_mconvL1 μ f).symm
+  refine ae_eq_of_forall_setIntegral_eq_of_sigmaFinite
+    (fun A _ _ => (L1.integrable_coeFn (bconvM μ f)).integrableOn)
+    (fun A _ _ => (integrable_mconv μ (Lp.aestronglyMeasurable f)
+      (L1.integrable_coeFn f)).integrableOn) fun A hA _ => ?_
+  -- Left: pass the bounded functional through the Bochner integral.
+  have hleft : ∫ t in A, (bconvM μ f : ℝ → ℝ) t
+      = ∫ r, (∫ t in A, (f : ℝ → ℝ) (t - r)) ∂μ := by
+    rw [← setIntegralCLM_apply A (bconvM μ f), bconvM,
+      ← ContinuousLinearMap.integral_comp_comm _ (integrable_transL1 μ f)]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun r => ?_)
+    change ∫ t in A, ((transL1 r f : X) : ℝ → ℝ) t = ∫ t in A, (f : ℝ → ℝ) (t - r)
+    exact integral_congr_ae ((coeFn_transL1 r f).restrict)
+  -- Right: Fubini.
+  have hprodint : Integrable
+      (Function.uncurry fun t r : ℝ => A.indicator (fun t' => (f : ℝ → ℝ) (t' - r)) t)
+      (volume.prod μ) := by
+    have hset : (Function.uncurry fun t r : ℝ =>
+          A.indicator (fun t' => (f : ℝ → ℝ) (t' - r)) t)
+        = (A ×ˢ (univ : Set ℝ)).indicator
+          (Function.uncurry fun t r : ℝ => (f : ℝ → ℝ) (t - r)) := by
+      funext p
+      change A.indicator (fun t' => (f : ℝ → ℝ) (t' - p.2)) p.1
+        = (A ×ˢ (univ : Set ℝ)).indicator
+          (fun q : ℝ × ℝ => (f : ℝ → ℝ) (q.1 - q.2)) p
+      by_cases hp : p.1 ∈ A
+      · rw [Set.indicator_of_mem hp, Set.indicator_of_mem (by simp [hp])]
+      · rw [Set.indicator_of_notMem hp, Set.indicator_of_notMem (by simp [hp])]
+    rw [hset]
+    exact (integrable_uncurry_sub μ (Lp.aestronglyMeasurable f)
+      (L1.integrable_coeFn f)).indicator (hA.prod MeasurableSet.univ)
+  have hright : ∫ t in A, mconv μ (f : ℝ → ℝ) t
+      = ∫ r, (∫ t in A, (f : ℝ → ℝ) (t - r)) ∂μ := by
+    rw [← integral_indicator hA]
+    have hswap : ∫ t, A.indicator (mconv μ (f : ℝ → ℝ)) t
+        = ∫ t, ∫ r, A.indicator (fun t' => (f : ℝ → ℝ) (t' - r)) t ∂μ := by
+      refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
+      by_cases ht : t ∈ A
+      · simp only [Set.indicator_of_mem ht, mconv_apply]
+      · simp only [Set.indicator_of_notMem ht, integral_zero]
+    rw [hswap, integral_integral_swap hprodint]
+    refine integral_congr_ae (Filter.Eventually.of_forall fun r => ?_)
+    change ∫ t, A.indicator (fun t' => (f : ℝ → ℝ) (t' - r)) t
+      = ∫ t in A, (f : ℝ → ℝ) (t - r)
+    rw [integral_indicator hA]
+  rw [hleft, hright]
+
+/-! ## Pairing with a bounded functional
+
+For `Ψ : X →L[ℝ] ℝ` the map `r ↦ Ψ (τ_r f)` is continuous — translation acts continuously on
+`L¹` — and bounded by `‖Ψ‖ ‖f‖`. It is therefore a legitimate test function for weak
+convergence, and that single observation is the whole bridge from `ν_ε → μ` to `f * h_ε → μ * f`.
+-/
+
+/-- `r ↦ Ψ (τ_r f)`, as a bounded continuous function. -/
+noncomputable def pairTrans (Ψ : X →L[ℝ] ℝ) (f : X) : BoundedContinuousFunction ℝ ℝ :=
+  BoundedContinuousFunction.ofNormedAddCommGroup (fun r => Ψ (transL1 r f))
+    (Ψ.continuous.comp (continuous_transL1 f)) (‖Ψ‖ * ‖f‖) fun r =>
+    (Ψ.le_opNorm _).trans (mul_le_mul_of_nonneg_left (norm_transL1_le r f) (norm_nonneg _))
+
+@[simp] lemma pairTrans_apply (Ψ : X →L[ℝ] ℝ) (f : X) (r : ℝ) :
+    pairTrans Ψ f r = Ψ (transL1 r f) := rfl
+
+/-- **`Ψ (μ * f) = ∫ Ψ (τ_r f) dμ(r)`.** -/
+theorem apply_mconvL1 (Ψ : X →L[ℝ] ℝ) (μ : Measure ℝ) [IsFiniteMeasure μ] (f : X) :
+    Ψ (mconvL1 μ f) = ∫ r, pairTrans Ψ f r ∂μ := by
+  rw [← bconvM_eq_mconvL1, bconvM,
+    ← ContinuousLinearMap.integral_comp_comm _ (integrable_transL1 μ f)]
+  rfl
+
+/-- **`Ψ (g * f) = ∫ g(r) Ψ (τ_r f) dr`**, the density counterpart. -/
+theorem apply_bconv (Ψ : X →L[ℝ] ℝ) {g : ℝ → ℝ} (hg : Integrable g) (f : X) :
+    Ψ (bconv g f) = ∫ r, g r * pairTrans Ψ f r := by
+  rw [bconv, ← ContinuousLinearMap.integral_comp_comm _ (integrable_smul_transL1 hg f)]
+  refine integral_congr_ae (Filter.Eventually.of_forall fun r => ?_)
+  change Ψ (g r • transL1 r f) = g r * Ψ (transL1 r f)
+  rw [ContinuousLinearMap.map_smul, smul_eq_mul]
+
 /-! ## The approximate identity -/
 
 /-- `ρ_ε = ε^{-1} 1_{(0,ε)}`: a probability density carried by `[0,ε]`. Total in `ε` — for
@@ -711,6 +813,136 @@ theorem exists_weak_limit (hx : 0 ≤ x) (hxy : x ≤ y) :
     simp only [hzero]
     exact Filter.liminf_const 0
   · exact (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp hQ) φ
+
+/-! ## The identification
+
+`exists_weak_limit` produces a measure; this section shows it is *the* measure, i.e. that
+`Φ_{x,y} f = μ_{x,y} * f`. The proof pairs both sides against an arbitrary bounded functional
+`Ψ` and reads the three ingredients off:
+
+* `Ψ (f * h_ε) = ∫ Ψ (τ_r f) dν_ε(r)` — `apply_bconv`, after `bconv_comm` puts `h_ε` in the
+  density slot;
+* `∫ Ψ (τ_r f) dν_ε → ∫ Ψ (τ_r f) dμ` — weak convergence, legitimate because `pairTrans` is
+  bounded continuous;
+* `∫ Ψ (τ_r f) dμ = Ψ (μ * f)` — `apply_mconvL1`.
+
+Since `f * h_ε → Φ f` in `X` and `Ψ` is continuous, the two limits agree, and taking
+`Ψ = setIntegralCLM A` for every `A` separates points of `X`.
+
+Note what is *not* needed: the blueprint restricts to `f ∈ C_c` and extends by density, because
+its pointwise argument needs `f(t - ·) ∈ C_0`. Nothing here is pointwise — the Bochner
+formulation applies verbatim to every `f ∈ X`, since `Integrable.toL1_coeFn` says every element
+of `X` already *is* `hf.toL1 f`. The density step disappears.
+-/
+
+/-- Integration against `ν_ε` is integration against the density `h_ε`. -/
+theorem integral_approxMeasure (hx : 0 ≤ x) (hxy : x ≤ y) (ε : ℝ)
+    (G : BoundedContinuousFunction ℝ ℝ) :
+    ∫ r, G r ∂(Fam.approxMeasure x y ε)
+      = ∫ r, ((Fam.approx x y ε : X) : ℝ → ℝ) r * G r := by
+  rw [approxMeasure, integral_withDensity_eq_integral_toReal_smul₀
+    ((Lp.aestronglyMeasurable (Fam.approx x y ε)).aemeasurable.ennreal_ofReal)
+    (Filter.Eventually.of_forall fun _ => ENNReal.ofReal_lt_top)]
+  refine integral_congr_ae ?_
+  filter_upwards [isNonneg_approx (Fam := Fam) hx hxy ε] with r hr
+  rw [smul_eq_mul, ENNReal.toReal_ofReal hr]
+
+/-- **The pairing identity in the limit.** For every bounded functional, `Ψ (Φ f)` is the
+integral of the bounded continuous function `r ↦ Ψ (τ_r f)` against the weak limit. -/
+theorem apply_eq_integral_pairTrans (hx : 0 ≤ x) (hxy : x ≤ y) {μ : Measure ℝ}
+    {σ : ℕ → ℕ} (hσ : StrictMono σ)
+    (hweak : ∀ φ : BoundedContinuousFunction ℝ ℝ,
+      Tendsto (fun k => ∫ t, φ t ∂(Fam.approxMeasure x y (epsSeq (σ k)))) atTop
+        (nhds (∫ t, φ t ∂μ)))
+    (Ψ : X →L[ℝ] ℝ) (f : X) :
+    Ψ (Fam.Φ x y f) = ∫ r, pairTrans Ψ f r ∂μ := by
+  have hfL : (L1.integrable_coeFn f).toL1 (f : ℝ → ℝ) = f :=
+    Integrable.toL1_coeFn f (L1.integrable_coeFn f)
+  -- `f * h_{ε_k} → Φ f`, hence `Ψ (f * h_{ε_k}) → Ψ (Φ f)`.
+  have h1 : Tendsto (fun k => Ψ (bconv (f : ℝ → ℝ) (Fam.approx x y (epsSeq (σ k))))) atTop
+      (nhds (Ψ (Fam.Φ x y f))) := by
+    have hlim := (tendsto_bconv_approx hx hxy (Fam := Fam) (L1.integrable_coeFn f)).comp
+      (tendsto_epsSeq.comp hσ.tendsto_atTop)
+    rw [hfL] at hlim
+    exact (Ψ.continuous.tendsto _).comp hlim
+  -- The same quantity, as an integral against `ν_{ε_k}`.
+  have h2 : ∀ k : ℕ, Ψ (bconv (f : ℝ → ℝ) (Fam.approx x y (epsSeq (σ k))))
+      = ∫ r, pairTrans Ψ f r ∂(Fam.approxMeasure x y (epsSeq (σ k))) := by
+    intro k
+    rw [bconv_comm (L1.integrable_coeFn f) (Fam.approx x y (epsSeq (σ k))), hfL,
+      apply_bconv Ψ (L1.integrable_coeFn _) f, integral_approxMeasure hx hxy]
+  refine tendsto_nhds_unique h1 ?_
+  simpa only [h2] using hweak (pairTrans Ψ f)
+
+/-- **`lem:convolution-representation`, existence.** Every cascade family is convolution by a
+causal probability measure. -/
+theorem exists_isProbabilityMeasure_eq_mconvL1 (hx : 0 ≤ x) (hxy : x ≤ y) :
+    ∃ (μ : Measure ℝ) (_ : IsProbabilityMeasure μ), IsCausal μ ∧ Fam.Φ x y = mconvL1 μ := by
+  obtain ⟨μ, hprob, hcausal, σ, hσ, hweak⟩ := exists_weak_limit (Fam := Fam) hx hxy
+  refine ⟨μ, hprob, hcausal, ContinuousLinearMap.ext fun f => Lp.ext ?_⟩
+  refine ae_eq_of_forall_setIntegral_eq_of_sigmaFinite
+    (fun A _ _ => (L1.integrable_coeFn (Fam.Φ x y f)).integrableOn)
+    (fun A _ _ => (L1.integrable_coeFn (mconvL1 μ f)).integrableOn) fun A _ _ => ?_
+  rw [← setIntegralCLM_apply A (Fam.Φ x y f), ← setIntegralCLM_apply A (mconvL1 μ f),
+    apply_eq_integral_pairTrans hx hxy hσ hweak, apply_mconvL1]
+
+/-! ## `μ_{x,y}`, the representing measure
+
+Existence and uniqueness are in hand; naming the measure is a further, and separate, act of
+choice. It is taken once here so that every later chapter can write `μ_{x,y}` instead of
+re-extracting it from an existential.
+
+Off the index set `0 ≤ x ≤ y` the definition falls back to `δ₀`, which is itself a causal
+probability measure. That is what lets the two structural facts below be stated with no
+hypotheses at all — only the identification `Φ_{x,y} = μ_{x,y} * ·` needs the restriction.
+-/
+
+open Classical in
+/-- **`μ_{x,y}`**: the causal probability measure representing `Φ_{x,y}`. -/
+noncomputable def repr (Fam : CascadeFamily) (x y : ℝ) : Measure ℝ :=
+  if h : 0 ≤ x ∧ x ≤ y then
+    (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) h.1 h.2).choose
+  else Measure.dirac 0
+
+theorem repr_eq_choose (hx : 0 ≤ x) (hxy : x ≤ y) :
+    Fam.repr x y = (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) hx hxy).choose := by
+  unfold repr
+  exact dif_pos ⟨hx, hxy⟩
+
+instance instIsProbabilityMeasureRepr (Fam : CascadeFamily) (x y : ℝ) :
+    IsProbabilityMeasure (Fam.repr x y) := by
+  unfold repr
+  split_ifs with h
+  · exact (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) h.1 h.2).choose_spec.choose
+  · infer_instance
+
+theorem isCausal_repr (Fam : CascadeFamily) (x y : ℝ) : IsCausal (Fam.repr x y) := by
+  unfold repr
+  split_ifs with h
+  · exact
+      (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) h.1 h.2).choose_spec.choose_spec.1
+  · exact isCausal_dirac le_rfl
+
+/-- **`Φ_{x,y} f = μ_{x,y} * f`.** -/
+theorem Phi_eq_mconvL1_repr (hx : 0 ≤ x) (hxy : x ≤ y) :
+    Fam.Φ x y = mconvL1 (Fam.repr x y) := by
+  haveI := (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) hx hxy).choose_spec.choose
+  have hspec :=
+    (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) hx hxy).choose_spec.choose_spec.2
+  rw [mconvL1_congr (repr_eq_choose (Fam := Fam) hx hxy)]
+  exact hspec
+
+/-- **`lem:convolution-representation`.** For `0 ≤ x ≤ y` the operator `Φ_{x,y}` is convolution
+by a causal probability measure, and by exactly one. -/
+theorem existsUnique_repr (hx : 0 ≤ x) (hxy : x ≤ y) :
+    ∃ (μ : Measure ℝ) (_ : IsProbabilityMeasure μ), IsCausal μ ∧ Fam.Φ x y = mconvL1 μ ∧
+      ∀ (ρ : Measure ℝ) (_ : IsProbabilityMeasure ρ), IsCausal ρ →
+        Fam.Φ x y = mconvL1 ρ → ρ = μ :=
+  ⟨Fam.repr x y, instIsProbabilityMeasureRepr Fam x y, isCausal_repr Fam x y,
+    Phi_eq_mconvL1_repr hx hxy,
+    fun _ _ hρ hρeq =>
+      mconvL1_injective hρ (isCausal_repr Fam x y)
+        (hρeq.symm.trans (Phi_eq_mconvL1_repr hx hxy))⟩
 
 end CascadeFamily
 

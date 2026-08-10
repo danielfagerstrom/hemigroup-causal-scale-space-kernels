@@ -106,37 +106,70 @@ theorem integral_clampExp_box_pos {s : ℝ} (hs : 0 ≤ s) : 0 < ∫ t, clampExp
   rw [integral_box, mul_one] at hstep
   exact lt_of_lt_of_le (Real.exp_pos _) hstep
 
+/-! ## The transform, read off the box
+
+The pairing of `g_s` against `μ * 1_{(0,1)}` collapses to `Λ_s · μ̂(s)`. That one identity does
+two jobs: fed `μ * box = box` it gives (ND), and fed `μ * box = ρ * box` it says the transforms
+agree — so the box alone determines a causal measure, which is the uniqueness clause of
+`lem:convolution-representation`.
+-/
+
+/-- **The pairing factorises**: `⟨g_s, μ * box⟩ = ⟨g_s, box⟩ · μ̂(s)`. -/
+theorem integral_clampExp_mconv_box [IsFiniteMeasure μ] (hμ : IsCausal μ) {s : ℝ} (hs : 0 ≤ s) :
+    ∫ t, clampExp s t * mconv μ box t = (∫ t, clampExp s t * box t) * laplace μ s := by
+  refine (integral_mul_mconv μ measurable_box.aestronglyMeasurable integrable_box
+    (measurable_clampExp s) (abs_clampExp_le_one hs)).trans ?_
+  rw [laplace, ← integral_const_mul]
+  refine integral_congr_ae ?_
+  filter_upwards [hμ.ae_nonneg] with r hr
+  rw [integral_clampExp_box_translate hr]
+  ring
+
+/-- **The box determines a causal measure.** Two finite causal measures that convolve the box
+the same way have the same transform, and `laplace_injective` does the rest. -/
+theorem eq_of_mconv_box_ae {μ ρ : Measure ℝ} [IsFiniteMeasure μ] [IsFiniteMeasure ρ]
+    (hμ : IsCausal μ) (hρ : IsCausal ρ) (h : mconv μ box =ᵐ[volume] mconv ρ box) : μ = ρ := by
+  refine laplace_injective hμ hρ fun s hs => ?_
+  have hlhs : ∫ t, clampExp s t * mconv μ box t = ∫ t, clampExp s t * mconv ρ box t := by
+    refine integral_congr_ae ?_
+    filter_upwards [h] with t ht
+    rw [ht]
+  rw [integral_clampExp_mconv_box hμ hs, integral_clampExp_mconv_box hρ hs] at hlhs
+  exact mul_left_cancel₀ (integral_clampExp_box_pos hs).ne' hlhs
+
 /-! ## (ND) -/
 
 @[simp] lemma laplace_dirac_zero (s : ℝ) : laplace (Measure.dirac (0 : ℝ)) s = 1 := by
   rw [laplace, integral_dirac]
   simp
 
-/-- **Only `δ₀` convolves as the identity.**
-
-Every step is a consequence of the pairing identity; the only inequality used is that the
-pairing of the box with `g_s` is nonzero. -/
+/-- **Only `δ₀` convolves as the identity.** -/
 theorem eq_dirac_of_mconv_box [IsProbabilityMeasure μ] (hμ : IsCausal μ)
-    (h : mconv μ box =ᵐ[volume] box) : μ = Measure.dirac 0 := by
-  refine laplace_injective hμ (isCausal_dirac le_rfl) fun s hs => ?_
-  rw [laplace_dirac_zero]
-  have hpair := integral_mul_mconv μ measurable_box.aestronglyMeasurable integrable_box
-    (measurable_clampExp s) (abs_clampExp_le_one hs)
-  have hlhs : ∫ t, clampExp s t * mconv μ box t = ∫ t, clampExp s t * box t := by
-    refine integral_congr_ae ?_
-    filter_upwards [h] with t ht
-    rw [ht]
-  have hinner : ∫ r, (∫ t, clampExp s t * box (t - r)) ∂μ
-      = (∫ t, clampExp s t * box t) * laplace μ s := by
-    rw [laplace, ← integral_const_mul]
-    refine integral_congr_ae ?_
-    filter_upwards [hμ.ae_nonneg] with r hr
-    rw [integral_clampExp_box_translate hr]
-    ring
-  rw [hlhs, hinner] at hpair
-  have hpos := integral_clampExp_box_pos hs
-  have h1 : (∫ t, clampExp s t * box t) * 1 = (∫ t, clampExp s t * box t) * laplace μ s := by
-    rw [mul_one]; exact hpair
-  exact (mul_left_cancel₀ hpos.ne' h1).symm
+    (h : mconv μ box =ᵐ[volume] box) : μ = Measure.dirac 0 :=
+  eq_of_mconv_box_ae hμ (isCausal_dirac le_rfl) (by rwa [mconv_dirac_zero])
+
+/-! ## The operator determines the measure
+
+The same statement one level up, on `L¹`. Testing the operator on the single element
+`1_{(0,1)}` of `X` is enough; no density argument, no separating family.
+-/
+
+/-- The box as an element of `X`. -/
+noncomputable def boxL1 : X := integrable_box.toL1 box
+
+lemma coeFn_boxL1 : ((boxL1 : X) : ℝ → ℝ) =ᵐ[volume] box := Integrable.coeFn_toL1 _
+
+lemma coeFn_mconvL1_boxL1 (μ : Measure ℝ) [IsFiniteMeasure μ] :
+    ((mconvL1 μ boxL1 : X) : ℝ → ℝ) =ᵐ[volume] mconv μ box :=
+  (coeFn_mconvL1 μ boxL1).trans (mconv_congr_ae μ coeFn_boxL1)
+
+/-- **A causal measure is determined by its convolution operator** — the uniqueness clause of
+`lem:convolution-representation`. -/
+theorem mconvL1_injective {μ ρ : Measure ℝ} [IsFiniteMeasure μ] [IsFiniteMeasure ρ]
+    (hμ : IsCausal μ) (hρ : IsCausal ρ) (h : mconvL1 μ = mconvL1 ρ) : μ = ρ := by
+  refine eq_of_mconv_box_ae hμ hρ ?_
+  have hμb := (coeFn_mconvL1_boxL1 μ).symm
+  rw [h] at hμb
+  exact hμb.trans (coeFn_mconvL1_boxL1 ρ)
 
 end Hemigroup
