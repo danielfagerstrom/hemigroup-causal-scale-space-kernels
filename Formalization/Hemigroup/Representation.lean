@@ -437,6 +437,75 @@ lemma isCausal_approxMeasure (hx : 0 ≤ x) (hxy : x ≤ y) (ε : ℝ) :
   rw [lintegral_congr_ae hae]
   simp
 
+/-! ## Tightness
+
+The tail of `ν_ε` is dominated by the tail of `ρ₁ * h_ε`, because convolving with a density
+carried by `(0,1)` can only push mass to the right. And `ρ₁ * h_ε` converges in `L¹`, so its
+tails are small uniformly — which is tightness.
+
+No Fubini is needed: `setIntegralCLM` is a bounded functional, so it passes through the Bochner
+integral defining `bconv`, exactly as it did in `coeFn_bconv`.
+-/
+
+/-- Translating a restricted Bochner integral. -/
+theorem setIntegral_sub_right (φ : ℝ → ℝ) (T r : ℝ) :
+    ∫ t in Ioi T, φ (t - r) = ∫ u in Ioi (T - r), φ u := by
+  have hind : ∀ t : ℝ, (Ioi T).indicator (fun t => φ (t - r)) t
+      = ((Ioi (T - r)).indicator φ) (t - r) := by
+    intro t
+    by_cases ht : t ∈ Ioi T
+    · rw [Set.indicator_of_mem ht,
+        Set.indicator_of_mem (by simp only [mem_Ioi] at ht ⊢; linarith)]
+    · rw [Set.indicator_of_notMem ht,
+        Set.indicator_of_notMem (by simp only [mem_Ioi, not_lt] at ht ⊢; linarith)]
+  rw [← integral_indicator measurableSet_Ioi, ← integral_indicator measurableSet_Ioi]
+  simp only [hind]
+  exact integral_sub_right_eq_self _ r
+
+/-- **The tail of `ν_ε` is dominated by the tail of `ρ₁ * h_ε`.** -/
+theorem tail_le_tail_bconv (hx : 0 ≤ x) (hxy : x ≤ y) (ε T : ℝ) :
+    ∫ u in Ioi T, ((Fam.approx x y ε : X) : ℝ → ℝ) u
+      ≤ ∫ t in Ioi T, ((bconv (approxId 1) (Fam.approx x y ε) : X) : ℝ → ℝ) t := by
+  set h : X := Fam.approx x y ε with hh
+  have hnn : IsNonneg h := isNonneg_approx hx hxy ε
+  -- The value of the bounded functional on each integrand.
+  have hpt : ∀ r : ℝ, setIntegralCLM (Ioi T) (approxId 1 r • transL1 r h)
+      = approxId 1 r * ∫ u in Ioi (T - r), (h : ℝ → ℝ) u := by
+    intro r
+    rw [ContinuousLinearMap.map_smul, setIntegralCLM_apply, smul_eq_mul]
+    congr 1
+    rw [← setIntegral_sub_right (h : ℝ → ℝ) T r]
+    exact integral_congr_ae ((coeFn_transL1 r h).restrict)
+  -- Pass the bounded functional through the Bochner integral.
+  have hpass : ∫ t in Ioi T, ((bconv (approxId 1) h : X) : ℝ → ℝ) t
+      = ∫ r, approxId 1 r * ∫ u in Ioi (T - r), (h : ℝ → ℝ) u := by
+    rw [← setIntegralCLM_apply (Ioi T) (bconv (approxId 1) h), bconv,
+      ← ContinuousLinearMap.integral_comp_comm _
+        (integrable_smul_transL1 (integrable_approxId 1) h)]
+    exact integral_congr_ae (Filter.Eventually.of_forall hpt)
+  -- Integrability of the right-hand integrand, by composing with the same functional.
+  have hintg : Integrable (fun r => approxId 1 r * ∫ u in Ioi (T - r), (h : ℝ → ℝ) u) :=
+    (((setIntegralCLM (Ioi T)).integrable_comp
+      (integrable_smul_transL1 (integrable_approxId 1) h))).congr
+      (Filter.Eventually.of_forall hpt)
+  -- On the support of `ρ₁` the shifted tail is larger, `h` being nonnegative.
+  have hmono : ∀ r, approxId 1 r * (∫ u in Ioi T, (h : ℝ → ℝ) u)
+      ≤ approxId 1 r * ∫ u in Ioi (T - r), (h : ℝ → ℝ) u := by
+    intro r
+    by_cases hr : r ∈ Ioo (0 : ℝ) 1
+    · refine mul_le_mul_of_nonneg_left ?_ (approxId_nonneg 1 r)
+      refine setIntegral_mono_set (L1.integrable_coeFn h).integrableOn
+        (ae_restrict_of_ae hnn) (HasSubset.Subset.eventuallyLE fun u hu => ?_)
+      simp only [mem_Ioi] at hu ⊢
+      linarith [hr.1]
+    · rw [approxId_eq_zero hr, zero_mul, zero_mul]
+  rw [hpass]
+  calc ∫ u in Ioi T, (h : ℝ → ℝ) u
+      = ∫ r, approxId 1 r * ∫ u in Ioi T, (h : ℝ → ℝ) u := by
+        rw [integral_mul_const, integral_approxId one_pos, one_mul]
+    _ ≤ ∫ r, approxId 1 r * ∫ u in Ioi (T - r), (h : ℝ → ℝ) u :=
+        integral_mono ((integrable_approxId 1).mul_const _) hintg hmono
+
 end CascadeFamily
 
 end Hemigroup
