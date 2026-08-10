@@ -355,4 +355,88 @@ theorem tendsto_bconv_approxIdL1 {f : ℝ → ℝ} (hf : Integrable f) :
   simp only [hcongr]
   exact tendsto_bconv_approxId _
 
+/-! ## The approximants `h_ε = Φ ρ_ε`
+
+(A3), (A4) and (A5) say exactly that `h_ε` is a probability density carried by `[0,∞)` — which
+is what makes `ν_ε := h_ε · dt` a causal probability measure, the object Prokhorov will act on.
+-/
+
+lemma coeFn_approxIdL1 (ε : ℝ) : ((approxIdL1 ε : X) : ℝ → ℝ) =ᵐ[volume] approxId ε :=
+  Integrable.coeFn_toL1 _
+
+lemma isNonneg_approxIdL1 (ε : ℝ) : IsNonneg (approxIdL1 ε) := by
+  filter_upwards [coeFn_approxIdL1 ε] with t ht
+  simp only [Pi.zero_apply, ht]
+  exact approxId_nonneg ε t
+
+lemma vanishesBefore_approxIdL1 (ε : ℝ) : VanishesBefore 0 (approxIdL1 ε) := by
+  filter_upwards [coeFn_approxIdL1 ε] with t ht hlt
+  rw [ht]
+  exact approxId_eq_zero fun hmem => absurd hmem.1 (not_lt.mpr hlt.le)
+
+lemma integral_approxIdL1 {ε : ℝ} (hε : 0 < ε) :
+    ∫ t, ((approxIdL1 ε : X) : ℝ → ℝ) t = 1 := by
+  rw [integral_congr_ae (coeFn_approxIdL1 ε)]
+  exact integral_approxId hε
+
+namespace CascadeFamily
+
+/-- `h_ε = Φ_{x,y} ρ_ε`, the image of the approximate identity. -/
+noncomputable def approx (Fam : CascadeFamily) (x y ε : ℝ) : X := Fam.Φ x y (approxIdL1 ε)
+
+variable {Fam : CascadeFamily} {x y : ℝ}
+
+lemma isNonneg_approx (hx : 0 ≤ x) (hxy : x ≤ y) (ε : ℝ) : IsNonneg (Fam.approx x y ε) :=
+  Fam.positive x y hx hxy _ (isNonneg_approxIdL1 ε)
+
+lemma vanishesBefore_approx (hx : 0 ≤ x) (hxy : x ≤ y) (ε : ℝ) :
+    VanishesBefore 0 (Fam.approx x y ε) :=
+  Fam.causal x y hx hxy 0 _ (vanishesBefore_approxIdL1 ε)
+
+lemma integral_approx (hx : 0 ≤ x) (hxy : x ≤ y) {ε : ℝ} (hε : 0 < ε) :
+    ∫ t, ((Fam.approx x y ε : X) : ℝ → ℝ) t = 1 := by
+  rw [approx, Fam.unit_area x y hx hxy _ (isNonneg_approxIdL1 ε)]
+  exact integral_approxIdL1 hε
+
+/-- **`f * h_ε = Φ (f * ρ_ε)`**, the identity the whole argument turns on. `map_bconv` with
+(A2) supplying the commutation. -/
+theorem bconv_approx (hx : 0 ≤ x) (hxy : x ≤ y) {f : ℝ → ℝ} (hf : Integrable f) (ε : ℝ) :
+    bconv f (Fam.approx x y ε) = Fam.Φ x y (bconv f (approxIdL1 ε)) :=
+  (map_bconv (Fam.Φ x y) (fun a g => Fam.translation x y hx hxy a g) hf (approxIdL1 ε)).symm
+
+/-- **`f * h_ε → Φ f`.** The left side is `Φ (f * ρ_ε)` and `f * ρ_ε → f`, so this is
+continuity of a bounded operator. -/
+theorem tendsto_bconv_approx (hx : 0 ≤ x) (hxy : x ≤ y) {f : ℝ → ℝ} (hf : Integrable f) :
+    Tendsto (fun ε => bconv f (Fam.approx x y ε)) (nhdsWithin 0 (Ioi 0))
+      (nhds (Fam.Φ x y (hf.toL1 f))) := by
+  simp only [bconv_approx hx hxy hf]
+  exact ((Fam.Φ x y).continuous.tendsto _).comp (tendsto_bconv_approxIdL1 hf)
+
+/-! ## `ν_ε`, the approximants as measures -/
+
+/-- `ν_ε = h_ε · dt`. -/
+noncomputable def approxMeasure (Fam : CascadeFamily) (x y ε : ℝ) : Measure ℝ :=
+  volume.withDensity fun t => ENNReal.ofReal ((Fam.approx x y ε : X) t)
+
+lemma isProbabilityMeasure_approxMeasure (hx : 0 ≤ x) (hxy : x ≤ y) {ε : ℝ} (hε : 0 < ε) :
+    IsProbabilityMeasure (Fam.approxMeasure x y ε) := by
+  constructor
+  rw [approxMeasure, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ,
+    ← ofReal_integral_eq_lintegral_ofReal (L1.integrable_coeFn _) (isNonneg_approx hx hxy ε),
+    integral_approx hx hxy hε, ENNReal.ofReal_one]
+
+lemma isCausal_approxMeasure (hx : 0 ≤ x) (hxy : x ≤ y) (ε : ℝ) :
+    IsCausal (Fam.approxMeasure x y ε) := by
+  rw [IsCausal, approxMeasure, withDensity_apply _ measurableSet_Iio]
+  have hae : (fun t => ENNReal.ofReal ((Fam.approx x y ε : X) t))
+      =ᵐ[volume.restrict (Iio 0)] 0 := by
+    rw [Filter.EventuallyEq, ae_restrict_iff' measurableSet_Iio]
+    filter_upwards [vanishesBefore_approx (Fam := Fam) hx hxy ε] with t ht hmem
+    rw [ht hmem, ENNReal.ofReal_zero]
+    rfl
+  rw [lintegral_congr_ae hae]
+  simp
+
+end CascadeFamily
+
 end Hemigroup
