@@ -632,6 +632,86 @@ theorem exists_uniform_tail (hx : 0 ≤ x) (hxy : x ≤ y) {η : ℝ} (hη : 0 <
         (Ioi_subset_Ioi (le_trans (hM _ (Finset.mem_image_of_mem _ (Finset.mem_range.mpr hn)))
           (le_max_right _ _))))
 
+/-- The right tail of `ν_ε`, in terms of the density. -/
+lemma approxMeasure_Ioi (hx : 0 ≤ x) (hxy : x ≤ y) (ε T : ℝ) :
+    Fam.approxMeasure x y ε (Ioi T)
+      = ENNReal.ofReal (∫ u in Ioi T, ((Fam.approx x y ε : X) : ℝ → ℝ) u) := by
+  rw [approxMeasure, withDensity_apply _ measurableSet_Ioi,
+    ← ofReal_integral_eq_lintegral_ofReal (L1.integrable_coeFn _).integrableOn
+      (ae_restrict_of_ae (isNonneg_approx hx hxy ε))]
+
+/-- **The approximants are tight.** The compact is `[0,T]`: causality kills the left tail
+outright, so the whole content is `exists_uniform_tail`. -/
+theorem isTightMeasureSet_approxMeasure (hx : 0 ≤ x) (hxy : x ≤ y) :
+    IsTightMeasureSet {ν : Measure ℝ | ∃ n : ℕ, ν = Fam.approxMeasure x y (epsSeq n)} := by
+  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
+  intro η hη
+  rcases eq_or_ne η ⊤ with rfl | hηtop
+  · exact ⟨∅, isCompact_empty, fun ν _ => le_top⟩
+  have hη0 : 0 < η.toReal := ENNReal.toReal_pos hη.ne' hηtop
+  obtain ⟨T, hT⟩ := exists_uniform_tail hx hxy hη0
+  refine ⟨Icc 0 T, isCompact_Icc, ?_⟩
+  rintro ν ⟨n, rfl⟩
+  have hsub : (Icc (0 : ℝ) T)ᶜ ⊆ Iio 0 ∪ Ioi T := by
+    intro u hu
+    simp only [mem_compl_iff, mem_Icc, not_and_or, not_le] at hu
+    exact hu.imp id id
+  calc Fam.approxMeasure x y (epsSeq n) ((Icc (0 : ℝ) T)ᶜ)
+      ≤ Fam.approxMeasure x y (epsSeq n) (Iio 0 ∪ Ioi T) := measure_mono hsub
+    _ ≤ Fam.approxMeasure x y (epsSeq n) (Iio 0)
+        + Fam.approxMeasure x y (epsSeq n) (Ioi T) := measure_union_le _ _
+    _ = Fam.approxMeasure x y (epsSeq n) (Ioi T) := by
+        rw [isCausal_approxMeasure hx hxy (epsSeq n), zero_add]
+    _ ≤ η := by
+        rw [approxMeasure_Ioi hx hxy]
+        calc ENNReal.ofReal (∫ u in Ioi T, ((Fam.approx x y (epsSeq n) : X) : ℝ → ℝ) u)
+            ≤ ENNReal.ofReal η.toReal := ENNReal.ofReal_le_ofReal (hT n)
+          _ = η := ENNReal.ofReal_toReal hηtop
+
+/-! ## The limit measure
+
+Prokhorov turns tightness into a convergent subsequence. `ProbabilityMeasure ℝ` is metrizable
+because `ℝ` is Polish, so compactness of the closure gives sequential compactness.
+-/
+
+/-- **A weak limit exists.** Some subsequence of the approximants converges weakly to a causal
+probability measure. -/
+theorem exists_weak_limit (hx : 0 ≤ x) (hxy : x ≤ y) :
+    ∃ (μ : Measure ℝ) (_ : IsProbabilityMeasure μ), IsCausal μ ∧
+      ∃ σ : ℕ → ℕ, StrictMono σ ∧ ∀ φ : BoundedContinuousFunction ℝ ℝ,
+        Tendsto (fun k => ∫ t, φ t ∂(Fam.approxMeasure x y (epsSeq (σ k)))) atTop
+          (nhds (∫ t, φ t ∂μ)) := by
+  haveI hprob : ∀ n : ℕ, IsProbabilityMeasure (Fam.approxMeasure x y (epsSeq n)) := fun n =>
+    isProbabilityMeasure_approxMeasure hx hxy (epsSeq_pos n)
+  -- The approximants as `ProbabilityMeasure ℝ`.
+  set P : ℕ → ProbabilityMeasure ℝ := fun n => ⟨Fam.approxMeasure x y (epsSeq n), hprob n⟩ with hP
+  have hsetEq : {ν : Measure ℝ | ∃ Q ∈ Set.range P, (Q : Measure ℝ) = ν}
+      = {ν : Measure ℝ | ∃ n : ℕ, ν = Fam.approxMeasure x y (epsSeq n)} := by
+    ext ν
+    constructor
+    · rintro ⟨-, ⟨n, rfl⟩, rfl⟩
+      exact ⟨n, rfl⟩
+    · rintro ⟨n, rfl⟩
+      exact ⟨P n, ⟨n, rfl⟩, rfl⟩
+  have hset : IsTightMeasureSet {ν : Measure ℝ | ∃ Q ∈ Set.range P, (Q : Measure ℝ) = ν} := by
+    rw [hsetEq]
+    exact isTightMeasureSet_approxMeasure hx hxy
+  have hcompact : IsCompact (closure (Set.range P)) :=
+    isCompact_closure_of_isTightMeasureSet hset
+  obtain ⟨Q, -, σ, hσ, hQ⟩ :=
+    hcompact.tendsto_subseq (fun n => subset_closure (Set.mem_range_self n))
+  refine ⟨(Q : Measure ℝ), Q.2, ?_, σ, hσ, fun φ => ?_⟩
+  · -- Causality passes to the limit: `Iio 0` is open, so portmanteau bounds it.
+    rw [IsCausal, ← le_zero_iff]
+    have hport := ProbabilityMeasure.le_liminf_measure_open_of_tendsto hQ
+      (isOpen_Iio (a := (0 : ℝ)))
+    refine hport.trans (le_of_eq ?_)
+    have hzero : ∀ k : ℕ, ((P ∘ σ) k : Measure ℝ) (Iio 0) = 0 := fun k =>
+      isCausal_approxMeasure hx hxy _
+    simp only [hzero]
+    exact Filter.liminf_const 0
+  · exact (ProbabilityMeasure.tendsto_iff_forall_integral_tendsto.mp hQ) φ
+
 end CascadeFamily
 
 end Hemigroup
