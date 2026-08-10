@@ -30,11 +30,15 @@
 % thm:main-analysis (=>), prop:main-uniqueness. 7.3 keeps its statement verbatim and its proof
 % becomes the collation, which is what that proof always was.
 %
-% They are APPENDED (7.6-7.8) rather than inserted, by the same rule chapter 2 uses for its
+% They are APPENDED (7.8-7.10) rather than inserted, by the same rule chapter 2 uses for its
 % additive nodes: inserting them would push cor:semigroup-case and rem:drift-boundary off the
 % draft's 7.4 and 7.5, and content.tex's numbering alignment is worth more than reading order
 % in a document whose real structure is the \uses graph. 7.3 therefore refers forward, which is
 % normal in a blueprint and is how the graph reads it anyway.
+%
+% (They were 7.6-7.8 until the draft's Remark 7.6 was transcribed on 2026-08-10, taking 7.6 as
+% prop:extreme-rays with its discussion at 7.7 -- a number the draft does not use, its Section 7
+% ending at 7.6. Everything appended shifted by two; the numbers in this header follow.)
 %
 % THE SPLIT OF LEMMA 7.1 (2026-08-10), by the same rule and for a sharper reason. 7.1 is a
 % three-way equivalence whose implications cost wildly different things: (3) => (1) is a change
@@ -43,12 +47,12 @@
 % \leanok and reduces to Lean core plus A17 -- depended on a node resting on two ledger entries.
 % That was not a presentation defect, it was false.
 %
-% So 7.9 lem:selfdecomposable-increment (the cheap half, Lean-tagged) and 7.10
+% So 7.11 lem:selfdecomposable-increment (the cheap half, Lean-tagged) and 7.12
 % lem:selfdecomposable-derivative (the expensive half). 7.1 keeps its statement and becomes the
 % cycle (1) => (2) => (3) => (1). thm:main-construction now cites 7.9 and thm:main-analysis
 % cites 7.10, which is what the two directions actually consume.
 %
-% Note 7.10 CANNOT be given an LE reading: B(s) = sF'(s) has no meaning in the representation
+% Note 7.12 CANNOT be given an LE reading: B(s) = sF'(s) has no meaning in the representation
 % vocabulary until the representation is in hand. That asymmetry is real mathematics, and it is
 % the reason the split falls exactly where the trust boundary does.
 %
@@ -183,6 +187,112 @@ in (7.1), which shifts every kernel by $b_0 x$ --- is admissible.
 If that is undesired it is removed by one additional axiom: absolute continuity of the kernels
 for $x > 0$, or the requirement $\lim_{s\to\infty} F(s)/s = 0$, which says there is no
 deterministic front.
+\end{remark}
+
+% draft: Remark 7.6
+%
+% The organizing coordinate system of the companion note: its master chart states every
+% covariance stratum as a condition on k in these coordinates, and its q-stratum geometry is
+% the q-analogue of the Dickman rays below. Of all the nodes in this chapter it is the one the
+% companion cites most.
+%
+% Promoted from a remark to a proposition, on the precedent that load-bearing Examples were
+% promoted in Chapter 8. Remarks are NOT statement nodes here -- they carry no status tag, are
+% not projected into the manifest, and their \uses{} edges are not checked -- so leaving the
+% representation inside a remark would leave the companion's most-cited interface unchecked and
+% untransclubable. The counter is shared, so the proposition still numbers 7.6, as the draft
+% does; only the environment name differs. The discussion stays a remark, at 7.7, a number the
+% draft does not use (its Section 7 ends at 7.6).
+%
+% ADDED HERE, NOT IN THE DRAFT (2026-08-10): the integrability condition on rho. The companion
+% cites "the Dickman-ray integrability of [I, Rem. 7.6]", and the draft's remark states none --
+% but a bijection cannot be asserted without it, so the proposition carries it. It is forced,
+% not chosen: Ein(z) ~ z at 0 and ~ log z + gamma_E at infinity, so the condition below is
+% exactly finiteness of F. The draft should acquire the same clause; that is the author's edit
+% to make, since it is mathematical content rather than a typo, and it is flagged in the
+% annotation rather than applied there silently.
+%
+% Citation care, from the librarian's page check: Caravenna-Sun-Zygouras never write "Laplace
+% exponent" and never name Ein -- zero occurrences of either. Their (1.1)-(1.2), p. 1, give the
+% Levy density t^{-1}1_(0,1)(t) and the moment-generating form E[e^{lambda Y_s}]; the Ein
+% exponent follows by lambda = -s and u = st. The citation is therefore to the density and the
+% transform, not to the Ein form, and is worded that way.
+\begin{proposition}[Choquet structure of the admissible cone]\label{prop:extreme-rays}
+\uses{thm:main-characterization,lem:selfdecomposable-derivative,prop:bernstein-toolbox}
+The admissible exponents of \ref{thm:main-characterization} form a convex cone, and the map
+\[
+  (b_0, \rho) \;\mapsto\; F, \qquad
+  F(s) = b_0\,s + \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
+  \qquad \mathrm{Ein}(z) := \int_0^z \frac{1 - e^{-u}}{u}\,du,
+\]
+is a linear bijection from
+$\bigl\{(b_0, \rho) : b_0 \ge 0,\ \rho \in \Mplus(0,\infty),\
+\int \bigl[\tau \wedge (1 + \log_+ \tau)\bigr]\,\rho(d\tau) < \infty \bigr\}$
+onto that cone, with inverse $\rho = -dk$, $k(t) = \rho\bigl((t,\infty)\bigr)$. Consequently the
+extreme rays of the cone are the pure delay $s \mapsto s$ together with the one-parameter family
+$\mathrm{Ein}(\tau\,\cdot)$, $\tau > 0$ --- the Laplace exponents, with L\'evy density
+$t^{-1}\mathbf{1}_{(0,\tau)}(t)$, of the \emph{dilated Dickman subordinators}
+(\sscite{caravenna2019dickman}, (1.1)--(1.2), p.~1) --- and every admissible family is a unique
+superposition of Dickman rays and drift.
+\statusT\quad\emph{(The integrability condition is not in the draft's Remark 7.6; it is forced
+by the bijection, being exactly finiteness of $F$, and is written out here. Not formalised: it
+needs Lebesgue--Stieltjes measures and a Choquet argument, neither of which the
+$\Rightarrow$ direction
+consumes.)}
+\end{proposition}
+
+\begin{proof}
+By \ref{thm:main-characterization} an admissible $F$ is exactly one of the form (7.1) with $b_0
+\ge 0$ and $k$ nonincreasing, and $k$ may be taken right-continuous with $k(\infty) = 0$, the
+latter forced by $\int^\infty k(t)\,t^{-1}dt < \infty$. So $\rho := -dk$ is a positive measure
+on $(0,\infty)$ with $k(t) = \rho((t,\infty))$, and Tonelli gives
+\[
+  \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\frac{k(t)}{t}\,dt
+  = \int_{(0,\infty)} \rho(d\tau) \int_0^\tau \bigl(1 - e^{-st}\bigr)\,\frac{dt}{t}
+  = \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
+\]
+which is the displayed representation. Since $\mathrm{Ein}(z) \le z$ and
+$\mathrm{Ein}(z) = \log z + \gamma_E + o(1)$ as $z \to \infty$, the integral is finite for one
+$s > 0$ iff it is finite for all, iff $\int [\tau \wedge (1 + \log_+\tau)]\,\rho(d\tau) <
+\infty$; so the stated domain is exactly the set of pairs the representation accepts. The map
+is linear in $(b_0, \rho)$ by construction and surjective by the above. It is injective because
+the L\'evy--Khintchine triple of $F$ is unique (\ref{prop:bernstein-toolbox}(3)): the triple
+determines $b_0$ and the L\'evy measure $k(t)t^{-1}dt$, hence $k$ up to a null set, hence
+$\rho = -dk$.
+
+A linear bijection carries extreme rays to extreme rays, so it suffices to identify them in the
+domain, which is the product of the ray $[0,\infty)$ with a cone of positive measures. Its
+extreme rays are $(1, 0)$ and $(0, \delta_\tau)$, $\tau > 0$: any $(b_0, \rho)$ decomposes
+uniquely as $b_0\,(1,0) + \int (0,\delta_\tau)\,\rho(d\tau)$, and a pair is extreme only if it
+admits no nontrivial such splitting, which forces $\rho = 0$ or $\rho$ a single atom with
+$b_0 = 0$. Under the map, $(1,0) \mapsto s$, the pure delay; and $(0, \delta_\tau) \mapsto
+\mathrm{Ein}(\tau s)$, whose $k(t) = \delta_\tau((t,\infty)) = \mathbf{1}_{(0,\tau)}(t)$ gives
+the L\'evy density $t^{-1}\mathbf{1}_{(0,\tau)}(t)$.
+\end{proof}
+
+% draft: the discussion half of Remark 7.6.
+\begin{remark}[the three corners are slices, not extremes]\label{rem:extreme-rays}
+\uses{prop:extreme-rays,cor:semigroup-case,prop:stable-family,prop:gamma-family,prop:bessel-family,thm:locality,def:standing-hypothesis}
+None of the distinguished families of this paper is extreme; each is a slice cut by a different
+principle --- the stable family by dilation symmetry (\ref{cor:semigroup-case},
+\ref{prop:stable-family}), the Gamma family as the atoms of the Thorin representation
+(\ref{prop:gamma-family}), the Bessel family by locality (\ref{prop:bessel-family},
+\ref{thm:locality}). Since all
+three have completely monotone $k$, the closed convex cone the three corners generate together
+is exactly the Thorin subclass --- strictly smaller than the whole class, the difference being
+the non-completely-monotone monotone memory kernels (plateaus, kinks, hard cutoffs). The
+Dickman rays are the paradigm of that difference: their kernels solve the delay equation
+obtained from the Volterra identity of the memory chapter with the step kernel
+$k = \mathbf{1}_{[0,\tau)}$, and carry derivative singularities at the delays
+$\tau, 2\tau, \dots$ --- echo signatures unattainable within the Thorin subclass.
+
+Two universal bounds nevertheless hold across the entire cone: every kernel is absolutely
+continuous (\sscite{sato1999levy}, Thm.~27.13), and every kernel is \emph{unimodal}, by
+Yamazato's theorem on class $L$ laws (\sscite{yamazato1978unimodality}, Thm.~1, p.~523). The
+axioms never produce multimodal kernels.
+
+Finally, every extreme ray has $F(s) \sim \log s$ and hence $z_* = 1$: the extreme boundary of
+the cone lies exactly on the boundary of \ref{def:standing-hypothesis}.
 \end{remark}
 
 \bigskip
