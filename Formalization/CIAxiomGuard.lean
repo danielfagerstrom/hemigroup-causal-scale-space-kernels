@@ -44,3 +44,7 @@ kernels satisfy it. A17 enters here, and only here.
 
 #print axioms Hemigroup.CascadeFamily.existsUnique_repr
 #print axioms Hemigroup.mconvL1_satisfies_axioms
+
+/-! ### `lem:transform-continuity` -/
+
+#print axioms Hemigroup.CascadeFamily.transform_continuity

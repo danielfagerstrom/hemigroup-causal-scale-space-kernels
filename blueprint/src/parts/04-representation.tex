@@ -131,29 +131,45 @@ positive (A4), and mass-preserving by Tonelli (A5).
 % draft: Lemma 4.2
 \begin{lemma}[continuity of transforms]\label{lem:transform-continuity}
 \uses{def:cascade-family,lem:convolution-representation}
+\lean{Hemigroup.CascadeFamily.transform_continuity}\leanok
 Under (A1)--(A5) and (A7), the function
 \[
   g_{x,y}(s) := -\log \hat\mu_{x,y}(s) \in [0,\infty), \qquad s \ge 0,
 \]
-is well defined, and $(x,y) \mapsto g_{x,y}(s)$ is continuous for each $s \ge 0$; moreover
-$g_{x,y}(\zp) = 0$ and $s \mapsto g_{x,y}(s)$ is continuous.
-\statusT
+is well defined, and $(x,y) \mapsto g_{x,y}(s)$ is continuous on $\{0 \le x \le y\}$ for each
+$s \ge 0$; moreover $g_{x,y}(\zp) = 0$ and $s \mapsto g_{x,y}(s)$ is continuous on
+$[0,\infty)$.
+\statusT\quad\emph{(Machine-checked, \texttt{\#print axioms} reducing to Lean core. The four
+clauses are the four conjuncts of
+\texttt{CascadeFamily.transform\_continuity}; the exponent itself is
+\texttt{CascadeFamily.exponent}. The domain restrictions are explicit there --- both
+continuity clauses are \texttt{ContinuousOn}, on $\{0 \le x \le y\}$ and on $[0,\infty)$
+respectively --- and $g_{x,y}(\zp) = 0$ is not a limit but the value at $0$, since
+$\hat\mu(0) = 1$ holds on the nose for a probability measure.)}
 \end{lemma}
 
 \begin{proof}
-$\hat\mu(s) \in (0, 1]$ for a probability measure on $[0,\infty)$, so $g$ is well defined and
-nonnegative; $\hat\mu(s) \to 1$ as $s \downarrow 0$ by dominated convergence, and
-$s \mapsto \hat\mu(s)$ is continuous.
+\leanok
+$\hat\mu(s) \in (0, 1]$ for a probability measure on $[0,\infty)$ and $s \ge 0$: positive
+because the integrand is, and at most $1$ because $e^{-st} \le 1$ where the mass sits. So $g$
+is well defined and nonnegative, and $g_{x,y}(0) = -\log 1 = 0$. Continuity of
+$s \mapsto \hat\mu(s)$ on $[0,\infty)$ is dominated convergence with the constant bound $1$ ---
+the same bound, and it is where causality is needed, since $e^{-st}$ is unbounded off
+$[0,\infty)$.
 
-For continuity in $(x,y)$: fix a probability density $\rho \in X_+$ supported in $[0,\infty)$,
-so that $\hat\rho(s) > 0$. If $(x_n, y_n) \to (x,y)$, then by (A7)
-$\mu_{x_n,y_n} * \rho \to \mu_{x,y} * \rho$ in $X$; since all functions involved are supported
-in $[0,\infty)$ and $|e^{-st}| \le 1$ there,
+For continuity in $(x,y)$, take $f = 1_{(0,1)}$ and pair against
+$g_s(t) = e^{-s\max(t,0)}$, the clamped exponential, which is bounded on all of $\RR$ --- so
+$g_s \in X^*$, which $e^{-st}$ is not --- and agrees with $e^{-st}$ where causal mass lives.
+The factorisation used for uniqueness in \ref{lem:convolution-representation} reads
 \[
-  \bigl|\hat\mu_{x_n,y_n}(s)\,\hat\rho(s) - \hat\mu_{x,y}(s)\,\hat\rho(s)\bigr|
-  \le \|\mu_{x_n,y_n} * \rho - \mu_{x,y} * \rho\|_1 \longrightarrow 0,
+  \langle g_s, \Phi_{x,y} f\rangle
+  = \langle g_s, \mu_{x,y} * f\rangle = \langle g_s, f\rangle\,\hat\mu_{x,y}(s),
+  \qquad \langle g_s, f\rangle \ge e^{-s} > 0 .
 \]
-and dividing by $\hat\rho(s) > 0$ gives the claim.
+The left side is a bounded functional applied to $\Phi_{x,y} f$, which is continuous in $(x,y)$
+on $\{0 \le x \le y\}$ by (A7); dividing by the constant $\langle g_s, f\rangle$ gives
+continuity of $\hat\mu_{x,y}(s)$, and composing with $-\log$, legitimate because the transform
+never vanishes, gives it for $g_{x,y}(s)$.
 \end{proof}
 
 % Not in the draft as a numbered item; the observation is made in its \S1 and \S11 prose.

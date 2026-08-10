@@ -13,5 +13,6 @@ import Hemigroup.OperatorL1
 import Hemigroup.Representation
 import Hemigroup.SelfDecomposable
 import Hemigroup.Symmetries
+import Hemigroup.TransformContinuity
 import Hemigroup.Uniqueness
 import Hemigroup.WeakConvergence
