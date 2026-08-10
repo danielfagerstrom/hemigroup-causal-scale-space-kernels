@@ -68,7 +68,7 @@ and 12 are, on their face, *about* complete monotonicity. So the design either b
 restatement is found. **This must be decided before any Lean is written**, because it determines
 what the target types even say.
 
-The forcing node is `prop:pair-regularity`(3): *κ has a completely monotone density iff k is
+The forcing node is `prop:pair-regularity`(2), post-split: *κ has a completely monotone density iff k is
 completely monotone iff F′ lies in the Stieltjes class.*
 
 **Option A — define the predicate.** Reverses the design decision. `CompletelyMonotone` then
@@ -92,7 +92,7 @@ representation for HCM exists but is less standard.
 ## Phase 2 — Skeleton target types, before proofs
 
 The user's suggestion, and it lands hardest here. Writing a target type is what *forces* Phase 1
-to be answered concretely rather than deferred: you cannot state `prop:pair-regularity`(3)
+to be answered concretely rather than deferred: you cannot state `prop:pair-regularity`(2)
 without having decided what "completely monotone" means in the development.
 
 Write, `sorry`-marked, in `Formalization/Skeleton/`:

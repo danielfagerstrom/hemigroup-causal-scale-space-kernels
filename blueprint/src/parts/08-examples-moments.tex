@@ -17,7 +17,7 @@
 % kernels are these", which is one claim. Same reasoning as \ref{prop:bernstein-toolbox}.
 %
 % Two [A] nodes here, the first since chapter 2: \ref{prop:bessel-family} on ledger A8
-% (Halgreen) and \ref{prop:moments} on A7 (Sato). Both say more than their citation carries,
+% (Halgreen) and \ref{prop:moment-criterion} on A7 (Sato). Both say more than their citation carries,
 % so both Assignment clauses divide the statement explicitly.
 
 Throughout this chapter we work in the canonical gauge, so that
@@ -25,7 +25,7 @@ $\phi_x = \Lap^{-1}[e^{-F(x s)}]$, and $T_x$ denotes a random variable with dens
 
 % draft: Example 8.1
 \begin{proposition}[the extremal stable family; the 2005 kernels]\label{prop:stable-family}
-\uses{lem:selfdecomposable-exponents,cor:semigroup-case,prop:moments}
+\uses{lem:selfdecomposable-exponents,cor:semigroup-case,prop:moment-criterion}
 For $0 < \alpha < 1$ the exponent $F(s) = s^\alpha$ is of the form (7.1), with Lévy density
 factor
 \[
@@ -41,7 +41,7 @@ $s^\alpha = \frac{\alpha}{\Gamma(1-\alpha)}\int_0^\infty (1 - e^{-st})\,t^{-\alp
 the standard integral representation, which is (7.1) with $b_0 = 0$ and
 $k(t)/t = \alpha t^{-\alpha-1}/\Gamma(1-\alpha)$; $k$ is a negative power, hence
 nonincreasing. Since $\int_1^\infty t^{n-1}k(t)\,dt = \infty$ already for $n = 1$, all moments
-are infinite by \ref{prop:moments}. The mode scaling is the self-similarity
+are infinite by \ref{prop:moment-criterion}. The mode scaling is the self-similarity
 $T_x \stackrel{d}{=} x^{1/\alpha} T_1$ of the $\alpha$-stable subordinator, which is the case
 $\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case}.
 \end{proof}
@@ -75,7 +75,7 @@ family as the marginals of a Sato subordinator.
 
 % draft: Example 8.3
 \begin{proposition}[the Bessel-K family; preview of the memory line]\label{prop:bessel-family}
-\uses{lem:selfdecomposable-exponents,thm:main-characterization,prop:moments}
+\uses{lem:selfdecomposable-exponents,thm:main-characterization,prop:moment-criterion}
 For $a > 0$ let $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ be the scaled inverse-gamma law, where
 $\gamma_a$ has the Gamma density of shape $a$, and let $F$ be its Laplace exponent. Then
 \[
@@ -92,7 +92,7 @@ laws; \sscite{halgreen1979self}. A cited interface, not reproven here.
 which is what makes $F$ admissible and puts the family inside
 \ref{thm:main-characterization}. Everything else is \textbf{[T]} and proved below --- the
 evaluation of the transform in terms of $K_a$ is a classical integral representation, and the
-moment criterion is \ref{prop:moments} applied to this $k$. The parabolic-gauge reading is a
+moment criterion is \ref{prop:moment-criterion} applied to this $k$. The parabolic-gauge reading is a
 forward reference to Chapter~11 and is not asserted here. Note also that Halgreen proves the
 stronger statement that the law is a generalized Gamma convolution; self-decomposability
 follows through $\GGC \subset \SDclass$, which is a clause of \ledger{A16} --- so A8 and A16
@@ -118,45 +118,37 @@ Self-decomposability of $T_1$ is \ledger{A8}; by
 \ref{lem:selfdecomposable-exponents} its exponent is therefore of the form (7.1), and
 \ref{thm:main-characterization} makes the family admissible. Finally, the Lévy density factor
 of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$ at infinity, so
-$\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$; \ref{prop:moments} converts
+$\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$; \ref{prop:moment-criterion} converts
 that into $\Ex\,T_x^n < \infty$ iff $a > n$.
 \end{proof}
 
 % draft: Proposition 8.4
-\begin{proposition}[moments and the influence curve]\label{prop:moments}
+\begin{proposition}[the mean delay and the influence curve]\label{prop:moments}
 \uses{lem:selfdecomposable-exponents,thm:main-characterization}
 $\Ex\,T_x = x\,F'(\zp) = x\bigl(b_0 + \int_0^\infty k(t)\,dt\bigr)$, finite if and only if $k$
-is integrable at infinity; more generally $\Ex\,T_x^n < \infty$ if and only if
-$\int_1^\infty t^{\,n-1} k(t)\,dt < \infty$. When the mean is finite, the influence curve of
+is integrable at infinity. When the mean is finite, the influence curve of
 \sscite{fagerstrom2005temporal}, \S7, may be defined by the mean delay, and it is exactly
 linear in the canonical gauge:
 \[
   t_0 - t_m = F'(\zp)\; x .
 \]
-\statusA\quad\ledger{A7}\quad\emph{(the moment criterion for infinitely divisible laws;
-\sscite{sato1999levy}, Thm.~25.3. A cited interface, not reproven here.
-\textbf{Assignment.} \ledger{A7} carries the higher-moment equivalence alone --- that a moment
-of the law is finite exactly when the corresponding integral against the Lévy measure over
-$\{t > 1\}$ is finite. The first-moment identity $\Ex\,T_x = xF'(\zp)$, the evaluation
-$F'(\zp) = b_0 + \int k$, and the exact linearity of the influence curve are \textbf{[T]} and
-proved below from (7.1) by monotone convergence; they need no citation. What is \emph{not}
-claimed here is anything about the mode, which is the delay measure the stable family forces
-one to use --- see \ref{prop:stable-family}.)}
+\statusT\quad\emph{(monotone convergence in (7.1) and nothing else --- no citation is needed and
+none is made. The higher-moment criterion, which \emph{does} need one, was split off as
+\ref{prop:moment-criterion}; before the split this node reported that entry's cost for a result
+that does not incur it. What is \emph{not} claimed here is anything about the mode, which is the
+delay measure the stable family forces one to use --- see \ref{prop:stable-family}.)}
 \end{proposition}
 
 \begin{proof}
 Differentiating the transform at the origin,
 $\Ex\,T_x = -\partial_s e^{-F(xs)}\big|_{s=\zp} = x F'(\zp)$, and monotone convergence in
 (7.1) gives $F'(\zp) = b_0 + \int_0^\infty k(t)\,dt$, finite exactly when $k$ is integrable at
-infinity. For the higher moments, the Lévy measure of $T_x$ is $\nu(dt) = k(t)t^{-1}dt$ up to
-the scaling by $x$, so $\int_{t>1} t^n\,\nu(dt) = \int_1^\infty t^{\,n-1}k(t)\,dt$; \ledger{A7}
-equates finiteness of that integral with finiteness of $\Ex\,T_x^n$. The influence curve is
-then linear in $x$ because $\Ex\,T_x$ is.
+infinity. The influence curve is then linear in $x$ because $\Ex\,T_x$ is.
 \end{proof}
 
 % draft: Remark 8.5
 \begin{remark}[heavy tails are the semigroup's doing]\label{rem:heavy-tails}
-\uses{thm:main-characterization,cor:semigroup-case,prop:moments,prop:gamma-family}
+\uses{thm:main-characterization,cor:semigroup-case,prop:moment-criterion,prop:gamma-family}
 The heavy tails of the 2005 kernels are an artifact of the semigroup axiom, not of causality
 together with covariance. Within \ref{thm:main-characterization} the semigroup sub-case
 (\ref{cor:semigroup-case}) is precisely the subset with $k$ a pure power --- the only $k$
@@ -164,3 +156,26 @@ compatible with homogeneity --- and every non-power nonincreasing $k$, for insta
 $k(t) = \gamma e^{-t}$, yields a causal, continuously scale-covariant family with finite
 moments of all orders.
 \end{remark}
+
+% additive: not in the draft. The higher-moment half of Proposition 8.4, split off so that the
+% mean-delay identity -- which needs no citation -- does not report ledger A7's cost. Numbered
+% 8.6, a number the draft does not use, its Section 8 ending at 8.5.
+\begin{proposition}[the moment criterion]\label{prop:moment-criterion}
+\uses{prop:moments,lem:selfdecomposable-exponents,thm:main-characterization}
+$\Ex\,T_x^{\,n} < \infty$ if and only if $\int_1^\infty t^{\,n-1} k(t)\,dt < \infty$.
+\statusA\quad\ledger{A7}\quad\emph{(the moment criterion for infinitely divisible laws;
+\sscite{sato1999levy}, Thm.~25.3. A cited interface, not reproven here.
+\textbf{Assignment.} \ledger{A7} carries the equivalence itself and nothing else --- that a
+moment of the law is finite exactly when the corresponding integral against the Lévy measure
+over $\{t > 1\}$ is finite. Translating that integral into the stated one is \textbf{[T]}: the
+Lévy measure of $T_x$ is $\nu(dt) = k(t)t^{-1}dt$ up to the scaling by $x$, so
+$\int_{t>1}t^n\,\nu(dt) = \int_1^\infty t^{\,n-1}k(t)\,dt$. The $n = 1$ case is \emph{not}
+carried by the ledger --- it is \ref{prop:moments}, proved by monotone convergence --- which is
+the reason for the split.)}
+\end{proposition}
+
+\begin{proof}
+The Lévy measure of $T_x$ is $\nu(dt) = k(t)t^{-1}dt$ up to the scaling by $x$, so
+$\int_{t>1} t^n\,\nu(dt) = \int_1^\infty t^{\,n-1}k(t)\,dt$; \ledger{A7} equates finiteness of
+that integral with finiteness of $\Ex\,T_x^n$.
+\end{proof}

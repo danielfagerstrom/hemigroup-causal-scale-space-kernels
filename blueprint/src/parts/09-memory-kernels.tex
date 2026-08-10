@@ -10,7 +10,9 @@
 % obtained from it by Volterra integration, with no Laplace inversion anywhere.
 %
 % Two [A] nodes: \ref{prop:pair-regularity} on ledger A9 (four separate SSV anchors) and
-% \ref{prop:volterra} on A10 (Sato). Note what is NOT an [A] node here:
+% \ref{prop:volterra-density} on A10 (Sato). Both were split out of larger nodes on 2026-08-11 --
+% see the appended 9.12 and 9.13 at the end of this file -- because each shared a node with a
+% clause that incurs no ledger cost at all. Same surgery as Lemma 7.1, same reason. Note what is NOT an [A] node here:
 % \ref{lem:potential-kernel} inverts a Bernstein function using the CM-composition clause and
 % the general-measure form of Bernstein--Widder, both of which are already clauses of
 % \ref{prop:bernstein-toolbox} (ledger A2 and A1). It therefore rests on the trust boundary
@@ -65,16 +67,12 @@ below is the Riemann--Liouville derivative $D^{\alpha}_{t,+}$ of
 
 % draft: Proposition 9.2
 \begin{proposition}[scale evolution in memory-kernel form]\label{prop:scale-evolution}
-\uses{thm:main-characterization,lem:memory-kernel,prop:laplace-uniqueness,prop:bernstein-toolbox}
+\uses{thm:main-characterization,lem:memory-kernel,lem:transform-ode,prop:laplace-uniqueness}
 Let $(\Phi_{x,y})$ be as in \ref{thm:main-characterization}, in the canonical gauge, let
-$f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f = \mu_{0,x} * f$. Then:
+$f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f = \mu_{0,x} * f$. Then, with the
+transform equation $\partial_x \hat u = -sF'(xs)\hat u$ of \ref{lem:transform-ode} in hand:
 \begin{enumerate}
-\item For each $s > 0$, $\hat u(s, x) = e^{-F(xs)} \hat f(s)$ is continuously differentiable
-in $x$ with
-\[
-  \partial_x \hat u(s, x) \;=\; -\,s\,F'(xs)\,\hat u(s, x).
-\]
-\item For each $x > 0$ the causal function $w(\cdot, x) := \kappa^{(x)} * u(\cdot, x)$ lies in
+\item[] For each $x > 0$ the causal function $w(\cdot, x) := \kappa^{(x)} * u(\cdot, x)$ lies in
 $L^1_{\mathrm{loc}}$, and for all $0 \le a \le b$,
 \[
   u(\cdot, b) - u(\cdot, a)
@@ -92,14 +90,16 @@ $\RR_t \times (0,\infty)_x$ and with boundary value $u(\cdot, 0) = f$,
 Since $u(\cdot, x)$ is causal, the outer $\partial_t$ may equivalently be moved onto $u$ inside
 the convolution: the Riemann--Liouville and Caputo forms of the operator coincide on this
 family.
-\statusT
+\statusT\quad\emph{(the scalar transform equation this rests on was split off as
+\ref{lem:transform-ode}. Both halves are \textbf{[T]} and no ledger entry is involved either
+way, so the split is not about cost --- it is about \emph{reach}: the transform equation is a
+chain rule and is formalisable today, while the identity here is distributional, and Mathlib has
+no distribution theory to state it in. Keeping them in one node would have made a provable
+result unreachable behind an unprovable one.)}
 \end{proposition}
 
 \begin{proof}
-(1) is the chain rule, $F$ being smooth on $(0,\infty)$ by
-\ref{prop:bernstein-toolbox}(3).
-
-(2) \emph{Local integrability.} For $T > 0$,
+\emph{Local integrability.} For $T > 0$,
 \[
   \int_0^T |w(t,x)|\,dt \le \kappa^{(x)}([0,T])\,\|u(\cdot,x)\|_1
   \le \Bigl(b_0 + \int_0^{T/x} k\Bigr)\|f\|_1 < \infty,
@@ -107,7 +107,7 @@ family.
 locally uniformly in $x > 0$; joint measurability follows from (A7). By Tonelli, for $s > 0$,
 $\hat w(s, x) = \widehat{\kappa^{(x)}}(s)\,\hat u(s, x) = F'(xs)\,\hat u(s, x)$.
 
-\emph{Integration in $x$.} Integrate (1) over $x \in [a, b]$. The exchange of $\int_a^b dx$
+\emph{Integration in $x$.} Integrate \ref{lem:transform-ode} over $x \in [a, b]$. The exchange of $\int_a^b dx$
 with the Laplace integral is justified by Tonelli, since
 $\int_a^b s\,F'(xs)\,\|u(\cdot,x)\|_1\,dx \le \|f\|_1 \int_a^b s F'(xs)\,dx
 = \|f\|_1\bigl(F(bs) - F(as)\bigr) < \infty$, finite also for $a = 0$. This gives
@@ -231,9 +231,6 @@ tail decay.
 \uses{lem:memory-kernel,lem:potential-kernel,thm:sonine-conservation,def:completely-monotone}
 Modulo the drift atoms $b_0\delta_0$:
 \begin{enumerate}
-\item For every admissible $F$, the pair $(\kappa^{(x)}, \ell^{(x)})$ exists at the level of
-positive measures (\ref{lem:memory-kernel}, \ref{lem:potential-kernel}) and satisfies
-\ref{thm:sonine-conservation}.
 \item $\ell^{(x)}$ has the form $c\,\delta_0 + (\text{nonincreasing density})$, $c \ge 0$, if
 and only if $1/F'$ is a Bernstein function --- equivalently, $\varphi_x$ is a \emph{special}
 Bernstein function; by dilation invariance the condition does not depend on $x$.
@@ -247,24 +244,22 @@ monotone implies $F$ is a complete Bernstein function.
 \statusA\quad\ledger{A9}\quad\emph{(special Bernstein functions, the Stieltjes class and
 complete Bernstein functions; \sscite{schilling2012bernstein}, Thm.~11.3, Thm.~7.3 and
 Thm.~6.2, with $\mathcal{S}$ defined in Ch.~2. Cited, not reproven here.
-\textbf{Assignment.} \ledger{A9} carries three separate facts, and clause~(2) is carried by it
-\emph{entire}: the characterization of the potential measures of special subordinators is
-SSV~Thm.~11.3 and is not proved here. Within clause~(3) the ledger carries the two structural
-inputs --- that $1/h \in \CBF$ for $h \in \mathcal{S}\setminus\{0\}$ (Thm.~7.3), and that a
-complete Bernstein function has a completely monotone Lévy density (Thm.~6.2) --- while the
-computations joining them are \textbf{[T]} and given below. Clause~(1) is \textbf{[T]}
-outright, being a restatement of \ref{lem:memory-kernel},
-\ref{lem:potential-kernel} and \ref{thm:sonine-conservation}. Note the edition hazard recorded
-in the ledger: SSV's Thm.~11.3 is Thm.~10.3 in the first edition, a chapter having been
-inserted at position~10 in the second.)}
+\textbf{Assignment.} Clause~(1) is carried by \ledger{A9} \emph{entire}: the characterization of
+the potential measures of special subordinators is SSV~Thm.~11.3 and is not proved here. Within
+clause~(2) the ledger carries the two structural inputs --- that $1/h \in \CBF$ for
+$h \in \mathcal{S}\setminus\{0\}$ (Thm.~7.3), and that a complete Bernstein function has a
+completely monotone Lévy density (Thm.~6.2) --- while the computations joining them are
+\textbf{[T]} and given below. The existence clause, which needs no ledger entry at all, was
+split off as \ref{prop:sonine-pair-exists}; before the split this node reported A9's cost for a
+restatement of three proved results. Note the edition hazard recorded in the ledger: SSV's
+Thm.~11.3 is Thm.~10.3 in the first edition, a chapter having been inserted at position~10 in
+the second.)}
 \end{proposition}
 
 \begin{proof}
-(1) is \ref{lem:memory-kernel}, \ref{lem:potential-kernel} and
-\ref{thm:sonine-conservation} restated. (2) is the cited characterization of potential
-measures of special subordinators.
+(1) is the cited characterization of potential measures of special subordinators.
 
-(3) Dilation preserves complete monotonicity, so the first equivalence reduces to a statement
+(2) Dilation preserves complete monotonicity, so the first equivalence reduces to a statement
 about $k$. If $k$ is completely monotone then $k(t) = \int e^{-\tau t}\sigma(d\tau)$ for a
 positive measure $\sigma$, and \ref{lem:memory-kernel} gives
 $F'(s) = b_0 + \int \sigma(d\tau)/(s+\tau) \in \mathcal{S}$. Conversely, an
@@ -286,7 +281,7 @@ monotone, being a product of completely monotone functions, hence $F \in \CBF$.
 
 \bigskip
 
-Part (3) delineates exactly where the classical Sonine calculus with completely monotone
+Part (2) delineates exactly where the classical Sonine calculus with completely monotone
 kernel pairs --- the standing hypothesis of most of the general-fractional-calculus literature
 --- applies: on the complete-Bernstein subfamily, which Chapter~12 identifies with the
 locality corner of the memory-line realization. For general admissible $F$ the pair, and
@@ -301,24 +296,11 @@ $[0,\infty)$,
   t\,\mu_x(dt) \;=\; \bigl(\theta_x * \mu_x\bigr)(dt),
   \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt, \tag{9.1}
 \]
-and $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1). If
-$k \not\equiv 0$ then $\mu_x$ is absolutely continuous, with density $\phi_x$ solving the
-linear Volterra equation of the second kind
-\[
-  \bigl(t - b_0 x\bigr)\,\phi_x(t)
-  \;=\; \int_0^t k\bigl(\tfrac{u}{x}\bigr)\,\phi_x(t - u)\,du
-  \qquad \text{for a.e.\ } t > 0. \tag{9.2}
-\]
-\statusA\quad\ledger{A10}\quad\emph{(absolute continuity of nondegenerate self-decomposable
-laws; \sscite{sato1999levy}, Thm.~27.13. Cited, not reproven here.
-\textbf{Assignment.} \ledger{A10} carries one clause only: that $\mu_x$ is absolutely
-continuous when $k \not\equiv 0$, which is what lets the measure identity (9.1) descend to the
-density equation (9.2) --- and (9.2) is the point of the proposition, being the inversion-free
-forward scheme. Everything else is \textbf{[T]} and proved below: the identity (9.1) itself is
-a transform computation, and uniqueness among probability measures follows from a scalar
-linear ODE in the Laplace variable. The hypothesis $k \not\equiv 0$ is nondegeneracy, and
-excluding the degenerate case --- the pure drift $F(s) = b_0 s$, whose kernel is the atom
-$\delta_{b_0 x}$ --- is ours, not the citation's.)}
+and $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
+\statusT\quad\emph{(a transform computation and a scalar linear ODE in the Laplace variable ---
+no citation is needed and none is made. The descent from this measure identity to the density
+equation (9.2), which is what needs \ledger{A10}, was split off as \ref{prop:volterra-density};
+before the split this node reported that entry's cost for two results that do not incur it.)}
 \end{proposition}
 
 \begin{proof}
@@ -334,9 +316,6 @@ $t\,\nu(dt) = \theta_x * \nu$, then $\hat\nu$ is differentiable on $(0,\infty)$ 
 $-\hat\nu'(s) = \Lap[t\nu](s) = xF'(xs)\,\hat\nu(s)$. Solving this linear ODE with
 $\hat\nu(\zp) = 1$ gives $\hat\nu(s) = e^{-F(xs)}$, hence $\nu = \mu_x$.
 
-\emph{Absolute continuity.} When $k \not\equiv 0$, $\mu_x$ is a nondegenerate
-self-decomposable law by \ref{rem:sato-reading}, and \ledger{A10} makes it absolutely
-continuous. Restricting (9.1) to densities yields (9.2).
 \end{proof}
 
 \bigskip
@@ -380,10 +359,79 @@ Kernel pairs satisfying $\kappa * \ell \equiv 1$ go back to \sscite{sonine1884su
 operator calculus built on them is the general fractional calculus of
 \sscite{kochubei2011general} and \sscite{luchko2021general}, usually developed under
 completely monotone or Sonine-class kernel hypotheses, which by
-\ref{prop:pair-regularity}(3) delineate the complete-Bernstein subfamily. In
+\ref{prop:pair-regularity}(2) delineate the complete-Bernstein subfamily. In
 Volterra-equation theory the kernels $\kappa^{(x)}$ are the \emph{completely positive} kernels
 of \sscite{clement1981asymptotic}; the resolvent theory of \sscite{pruss1993evolutionary} then
 yields well-posedness and positivity of the evolution in \ref{prop:scale-evolution} by purely
 deterministic arguments. The integral equation (9.1) is the classical characterization of
 infinitely divisible laws on the half-line of \sscite{steutel2004infinite}.
 \end{remark}
+
+% additive: not in the draft. The two clauses split out of Propositions 9.7 and 9.8, so that
+% neither reports a ledger cost its cheap half does not incur -- the same surgery Lemma 7.1
+% received. Numbered 9.12 and 9.13, numbers the draft does not use, its Section 9 ending at 9.11.
+\begin{proposition}[the Sonine pair exists]\label{prop:sonine-pair-exists}
+\uses{lem:memory-kernel,lem:potential-kernel,thm:sonine-conservation}
+For every admissible $F$ and every $x > 0$ the pair $(\kappa^{(x)}, \ell^{(x)})$ exists at the
+level of positive measures on $[0,\infty)$ and satisfies
+$\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}_{[0,\infty)}$.
+\statusT\quad\emph{(a restatement of \ref{lem:memory-kernel}, \ref{lem:potential-kernel} and
+\ref{thm:sonine-conservation}, carrying nothing of its own. It is stated separately because the
+regularity clauses it used to share a node with are \ledger{A9}, and existence is not: at the
+level of measures the pair is unconditional, and only the question of whether those measures
+have \emph{densities of a given monotonicity class} needs the citation. That distinction is the
+content of \ref{prop:pair-regularity}, and is what its opening phrase about the drift atoms is
+there to signal.)}
+\end{proposition}
+
+\begin{proof}
+\ref{lem:memory-kernel} constructs $\kappa^{(x)}$, \ref{lem:potential-kernel} constructs
+$\ell^{(x)}$ and gives its uniqueness, and \ref{thm:sonine-conservation} is the identity.
+\end{proof}
+
+\begin{proposition}[the Volterra equation for the density]\label{prop:volterra-density}
+\uses{prop:volterra,rem:sato-reading}
+Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. If $k \not\equiv 0$ then
+$\mu_x$ is absolutely continuous, and its density $\phi_x$ solves the linear Volterra equation
+of the second kind
+\[
+  \bigl(t - b_0 x\bigr)\,\phi_x(t)
+  \;=\; \int_0^t k\bigl(\tfrac{u}{x}\bigr)\,\phi_x(t - u)\,du
+  \qquad \text{for a.e.\ } t > 0. \tag{9.2}
+\]
+\statusA\quad\ledger{A10}\quad\emph{(absolute continuity of nondegenerate self-decomposable
+laws; \sscite{sato1999levy}, Thm.~27.13. Cited, not reproven here.
+\textbf{Assignment.} \ledger{A10} carries absolute continuity and nothing else. Given it, the
+descent from the measure identity (9.1) of \ref{prop:volterra} to the density equation (9.2) is
+restriction to densities and is \textbf{[T]}. (9.2) is the point of the pair of propositions,
+being the inversion-free forward scheme; the hypothesis $k \not\equiv 0$ is nondegeneracy, and
+excluding the degenerate case --- the pure drift $F(s) = b_0 s$, whose kernel is the atom
+$\delta_{b_0 x}$ --- is ours, not the citation's.)}
+\end{proposition}
+
+\begin{proof}
+When $k \not\equiv 0$, $\mu_x$ is a nondegenerate self-decomposable law by
+\ref{rem:sato-reading}, and \ledger{A10} makes it absolutely continuous. Restricting the
+identity (9.1) of \ref{prop:volterra} to densities yields (9.2).
+\end{proof}
+
+\begin{lemma}[the transform equation]\label{lem:transform-ode}
+\uses{thm:main-characterization,prop:bernstein-toolbox}
+Let $(\Phi_{x,y})$ be as in \ref{thm:main-characterization}, in the canonical gauge, let
+$f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f$. Then for each $s > 0$ the function
+$\hat u(s, x) = e^{-F(xs)}\hat f(s)$ is continuously differentiable in $x$, with
+\[
+  \partial_x \hat u(s, x) \;=\; -\,s\,F'(xs)\,\hat u(s, x).
+\]
+\statusT\quad\emph{(the chain rule, $F$ being smooth on $(0,\infty)$ by
+\ref{prop:bernstein-toolbox}(3). Numbered 9.14, a number the draft does not use. It is stated on
+its own because it is the one part of \ref{prop:scale-evolution} that can be formalised without
+a theory of distributions: everything else in that proposition is an identity in
+$\Distr(\RR)$.)}
+\end{lemma}
+
+\begin{proof}
+$F$ is smooth on $(0,\infty)$ by \ref{prop:bernstein-toolbox}(3), so $x \mapsto e^{-F(xs)}$ is
+continuously differentiable there with derivative $-sF'(xs)e^{-F(xs)}$; multiply by the
+constant $\hat f(s)$.
+\end{proof}
