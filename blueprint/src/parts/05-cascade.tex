@@ -91,16 +91,28 @@ $\nu_{x,y}$ on $(0,\infty)$ with
 \ref{prop:bernstein-toolbox}(3) --- \ledger{A3} --- and the second is stated because it is the
 only one a Lean tag can point at: the development defines admissibility by the representation
 and has no $\CM$, hence no $\BFz$. Stating both here crosses \ledger{A3} once, in the
-statement, rather than inside every proof that consumes this theorem. \textbf{Not formalised.}
-This node and \ref{prop:canonical-gauge} are the two the analysis direction turns on, and both
-are open; see the note at the head of this file for why the vocabulary had to be settled first.
-The representation form is also the honest one about where the difficulty sits: the null-array
-argument already hands over $\Pi_n$, a \emph{finite} Lévy measure with no drift, at every $n$,
-so what remains is to extract the limiting triple from
-$\bigl(\Pi_n\bigr)$ --- and that limit, not the null-array estimate, is where
-\ref{prop:bernstein-toolbox}(4) is spent. On the Lean side it would be a vague-compactness
-argument on the compactified half-line, mass escaping at $0$ becoming the drift and mass at
-$\infty$ excluded by $g_{x,y}(\zp) = 0$; that is a proof, not an interface, and is the reason
+statement, rather than inside every proof that consumes this theorem. \textbf{Half formalised.}
+
+\emph{Done.} The null-array estimate, as
+\texttt{CascadeCore.tendsto\_integral\_partition\-Measure}: with $\Pi_n$ the sum of the
+partition increments (\texttt{partitionMeasure}, a finite measure at every $n$),
+$\int (1 - e^{-st})\,d\Pi_n \to g_{x,y}(s)$ for every $s \ge 0$. Its three ingredients are
+\ref{lem:additivity}, uniform continuity of $G(\cdot,s)$ on the compact $[x,y]$, and the
+inequality below --- no limit theorem for triangular arrays. The Lean proof uses
+$0 \le u - (1 - e^{-u}) \le u^2$ rather than the $u^2/2$ written here: the sharper constant
+needs a derivative argument, $u^2$ follows from $e^u \ge 1 + u$ alone, and the factor multiplies
+a quantity that is going to zero.
+
+\emph{Open.} Extracting the limiting triple from $\bigl(\Pi_n\bigr)$ --- and that limit, not the
+null-array estimate, is where \ref{prop:bernstein-toolbox}(4) is spent. Scouting (2026-08-10)
+found the route cheaper than expected: taking the compactified half-line to be
+\texttt{ENNReal}, which Mathlib knows to be compact, T2, Borel and metrizable, the weighted
+measures $(1 - e^{-t})\,d\Pi_n$ have uniformly bounded mass, and
+\texttt{isCompact\_setOf\_finiteMeasure\_le\_of\_compactSpace} gives a convergent subsequence
+outright --- no tightness argument, unlike \ref{lem:convolution-representation}. Mass at $0$
+becomes the drift, mass at $\infty$ is excluded by $g_{x,y}(\zp) = 0$, and
+$(1 - e^{-st})/(1 - e^{-t})$ extends continuously to $[0,\infty]$, which is the test function
+that reads the decomposition off. That is a proof, not an interface, and is the reason
 \ledger{A4} could in principle be retired.)}
 \end{theorem}
 
