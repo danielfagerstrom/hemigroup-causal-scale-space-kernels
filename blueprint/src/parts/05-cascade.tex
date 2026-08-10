@@ -103,17 +103,30 @@ $0 \le u - (1 - e^{-u}) \le u^2$ rather than the $u^2/2$ written here: the sharp
 needs a derivative argument, $u^2$ follows from $e^u \ge 1 + u$ alone, and the factor multiplies
 a quantity that is going to zero.
 
-\emph{Open.} Extracting the limiting triple from $\bigl(\Pi_n\bigr)$ --- and that limit, not the
-null-array estimate, is where \ref{prop:bernstein-toolbox}(4) is spent. Scouting (2026-08-10)
-found the route cheaper than expected: taking the compactified half-line to be
-\texttt{ENNReal}, which Mathlib knows to be compact, T2, Borel and metrizable, the weighted
-measures $(1 - e^{-t})\,d\Pi_n$ have uniformly bounded mass, and
-\texttt{isCompact\_setOf\_finiteMeasure\_le\_of\_compactSpace} gives a convergent subsequence
-outright --- no tightness argument, unlike \ref{lem:convolution-representation}. Mass at $0$
-becomes the drift, mass at $\infty$ is excluded by $g_{x,y}(\zp) = 0$, and
-$(1 - e^{-st})/(1 - e^{-t})$ extends continuously to $[0,\infty]$, which is the test function
-that reads the decomposition off. That is a proof, not an interface, and is the reason
-\ledger{A4} could in principle be retired.)}
+\emph{In progress.} The apparatus for extracting the limiting triple. The masses
+$\Pi_n(\RR) = n$ diverge --- mass piles up at the origin, and that pile \emph{is} the drift ---
+so the measures are weighted by $1 - e^{-t}$, which vanishes there at exactly the right rate.
+Under the change of variable $v = 1 - e^{-t}$ (\texttt{expTrans}), which carries $[0,\infty]$
+onto the compact $[0,1]$ with $\infty \mapsto 1$, the weighted measures have uniformly bounded
+mass and are carried by a fixed compact, so a weak limit needs no tightness argument beyond
+that. The two endpoints are the two degenerate parts of a triple: mass at $0$ is drift, mass at
+$1$ would be killing, and $g_{x,y}(\zp) = 0$ excludes the latter.
+
+What has to be integrated against the weighted measure is then
+\[
+  k_s(v) = \frac{1 - (1-v)^s}{v},
+\]
+\texttt{levyRatio}, which carries a removable singularity at $v = 0$ with value $s$ --- and that
+value is precisely why mass at the origin contributes $b_0 s$ rather than $0$. Filling it in is
+\texttt{continuous\_levyRatio}, a derivative computation: $k_s$ is the difference quotient at
+$0$ of $v \mapsto 1 - (1-v)^s$, whose derivative there is $s$. Both it and the change-of-variable
+identity $k_s(1 - e^{-t})\,(1 - e^{-t}) = 1 - e^{-st}$ are machine-checked, as is the bounded
+form \texttt{levyRatioBdd} that weak convergence tests against.
+
+\emph{Open.} Assembling those: extract the weak limit, split it at the two endpoints, and read
+off $(b_0, \nu)$. That limit, not the null-array estimate, is where
+\ref{prop:bernstein-toolbox}(4) is spent --- and it is a proof, not an interface, which is the
+reason \ledger{A4} could in principle be retired.)}
 \end{theorem}
 
 \begin{proof}
