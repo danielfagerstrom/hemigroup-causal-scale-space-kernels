@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.Levy
+import Hemigroup.SelfDecomposable
 
 /-!
 # The analytic interfaces
@@ -33,9 +34,14 @@ classical predicates.
 The practical consequence: an interface phrased this way can later be **demoted to a lemma
 without touching a single downstream statement**. If the compound-Poisson construction is ever
 carried out — explicit `e^{-‖ν‖} Σ ν^{*n}/n!`, truncate `ν` to `(ε,∞)`, pass to the weak limit
-with Prokhorov, which Mathlib has — the `axiom` below becomes a `theorem` and the trust boundary
-returns to empty, silently. An interface phrased in terms of `CompletelyMonotone` could not be
-retired that way, because the predicate would be woven through everything that mentions it.
+with Prokhorov, which Mathlib has — A17 becomes a `theorem` and nothing above it changes. An
+interface phrased in terms of `CompletelyMonotone` could not be retired that way, because the
+predicate would be woven through everything that mentions it.
+
+That argument holds for A17. It does **not** hold for A18, and the file should not be read as
+claiming it does: A18's `(1) ⇒ (2)` leg needs differentiability of Bernstein functions, for which
+there is no route that does not reintroduce the excluded vocabulary. A18 is phrased
+representation-first for the *other* reason — so that it can be stated at all.
 -/
 
 namespace Hemigroup
@@ -93,5 +99,42 @@ theorem exists_isProbabilityMeasure_laplace_eq_exp_neg_levyExponent {b₀ : ℝ}
   rw [levyExponent_zero, ENNReal.toReal_zero, neg_zero, Real.exp_zero,
     laplace_eq_toReal_laplaceL, laplaceL_zero] at h0
   exact (ENNReal.toReal_eq_one_iff _).mp h0
+
+/-- **The self-decomposability characterization**, in the one direction the analysis needs —
+ledger A18.
+
+A Lévy exponent all of whose *dilation increments* `F(b\,\cdot) - F(a\,\cdot)` are again Lévy
+exponents has a Lévy measure with a **nonincreasing** density `k(t)/t`. That is the blueprint's
+`lem:selfdecomposable-derivative` in the direction (1) ⇒ (3), and it is the only thing
+`thm:main-analysis` needs that is not proved here.
+
+**Read what this is and is not.** It is a statement about Lévy exponents as a class of
+functions, not about hemigroup families; nothing in it mentions `Φ`, `μ_{x,y}` or the scale
+variable. The family enters only when `thm:main-analysis` supplies the hypothesis, and
+`CascadeCore.similarity_form` — which reduces to Lean core — is exactly that supply.
+
+**The converse is proved, not assumed.** (3) ⇒ (1) is `SelfDecomposable.levyExponentD_increment`,
+a change of variables and a sign. Only the hard direction is taken on trust, which is why
+`thm:main-construction` and `prop:main-uniqueness` stay off this axiom entirely: `#print axioms`
+on both shows A17 and nothing else. The article's claim that the analysis direction crosses the
+boundary where the constructive one does not is therefore machine-checked rather than asserted.
+
+**Retirability, honestly.** Unlike A17 this is not a construction with a known Mathlib route.
+The blueprint proves it from `prop:bernstein-toolbox`(4) applied to a difference quotient
+(ledger A4) plus uniqueness of the Lévy–Khintchine triple (ledger A3); the second of those is
+within reach here — `laplace_injective` is proved — but the first needs differentiability of
+Bernstein functions, which is the derivative-sign vocabulary this development excludes by
+design. Expect this entry to be permanent in a way A17 is not.
+
+Stated with `F` real-valued and the equations in `ℝ≥0∞`, so that no integrability hypothesis
+appears: the two conditions `∫₀¹ k < ∞` and `∫₁^∞ k(t)/t\,dt < ∞` of the blueprint's `(7.1)`
+are consequences of the conclusion, not extra assertions. -/
+axiom exists_antitone_density_of_dilation_increments {F : ℝ → ℝ} {b₀ : ℝ} {ν : Measure ℝ}
+    (hb₀ : 0 ≤ b₀) (hν : IsCausal ν)
+    (hF : ∀ s, 0 ≤ s → ENNReal.ofReal (F s) = levyExponent b₀ ν s)
+    (hincr : ∀ a b : ℝ, 0 < a → a ≤ b → ∃ c₀ : ℝ, ∃ ρ : Measure ℝ, 0 ≤ c₀ ∧ IsCausal ρ ∧
+      ∀ s : ℝ, 0 ≤ s → ENNReal.ofReal (F (b * s) - F (a * s)) = levyExponent c₀ ρ s) :
+    ∃ c₀ : ℝ, ∃ k : ℝ → ℝ, 0 ≤ c₀ ∧ AntitoneOn k (Ioi 0) ∧ (∀ t : ℝ, 0 < t → 0 ≤ k t) ∧
+      ∀ s : ℝ, 0 ≤ s → ENNReal.ofReal (F s) = levyExponentD c₀ k s
 
 end Hemigroup

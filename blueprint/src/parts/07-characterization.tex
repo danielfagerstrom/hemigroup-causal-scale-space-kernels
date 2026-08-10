@@ -93,9 +93,11 @@ $(3) \Rightarrow (1)$ is elementary from the representation and is machine-check
 $(1) \Rightarrow (2)$ and $(2) \Rightarrow (3)$ rest on \ref{prop:bernstein-toolbox}(4) and on
 the uniqueness clause of \ref{prop:bernstein-toolbox}(3) --- \ledger{A4} and \ledger{A3} --- so
 formalising them means formalising those, which is what the trust boundary declines to do. This
-node is therefore not marked as proved in Lean, and will not be; what a consumer needs is almost
-always one of the two halves, and citing the right one is what keeps
-\ref{thm:main-construction} off \ledger{A3} and \ledger{A4} entirely.)}
+node is therefore not marked as proved in Lean; its expensive half is instead carried as
+\ledger{A18}, which \ref{thm:main-analysis} spends and \ref{thm:main-construction} does not.
+What a consumer needs is almost always one of the two halves, and citing the right one is what
+keeps the construction off \ledger{A3}, \ledger{A4} and \ledger{A18} alike --- a separation
+\texttt{CIAxiomGuard.lean} now checks per node.)}
 \end{lemma}
 
 \begin{proof}
@@ -136,11 +138,12 @@ and the pair $(\chi, F)$ is unique up to the normalization $\chi(1) = 1$.
 axioms. Proved here, not cited: the 2005 theorem is the semigroup statement, recovered below
 as \ref{cor:semigroup-case}. \textbf{Formalisation state.} This node is a collation, and its
 three halves are \ref{thm:main-construction}, \ref{thm:main-analysis} and
-\ref{prop:main-uniqueness}, where the formalisation state of each is recorded. Two of the three
-are machine-checked; the node itself is not marked as proved in Lean, and cannot be until
-$(\Rightarrow)$ is, because an equivalence is not established by two of its three parts. That
-is the whole reason the halves are stated separately --- see the note at the head of this
-file.)}
+\ref{prop:main-uniqueness}, where the formalisation state of each is recorded. All three
+are now machine-checked; the node itself still carries no tag, because it is a collation and an
+equivalence is established by its parts rather than by a statement of its own. That is the whole
+reason the halves are stated separately --- see the note at the head of this file. What the
+separation buys is visible in the ledger: $(\Leftarrow)$ and the uniqueness clause rest on
+\ledger{A17}, $(\Rightarrow)$ on \ledger{A18}, and neither borrows the other's.)}
 \end{theorem}
 
 \begin{proof}
@@ -383,7 +386,7 @@ contraction.
 % additive: not in the draft. The (=>) half of Theorem 7.3.
 \begin{theorem}[the analysis: every family comes from an admissible $F$]\label{thm:main-analysis}
 \uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity,lem:additivity,thm:increments-bernstein,cor:strict-monotonicity,lem:covariance-laplace,lem:action-rigidity,prop:canonical-gauge,lem:selfdecomposable-derivative}
-\lean{Skeleton.main_analysis}\notready
+\lean{Hemigroup.CascadeCore.main_analysis}\leanok
 Let $(\Phi_{x,y})_{0 \le x \le y}$ satisfy (A1)--(A8) and (ND). Then there are an increasing
 bijection $\chi$ of $[0,\infty)$ and an $F$ of the form (7.1) with $F \not\equiv 0$ such that
 $\Phi_{x,y} f = \mu_{x,y} * f$ with
@@ -405,14 +408,15 @@ $\chi^{-1}(a)$ and $\chi^{-1}(b)$, which is what \ref{thm:increments-bernstein} 
 \texttt{\#print axioms} on it is Lean core, so the whole of the analysis direction up to the
 final appeal is interface-free.}
 
-\emph{\textbf{What remains is a decision, not work.} The final appeal is
-\ref{lem:selfdecomposable-derivative} in the direction (1) $\Rightarrow$ (3), which that node
-marks not intended to be formalised: it runs through \ledger{A4} and \ledger{A3}, and it is a
-statement about $\BF$ as a class of functions rather than about hemigroup families. Proving
-\texttt{Skeleton.main\_analysis} therefore means adding a second line to
-\texttt{blueprint/trust-boundary.txt} --- which that file says in its own words is a review
-decision and not a fix. The target type is written so that the decision has a precise object,
-and this node's hypothesis is exactly what such an interface would consume.)}
+\emph{\textbf{The last step is \ledger{A18}}, taken as a reviewed trust-boundary entry on
+2026-08-10 and not as a proof: \ref{lem:selfdecomposable-derivative} in the direction
+(1) $\Rightarrow$ (3). The split is what makes this node's cost legible.
+\texttt{similarity\_form} reduces to Lean core, so everything up to the final appeal is
+interface-free; \texttt{main\_analysis} carries \ledger{A18} and nothing else; and
+\ref{thm:main-construction} and \ref{prop:main-uniqueness} carry \ledger{A17} and \emph{not}
+\ledger{A18}. So the sentence this article has always written --- that the analysis direction
+crosses the boundary where the constructive one does not --- is now a fact
+\texttt{\#print axioms} reports rather than a claim the prose makes.)}
 \end{theorem}
 
 \begin{proof}
@@ -529,14 +533,17 @@ nonincreasing. Both integrals are finite because each is bounded by $F(bs) < \in
 Let $F \in \BFz$. If $F(b\,\cdot) - F(a\,\cdot) \in \BFz$ for all $0 < a \le b$, then
 $B(s) := sF'(s)$ is a Bernstein function; and if $B$ is a Bernstein function, then $F$ has the
 representation (7.1) with $k$ nonincreasing. The converse of each also holds.
-\statusT\quad\emph{(\textbf{Not formalised, and not intended to be.} Both directions run through
-\ref{prop:bernstein-toolbox}: (1)$\Rightarrow$(2) is closure of $\BF$ under pointwise limits,
-\ledger{A4}, applied to a difference quotient; (2)$\Rightarrow$(3) needs uniqueness of the
-Lévy--Khintchine triple, \ledger{A3}, to identify the density it produces with $k$. Neither is a
-statement about the hemigroup family --- they are facts about $\BF$ as a class of functions ---
-and formalising them means formalising Bernstein--Widder-adjacent theory the trust boundary
-exists to keep out. This is the node \ref{thm:main-analysis} spends, and the reason the analysis
-direction will cross the boundary where the constructive one does not.
+\statusT\quad\emph{(\textbf{Taken as \ledger{A18}, not proved} --- a review decision recorded
+2026-08-10. Both directions run through \ref{prop:bernstein-toolbox}: (1)$\Rightarrow$(2) is
+closure of $\BF$ under pointwise limits, \ledger{A4}, applied to a difference quotient;
+(2)$\Rightarrow$(3) needs uniqueness of the Lévy--Khintchine triple, \ledger{A3}, to identify the
+density it produces with $k$. Neither is a statement about the hemigroup family --- they are
+facts about $\BF$ as a class of functions --- and neither can even be \emph{stated} here, since
+both quantify over $\BF$ and the development has no $\CM$. So what the trust boundary carries is
+the composite, in the direction \ref{thm:main-analysis} spends, phrased in $\LE$: exactly the
+device \ledger{A17} uses. Unlike \ledger{A17}, expect it to be permanent --- the
+(1)$\Rightarrow$(2) leg needs differentiability of Bernstein functions, and there is no route to
+that which does not reintroduce $\CM$.
 \textbf{The derivative is unavoidable here}, which is the other reason to keep it separate:
 $B(s) = sF'(s)$ has no reading in $\LE$ until the representation is in hand, so unlike
 \ref{lem:selfdecomposable-increment} this statement cannot be given an $\LE$ form at all. That

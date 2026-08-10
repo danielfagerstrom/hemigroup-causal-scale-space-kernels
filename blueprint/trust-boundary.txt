@@ -20,3 +20,23 @@
 # returned to empty, without touching a single downstream statement.
 
 Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent
+
+# A18 (2026-08-10), a REVIEW DECISION taken deliberately and recorded in AXIOMS.md. Self-
+# decomposability, in the direction the analysis needs: a Levy exponent whose dilation increments
+# F(b.) - F(a.) are all Levy exponents has a Levy measure with a nonincreasing density k(t)/t.
+# It is the blueprint's lem:selfdecomposable-derivative (1) => (3), and the only thing
+# thm:main-analysis needs that is not proved here.
+#
+# Note what is NOT on this line. The converse, (3) => (1), is PROVED -- levyExponentD_increment
+# -- so thm:main-construction and prop:main-uniqueness carry A17 and not this. The article's
+# claim that the analysis direction crosses the boundary where the constructive one does not is
+# therefore checked by CIAxiomGuard rather than asserted in prose.
+#
+# Unlike A17 this entry is expected to be PERMANENT. A17 was phrased so it could be demoted once
+# the compound-Poisson construction is done, which Mathlib's Prokhorov puts within reach; A18's
+# (1) => (2) leg needs differentiability of Bernstein functions, which is the derivative-sign
+# vocabulary this development excludes by design. The AXIOMS.md entry says so plainly.
+#
+# ANCHOR PENDING: A18's AXIOMS.md entry has no librarian-verified page anchor yet.
+
+Hemigroup.exists_antitone_density_of_dilation_increments

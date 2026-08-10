@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.Gauge
+import Hemigroup.Interfaces
 
 /-!
 # `thm:main-analysis` up to its last step
@@ -33,19 +34,19 @@ The third clause is where the surjectivity of `χ` earns its place: an increment
 which is what `thm:increments-bernstein` speaks about. Without surjectivity the statement would
 only cover the dilation factors the family happens to realise.
 
-## What is left
+## The last step
 
-Exactly `lem:selfdecomposable-derivative`, in the direction (1) ⇒ (3): a `\LE` function all of
-whose dilation increments are again in `\LE` has a Lévy measure with a *nonincreasing* density
-`k(t)/t`. That is self-decomposability theory, not a statement about hemigroup families, and the
-blueprint marks it not intended to be formalised: it runs through `prop:bernstein-toolbox`(4)
-and the uniqueness of the Lévy–Khintchine triple, ledger A4 and A3. Its converse,
-(3) ⇒ (1), *is* proved here, as `levyExponentD_increment`, which is why
-`thm:main-construction` stays off both ledger entries.
+`main_analysis` closes the gap with one appeal to ledger **A18**
+(`exists_antitone_density_of_dilation_increments`): a Lévy exponent whose dilation increments are
+all Lévy exponents has a nonincreasing density `k(t)/t`. That is the blueprint's
+`lem:selfdecomposable-derivative` in the direction (1) ⇒ (3), and it is the second and last entry
+on the trust boundary.
 
-So: the last step of the analysis direction needs a second entry in
-`blueprint/trust-boundary.txt`, and that is a review decision rather than a piece of work. The
-target type is stated in `Formalization/Skeleton/` and this file supplies its entire hypothesis.
+The split is deliberate, and is what makes the article's own claim checkable. `similarity_form`
+reduces to Lean core; `main_analysis` picks up A18 and nothing else; `thm:main-construction` and
+`prop:main-uniqueness` pick up A17 and nothing else. So "the analysis direction crosses the
+boundary where the constructive one does not" is a fact `#print axioms` reports, not a claim the
+prose makes.
 -/
 
 namespace Hemigroup
@@ -91,6 +92,42 @@ theorem similarity_form (Fam : CascadeCore) (hcov : IsScaleCovariant Fam (Ioi 0)
       ← G_eq_gauge hcov (mem_Ici.mp hx) s, ← exponent_eq_G_sub (mem_Ici.mp hx) hxy hs]
   · -- `F \not\equiv 0`, which is (ND).
     exact fun _ hs => (exponent_pos Fam le_rfl one_pos hs).ne'
+
+/-- **`thm:main-analysis`**: every family satisfying (A1)–(A8) and (ND) comes from a gauge and an
+exponent of the form `(7.1)`.
+
+`similarity_form` supplies everything but the density; ledger **A18** supplies the density. -/
+theorem main_analysis (Fam : CascadeCore) (hcov : IsScaleCovariant Fam (Ioi 0) S) :
+    ∃ χ : ℝ → ℝ, ∃ b₀ : ℝ, ∃ k : ℝ → ℝ,
+      χ 0 = 0 ∧ StrictMonoOn χ (Ici 0) ∧ SurjOn χ (Ici 0) (Ici 0) ∧
+      (∀ σ x : ℝ, 0 < σ → 0 ≤ x → χ (S σ x) = σ * χ x) ∧
+      0 ≤ b₀ ∧ AntitoneOn k (Ioi 0) ∧ (∀ t : ℝ, 0 < t → 0 ≤ k t) ∧
+      (∀ x y : ℝ, 0 ≤ x → x ≤ y → Fam.Φ x y = mconvL1 (Fam.repr x y)) ∧
+      (∀ x y s : ℝ, 0 ≤ x → x ≤ y → 0 ≤ s →
+        laplace (Fam.repr x y) s
+          = Real.exp (-((levyExponentD b₀ k (χ y * s)).toReal
+              - (levyExponentD b₀ k (χ x * s)).toReal))) ∧
+      (∃ s : ℝ, 0 < s ∧ levyExponentD b₀ k s ≠ 0) := by
+  obtain ⟨χ, hχ0, hχmono, hχsurj, hχS, hrepr, htrans, hincr, hnd⟩ := similarity_form Fam hcov
+  -- `F = G(1,\cdot)` is itself a Lévy exponent — the increment from the origin.
+  obtain ⟨b₀, ν, hb₀, hν, hF⟩ := exponent_hasLevyRep Fam le_rfl (zero_le_one (α := ℝ))
+  have hFG : ∀ s : ℝ, 0 ≤ s → ENNReal.ofReal (Fam.G 1 s) = levyExponent b₀ ν s := hF
+  -- A18: the dilation increments force a nonincreasing density.
+  obtain ⟨c₀, k, hc₀, hk, hknn, hFD⟩ :=
+    exists_antitone_density_of_dilation_increments hb₀ hν hFG hincr
+  have hχnn : ∀ z : ℝ, 0 ≤ z → 0 ≤ χ z := fun z hz => by
+    rw [← hχ0]; exact hχmono.monotoneOn (mem_Ici.mpr le_rfl) (mem_Ici.mpr hz) hz
+  -- On the half line the two readings of `F` agree as real numbers.
+  have hGnn : ∀ u : ℝ, 0 ≤ u → 0 ≤ Fam.G 1 u := fun u hu => exponent_nonneg Fam 0 1 hu
+  have htoReal : ∀ u : ℝ, 0 ≤ u → (levyExponentD c₀ k u).toReal = Fam.G 1 u := fun u hu => by
+    rw [← hFD u hu, ENNReal.toReal_ofReal (hGnn u hu)]
+  refine ⟨χ, c₀, k, hχ0, hχmono, hχsurj, hχS, hc₀, hk, hknn, hrepr, fun x y s hx hxy hs => ?_, ?_⟩
+  · rw [htoReal _ (mul_nonneg (hχnn y (hx.trans hxy)) hs),
+      htoReal _ (mul_nonneg (hχnn x hx) hs)]
+    exact htrans x y s hx hxy hs
+  · refine ⟨1, one_pos, ?_⟩
+    rw [← hFD 1 zero_le_one, ne_eq, ENNReal.ofReal_eq_zero, not_le]
+    exact lt_of_le_of_ne (hGnn 1 zero_le_one) (Ne.symm (hnd 1 one_pos))
 
 end CascadeCore
 

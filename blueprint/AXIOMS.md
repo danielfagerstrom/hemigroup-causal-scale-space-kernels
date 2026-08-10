@@ -592,6 +592,50 @@ already trusts. @dym1976gaussian is the book-length companion.
 
 ---
 
+## A18 — Self-decomposability: a Bernstein function whose dilation increments are Bernstein has a nonincreasing Lévy density
+**Blueprint:** `lem:selfdecomposable-derivative` (the direction (1) ⇒ (3)) · **Lean:** `Hemigroup.exists_antitone_density_of_dilation_increments`
+**Cite:** ⚠️ **ANCHOR NOT YET VERIFIED** — expected @sato1999levy, Theorem 15.10 (self-decomposable ⟺ Lévy measure of the form `k(x)/x dx` with `k` nonincreasing), specialised to subordinators; possibly @schilling2012bernstein instead. **The librarian has not confirmed a page.** This entry is not reviewed until it does.
+
+- **Statement as used.** Let `F ∈ LE`, i.e. `F(s) = b₀ s + ∫ (1 − e^{−st}) ν(dt)` with `b₀ ≥ 0`
+  and `ν` causal. If `F(b·) − F(a·) ∈ LE` for **every** `0 < a ≤ b`, then `F` admits the
+  representation (7.1): there are `c₀ ≥ 0` and `k : (0,∞) → [0,∞)` **nonincreasing** with
+  `F(s) = c₀ s + ∫₀^∞ (1 − e^{−st}) k(t)/t dt`.
+- **The second and last entry on the trust boundary** (2026-08-10). It is what
+  `thm:main-analysis` spends, and the article has always said so: the analysis direction crosses
+  the boundary where the constructive one does not. What is new is that the crossing is now
+  *machine-checked* rather than asserted — `#print axioms` on `main_analysis` shows this name and
+  nothing else, and on `thm:main-construction` and `prop:main-uniqueness` shows A17 and not this.
+- **Why the composite rather than A3 and A4 separately.** The blueprint derives (1) ⇒ (3) from
+  `prop:bernstein-toolbox`(4) — closure of `BF` under pointwise limits, A4, applied to the
+  difference quotient `(F(e^h s) − F(s))/h` — and (2) ⇒ (3) from uniqueness of the
+  Lévy–Khintchine triple, A3. Neither of those can be *stated* in this development: both are
+  statements about `BF`, a class defined by derivative signs, and the development has no
+  `CompletelyMonotone` by design (`blueprint/DESIGN-formalization-strategy.md`). So what is taken
+  is the composite, phrased in `LE`, exactly as A17 is phrased in `levyExponent` rather than as
+  Bernstein–Widder. The paper-side justification remains A3 + A4 via the blueprint's proof.
+- **The converse is proved, not assumed.** (3) ⇒ (1) is
+  `Hemigroup.levyExponentD_increment` — a change of variables and a sign — which is why
+  `thm:main-construction` stays off this entry entirely. The asymmetry is the reason Lemma 7.1
+  was split into `lem:selfdecomposable-increment` and `lem:selfdecomposable-derivative`.
+- **Retirability: worse than A17, and this should be said plainly.** A17 was phrased so it could
+  be demoted the day the compound-Poisson construction is carried out, which Mathlib's Prokhorov
+  puts within reach. A18 has no comparable path. Its (2) ⇒ (3) leg is arguably reachable —
+  `Hemigroup.laplace_injective` already gives the uniqueness that leg needs — but (1) ⇒ (2)
+  requires differentiability of Bernstein functions and closure under pointwise limits, which is
+  precisely the vocabulary this development excludes. Treat this entry as permanent.
+- **Risk of mis-statement is the real hazard, not soundness.** A17 is a construction: if it were
+  mis-stated, downstream proofs would fail rather than silently succeed. A18 is a
+  characterization with more surface — antitone `k`, nonnegativity, and the hypothesis "*every*
+  dilation increment is in `LE`". A hypothesis stated too strongly makes `thm:main-analysis`
+  vacuous; a conclusion stated too strongly makes it false. Two checks are worth running before
+  this entry is signed off: (i) instantiate it on the constructed family, where the answer is
+  known independently (`SelfDecomposableExponent`), and (ii) confirm that the integrability
+  conditions of (7.1) — `∫₀¹ k < ∞` and `∫₁^∞ k(t)/t dt < ∞` — really are consequences of the
+  conclusion rather than assumptions that were dropped.
+- **Confidence.** ⚠️ **pending** — the mathematics is standard and the ledger's confidence in A3
+  and A4 carries over, but this entry has no verified page anchor yet and the two checks above
+  have not been run.
+
 ## Notes on the sources
 
 - **@feller2009introduction** — the citekey year is wrong (the item is the 2nd edition, 1971)

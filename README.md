@@ -24,12 +24,22 @@ positioning and literature work live in the wiki hub's outline page.
 
 The blueprint carries all of §§2–12 — 56 statement nodes, 44 `[T]` and 12 `[A]` — and
 `AXIOMS.md` has 17 ledger entries, each with a page anchor. The Lean development is ~6,600
-lines, `sorry`-free, and rests on Lean core plus **one** axiom: A17, the existence half of the
-subordinator correspondence, which enters at a single point and is phrased so it can be demoted
-to a lemma without touching a downstream statement. CI checks that with `#print axioms` against
-`blueprint/trust-boundary.txt` on every push.
+lines, `sorry`-free, and rests on Lean core plus **two** axioms, which do not mix:
 
-Seventeen nodes carry `\lean{...}\leanok`:
+* **A17**, the existence half of the subordinator correspondence — what the *constructive*
+  direction needs. Phrased so it can be demoted to a lemma without touching a downstream
+  statement, the day the compound-Poisson construction is carried out.
+* **A18**, self-decomposability in the direction (1) ⇒ (3) — what the *analysis* direction needs,
+  and nothing else does. Taken as a reviewed decision on 2026-08-10, and expected to be
+  permanent: its hard leg needs differentiability of Bernstein functions, which is the
+  derivative-sign vocabulary this development excludes by design. Its page anchor is **not yet
+  librarian-verified**.
+
+CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on every push, per
+declaration — so the article's claim that the analysis direction crosses the boundary where the
+constructive one does not is machine-checked rather than asserted.
+
+Eighteen nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -38,7 +48,7 @@ Seventeen nodes carry `\lean{...}\leanok`:
 | 4 Convolution representation | `lem:convolution-representation`, `lem:transform-continuity` — chapter complete |
 | 5 The cascade | `lem:additivity`, `thm:increments-bernstein`, `cor:strict-monotonicity` — chapter complete |
 | 6 Scale covariance | `lem:covariance-laplace`, `lem:action-rigidity`, `prop:canonical-gauge` — chapter complete |
-| 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `prop:main-uniqueness` |
+| 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -51,14 +61,12 @@ that proof reduces to Lean core.
 
 The next work, in order:
 
-1. **`thm:main-analysis`** (⇒) — **a decision, not work.** Everything but its last step is
-   machine-checked as `similarity_form`, and `#print axioms` on it is Lean core. The last step is
-   `lem:selfdecomposable-derivative` (1) ⇒ (3), which the blueprint marks not intended to be
-   formalised: it is a fact about `BF` as a class of functions and runs through A4 and A3.
-   Proving it means a **second line in `trust-boundary.txt`**, which that file says is a review
-   decision. The alternatives are real — keep the trust base at one entry and leave the analysis
-   direction unformalised, or take the interface and let `thm:main-characterization` go green at
-   the cost of two more ledger citations.
+1. **Sign off A18.** Its page anchor is not yet verified — the librarian has to confirm the
+   theorem and page (expected Sato Thm 15.10, specialised to subordinators). Two sanity checks on
+   the statement are also outstanding, both listed in the `AXIOMS.md` entry: instantiate it on the
+   constructed family, where the answer is known independently, and confirm that (7.1)'s
+   integrability conditions really are consequences of the conclusion rather than assumptions
+   that were dropped.
 2. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
    there, and most of what they cite (Mellin inversion, Sonine pairs, Courrège, the HCM tower)
    has no Mathlib counterpart.

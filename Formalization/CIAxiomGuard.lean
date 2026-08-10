@@ -141,11 +141,18 @@ The gauge is built from `Function.invFunOn`, so `Classical.choice` is expected a
 
 #print axioms Hemigroup.CascadeCore.canonical_gauge
 
-/-! ### `thm:main-analysis`, up to its last step
+/-! ### `thm:main-analysis`
 
-`similarity_form` is chapters 4 to 6 collated: it is the whole hypothesis of the one appeal to
-`lem:selfdecomposable-derivative` that the analysis direction still needs. It reduces to Lean
-core, which is the concrete statement that everything up to that appeal is interface-free.
+Two lines, and the pair is the point. `similarity_form` is chapters 4 to 6 collated — the whole
+hypothesis of the one appeal to `lem:selfdecomposable-derivative` — and reduces to **Lean core**,
+so everything up to that appeal is interface-free. `main_analysis` adds the appeal and picks up
+**A18 and nothing else**.
+
+Read together with `thm:main-construction` and `prop:main-uniqueness` above, which carry A17 and
+not A18, this is what makes the article's asymmetry checkable rather than asserted: the analysis
+direction crosses the boundary where the constructive one does not, and the two entries do not
+mix.
 -/
 
 #print axioms Hemigroup.CascadeCore.similarity_form
+#print axioms Hemigroup.CascadeCore.main_analysis
