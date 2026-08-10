@@ -231,6 +231,83 @@ theorem S_one (hcov : IsScaleCovariant Fam Gs S) (hmem : (1 : ℝ) ∈ Gs) (hx :
   refine eq_of_G_eq Fam (hcov.S_mapsTo 1 one_pos hmem (mem_Ici.mpr hx)) hx one_pos ?_
   rw [G_scale hcov one_pos hmem hx, one_mul]
 
+/-! ### Clause (3): the orbit map
+
+The blueprint composes `G(\cdot, s_0)^{-1}` with `σ ↦ G(x, σ s_0)`. Lean does not need the
+inverse function: `StrictMonoOn.continuousAt_of_exists_between` asks only for orbit points
+squeezed between a given bound and `S_{σ_0} x`, and those come from continuity of
+`σ ↦ G(x, σ)` at `σ_0` together with the fact that `G(\cdot, 1)` reflects order. Avoiding
+`Set.invFunOn` also avoids having to prove its range is a neighbourhood, which is the step the
+blueprint's phrase "on its range" hides.
+-/
+
+/-- The action preserves strict positivity — it fixes the origin and is strictly increasing. -/
+theorem S_pos (hcov : IsScaleCovariant Fam Gs S) {σ : ℝ} (hσ : 0 < σ) (hmem : σ ∈ Gs)
+    (hx : 0 < x) : 0 < S σ x := by
+  rw [← S_zero hcov hσ hmem]
+  exact hcov.S_strictMonoOn σ hσ hmem (mem_Ici.mpr le_rfl) (mem_Ici.mpr hx.le) hx
+
+/-- **(3), the monotone half.** `σ ↦ S_σ x` is strictly increasing: `(6.1)` turns it into strict
+monotonicity of `G(x, \cdot)`, and `G(\cdot, 1)` reflects the order back. -/
+theorem strictMonoOn_S_apply (hcov : IsScaleCovariant Fam (Ioi 0) S) {x : ℝ} (hx : 0 < x) :
+    StrictMonoOn (fun σ => S σ x) (Ioi 0) := by
+  intro a ha b hb hab
+  have ha' : (0 : ℝ) < a := mem_Ioi.mp ha
+  have hb' : (0 : ℝ) < b := mem_Ioi.mp hb
+  refine ((G_strictMonoOn Fam one_pos).lt_iff_lt
+    (mem_Ici.mpr (hcov.S_mapsTo a ha' ha (mem_Ici.mpr hx.le)))
+    (mem_Ici.mpr (hcov.S_mapsTo b hb' hb (mem_Ici.mpr hx.le)))).mp ?_
+  rw [G_scale hcov ha' ha hx.le, G_scale hcov hb' hb hx.le]
+  exact G_strictMonoOn_right Fam hx (mem_Ici.mpr (by positivity)) (mem_Ici.mpr (by positivity))
+    (by nlinarith)
+
+/-- **(3), the continuity half.** -/
+theorem continuousOn_S_apply (hcov : IsScaleCovariant Fam (Ioi 0) S) {x : ℝ} (hx : 0 < x) :
+    ContinuousOn (fun σ => S σ x) (Ioi 0) := by
+  intro σ₀ hσ₀
+  refine ContinuousAt.continuousWithinAt ?_
+  have hσ₀' : (0 : ℝ) < σ₀ := mem_Ioi.mp hσ₀
+  have humono : StrictMonoOn (fun z => Fam.G z 1) (Ici 0) := G_strictMonoOn Fam one_pos
+  have hSmem : ∀ σ : ℝ, 0 < σ → S σ x ∈ Ici (0 : ℝ) := fun σ hσ =>
+    mem_Ici.mpr (hcov.S_mapsTo σ hσ (mem_Ioi.mpr hσ) (mem_Ici.mpr hx.le))
+  -- `(6.1)` at `s = 1`: the orbit is the graph of `G(x, \cdot)` seen through `G(\cdot, 1)`.
+  have hkey : ∀ σ : ℝ, 0 < σ → Fam.G (S σ x) 1 = Fam.G x σ := fun σ hσ => by
+    have h := G_scale hcov hσ (mem_Ioi.mpr hσ) hx.le 1
+    rwa [mul_one] at h
+  have hwcont : ContinuousAt (fun σ => Fam.G x σ) σ₀ :=
+    (continuousOn_G_right Fam x).continuousAt (Ici_mem_nhds hσ₀')
+  have hSσ₀ : (0 : ℝ) < S σ₀ x := S_pos hcov hσ₀' hσ₀ hx
+  refine (strictMonoOn_S_apply hcov hx).continuousAt_of_exists_between
+    (Ioi_mem_nhds hσ₀') ?_ ?_
+  · -- Approach from below.
+    intro b hb
+    have hb'mem : max b 0 ∈ Ici (0 : ℝ) := mem_Ici.mpr (le_max_right _ _)
+    have hub : Fam.G (max b 0) 1 < Fam.G x σ₀ := by
+      rw [← hkey σ₀ hσ₀']
+      exact humono hb'mem (hSmem σ₀ hσ₀') (max_lt hb hSσ₀)
+    have hev : ∀ᶠ c in 𝓝[<] σ₀, Fam.G (max b 0) 1 < Fam.G x c :=
+      (hwcont.mono_left nhdsWithin_le_nhds) (Ioi_mem_nhds hub)
+    obtain ⟨c, hcw, hcmem⟩ := (hev.and (Ioo_mem_nhdsLT hσ₀')).exists
+    have hc0 : (0 : ℝ) < c := hcmem.1
+    refine ⟨c, mem_Ioi.mpr hc0, ?_, ?_⟩
+    · rw [← hkey c hc0] at hcw
+      exact le_of_lt ((le_max_left b 0).trans_lt (humono.lt_iff_lt hb'mem (hSmem c hc0) |>.mp hcw))
+    · exact strictMonoOn_S_apply hcov hx (mem_Ioi.mpr hc0) hσ₀ hcmem.2
+  · -- Approach from above.
+    intro b hb
+    have hbmem : b ∈ Ici (0 : ℝ) := mem_Ici.mpr (hSσ₀.le.trans hb.le)
+    have hub : Fam.G x σ₀ < Fam.G b 1 := by
+      rw [← hkey σ₀ hσ₀']
+      exact humono (hSmem σ₀ hσ₀') hbmem hb
+    have hev : ∀ᶠ c in 𝓝[>] σ₀, Fam.G x c < Fam.G b 1 :=
+      (hwcont.mono_left nhdsWithin_le_nhds) (Iio_mem_nhds hub)
+    obtain ⟨c, hcw, hcmem⟩ := (hev.and (self_mem_nhdsWithin (a := σ₀) (s := Ioi σ₀))).exists
+    have hcσ : σ₀ < c := mem_Ioi.mp hcmem
+    have hc0 : (0 : ℝ) < c := hσ₀'.trans hcσ
+    refine ⟨c, mem_Ioi.mpr hc0, strictMonoOn_S_apply hcov hx hσ₀ (mem_Ioi.mpr hc0) hcσ, ?_⟩
+    rw [← hkey c hc0] at hcw
+    exact le_of_lt ((humono.lt_iff_lt (hSmem c hc0) hbmem).mp hcw)
+
 /-- **(4) No fixed point in `(0,∞)`.** A fixed scale would make `G(x^*, \cdot)` constant on
 `(0,∞)`; continuity at the origin forces that constant to be `0`, and `cor:strict-monotonicity`
 under (ND) forbids it above `x^* = 0`. -/
@@ -255,6 +332,22 @@ theorem eq_zero_of_fixed (hcov : IsScaleCovariant Fam (Ioi 0) S) (hx : 0 ≤ x)
     tendsto_nhds_unique (Tendsto.congr' heq hcont) tendsto_const_nhds
   -- But it is strictly positive, by (ND).
   exact absurd hzero (ne_of_lt (exponent_pos Fam le_rfl hxpos one_pos))
+
+/-- **`lem:action-rigidity`.** The action is determined by `(6.1)`, is a group action, moves each
+positive scale continuously and strictly increasingly, and fixes nothing but the origin. -/
+theorem action_rigidity (hcov : IsScaleCovariant Fam (Ioi 0) S) :
+    (∀ a b s : ℝ, 0 ≤ a → 0 ≤ b → 0 < s → Fam.G a s = Fam.G b s → a = b) ∧
+      (∀ σ τ z : ℝ, 0 < σ → 0 < τ → 0 ≤ z → S σ (S τ z) = S (σ * τ) z) ∧
+      (∀ z : ℝ, 0 ≤ z → S 1 z = z) ∧
+      (∀ z : ℝ, 0 < z → ContinuousOn (fun σ => S σ z) (Ioi 0) ∧
+        StrictMonoOn (fun σ => S σ z) (Ioi 0)) ∧
+      (∀ z : ℝ, 0 ≤ z → (∀ σ : ℝ, 0 < σ → S σ z = z) → z = 0) :=
+  ⟨fun _ _ _ ha hb hs h => eq_of_G_eq Fam ha hb hs h,
+    fun _ _ _ hσ hτ hz => S_comp hcov hσ hτ (mem_Ioi.mpr hσ) (mem_Ioi.mpr hτ)
+      (mem_Ioi.mpr (mul_pos hσ hτ)) hz,
+    fun _ hz => S_one hcov (mem_Ioi.mpr one_pos) hz,
+    fun _ hz => ⟨continuousOn_S_apply hcov hz, strictMonoOn_S_apply hcov hz⟩,
+    fun _ hz hfix => eq_zero_of_fixed hcov hz hfix⟩
 
 end CascadeCore
 

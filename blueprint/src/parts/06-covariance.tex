@@ -61,7 +61,7 @@ bijection of $[0,\infty)$ fixes $0$; $G$ is $g_{0,\cdot}$ by \ref{lem:additivity
 % draft: Lemma 6.2
 \begin{lemma}[rigidity of the action]\label{lem:action-rigidity}
 \uses{def:cascade-family,lem:covariance-laplace,cor:strict-monotonicity,lem:additivity}
-\lean{Skeleton.action_rigidity}\notready
+\lean{Hemigroup.CascadeCore.action_rigidity}\leanok
 Assume (A1)--(A8) and (ND). Then:
 \begin{enumerate}
 \item For each $\sigma$, $\Sact_\sigma$ is uniquely determined by (6.1).
@@ -71,23 +71,23 @@ $\Sact_1 = \Id$.
 \item The action has no fixed point in $(0,\infty)$: if $\Sact_\sigma x^* = x^*$ for all
 $\sigma$, then $x^* = 0$.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Three clauses of four are formalised.} (1) is
-\texttt{eq\_of\_G\_eq}: it \emph{is} injectivity of $G(\cdot,s)$, which is
-\ref{cor:strict-monotonicity}. (2) is \texttt{S\_comp} and \texttt{S\_one}, two applications of
-(6.1) and the same injectivity. (4) is \texttt{eq\_zero\_of\_fixed}, where the only analysis is
-that $G(x,\cdot)$ is continuous at the origin with value $0$ --- which turns ``constant on
-$(0,\infty)$'' into ``identically zero'' and so contradicts
-\ref{cor:strict-monotonicity} above $x = 0$.}
+\statusT\quad\emph{(three of the four clauses are injectivity of $G(\cdot,s)$ --- that is,
+\ref{cor:strict-monotonicity} --- and nothing else. (1) \emph{is} that injectivity
+(\texttt{eq\_of\_G\_eq}); (2) is two applications of (6.1) on top of it (\texttt{S\_comp},
+\texttt{S\_one}); (4) adds only that $G(x,\cdot)$ is continuous at the origin with value $0$,
+which turns ``constant on $(0,\infty)$'' into ``identically zero'' and so contradicts
+\ref{cor:strict-monotonicity} above $x = 0$ (\texttt{eq\_zero\_of\_fixed}).}
 
-\emph{What (3) needed, and did not have, was strict monotonicity in the \emph{other} variable:
-the proof below reads it off the sign of a Bernstein function's derivative, which is vocabulary
-the development does not carry. The substitute is \texttt{laplace\_strictAnti}, one line of
-measure theory --- the support of $e^{-st} - e^{-s't}$ is exactly $\{t \ne 0\}$, and that set
-carries positive mass precisely because the kernel is not $\delta_0$, which is (ND). No
-derivative and no Bernstein class appears. What remains of (3) is its continuity half, and the
-shape it will take is the blueprint's own: the inverse of $G(\cdot,s_0)$ on its range, composed
-with $\sigma \mapsto G(x,\sigma s_0)$. The Lean tag names the four-clause target type, stated
-and \texttt{sorry}-marked in \texttt{Formalization/Skeleton/}.)}
+\emph{What (3) needed, and the development did not have, was strict monotonicity in the
+\emph{other} variable: the proof below reads it off the sign of a Bernstein function's
+derivative. The substitute is \texttt{laplace\_strictAnti}, one line of measure theory --- the
+support of $e^{-st} - e^{-s't}$ is exactly $\{t \ne 0\}$, and that set carries positive mass
+precisely because the kernel is not $\delta_0$, which is (ND). No derivative and no Bernstein
+class appears. With it, (3)'s continuity half does not need the inverse function the proof below
+invokes: \texttt{StrictMonoOn.continuousAt\_of\_exists\_between} asks only for orbit points
+squeezed between a given bound and $\Sact_{\sigma_0} x$, and continuity of
+$\sigma \mapsto G(x,\sigma)$ supplies them. That also avoids having to show the range of
+$G(\cdot,s_0)$ is a neighbourhood, which is the step the phrase ``on its range'' hides.)}
 \end{lemma}
 
 \begin{proof}
@@ -130,7 +130,7 @@ forces $x^* = 0$.
 % draft: Proposition 6.3
 \begin{proposition}[orbit coordinate; the gauge]\label{prop:canonical-gauge}
 \uses{lem:action-rigidity,lem:covariance-laplace,cor:strict-monotonicity,thm:increments-bernstein,def:bernstein-function,def:levy-exponent}
-\lean{Skeleton.exists_canonical_gauge}\notready
+\lean{Hemigroup.CascadeCore.canonical_gauge}\leanok
 Assume (A1)--(A8) and (ND). Then $c(\sigma) := \Sact_\sigma 1$ is a continuous strictly
 increasing bijection of $(0,\infty)$ onto $(0,\infty)$ with $c(1) = 1$. Consequently
 \[
@@ -147,14 +147,21 @@ Equivalently $F \in \LE$, with a drift $b_0 \ge 0$ and a Lévy measure $\nu$ on 
 and is the one \ref{thm:main-analysis} needs: it is what feeds
 \ref{lem:selfdecomposable-exponents} and, through it, the form (7.1). $F$'s membership comes
 straight from \ref{thm:increments-bernstein}, so nothing new is asserted here --- the class is
-carried along, not re-established. \textbf{Not yet proved}, and this construction is the
-unglamorous stretch the formalisation note has always flagged (M5 of the ladder). Its target
-type is written, though, and that is where the design decision the note warned about was
-taken: \texttt{Skeleton.exists\_canonical\_gauge} asserts $\chi$ together with the conjugation
-$\chi(\Sact_\sigma x) = \sigma\,\chi(x)$ and the similarity form
-$G(x,s) = G(1, \chi(x)\,s)$, rather than $\chi$ alone. That bundle is the interface
-\ref{prop:main-uniqueness} deliberately declined to guess at, and fixing it here is what makes
-\ref{thm:main-analysis} assembly.)}
+carried along, not re-established. \textbf{Formalised}, and the interface question the
+formalisation note flagged (M5 of the ladder) is settled the way it warned it had to be:
+\texttt{canonical\_gauge} asserts $\chi$ together with the conjugation
+$\chi(\Sact_\sigma x) = \sigma\,\chi(x)$ and the similarity form $G(x,s) = G(1,\chi(x)\,s)$,
+not $\chi$ alone. That bundle is what \ref{prop:main-uniqueness} declined to guess at.}
+
+\emph{Only surjectivity of $c$ had to be proved; continuity and strict monotonicity are
+\ref{lem:action-rigidity}(3) and $c(1) = 1$ is the group law, so the injectivity argument below
+--- the iteration along $\rho^{\pm n}$ --- is not needed in Lean at all. Surjectivity is done
+without limits. The orbit $R = c((0,\infty))$ is invariant under every $\Sact_\rho$, which
+\emph{is} the group law; were it bounded above, its supremum would be fixed by the action ---
+nothing on the orbit can be carried above it, and nothing below it either, since
+$\Sact_{\rho^{-1}}$ would then carry it down --- and \ref{lem:action-rigidity}(4) forbids a fixed
+point above the origin, while $1 \in R$. Bounded below is the same argument read downwards, where
+a positive infimum is itself the contradiction. The intermediate value theorem then finishes.)}
 \end{proposition}
 
 \begin{proof}

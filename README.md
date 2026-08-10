@@ -20,16 +20,16 @@ positioning and literature work live in the wiki hub's outline page.
 
 ## Status
 
-**Written through §12; formalised through §5, plus two thirds of the main theorem.**
+**Written through §12; formalised through §6, plus two thirds of the main theorem.**
 
 The blueprint carries all of §§2–12 — 56 statement nodes, 44 `[T]` and 12 `[A]` — and
-`AXIOMS.md` has 17 ledger entries, each with a page anchor. The Lean development is ~5,900
+`AXIOMS.md` has 17 ledger entries, each with a page anchor. The Lean development is ~6,600
 lines, `sorry`-free, and rests on Lean core plus **one** axiom: A17, the existence half of the
 subordinator correspondence, which enters at a single point and is phrased so it can be demoted
 to a lemma without touching a downstream statement. CI checks that with `#print axioms` against
 `blueprint/trust-boundary.txt` on every push.
 
-Fourteen nodes carry `\lean{...}\leanok`:
+Seventeen nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -37,6 +37,7 @@ Fourteen nodes carry `\lean{...}\leanok`:
 | 3 Axioms | `def:cascade-family` — the structure, checked against a model |
 | 4 Convolution representation | `lem:convolution-representation`, `lem:transform-continuity` — chapter complete |
 | 5 The cascade | `lem:additivity`, `thm:increments-bernstein`, `cor:strict-monotonicity` — chapter complete |
+| 6 Scale covariance | `lem:covariance-laplace`, `lem:action-rigidity`, `prop:canonical-gauge` — chapter complete |
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `prop:main-uniqueness` |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
@@ -50,12 +51,9 @@ that proof reduces to Lean core.
 
 The next work, in order:
 
-1. **Chapter 6.** The gauge construction — M5 of the ladder and the most unglamorous stretch.
-   Design `χ` bundled with its inverse and the conjugated action *here*, against
-   `prop:canonical-gauge`, since that is the interface (⇒) needs.
-2. **`thm:main-analysis`** (⇒). Assembly once 1 is done; it adds no analysis of its own.
-   Finishing it is what lets `thm:main-characterization` go green.
-3. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
+1. **`thm:main-analysis`** (⇒). Assembly: chapters 5 and 6 supply everything it needs, and it
+   adds no analysis of its own. Finishing it is what lets `thm:main-characterization` go green.
+2. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
    there, and most of what they cite (Mellin inversion, Sonine pairs, Courrège, the HCM tower)
    has no Mathlib counterpart.
 

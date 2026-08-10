@@ -129,3 +129,14 @@ interface.
 -/
 
 #print axioms Hemigroup.CascadeCore.covariance_laplace
+
+/-! ### `lem:action-rigidity` -/
+
+#print axioms Hemigroup.CascadeCore.action_rigidity
+
+/-! ### `prop:canonical-gauge`
+
+The gauge is built from `Function.invFunOn`, so `Classical.choice` is expected and nothing else.
+-/
+
+#print axioms Hemigroup.CascadeCore.canonical_gauge
