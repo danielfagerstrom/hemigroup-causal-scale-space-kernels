@@ -506,6 +506,132 @@ theorem tail_le_tail_bconv (hx : 0 ≤ x) (hxy : x ≤ y) (ε T : ℝ) :
     _ ≤ ∫ r, approxId 1 r * ∫ u in Ioi (T - r), (h : ℝ → ℝ) u :=
         integral_mono ((integrable_approxId 1).mul_const _) hintg hmono
 
+/-! ### Tails vanish -/
+
+/-- The right tail of a finite measure can be made as small as wanted. -/
+theorem exists_measure_Ioi_le (ν : Measure ℝ) [IsFiniteMeasure ν] {η : ℝ≥0∞} (hη : 0 < η) :
+    ∃ T : ℝ, ν (Ioi T) ≤ η := by
+  have hmono : Antitone fun n : ℕ => Ioi (n : ℝ) := fun m n hmn =>
+    Ioi_subset_Ioi (by exact_mod_cast hmn)
+  have hinter : (⋂ n : ℕ, Ioi (n : ℝ)) = ∅ := by
+    ext t
+    simp only [Set.mem_iInter, mem_Ioi, Set.mem_empty_iff_false, iff_false, not_forall, not_lt]
+    obtain ⟨n, hn⟩ := exists_nat_gt t
+    exact ⟨n, hn.le⟩
+  have h := tendsto_measure_iInter_atTop
+    (fun n : ℕ => (measurableSet_Ioi (a := (n : ℝ))).nullMeasurableSet) hmono
+    ⟨0, measure_ne_top ν _⟩
+  rw [hinter, measure_empty] at h
+  obtain ⟨n, hn⟩ := (h.eventually (gt_mem_nhds hη)).exists
+  exact ⟨n, hn.le⟩
+
+/-- The right tail of an integrable function's absolute value can be made as small as wanted. -/
+theorem exists_setIntegral_abs_tail_le {k : ℝ → ℝ} (hk : Integrable k) {η : ℝ} (hη : 0 < η) :
+    ∃ T : ℝ, ∫ u in Ioi T, |k u| ≤ η := by
+  set ν : Measure ℝ := volume.withDensity fun t => ‖k t‖ₑ with hν
+  haveI : IsFiniteMeasure ν := by
+    constructor
+    rw [hν, withDensity_apply _ MeasurableSet.univ, Measure.restrict_univ]
+    exact hk.2
+  obtain ⟨T, hT⟩ := exists_measure_Ioi_le ν (η := ENNReal.ofReal η)
+    (by simp only [ENNReal.ofReal_pos]; linarith)
+  refine ⟨T, ?_⟩
+  have hval : ν (Ioi T) = ∫⁻ u in Ioi T, ‖k u‖ₑ := withDensity_apply _ measurableSet_Ioi
+  have heq : ∫ u in Ioi T, |k u| = (∫⁻ u in Ioi T, ‖k u‖ₑ).toReal := by
+    simpa [Real.norm_eq_abs] using
+      integral_norm_eq_lintegral_enorm (hk.aestronglyMeasurable.restrict)
+  rw [heq, ← hval]
+  calc (ν (Ioi T)).toReal ≤ (ENNReal.ofReal η).toReal :=
+        ENNReal.toReal_mono ENNReal.ofReal_ne_top hT
+    _ = η := ENNReal.toReal_ofReal hη.le
+
+/-! ### The tightness statement -/
+
+/-- The sequence `ε n = 1/(n+1)` along which the approximants are taken. -/
+noncomputable def epsSeq (n : ℕ) : ℝ := 1 / (n + 1)
+
+lemma epsSeq_pos (n : ℕ) : 0 < epsSeq n := by
+  rw [epsSeq]; positivity
+
+lemma tendsto_epsSeq : Tendsto epsSeq atTop (nhdsWithin 0 (Ioi 0)) :=
+  tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _
+    tendsto_one_div_add_atTop_nhds_zero_nat
+    (Filter.Eventually.of_forall fun n => epsSeq_pos n)
+
+/-- **The tails of `ν_{ε n}` are small uniformly in `n`.**
+
+For large `n` the bound comes from `ρ₁ * h_{ε n} → Φ ρ₁` in `L¹` together with
+`tail_le_tail_bconv`; for the finitely many small `n` each measure is finite and supplies its
+own cutoff, and the maximum serves for all. -/
+theorem exists_uniform_tail (hx : 0 ≤ x) (hxy : x ≤ y) {η : ℝ} (hη : 0 < η) :
+    ∃ T : ℝ, ∀ n : ℕ, ∫ u in Ioi T, ((Fam.approx x y (epsSeq n) : X) : ℝ → ℝ) u ≤ η := by
+  -- The `L¹` limit of `ρ₁ * h_ε`.
+  set k : X := Fam.Φ x y ((integrable_approxId 1).toL1 (approxId 1)) with hk
+  obtain ⟨T₁, hT₁⟩ := exists_setIntegral_abs_tail_le (L1.integrable_coeFn k) (η := η / 2)
+    (by linarith)
+  -- Large `n`.
+  have hconv : Tendsto (fun n => bconv (approxId 1) (Fam.approx x y (epsSeq n))) atTop
+      (nhds k) :=
+    (tendsto_bconv_approx hx hxy (integrable_approxId 1)).comp tendsto_epsSeq
+  obtain ⟨N, hN⟩ := Metric.tendsto_atTop.mp hconv (η / 2) (by linarith)
+  -- Small `n`: finitely many, each with its own cutoff.
+  have hfin : ∀ m : ℕ, ∃ T : ℝ, ∫ u in Ioi T,
+      ((Fam.approx x y (epsSeq m) : X) : ℝ → ℝ) u ≤ η := by
+    intro m
+    obtain ⟨T, hT⟩ := exists_setIntegral_abs_tail_le
+      (L1.integrable_coeFn (Fam.approx x y (epsSeq m))) hη
+    refine ⟨T, le_trans ?_ hT⟩
+    exact setIntegral_mono_on (L1.integrable_coeFn _).integrableOn
+      (L1.integrable_coeFn (Fam.approx x y (epsSeq m))).abs.integrableOn measurableSet_Ioi
+      fun u _ => le_abs_self _
+  choose Tsmall hTsmall using hfin
+  obtain ⟨M, hM⟩ := Finset.exists_le ((Finset.range N).image Tsmall)
+  refine ⟨max T₁ M, fun n => ?_⟩
+  by_cases hn : N ≤ n
+  · -- The `L¹` estimate.
+    have hd := hN n hn
+    rw [dist_eq_norm] at hd
+    have hstep : ∫ t in Ioi (max T₁ M),
+        ((bconv (approxId 1) (Fam.approx x y (epsSeq n)) : X) : ℝ → ℝ) t ≤ η := by
+      set F : X := bconv (approxId 1) (Fam.approx x y (epsSeq n)) with hF
+      have hdiff : Integrable (fun t => (F : ℝ → ℝ) t - (k : ℝ → ℝ) t) :=
+        (L1.integrable_coeFn F).sub (L1.integrable_coeFn k)
+      have habsk : Integrable (fun t => |(k : ℝ → ℝ) t|) := (L1.integrable_coeFn k).abs
+      calc ∫ t in Ioi (max T₁ M), (F : ℝ → ℝ) t
+          ≤ ∫ t in Ioi (max T₁ M), (|(k : ℝ → ℝ) t| + |(F : ℝ → ℝ) t - (k : ℝ → ℝ) t|) := by
+            refine setIntegral_mono_on (L1.integrable_coeFn F).integrableOn
+              (habsk.add hdiff.abs).integrableOn measurableSet_Ioi fun u _ => ?_
+            calc (F : ℝ → ℝ) u = (k : ℝ → ℝ) u + ((F : ℝ → ℝ) u - (k : ℝ → ℝ) u) := by ring
+              _ ≤ |(k : ℝ → ℝ) u| + |(F : ℝ → ℝ) u - (k : ℝ → ℝ) u| :=
+                  add_le_add (le_abs_self _) (le_abs_self _)
+        _ = (∫ t in Ioi (max T₁ M), |(k : ℝ → ℝ) t|)
+              + ∫ t in Ioi (max T₁ M), |(F : ℝ → ℝ) t - (k : ℝ → ℝ) t| :=
+            integral_add habsk.integrableOn hdiff.abs.integrableOn
+        _ ≤ η / 2 + η / 2 := by
+            refine add_le_add (le_trans ?_ hT₁) ?_
+            · exact setIntegral_mono_set habsk.integrableOn
+                (ae_restrict_of_ae (Filter.Eventually.of_forall fun u => abs_nonneg _))
+                (HasSubset.Subset.eventuallyLE (Ioi_subset_Ioi (le_max_left _ _)))
+            · calc ∫ t in Ioi (max T₁ M), |(F : ℝ → ℝ) t - (k : ℝ → ℝ) t|
+                  ≤ ∫ t, |(F : ℝ → ℝ) t - (k : ℝ → ℝ) t| :=
+                    setIntegral_le_integral hdiff.abs
+                      (Filter.Eventually.of_forall fun u => abs_nonneg _)
+                _ = ‖F - k‖ := by
+                    rw [norm_sub_eq_lintegral, ← integral_norm_eq_lintegral_enorm
+                      (f := fun t => (F : ℝ → ℝ) t - (k : ℝ → ℝ) t) hdiff.aestronglyMeasurable]
+                    simp [Real.norm_eq_abs]
+                _ ≤ η / 2 := hd.le
+        _ = η := by ring
+    exact le_trans (tail_le_tail_bconv hx hxy _ _) hstep
+  · -- One of the finitely many exceptions.
+    push_neg at hn
+    refine le_trans ?_ (hTsmall n)
+    exact setIntegral_mono_set (L1.integrable_coeFn _).integrableOn
+      (ae_restrict_of_ae (isNonneg_approx hx hxy _))
+      (HasSubset.Subset.eventuallyLE
+        (Ioi_subset_Ioi (le_trans (hM _ (Finset.mem_image_of_mem _ (Finset.mem_range.mpr hn)))
+          (le_max_right _ _))))
+
 end CascadeFamily
 
 end Hemigroup
