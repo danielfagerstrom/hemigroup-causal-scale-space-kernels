@@ -64,6 +64,15 @@ that rather than assuming it.
 
 #print axioms Hemigroup.measureReal_Ioi_mul_le
 
+/-! ### `lem:selfdecomposable-increment`
+
+(3) ⇒ (1) of Lemma 7.1, the cheap half — a change of variables and a sign. It is what
+`thm:main-construction` cites instead of the derivative route, and this line is what checks the
+claim that doing so costs no ledger entry.
+-/
+
+#print axioms Hemigroup.levyExponentD_increment
+
 /-! ### `def:cascade-family`
 
 The structure carries no proof obligations of its own; what has to hold is that the constructed

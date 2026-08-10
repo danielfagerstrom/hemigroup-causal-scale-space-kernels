@@ -29,14 +29,14 @@ subordinator correspondence, which enters at a single point and is phrased so it
 to a lemma without touching a downstream statement. CI checks that with `#print axioms` against
 `blueprint/trust-boundary.txt` on every push.
 
-Ten nodes carry `\lean{...}\leanok`:
+Eleven nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
 | 2 Preliminaries | `def:levy-exponent`, `lem:vanishing`, `prop:laplace-uniqueness-causal`, `prop:laplace-continuity-causal`, `lem:transform-tightness` |
 | 3 Axioms | `def:cascade-family` — the structure, checked against a model |
 | 4 Convolution representation | `lem:convolution-representation`, `lem:transform-continuity` — chapter complete |
-| 7 Main theorem | `thm:main-construction` (⇐), `prop:main-uniqueness` |
+| 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `prop:main-uniqueness` |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -56,10 +56,7 @@ The next work, in order:
    `prop:canonical-gauge`, since that is the interface (⇒) needs.
 3. **`thm:main-analysis`** (⇒). Assembly once 1 and 2 are done; it adds no analysis of its own.
    Finishing it is what lets `thm:main-characterization` go green.
-4. **`lem:selfdecomposable-exponents`.** One implication of three, (3)⇒(1), is in Lean
-   (`levyExponentD_increment`). The node is still an equivalence and could be split the way
-   §7's main theorem now is; the other implications rest on `[A]` A3 and A4.
-5. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
+4. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
    there, and most of what they cite (Mellin inversion, Sonine pairs, Courrège, the HCM tower)
    has no Mathlib counterpart.
 

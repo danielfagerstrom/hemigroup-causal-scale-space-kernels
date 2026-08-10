@@ -36,6 +36,22 @@
 % in a document whose real structure is the \uses graph. 7.3 therefore refers forward, which is
 % normal in a blueprint and is how the graph reads it anyway.
 %
+% THE SPLIT OF LEMMA 7.1 (2026-08-10), by the same rule and for a sharper reason. 7.1 is a
+% three-way equivalence whose implications cost wildly different things: (3) => (1) is a change
+% of variables and a sign, and is machine-checked; (1) => (2) => (3) is where A4 and A3 are
+% spent. One node reported the maximum of those, so the graph said the CONSTRUCTION -- which is
+% \leanok and reduces to Lean core plus A17 -- depended on a node resting on two ledger entries.
+% That was not a presentation defect, it was false.
+%
+% So 7.9 lem:selfdecomposable-increment (the cheap half, Lean-tagged) and 7.10
+% lem:selfdecomposable-derivative (the expensive half). 7.1 keeps its statement and becomes the
+% cycle (1) => (2) => (3) => (1). thm:main-construction now cites 7.9 and thm:main-analysis
+% cites 7.10, which is what the two directions actually consume.
+%
+% Note 7.10 CANNOT be given an LE reading: B(s) = sF'(s) has no meaning in the representation
+% vocabulary until the representation is in hand. That asymmetry is real mathematics, and it is
+% the reason the split falls exactly where the trust boundary does.
+%
 % M1b (2026-08-09) formalised the half of Lemma 7.1 that (<=) consumes -- (3) => (1), as
 % Hemigroup.levyExponentD_increment -- together with the vanishing lemma in the same
 % representation form (Hemigroup.levyExponentD_eq_zero_of_eq_zero), which is what (<=) uses to
@@ -64,52 +80,24 @@ For $F \in \BFz$ the following are equivalent:
 with $k : (0,\infty) \to [0,\infty)$ nonincreasing, $\int_0^1 k < \infty$ and
 $\int_1^\infty k(t)/t\,dt < \infty$.
 \end{enumerate}
-\statusT\quad\emph{(one implication, $(3) \Rightarrow (1)$, is formalised, in representation
-form, as \texttt{Hemigroup.levyExponentD\_increment}: for $0 < a \le b$ the increment is again a
-Lévy exponent, with drift $b_0(b-a)$ and Lévy density $\bigl(k(u/b) - k(u/a)\bigr)/u$, whose
-nonnegativity is exactly the hypothesis that $k$ is nonincreasing. From the representation that
-is a change of variables --- $du/u$ is the Haar measure of the dilation group, so a dilation
-moves the density and nothing else --- and a sign, with no closure theorem and no derivative.
-The node is deliberately \emph{not} marked as proved in Lean: an equivalence is not established
-by one implication, and the other two are what the analysis direction of
-\ref{thm:main-characterization} uses. They rest on \ref{prop:bernstein-toolbox}(4) and on the
-uniqueness clause of \ref{prop:bernstein-toolbox}(3) --- A4 and A3 --- so formalising them means
-formalising those, which is what the trust boundary declines to do.
-\texttt{\#print axioms} reduces to Lean core only.)}
+\statusT\quad\emph{(a collation, like \ref{thm:main-characterization} and for the same reason:
+its implications are proved by different means, at different cost, and one of them is
+formalised. The cycle is $(1) \Rightarrow (2) \Rightarrow (3) \Rightarrow (1)$, the first two
+steps being \ref{lem:selfdecomposable-derivative} and the last
+\ref{lem:selfdecomposable-increment}. \textbf{The asymmetry is the point.}
+$(3) \Rightarrow (1)$ is elementary from the representation and is machine-checked;
+$(1) \Rightarrow (2)$ and $(2) \Rightarrow (3)$ rest on \ref{prop:bernstein-toolbox}(4) and on
+the uniqueness clause of \ref{prop:bernstein-toolbox}(3) --- \ledger{A4} and \ledger{A3} --- so
+formalising them means formalising those, which is what the trust boundary declines to do. This
+node is therefore not marked as proved in Lean, and will not be; what a consumer needs is almost
+always one of the two halves, and citing the right one is what keeps
+\ref{thm:main-construction} off \ledger{A3} and \ledger{A4} entirely.)}
 \end{lemma}
 
 \begin{proof}
-\emph{(1) $\Rightarrow$ (2).} For $h > 0$ the difference quotient
-$s \mapsto \bigl(F(e^h s) - F(s)\bigr)/h$ lies in $\BF$, being a positive multiple of an
-element of $\BFz$. As $h \downarrow 0$ it converges pointwise to $sF'(s)$, since $F$ is smooth
-on $(0,\infty)$; the limit is therefore Bernstein by \ref{prop:bernstein-toolbox}(4).
-
-\emph{(2) $\Rightarrow$ (1).} $F(bs) - F(as) = \int_{\log a}^{\log b} B(e^u s)\,du$. Each
-integrand is Bernstein in $s$, so the finite mixture is Bernstein by
-\ref{prop:bernstein-toolbox}(4); vanishing at $\zp$ follows by monotone convergence.
-
-\emph{(2) $\Leftrightarrow$ (3).} Write $F(s) = b_0 s + \int (1 - e^{-st})\,\nu(dt)$, with no
-killing term because $F(\zp) = 0$ (\ref{prop:bernstein-toolbox}(3)), so that
-\[
-  B(s) = s F'(s) = b_0 s + \int_0^\infty s\,t\, e^{-st}\, \nu(dt).
-\]
-Note $B(\zp) = 0$, since $0 \le sF'(s) \le F(s)$ by concavity.
-
-Suppose $\nu(dt) = k(t)\,t^{-1}dt$ with $k$ nonincreasing. Write $k(t) = \rho\bigl((t,\infty)\bigr)$
-for the positive measure $\rho = -dk$; right-continuity of $k$ may be assumed, and
-$k(\infty) = 0$ is forced by $\int^\infty k(t)t^{-1}dt < \infty$. Tonelli then gives
-\[
-  \int_0^\infty s\, e^{-st}\, k(t)\, dt
-  = \int_0^\infty \rho(du) \int_0^u s\,e^{-st}\,dt
-  = \int_0^\infty \bigl(1 - e^{-su}\bigr)\,\rho(du),
-\]
-so $B(s) = b_0 s + \int (1 - e^{-su})\rho(du) \in \BFz$.
-
-Conversely, if $B \in \BF$ then $B \in \BFz$ by the remark above, so
-$B(s) = \beta s + \int (1 - e^{-su})\rho(du)$. Running the same computation backwards and
-invoking uniqueness of the Lévy--Khintchine triple (\ref{prop:bernstein-toolbox}(3))
-identifies $\beta = b_0$ and $\nu(dt) = k(t)t^{-1}dt$ with $k(t) = \rho((t,\infty))$
-nonincreasing.
+$(1) \Rightarrow (2)$ and $(2) \Rightarrow (3)$ are \ref{lem:selfdecomposable-derivative};
+$(3) \Rightarrow (1)$ is \ref{lem:selfdecomposable-increment}. The cycle gives the three
+equivalences.
 \end{proof}
 
 % draft: Remark 7.2
@@ -206,7 +194,7 @@ additive --- not in the draft, which states the theorem whole --- and are append
 
 % additive: not in the draft. The (<=) half of Theorem 7.3.
 \begin{theorem}[the construction: every admissible $F$ gives a family]\label{thm:main-construction}
-\uses{def:cascade-family,def:levy-exponent,lem:selfdecomposable-exponents,lem:vanishing,prop:bernstein-toolbox,prop:laplace-uniqueness-causal,prop:laplace-continuity-causal,lem:transform-tightness,lem:convolution-representation}
+\uses{def:cascade-family,def:levy-exponent,lem:selfdecomposable-increment,lem:vanishing,prop:bernstein-toolbox,prop:laplace-uniqueness-causal,prop:laplace-continuity-causal,lem:transform-tightness,lem:convolution-representation}
 \lean{Hemigroup.SelfDecomposableExponent.cascadeFamily}\leanok
 Let $F$ be of the form (7.1) with $F \not\equiv 0$. For $0 \le a \le b$ let $\mu_{a,b}$ be the
 probability measure on $[0,\infty)$ with
@@ -256,7 +244,8 @@ the only thing that catches it.)}
 
 \begin{proof}
 Work in the canonical gauge. For $0 \le a \le b$ the function $g_{a,b} = F(b\,\cdot) - F(a\,\cdot)$
-lies in $\BFz$ by \ref{lem:selfdecomposable-exponents}, so $e^{-g_{a,b}}$ is completely monotone
+lies in $\LE$ by \ref{lem:selfdecomposable-increment}, hence in $\BFz$ by
+\ref{prop:bernstein-toolbox}(3), so $e^{-g_{a,b}}$ is completely monotone
 with value $1$ at $\zp$ by \ref{prop:bernstein-toolbox}(2), and by the Bernstein--Widder
 criterion \ref{prop:bernstein-toolbox}(1) it is the Laplace transform of a unique probability
 measure $\mu_{a,b}$ on $[0,\infty)$. Then:
@@ -283,7 +272,7 @@ contraction.
 
 % additive: not in the draft. The (=>) half of Theorem 7.3.
 \begin{theorem}[the analysis: every family comes from an admissible $F$]\label{thm:main-analysis}
-\uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity,lem:additivity,thm:increments-bernstein,cor:strict-monotonicity,lem:covariance-laplace,lem:action-rigidity,prop:canonical-gauge,lem:selfdecomposable-exponents}
+\uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity,lem:additivity,thm:increments-bernstein,cor:strict-monotonicity,lem:covariance-laplace,lem:action-rigidity,prop:canonical-gauge,lem:selfdecomposable-derivative}
 Let $(\Phi_{x,y})_{0 \le x \le y}$ satisfy (A1)--(A8) and (ND). Then there are an increasing
 bijection $\chi$ of $[0,\infty)$ and an $F$ of the form (7.1) with $F \not\equiv 0$ such that
 $\Phi_{x,y} f = \mu_{x,y} * f$ with
@@ -308,8 +297,8 @@ action rather than quantifies over, needs to be bundled with an inverse and a co
 $F = G(1,\cdot) \in \BFz$ and $F \not\equiv 0$. Every increment
 $F(\chi(y)s) - F(\chi(x)s)$ lies in $\BFz$ by \ref{thm:increments-bernstein}, and $\chi$ is
 onto $(0,\infty)$ by \ref{prop:canonical-gauge}, so condition~(1) of
-\ref{lem:selfdecomposable-exponents} holds for every pair $0 < a \le b$; that lemma then yields
-(7.1).
+\ref{lem:selfdecomposable-exponents} holds for every pair $0 < a \le b$;
+\ref{lem:selfdecomposable-derivative} then yields (7.1).
 \end{proof}
 
 % additive: not in the draft. The uniqueness clause of Theorem 7.3.
@@ -355,4 +344,110 @@ $F' = F$.
 Feeding that back gives $F(\chi(y)s) = F(ys)$ for all $y > 0$, $s \ge 0$. At $s = 1$, strict
 monotonicity of $F$ --- which holds because $F \not\equiv 0$, by \ref{lem:vanishing} applied to
 the increments as in \ref{cor:strict-monotonicity} --- forces $\chi(y) = y$.
+\end{proof}
+
+\bigskip
+
+The two statements below are the halves of \ref{lem:selfdecomposable-exponents}, split for the
+same reason its consumers differ: one is elementary and machine-checked, the other is where
+\ledger{A3} and \ledger{A4} are spent. Additive, and appended, as above.
+
+% additive: not in the draft. (3) => (1) of Lemma 7.1, the half the construction consumes.
+\begin{lemma}[the dilation increment of a self-decomposable exponent]\label{lem:selfdecomposable-increment}
+\uses{def:levy-exponent}
+\lean{Hemigroup.levyExponentD_increment}\leanok
+Let $F \in \LE$ have drift $b_0 \ge 0$ and Lévy density $k(t)/t$ with $k \ge 0$ nonincreasing on
+$(0,\infty)$. Then for $0 < a \le b$ and $s \ge 0$,
+\[
+  F(a s) + G_{a,b}(s) = F(b s),
+\]
+where $G_{a,b} \in \LE$ is the Lévy exponent with drift $b_0(b-a)$ and Lévy density
+$\bigl(k(u/b) - k(u/a)\bigr)/u$. In particular $F(b\,\cdot) - F(a\,\cdot) \in \LE$, which is
+condition~(1) of \ref{lem:selfdecomposable-exponents} in representation form.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.levyExponentD\_increment}, \texttt{\#print axioms} reducing to Lean core ---
+no ledger entry at all, which is the whole point of separating it. \textbf{Stated additively},
+$F(as) + G = F(bs)$ rather than as a difference, because that is what a cascade needs
+(exponents must \emph{add} along $a \le b \le c$) and because the Lean exponents are valued in
+$[0,\infty]$, where subtraction truncates; the two forms agree wherever $F(as) < \infty$.
+\textbf{Why this is the cheap half.} It is a change of variables and a sign: $du/u$ is the Haar
+measure of the dilation group, so a dilation moves the Lévy density and nothing else, and
+nonnegativity of $k(u/b) - k(u/a)$ is exactly the hypothesis that $k$ is nonincreasing. No
+closure theorem, no derivative, no uniqueness of a triple --- so none of
+\ref{prop:bernstein-toolbox}. Classically one would instead read $(3) \Rightarrow (2)
+\Rightarrow (1)$ off \ref{lem:selfdecomposable-derivative}, which is shorter to write and costs
+\ledger{A3} and \ledger{A4}; \ref{thm:main-construction} cites this node rather than that route,
+and that is why its trust base is Lean core plus \ledger{A17} alone.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+Write $F(cs) = b_0 c s + \int_0^\infty \bigl(1 - e^{-cst}\bigr)\,k(t)\,\frac{dt}{t}$ for $c > 0$
+and substitute $u = ct$. The measure $dt/t$ is invariant, so
+\[
+  F(cs) = b_0 c\, s + \int_0^\infty \bigl(1 - e^{-su}\bigr)\, k(u/c)\,\frac{du}{u} ,
+\]
+i.e.\ dilating the argument by $c$ dilates the density and rescales the drift, and does nothing
+else. Subtracting the identity at $c = a$ from the one at $c = b$ gives
+\[
+  F(bs) - F(as) = b_0 (b-a)\, s
+    + \int_0^\infty \bigl(1 - e^{-su}\bigr)\,\bigl(k(u/b) - k(u/a)\bigr)\,\frac{du}{u},
+\]
+which is the asserted $G_{a,b}$. It lies in $\LE$: the drift $b_0(b-a)$ is nonnegative since
+$a \le b$, and the density is nonnegative since $u/b \le u/a$ for $u > 0$ and $k$ is
+nonincreasing. Both integrals are finite because each is bounded by $F(bs) < \infty$.
+\end{proof}
+
+% additive: not in the draft. (1) => (2) => (3) of Lemma 7.1, where A3 and A4 are spent.
+\begin{lemma}[the derivative characterization]\label{lem:selfdecomposable-derivative}
+\uses{def:bernstein-function,prop:bernstein-toolbox}
+Let $F \in \BFz$. If $F(b\,\cdot) - F(a\,\cdot) \in \BFz$ for all $0 < a \le b$, then
+$B(s) := sF'(s)$ is a Bernstein function; and if $B$ is a Bernstein function, then $F$ has the
+representation (7.1) with $k$ nonincreasing. The converse of each also holds.
+\statusT\quad\emph{(\textbf{Not formalised, and not intended to be.} Both directions run through
+\ref{prop:bernstein-toolbox}: (1)$\Rightarrow$(2) is closure of $\BF$ under pointwise limits,
+\ledger{A4}, applied to a difference quotient; (2)$\Rightarrow$(3) needs uniqueness of the
+Lévy--Khintchine triple, \ledger{A3}, to identify the density it produces with $k$. Neither is a
+statement about the hemigroup family --- they are facts about $\BF$ as a class of functions ---
+and formalising them means formalising Bernstein--Widder-adjacent theory the trust boundary
+exists to keep out. This is the node \ref{thm:main-analysis} spends, and the reason the analysis
+direction will cross the boundary where the constructive one does not.
+\textbf{The derivative is unavoidable here}, which is the other reason to keep it separate:
+$B(s) = sF'(s)$ has no reading in $\LE$ until the representation is in hand, so unlike
+\ref{lem:selfdecomposable-increment} this statement cannot be given an $\LE$ form at all. That
+is a fact about the mathematics, not a gap in the transcription.)}
+\end{lemma}
+
+\begin{proof}
+\emph{(1) $\Rightarrow$ (2).} For $h > 0$ the difference quotient
+$s \mapsto \bigl(F(e^h s) - F(s)\bigr)/h$ lies in $\BF$, being a positive multiple of an
+element of $\BFz$. As $h \downarrow 0$ it converges pointwise to $sF'(s)$, since $F$ is smooth
+on $(0,\infty)$; the limit is therefore Bernstein by \ref{prop:bernstein-toolbox}(4).
+
+\emph{(2) $\Rightarrow$ (1).} $F(bs) - F(as) = \int_{\log a}^{\log b} B(e^u s)\,du$. Each
+integrand is Bernstein in $s$, so the finite mixture is Bernstein by
+\ref{prop:bernstein-toolbox}(4); vanishing at $\zp$ follows by monotone convergence.
+
+\emph{(2) $\Leftrightarrow$ (3).} Write $F(s) = b_0 s + \int (1 - e^{-st})\,\nu(dt)$, with no
+killing term because $F(\zp) = 0$ (\ref{prop:bernstein-toolbox}(3)), so that
+\[
+  B(s) = s F'(s) = b_0 s + \int_0^\infty s\,t\, e^{-st}\, \nu(dt).
+\]
+Note $B(\zp) = 0$, since $0 \le sF'(s) \le F(s)$ by concavity.
+
+Suppose $\nu(dt) = k(t)\,t^{-1}dt$ with $k$ nonincreasing. Write $k(t) = \rho\bigl((t,\infty)\bigr)$
+for the positive measure $\rho = -dk$; right-continuity of $k$ may be assumed, and
+$k(\infty) = 0$ is forced by $\int^\infty k(t)t^{-1}dt < \infty$. Tonelli then gives
+\[
+  \int_0^\infty s\, e^{-st}\, k(t)\, dt
+  = \int_0^\infty \rho(du) \int_0^u s\,e^{-st}\,dt
+  = \int_0^\infty \bigl(1 - e^{-su}\bigr)\,\rho(du),
+\]
+so $B(s) = b_0 s + \int (1 - e^{-su})\rho(du) \in \BFz$.
+
+Conversely, if $B \in \BF$ then $B \in \BFz$ by the remark above, so
+$B(s) = \beta s + \int (1 - e^{-su})\rho(du)$. Running the same computation backwards and
+invoking uniqueness of the Lévy--Khintchine triple (\ref{prop:bernstein-toolbox}(3))
+identifies $\beta = b_0$ and $\nu(dt) = k(t)t^{-1}dt$ with $k(t) = \rho((t,\infty))$
+nonincreasing.
 \end{proof}
