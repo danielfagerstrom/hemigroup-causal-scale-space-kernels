@@ -383,21 +383,36 @@ contraction.
 % additive: not in the draft. The (=>) half of Theorem 7.3.
 \begin{theorem}[the analysis: every family comes from an admissible $F$]\label{thm:main-analysis}
 \uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity,lem:additivity,thm:increments-bernstein,cor:strict-monotonicity,lem:covariance-laplace,lem:action-rigidity,prop:canonical-gauge,lem:selfdecomposable-derivative}
+\lean{Skeleton.main_analysis}\notready
 Let $(\Phi_{x,y})_{0 \le x \le y}$ satisfy (A1)--(A8) and (ND). Then there are an increasing
 bijection $\chi$ of $[0,\infty)$ and an $F$ of the form (7.1) with $F \not\equiv 0$ such that
 $\Phi_{x,y} f = \mu_{x,y} * f$ with
 $\hat\mu_{x,y}(s) = \exp\bigl[-\bigl(F(\chi(y)s) - F(\chi(x)s)\bigr)\bigr]$.
 \statusT\quad\emph{(a collation: it cites eight earlier nodes and adds one step. No new
-analysis happens here --- all of it happened in chapters 5 and 6 --- which is why this is M6 of
-the ladder, last, and why the whole cost of formalising it is the cost of formalising those two
-chapters. \textbf{Not formalised.} Nothing in Lean approaches it yet, and it is the only reason
-\ref{thm:main-characterization} is not marked as proved. Two things to settle before starting,
-both structural rather than technical: the conclusions of chapters 5--6 must be read in $\LE$
-rather than $\BFz$ (\ref{def:levy-exponent}), since the development has no derivative-sign
-vocabulary to state them in; and $\chi$, which this direction \emph{produces} out of the scaling
-action rather than quantifies over, needs to be bundled with an inverse and a conjugated action
---- an interface better designed against this consumer than guessed at in advance, which is why
-\ref{prop:main-uniqueness} deliberately does not guess at it.)}
+analysis happens here --- all of it happened in chapters 5 and 6 --- which is why this is last on
+the ladder, and why the cost of formalising it was the cost of formalising those two chapters.
+Both structural questions the earlier note flagged are now settled: the conclusions of chapters
+5--6 are read in $\LE$ (\ref{def:levy-exponent}), and $\chi$ is bundled with its conjugated
+action by \ref{prop:canonical-gauge}.}
+
+\emph{\textbf{Everything but the last step is machine-checked}, as
+\texttt{CascadeCore.similarity\_form}: the gauge, the convolution representation, the transform
+in the similarity form $\hat\mu_{x,y}(s) = \exp[-(F(\chi(y)s) - F(\chi(x)s))]$ with
+$F = G(1,\cdot)$, the fact that $F(b\,\cdot) - F(a\,\cdot) \in \LE$ for \emph{every}
+$0 < a \le b$, and $F \not\equiv 0$. That last clause is where surjectivity of $\chi$ earns its
+place: an increment of $F$ between arbitrary $a \le b$ is an increment of $G$ between the scales
+$\chi^{-1}(a)$ and $\chi^{-1}(b)$, which is what \ref{thm:increments-bernstein} speaks about.
+\texttt{\#print axioms} on it is Lean core, so the whole of the analysis direction up to the
+final appeal is interface-free.}
+
+\emph{\textbf{What remains is a decision, not work.} The final appeal is
+\ref{lem:selfdecomposable-derivative} in the direction (1) $\Rightarrow$ (3), which that node
+marks not intended to be formalised: it runs through \ledger{A4} and \ledger{A3}, and it is a
+statement about $\BF$ as a class of functions rather than about hemigroup families. Proving
+\texttt{Skeleton.main\_analysis} therefore means adding a second line to
+\texttt{blueprint/trust-boundary.txt} --- which that file says in its own words is a review
+decision and not a fix. The target type is written so that the decision has a precise object,
+and this node's hypothesis is exactly what such an interface would consume.)}
 \end{theorem}
 
 \begin{proof}

@@ -51,8 +51,14 @@ that proof reduces to Lean core.
 
 The next work, in order:
 
-1. **`thm:main-analysis`** (⇒). Assembly: chapters 5 and 6 supply everything it needs, and it
-   adds no analysis of its own. Finishing it is what lets `thm:main-characterization` go green.
+1. **`thm:main-analysis`** (⇒) — **a decision, not work.** Everything but its last step is
+   machine-checked as `similarity_form`, and `#print axioms` on it is Lean core. The last step is
+   `lem:selfdecomposable-derivative` (1) ⇒ (3), which the blueprint marks not intended to be
+   formalised: it is a fact about `BF` as a class of functions and runs through A4 and A3.
+   Proving it means a **second line in `trust-boundary.txt`**, which that file says is a review
+   decision. The alternatives are real — keep the trust base at one entry and leave the analysis
+   direction unformalised, or take the interface and let `thm:main-characterization` go green at
+   the cost of two more ledger citations.
 2. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
    there, and most of what they cite (Mellin inversion, Sonine pairs, Courrège, the HCM tower)
    has no Mathlib counterpart.

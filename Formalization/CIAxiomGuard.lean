@@ -140,3 +140,12 @@ The gauge is built from `Function.invFunOn`, so `Classical.choice` is expected a
 -/
 
 #print axioms Hemigroup.CascadeCore.canonical_gauge
+
+/-! ### `thm:main-analysis`, up to its last step
+
+`similarity_form` is chapters 4 to 6 collated: it is the whole hypothesis of the one appeal to
+`lem:selfdecomposable-derivative` that the analysis direction still needs. It reduces to Lean
+core, which is the concrete statement that everything up to that appeal is interface-free.
+-/
+
+#print axioms Hemigroup.CascadeCore.similarity_form
