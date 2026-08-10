@@ -230,7 +230,7 @@ instance instIsFiniteMeasureMapExpTrans (Fam : CascadeCore) (x y : ℝ) (n : ℕ
     IsFiniteMeasure ((Fam.partitionMeasure x y n).map expTrans) := by
   constructor
   rw [Measure.map_apply continuous_expTrans.measurable MeasurableSet.univ]
-  simpa using measure_lt_top (Fam.partitionMeasure x y n) univ
+  simp
 
 instance instIsFiniteMeasureWeightedPartition (Fam : CascadeCore) (x y : ℝ) (n : ℕ) :
     IsFiniteMeasure (Fam.weightedPartition x y n) := by

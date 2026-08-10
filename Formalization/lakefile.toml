@@ -25,3 +25,18 @@ name = "Hemigroup"
 # Build every submodule, not just the root's import closure — otherwise a module reachable
 # only from a scratch file would never be recompiled by CI.
 globs = ["Hemigroup.*"]
+
+# Stated-but-unproved targets: the Lean type of a blueprint node, with `sorry` for the proof.
+#
+# Separate from `Hemigroup` on purpose. CI's sorry guard scans `Formalization/Hemigroup` only,
+# so the library keeps the property README leads with -- sorry-free -- while the blueprint
+# graph gains the middle state it is designed to show: a node whose STATEMENT is settled and
+# whose proof is pending is `\lean{...}\notready`, not "no Lean at all". Getting the target
+# type written down first is also the point of article-kit's decomposition gate (ROADMAP:
+# "main argument sorry-free, `sorry` only at explicitly named sub-lemmas").
+#
+# A declaration MOVES into Hemigroup/ when it is proved; nothing here is ever cited by the
+# library, and CIAxiomGuard never prints axioms for it, because nothing here is claimed.
+[[lean_lib]]
+name = "Skeleton"
+globs = ["Skeleton.*"]

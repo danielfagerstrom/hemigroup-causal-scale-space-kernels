@@ -38,6 +38,15 @@ clause of the main theorem. See `README.md` for the node-level state and what is
 working text is `draft/hemigroup-causal-scale-space-kernels.md` (15 sections, Theorems 3′/4′/5′);
 the blueprint is written *from* it.
 
+**Statement first, and `sorry` has a home.** Attacking a `[T]` node starts by writing its
+*target type* in `Formalization/Skeleton/`, `sorry`-marked, and tagging the node
+`\lean{...}\notready` — article-kit's decomposition gate (ROADMAP: "main argument sorry-free,
+`sorry` only at explicitly named sub-lemmas"). CI's sorry guard scans `Formalization/Hemigroup`
+only, so the library stays sorry-free and README's claim needs no footnote, while the graph
+gains the middle state it is built to show. A declaration **moves** into `Hemigroup/` when
+proved, and its node goes `\leanok`. Nothing in `Skeleton/` is ever cited by the library or
+listed in `CIAxiomGuard.lean`, because nothing there is claimed.
+
 **Two vocabularies, one class.** The paper argues in `BF₀` (derivative signs, Def. 2.2); the Lean
 development argues in `LE` (the Lévy representation, Def. 2.7) and never defines complete
 monotonicity at all — see `blueprint/DESIGN-formalization-strategy.md`. Prop. 2.3(3), ledger A3,

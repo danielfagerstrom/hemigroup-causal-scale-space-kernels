@@ -81,6 +81,7 @@ line it can be made elementary, and the proof below is the whole of it.
 % draft: Theorem 5.2
 \begin{theorem}[increments are Bernstein]\label{thm:increments-bernstein}
 \uses{def:cascade-family,lem:additivity,lem:transform-continuity,prop:bernstein-toolbox,def:bernstein-function,def:levy-exponent}
+\lean{Skeleton.exponent_hasLevyRep}\notready
 Under (A1)--(A7), $g_{x,y} \in \BFz$ for every $x \le y$. Equivalently, and this is the form the
 proof produces: $g_{x,y} \in \LE$, i.e.\ there are a drift $b_0(x,y) \ge 0$ and a Lévy measure
 $\nu_{x,y}$ on $(0,\infty)$ with
@@ -128,7 +129,15 @@ the convergence already proved rather than a separate estimate.}
 \emph{\textbf{Open.} Assembling those: extract the weak limit, split it at the two endpoints, and read
 off $(b_0, \nu)$. That limit, not the null-array estimate, is where
 \ref{prop:bernstein-toolbox}(4) is spent --- and it is a proof, not an interface, which is the
-reason \ledger{A4} could in principle be retired.)}
+reason \ledger{A4} could in principle be retired.}
+
+\emph{The Lean tag names \texttt{Skeleton.exponent\_hasLevyRep}, the target type, stated and
+\texttt{sorry}-marked in a library outside the one CI's sorry guard scans. So this node is
+marked not-ready rather than left untagged, and the graph distinguishes ``the statement is
+settled, the proof is pending'' from ``nobody has decided what to state''. Here that is the
+distinction worth showing: settling the statement --- the move from $\BFz$, which the
+development cannot express, to $\LE$, which it can --- was the hard part of this node, and it
+is done.)}
 \end{theorem}
 
 \begin{proof}
