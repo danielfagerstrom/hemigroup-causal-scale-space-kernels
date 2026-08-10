@@ -32,6 +32,7 @@
 % draft: Lemma 6.1
 \begin{lemma}[Laplace form of covariance]\label{lem:covariance-laplace}
 \uses{def:cascade-family,lem:convolution-representation,lem:additivity,prop:laplace-uniqueness}
+\lean{Hemigroup.CascadeCore.covariance_laplace}\leanok
 Under (A1)--(A5), axiom (A8) is equivalent to
 \[
   \dil_\sigma\,\mu_{x,y} = \mu_{\Sact_\sigma x,\, \Sact_\sigma y}
@@ -60,6 +61,7 @@ bijection of $[0,\infty)$ fixes $0$; $G$ is $g_{0,\cdot}$ by \ref{lem:additivity
 % draft: Lemma 6.2
 \begin{lemma}[rigidity of the action]\label{lem:action-rigidity}
 \uses{def:cascade-family,lem:covariance-laplace,cor:strict-monotonicity,lem:additivity}
+\lean{Skeleton.action_rigidity}\notready
 Assume (A1)--(A8) and (ND). Then:
 \begin{enumerate}
 \item For each $\sigma$, $\Sact_\sigma$ is uniquely determined by (6.1).
@@ -69,13 +71,23 @@ $\Sact_1 = \Id$.
 \item The action has no fixed point in $(0,\infty)$: if $\Sact_\sigma x^* = x^*$ for all
 $\sigma$, then $x^* = 0$.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Not formalised.} One note for the Lean pass: the proof of (3) below
-argues that a nonzero member of $\BFz$ is strictly increasing from the sign of its derivative,
-which is vocabulary the development does not have. The substitute is
-\ref{cor:strict-monotonicity}, which reaches the same conclusion by running \ref{lem:vanishing}
-on the representation and never differentiating; the constructed-family case is already in Lean
-as \texttt{exponent\_strictMono}. Nothing else in this lemma leaves the order structure, so
-(1), (2) and (4) are Mathlib's order API and an injectivity argument.)}
+\statusT\quad\emph{(\textbf{Three clauses of four are formalised.} (1) is
+\texttt{eq\_of\_G\_eq}: it \emph{is} injectivity of $G(\cdot,s)$, which is
+\ref{cor:strict-monotonicity}. (2) is \texttt{S\_comp} and \texttt{S\_one}, two applications of
+(6.1) and the same injectivity. (4) is \texttt{eq\_zero\_of\_fixed}, where the only analysis is
+that $G(x,\cdot)$ is continuous at the origin with value $0$ --- which turns ``constant on
+$(0,\infty)$'' into ``identically zero'' and so contradicts
+\ref{cor:strict-monotonicity} above $x = 0$.}
+
+\emph{What (3) needed, and did not have, was strict monotonicity in the \emph{other} variable:
+the proof below reads it off the sign of a Bernstein function's derivative, which is vocabulary
+the development does not carry. The substitute is \texttt{laplace\_strictAnti}, one line of
+measure theory --- the support of $e^{-st} - e^{-s't}$ is exactly $\{t \ne 0\}$, and that set
+carries positive mass precisely because the kernel is not $\delta_0$, which is (ND). No
+derivative and no Bernstein class appears. What remains of (3) is its continuity half, and the
+shape it will take is the blueprint's own: the inverse of $G(\cdot,s_0)$ on its range, composed
+with $\sigma \mapsto G(x,\sigma s_0)$. The Lean tag names the four-clause target type, stated
+and \texttt{sorry}-marked in \texttt{Formalization/Skeleton/}.)}
 \end{lemma}
 
 \begin{proof}
@@ -118,6 +130,7 @@ forces $x^* = 0$.
 % draft: Proposition 6.3
 \begin{proposition}[orbit coordinate; the gauge]\label{prop:canonical-gauge}
 \uses{lem:action-rigidity,lem:covariance-laplace,cor:strict-monotonicity,thm:increments-bernstein,def:bernstein-function,def:levy-exponent}
+\lean{Skeleton.exists_canonical_gauge}\notready
 Assume (A1)--(A8) and (ND). Then $c(\sigma) := \Sact_\sigma 1$ is a continuous strictly
 increasing bijection of $(0,\infty)$ onto $(0,\infty)$ with $c(1) = 1$. Consequently
 \[
@@ -134,12 +147,14 @@ Equivalently $F \in \LE$, with a drift $b_0 \ge 0$ and a Lévy measure $\nu$ on 
 and is the one \ref{thm:main-analysis} needs: it is what feeds
 \ref{lem:selfdecomposable-exponents} and, through it, the form (7.1). $F$'s membership comes
 straight from \ref{thm:increments-bernstein}, so nothing new is asserted here --- the class is
-carried along, not re-established. \textbf{Not formalised}, and this construction is the
-unglamorous stretch the formalisation note has always flagged (M5 of the ladder). Beyond the
-gauge itself, note what the Lean will need that the statement does not show: $\chi$ bundled with
-its inverse and with the conjugation $\chi \circ \Sact_\sigma = \sigma\,\chi$, which is the
-interface \ref{prop:main-uniqueness} deliberately declined to guess at. Design it here, against
-this proposition, and \ref{thm:main-analysis} is assembly.)}
+carried along, not re-established. \textbf{Not yet proved}, and this construction is the
+unglamorous stretch the formalisation note has always flagged (M5 of the ladder). Its target
+type is written, though, and that is where the design decision the note warned about was
+taken: \texttt{Skeleton.exists\_canonical\_gauge} asserts $\chi$ together with the conjugation
+$\chi(\Sact_\sigma x) = \sigma\,\chi(x)$ and the similarity form
+$G(x,s) = G(1, \chi(x)\,s)$, rather than $\chi$ alone. That bundle is the interface
+\ref{prop:main-uniqueness} deliberately declined to guess at, and fixing it here is what makes
+\ref{thm:main-analysis} assembly.)}
 \end{proposition}
 
 \begin{proof}

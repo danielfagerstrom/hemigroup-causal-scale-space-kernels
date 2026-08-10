@@ -2,6 +2,7 @@ import Hemigroup.Additivity
 import Hemigroup.Basic
 import Hemigroup.Construction
 import Hemigroup.Continuity
+import Hemigroup.Covariance
 import Hemigroup.Family
 import Hemigroup.Injectivity
 import Hemigroup.Instance

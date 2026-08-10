@@ -120,3 +120,12 @@ running it elementarily.
 /-! ### `cor:strict-monotonicity` -/
 
 #print axioms Hemigroup.CascadeCore.strict_monotonicity
+
+/-! ### `lem:covariance-laplace`
+
+(A8) turned into the scalar identity `(6.1)`. The route runs through the uniqueness clause of
+`lem:convolution-representation`, so this checks that nothing on the way in picked up an
+interface.
+-/
+
+#print axioms Hemigroup.CascadeCore.covariance_laplace
