@@ -36,7 +36,7 @@
 % draft: Lemma 4.1
 \begin{lemma}[representation]\label{lem:convolution-representation}
 \uses{def:cascade-family,prop:laplace-uniqueness}
-\lean{Hemigroup.CascadeFamily.existsUnique_repr,
+\lean{Hemigroup.CascadeCore.existsUnique_repr,
 Hemigroup.mconvL1_satisfies_axioms}\leanok
 Under (A1)--(A5), for each pair $0 \le x \le y$ there is a unique probability measure
 $\mu_{x,y}$ on $[0,\infty)$ with
@@ -46,11 +46,13 @@ $\mu_{x,y}$ on $[0,\infty)$ with
 and conversely every such measure defines an operator satisfying (A1)--(A5).
 \statusT\quad\emph{(Machine-checked, \texttt{\#print axioms} reducing to Lean core. The
 existence and uniqueness clauses are
-\texttt{CascadeFamily.existsUnique\_repr}; the converse is
+\texttt{CascadeCore.existsUnique\_repr}; the converse is
 \texttt{mconvL1\_satisfies\_axioms}, whose four conjuncts are (A2)--(A5), (A1) being carried by
 the type. The representing measure is named
-\texttt{CascadeFamily.repr} so that later chapters can write $\mu_{x,y}$ without re-extracting
-it.)}
+\texttt{CascadeCore.repr} so that later chapters can write $\mu_{x,y}$ without re-extracting
+it. Note the namespace: this chapter needs only (A1)--(A5), so it is stated for the
+covariance-free core of \ref{def:cascade-family} and applies verbatim to every covariance
+stratum.)}
 \end{lemma}
 
 \begin{proof}
@@ -131,7 +133,7 @@ positive (A4), and mass-preserving by Tonelli (A5).
 % draft: Lemma 4.2
 \begin{lemma}[continuity of transforms]\label{lem:transform-continuity}
 \uses{def:cascade-family,lem:convolution-representation}
-\lean{Hemigroup.CascadeFamily.transform_continuity}\leanok
+\lean{Hemigroup.CascadeCore.transform_continuity}\leanok
 Under (A1)--(A5) and (A7), the function
 \[
   g_{x,y}(s) := -\log \hat\mu_{x,y}(s) \in [0,\infty), \qquad s \ge 0,
@@ -141,8 +143,8 @@ $s \ge 0$; moreover $g_{x,y}(\zp) = 0$ and $s \mapsto g_{x,y}(s)$ is continuous 
 $[0,\infty)$.
 \statusT\quad\emph{(Machine-checked, \texttt{\#print axioms} reducing to Lean core. The four
 clauses are the four conjuncts of
-\texttt{CascadeFamily.transform\_continuity}; the exponent itself is
-\texttt{CascadeFamily.exponent}. The domain restrictions are explicit there --- both
+\texttt{CascadeCore.transform\_continuity}; the exponent itself is
+\texttt{CascadeCore.exponent}. The domain restrictions are explicit there --- both
 continuity clauses are \texttt{ContinuousOn}, on $\{0 \le x \le y\}$ and on $[0,\infty)$
 respectively --- and $g_{x,y}(\zp) = 0$ is not a limit but the value at $0$, since
 $\hat\mu(0) = 1$ holds on the nose for a probability measure.)}

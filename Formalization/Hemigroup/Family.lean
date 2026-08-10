@@ -51,12 +51,17 @@ def IsNonneg (f : X) : Prop := 0 ≤ᵐ[volume] (f : ℝ → ℝ)
 /-- `f` vanishes a.e. on `(-∞, t₀)` — the hypothesis and the conclusion of (A3). -/
 def VanishesBefore (t₀ : ℝ) (f : X) : Prop := ∀ᵐ t ∂volume, t < t₀ → (f : ℝ → ℝ) t = 0
 
-/-- **`def:cascade-family`**: a causal cascade measurement family. -/
-structure CascadeFamily where
+/-- **`def:cascade-family`, (A1)–(A7) and (ND)**: everything in the definition that does not
+mention the covariance group.
+
+The split from (A8) is not cosmetic. (A8) is the only clause that varies between this article
+and its companion note, which studies the same axioms with covariance demanded only under a
+closed subgroup `G ≤ (ℝ₊, ×)` — `G` trivial, `G = q^ℤ`, `G = ℝ₊` being the three strata. The
+core is common to all three, and everything Chapter 4 proves lives here: the convolution
+representation and the continuity of the transforms use (A2)–(A5) and (A7) and nothing else. -/
+structure CascadeCore where
   /-- The operators, indexed by ordered pairs of scales. (A1) is the type. -/
   Φ : ℝ → ℝ → (X →L[ℝ] X)
-  /-- The scaling action `S_σ` of (A8), carried as data. -/
-  S : ℝ → ℝ → ℝ
   /-- **(A2)** Time-translation covariance. -/
   translation : ∀ x y, 0 ≤ x → x ≤ y → ∀ a f, Φ x y (transL1 a f) = transL1 a (Φ x y f)
   /-- **(A3)** Causality. -/
@@ -73,17 +78,37 @@ structure CascadeFamily where
   /-- **(A7)** Continuity in the parameters, into `X`. -/
   continuous : ∀ f : X, ContinuousOn (fun p : ℝ × ℝ => Φ p.1 p.2 f)
     {p : ℝ × ℝ | 0 ≤ p.1 ∧ p.1 ≤ p.2}
-  /-- **(A8)** Each `S σ` maps `[0,∞)` into itself, ... -/
-  S_mapsTo : ∀ σ, 0 < σ → MapsTo (S σ) (Ici 0) (Ici 0)
-  /-- ... increasingly, ... -/
-  S_strictMonoOn : ∀ σ, 0 < σ → StrictMonoOn (S σ) (Ici 0)
-  /-- ... and onto. -/
-  S_surjOn : ∀ σ, 0 < σ → SurjOn (S σ) (Ici 0) (Ici 0)
-  /-- **(A8)** Scale covariance. -/
-  scale : ∀ (σ : ℝ) (hσ : 0 < σ) (x y : ℝ), 0 ≤ x → x ≤ y →
-    (dilL1 hσ).comp (Φ x y) = (Φ (S σ x) (S σ y)).comp (dilL1 hσ)
   /-- **(ND)** Nondegeneracy. -/
   nondegenerate : ∀ x y, 0 ≤ x → x < y → Φ x y ≠ ContinuousLinearMap.id ℝ X
+
+/-- **(A8), relative to a set `G` of admissible scale factors.**
+
+`G` is left an arbitrary set rather than a subgroup: the axiom is a condition *for each* `σ`,
+and which sets `G` can occur is a theorem (the closed subgroups of `(ℝ₊, ×)`), not part of the
+statement. Positivity of `σ` is carried alongside membership because `dilL1` needs it; for every
+`G ⊆ (0,∞)` the two coincide.
+
+`S` is data here, as it was when it was a field of the family: the blueprint quantifies
+`S` existentially, and bundling it is the standard Lean rendering of that. -/
+structure IsScaleCovariant (Fam : CascadeCore) (G : Set ℝ) (S : ℝ → ℝ → ℝ) : Prop where
+  /-- Each `S σ` maps `[0,∞)` into itself, ... -/
+  S_mapsTo : ∀ σ, 0 < σ → σ ∈ G → MapsTo (S σ) (Ici 0) (Ici 0)
+  /-- ... increasingly, ... -/
+  S_strictMonoOn : ∀ σ, 0 < σ → σ ∈ G → StrictMonoOn (S σ) (Ici 0)
+  /-- ... and onto. -/
+  S_surjOn : ∀ σ, 0 < σ → σ ∈ G → SurjOn (S σ) (Ici 0) (Ici 0)
+  /-- The intertwining itself. -/
+  scale : ∀ (σ : ℝ) (hσ : 0 < σ), σ ∈ G → ∀ x y, 0 ≤ x → x ≤ y →
+    (dilL1 hσ).comp (Fam.Φ x y) = (Fam.Φ (S σ x) (S σ y)).comp (dilL1 hσ)
+
+/-- **`def:cascade-family`**: a causal cascade measurement family — the core, with (A8) demanded
+for *every* `σ > 0`. The companion note's strata are the same core with `Ioi 0` replaced by a
+smaller subgroup. -/
+structure CascadeFamily extends CascadeCore where
+  /-- The scaling action `S_σ` of (A8), carried as data. -/
+  S : ℝ → ℝ → ℝ
+  /-- **(A8)** Scale covariance, under the full dilation group. -/
+  covariant : IsScaleCovariant toCascadeCore (Ioi 0) S
 
 /-- The `L¹` norm of a difference, as a lower integral — the form every convergence estimate
 below speaks in. -/

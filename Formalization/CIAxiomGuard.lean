@@ -97,9 +97,9 @@ over; nothing in the argument itself leaves Lean core.
 
 /-! ### `lem:convolution-representation` -/
 
-#print axioms Hemigroup.CascadeFamily.existsUnique_repr
+#print axioms Hemigroup.CascadeCore.existsUnique_repr
 #print axioms Hemigroup.mconvL1_satisfies_axioms
 
 /-! ### `lem:transform-continuity` -/
 
-#print axioms Hemigroup.CascadeFamily.transform_continuity
+#print axioms Hemigroup.CascadeCore.transform_continuity

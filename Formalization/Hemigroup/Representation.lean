@@ -481,12 +481,12 @@ lemma integral_approxIdL1 {ε : ℝ} (hε : 0 < ε) :
   rw [integral_congr_ae (coeFn_approxIdL1 ε)]
   exact integral_approxId hε
 
-namespace CascadeFamily
+namespace CascadeCore
 
 /-- `h_ε = Φ_{x,y} ρ_ε`, the image of the approximate identity. -/
-noncomputable def approx (Fam : CascadeFamily) (x y ε : ℝ) : X := Fam.Φ x y (approxIdL1 ε)
+noncomputable def approx (Fam : CascadeCore) (x y ε : ℝ) : X := Fam.Φ x y (approxIdL1 ε)
 
-variable {Fam : CascadeFamily} {x y : ℝ}
+variable {Fam : CascadeCore} {x y : ℝ}
 
 lemma isNonneg_approx (hx : 0 ≤ x) (hxy : x ≤ y) (ε : ℝ) : IsNonneg (Fam.approx x y ε) :=
   Fam.positive x y hx hxy _ (isNonneg_approxIdL1 ε)
@@ -517,7 +517,7 @@ theorem tendsto_bconv_approx (hx : 0 ≤ x) (hxy : x ≤ y) {f : ℝ → ℝ} (h
 /-! ## `ν_ε`, the approximants as measures -/
 
 /-- `ν_ε = h_ε · dt`. -/
-noncomputable def approxMeasure (Fam : CascadeFamily) (x y ε : ℝ) : Measure ℝ :=
+noncomputable def approxMeasure (Fam : CascadeCore) (x y ε : ℝ) : Measure ℝ :=
   volume.withDensity fun t => ENNReal.ofReal ((Fam.approx x y ε : X) t)
 
 lemma isProbabilityMeasure_approxMeasure (hx : 0 ≤ x) (hxy : x ≤ y) {ε : ℝ} (hε : 0 < ε) :
@@ -899,7 +899,7 @@ hypotheses at all — only the identification `Φ_{x,y} = μ_{x,y} * ·` needs t
 
 open Classical in
 /-- **`μ_{x,y}`**: the causal probability measure representing `Φ_{x,y}`. -/
-noncomputable def repr (Fam : CascadeFamily) (x y : ℝ) : Measure ℝ :=
+noncomputable def repr (Fam : CascadeCore) (x y : ℝ) : Measure ℝ :=
   if h : 0 ≤ x ∧ x ≤ y then
     (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) h.1 h.2).choose
   else Measure.dirac 0
@@ -909,14 +909,14 @@ theorem repr_eq_choose (hx : 0 ≤ x) (hxy : x ≤ y) :
   unfold repr
   exact dif_pos ⟨hx, hxy⟩
 
-instance instIsProbabilityMeasureRepr (Fam : CascadeFamily) (x y : ℝ) :
+instance instIsProbabilityMeasureRepr (Fam : CascadeCore) (x y : ℝ) :
     IsProbabilityMeasure (Fam.repr x y) := by
   unfold repr
   split_ifs with h
   · exact (exists_isProbabilityMeasure_eq_mconvL1 (Fam := Fam) h.1 h.2).choose_spec.choose
   · infer_instance
 
-theorem isCausal_repr (Fam : CascadeFamily) (x y : ℝ) : IsCausal (Fam.repr x y) := by
+theorem isCausal_repr (Fam : CascadeCore) (x y : ℝ) : IsCausal (Fam.repr x y) := by
   unfold repr
   split_ifs with h
   · exact
@@ -944,6 +944,6 @@ theorem existsUnique_repr (hx : 0 ≤ x) (hxy : x ≤ y) :
       mconvL1_injective hρ (isCausal_repr Fam x y)
         (hρeq.symm.trans (Phi_eq_mconvL1_repr hx hxy))⟩
 
-end CascadeFamily
+end CascadeCore
 
 end Hemigroup

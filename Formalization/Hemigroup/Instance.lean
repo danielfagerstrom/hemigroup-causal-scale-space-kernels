@@ -150,7 +150,6 @@ Every clause of `def:cascade-family`, for the kernels built from a nondegenerate
 properties we named (A1)–(A8)", but "the kernels are a causal cascade measurement family". -/
 noncomputable def cascadeFamily (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) : CascadeFamily where
   Φ x y := mconvL1 (F.kernel x y)
-  S σ x := σ * x
   translation x y _ _ a f := mconvL1_transL1 a f
   causal x y hx hxy t₀ f hf :=
     vanishesBefore_mconvL1 (isCausal_kernel hx hxy) t₀ f hf
@@ -164,18 +163,6 @@ noncomputable def cascadeFamily (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠
       rw [kernel_conv hx hxy hyz]; infer_instance
     rw [mconvL1_comp, mconvL1_congr (kernel_conv hx hxy hyz)]
   continuous g := continuousOn_mconvL1_kernel F g
-  S_mapsTo σ hσ x hx := by simpa using mul_nonneg hσ.le hx
-  S_strictMonoOn σ hσ x _ y _ hxy := by
-    simpa using mul_lt_mul_of_pos_left hxy hσ
-  S_surjOn σ hσ x hx := ⟨σ⁻¹ * x, by
-    simp only [mem_Ici] at hx ⊢
-    exact mul_nonneg (inv_nonneg.mpr hσ.le) hx, by
-    field_simp⟩
-  scale σ hσ x y hx hxy := by
-    haveI : IsFiniteMeasure ((F.kernel x y).map (fun t => σ * t)) := by
-      rw [← kernel_map_const_mul hσ hx hxy]; infer_instance
-    rw [dilL1_comp_mconvL1 hσ (F.kernel x y),
-      mconvL1_congr (kernel_map_const_mul hσ hx hxy).symm]
   nondegenerate x y hx hxy hid := by
     haveI := isProbabilityMeasure_kernel (F := F) hx hxy.le
     -- If the operator is the identity, the kernel is `δ₀`, so its exponent vanishes.
@@ -222,6 +209,20 @@ noncomputable def cascadeFamily (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠
     · -- `x > 0`: strict monotonicity forbids `F(x) = F(y)`.
       exact absurd (by simpa using hfix 1 zero_le_one)
         (exponent_strictMono F ⟨s₀, hs₀, hs₀ne⟩ hx0 hxy).ne
+  S σ x := σ * x
+  covariant :=
+    { S_mapsTo := fun σ hσ _ x hx => by simpa using mul_nonneg hσ.le hx
+      S_strictMonoOn := fun σ hσ _ x _ y _ hxy => by
+        simpa using mul_lt_mul_of_pos_left hxy hσ
+      S_surjOn := fun σ hσ _ x hx => ⟨σ⁻¹ * x, by
+        simp only [mem_Ici] at hx ⊢
+        exact mul_nonneg (inv_nonneg.mpr hσ.le) hx, by
+        field_simp⟩
+      scale := fun σ hσ _ x y hx hxy => by
+        haveI : IsFiniteMeasure ((F.kernel x y).map (fun t => σ * t)) := by
+          rw [← kernel_map_const_mul hσ hx hxy]; infer_instance
+        rw [dilL1_comp_mconvL1 hσ (F.kernel x y),
+          mconvL1_congr (kernel_map_const_mul hσ hx hxy).symm] }
 
 end SelfDecomposableExponent
 

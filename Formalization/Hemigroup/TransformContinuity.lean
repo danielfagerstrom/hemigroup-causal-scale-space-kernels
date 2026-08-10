@@ -134,9 +134,9 @@ theorem continuousOn_laplace {μ : Measure ℝ} [IsFiniteMeasure μ] (hμ : IsCa
   · filter_upwards with t
     exact (Real.continuous_exp.comp (by fun_prop)).continuousOn
 
-namespace CascadeFamily
+namespace CascadeCore
 
-variable {Fam : CascadeFamily} {x y : ℝ}
+variable {Fam : CascadeCore} {x y : ℝ}
 
 /-- The index set of the family, `{0 ≤ x ≤ y}`. -/
 def Index : Set (ℝ × ℝ) := {p : ℝ × ℝ | 0 ≤ p.1 ∧ p.1 ≤ p.2}
@@ -149,7 +149,7 @@ theorem clampCLM_Phi_boxL1 (hx : 0 ≤ x) (hxy : x ≤ y) {s : ℝ} (hs : 0 ≤ 
 
 /-- **The transform is continuous in the parameters**, for each fixed `s ≥ 0`. This is (A7)
 divided by the strictly positive constant `⟨g_s, 1_{(0,1)}⟩`. -/
-theorem continuousOn_laplace_repr (Fam : CascadeFamily) {s : ℝ} (hs : 0 ≤ s) :
+theorem continuousOn_laplace_repr (Fam : CascadeCore) {s : ℝ} (hs : 0 ≤ s) :
     ContinuousOn (fun p : ℝ × ℝ => laplace (Fam.repr p.1 p.2) s) Index := by
   set Λ : ℝ := ∫ t, clampExp s t * box t with hΛdef
   have hΛ : 0 < Λ := integral_clampExp_box_pos hs
@@ -163,11 +163,11 @@ theorem continuousOn_laplace_repr (Fam : CascadeFamily) {s : ℝ} (hs : 0 ≤ s)
 /-! ## The exponent -/
 
 /-- **`g_{x,y}(s) = -\log \hat\mu_{x,y}(s)`**, the object Chapter 5 works with. -/
-noncomputable def exponent (Fam : CascadeFamily) (x y s : ℝ) : ℝ :=
+noncomputable def exponent (Fam : CascadeCore) (x y s : ℝ) : ℝ :=
   -Real.log (laplace (Fam.repr x y) s)
 
 /-- The exponent is nonnegative: the transform of a causal probability measure is at most `1`. -/
-theorem exponent_nonneg (Fam : CascadeFamily) (x y : ℝ) {s : ℝ} (hs : 0 ≤ s) :
+theorem exponent_nonneg (Fam : CascadeCore) (x y : ℝ) {s : ℝ} (hs : 0 ≤ s) :
     0 ≤ Fam.exponent x y s := by
   rw [exponent, neg_nonneg]
   exact Real.log_nonpos (laplace_pos_of_prob (isCausal_repr Fam x y) hs).le
@@ -175,17 +175,17 @@ theorem exponent_nonneg (Fam : CascadeFamily) (x y : ℝ) {s : ℝ} (hs : 0 ≤ 
 
 /-- **`g_{x,y}(\zp) = 0`.** No limit is taken: the value at `0` is already `0`, and continuity
 in `s` on `[0,∞)` — the next result — turns that into the statement the article makes. -/
-@[simp] theorem exponent_zero (Fam : CascadeFamily) (x y : ℝ) : Fam.exponent x y 0 = 0 := by
+@[simp] theorem exponent_zero (Fam : CascadeCore) (x y : ℝ) : Fam.exponent x y 0 = 0 := by
   rw [exponent, laplace_zero_prob, Real.log_one, neg_zero]
 
 /-- **The exponent is continuous in the parameters**, for each fixed `s ≥ 0`. -/
-theorem continuousOn_exponent (Fam : CascadeFamily) {s : ℝ} (hs : 0 ≤ s) :
+theorem continuousOn_exponent (Fam : CascadeCore) {s : ℝ} (hs : 0 ≤ s) :
     ContinuousOn (fun p : ℝ × ℝ => Fam.exponent p.1 p.2 s) Index := by
   refine ContinuousOn.neg (ContinuousOn.log (continuousOn_laplace_repr Fam hs) fun p _ => ?_)
   exact (laplace_pos_of_prob (isCausal_repr Fam p.1 p.2) hs).ne'
 
 /-- **The exponent is continuous in `s` on `[0,∞)`.** -/
-theorem continuousOn_exponent_right (Fam : CascadeFamily) (x y : ℝ) :
+theorem continuousOn_exponent_right (Fam : CascadeCore) (x y : ℝ) :
     ContinuousOn (fun s => Fam.exponent x y s) (Ici 0) := by
   refine ContinuousOn.neg
     (ContinuousOn.log (continuousOn_laplace (isCausal_repr Fam x y)) fun s hs => ?_)
@@ -193,7 +193,7 @@ theorem continuousOn_exponent_right (Fam : CascadeFamily) (x y : ℝ) :
 
 /-- **`lem:transform-continuity`.** The exponent is well defined and nonnegative, vanishes at
 the origin, and is continuous separately in the parameters and in `s`. -/
-theorem transform_continuity (Fam : CascadeFamily) :
+theorem transform_continuity (Fam : CascadeCore) :
     (∀ (x y s : ℝ), 0 ≤ s → 0 ≤ Fam.exponent x y s) ∧
       (∀ x y : ℝ, Fam.exponent x y 0 = 0) ∧
       (∀ s : ℝ, 0 ≤ s → ContinuousOn (fun p : ℝ × ℝ => Fam.exponent p.1 p.2 s) Index) ∧
@@ -201,6 +201,6 @@ theorem transform_continuity (Fam : CascadeFamily) :
   ⟨fun x y _ hs => exponent_nonneg Fam x y hs, exponent_zero Fam,
     fun _ hs => continuousOn_exponent Fam hs, continuousOn_exponent_right Fam⟩
 
-end CascadeFamily
+end CascadeCore
 
 end Hemigroup
