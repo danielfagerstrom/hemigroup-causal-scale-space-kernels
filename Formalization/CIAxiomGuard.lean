@@ -103,3 +103,7 @@ over; nothing in the argument itself leaves Lean core.
 /-! ### `lem:transform-continuity` -/
 
 #print axioms Hemigroup.CascadeCore.transform_continuity
+
+/-! ### `lem:additivity` -/
+
+#print axioms Hemigroup.CascadeCore.additivity

@@ -1,3 +1,4 @@
+import Hemigroup.Additivity
 import Hemigroup.Basic
 import Hemigroup.Construction
 import Hemigroup.Continuity

@@ -30,6 +30,7 @@
 % draft: Lemma 5.1
 \begin{lemma}[additivity]\label{lem:additivity}
 \uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity}
+\lean{Hemigroup.CascadeCore.additivity}\leanok
 Under (A1)--(A7), $\mu_{x,z} = \mu_{y,z} * \mu_{x,y}$ for $x \le y \le z$, hence
 \[
   g_{x,z}(s) = g_{x,y}(s) + g_{y,z}(s), \qquad g_{x,x} = 0.
@@ -40,17 +41,28 @@ Consequently, with $G(x, s) := g_{0,x}(s)$,
 \]
 where $G(0, \cdot) = 0$, $G(\cdot, s)$ is nondecreasing and continuous for each $s$, and
 $G(x, \zp) = 0$.
-\statusT
+\statusT\quad\emph{(\textbf{Machine-checked}, \texttt{\#print axioms} reducing to Lean core.
+The eight conjuncts of \texttt{CascadeCore.additivity} are the eight clauses above, in order,
+with $G$ itself \texttt{CascadeCore.G}. No vocabulary question arises: every clause is an
+identity or an inequality between real numbers, so unlike \ref{thm:increments-bernstein} this
+one could be tagged as the draft states it.
+
+Stated for the covariance-free core, so it holds in every stratum. That matters for the
+monotonicity clause in particular: \texttt{G\_monotoneOn} is half of what a reading of the
+covariance-free stratum needs, the other half being \ref{thm:increments-bernstein}.)}
 \end{lemma}
 
 \begin{proof}
+\leanok
 Immediate from (A6), \ref{lem:convolution-representation} (under which composition of
 operators corresponds to convolution of measures), and \ref{lem:transform-continuity}. In
 detail: (A6) gives $\Phi_{y,z}\Phi_{x,y} = \Phi_{x,z}$, which by
 \ref{lem:convolution-representation} reads $\mu_{y,z} * (\mu_{x,y} * f) = \mu_{x,z} * f$ for
 all $f \in X$, so $\mu_{x,z} = \mu_{y,z} * \mu_{x,y}$ by the uniqueness clause there. Taking
-Laplace transforms turns convolution into multiplication and hence $-\log$ into addition,
-giving the additivity of $g$; $\Phi_{x,x} = \Id$ gives $\mu_{x,x} = \delta_0$ and so
+Laplace transforms turns convolution into multiplication and hence $-\log$ into addition ---
+legitimate because $\hat\mu(s) > 0$, which is the first clause of
+\ref{lem:transform-continuity} --- giving the additivity of $g$;
+$\Phi_{x,x} = \Id$ gives $\mu_{x,x} = \delta_0$ and so
 $g_{x,x} = 0$. Setting $x = 0$ defines $G$, and additivity gives
 $g_{x,y} = G(y,\cdot) - G(x,\cdot)$. Monotonicity in the first argument is the nonnegativity
 of $g_{x,y}$, continuity is \ref{lem:transform-continuity}, and $G(x,\zp) = 0$ is the
