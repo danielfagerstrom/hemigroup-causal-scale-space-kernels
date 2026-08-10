@@ -16,6 +16,18 @@
 %
 % Equations (6.1) and (6.2) keep the draft's hand-written tags, since its later prose refers
 % to them by number.
+%
+% VOCABULARY (2026-08-10), the companion to the note at the head of 05-cascade.tex. Only one
+% conclusion in this chapter names a class of functions -- prop:canonical-gauge's F in BF_0 --
+% and it is now also stated in LE (def:levy-exponent), which is what a Lean tag can point at.
+%
+% The proofs are a second matter and a smaller one. Two steps here reach for the derivative-sign
+% picture where they do not have to: lem:action-rigidity(3) argues that a nonzero member of BF_0
+% is strictly increasing "because its derivative is completely monotone", and the same fact is
+% used again in prop:canonical-gauge. Both are cor:strict-monotonicity, whose Lean route runs
+% lem:vanishing on the representation and never differentiates -- see that node. The prose is
+% left as the draft has it, since the paper argues in BF_0; the formalisation notes say which
+% substitute to use, so that a Lean pass does not rediscover the question mid-proof.
 
 % draft: Lemma 6.1
 \begin{lemma}[Laplace form of covariance]\label{lem:covariance-laplace}
@@ -57,7 +69,13 @@ $\Sact_1 = \Id$.
 \item The action has no fixed point in $(0,\infty)$: if $\Sact_\sigma x^* = x^*$ for all
 $\sigma$, then $x^* = 0$.
 \end{enumerate}
-\statusT
+\statusT\quad\emph{(\textbf{Not formalised.} One note for the Lean pass: the proof of (3) below
+argues that a nonzero member of $\BFz$ is strictly increasing from the sign of its derivative,
+which is vocabulary the development does not have. The substitute is
+\ref{cor:strict-monotonicity}, which reaches the same conclusion by running \ref{lem:vanishing}
+on the representation and never differentiating; the constructed-family case is already in Lean
+as \texttt{exponent\_strictMono}. Nothing else in this lemma leaves the order structure, so
+(1), (2) and (4) are Mathlib's order API and an injectivity argument.)}
 \end{lemma}
 
 \begin{proof}
@@ -99,7 +117,7 @@ forces $x^* = 0$.
 
 % draft: Proposition 6.3
 \begin{proposition}[orbit coordinate; the gauge]\label{prop:canonical-gauge}
-\uses{lem:action-rigidity,lem:covariance-laplace,cor:strict-monotonicity,thm:increments-bernstein,def:bernstein-function}
+\uses{lem:action-rigidity,lem:covariance-laplace,cor:strict-monotonicity,thm:increments-bernstein,def:bernstein-function,def:levy-exponent}
 Assume (A1)--(A8) and (ND). Then $c(\sigma) := \Sact_\sigma 1$ is a continuous strictly
 increasing bijection of $(0,\infty)$ onto $(0,\infty)$ with $c(1) = 1$. Consequently
 \[
@@ -111,7 +129,17 @@ $\chi(\Sact_\sigma x) = \sigma\,\chi(x)$, and
   G(x, s) = F\bigl(\chi(x)\, s\bigr), \qquad
   F := G(1, \cdot) \in \BFz,\ F \not\equiv 0. \tag{6.2}
 \]
-\statusT
+Equivalently $F \in \LE$, with a drift $b_0 \ge 0$ and a Lévy measure $\nu$ on $(0,\infty)$.
+\statusT\quad\emph{(the $\LE$ reading is the same statement, by \ref{prop:bernstein-toolbox}(3),
+and is the one \ref{thm:main-analysis} needs: it is what feeds
+\ref{lem:selfdecomposable-exponents} and, through it, the form (7.1). $F$'s membership comes
+straight from \ref{thm:increments-bernstein}, so nothing new is asserted here --- the class is
+carried along, not re-established. \textbf{Not formalised}, and this construction is the
+unglamorous stretch the formalisation note has always flagged (M5 of the ladder). Beyond the
+gauge itself, note what the Lean will need that the statement does not show: $\chi$ bundled with
+its inverse and with the conjugation $\chi \circ \Sact_\sigma = \sigma\,\chi$, which is the
+interface \ref{prop:main-uniqueness} deliberately declined to guess at. Design it here, against
+this proposition, and \ref{thm:main-analysis} is assembly.)}
 \end{proposition}
 
 \begin{proof}

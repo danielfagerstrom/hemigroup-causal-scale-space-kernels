@@ -20,22 +20,48 @@ positioning and literature work live in the wiki hub's outline page.
 
 ## Status
 
-**Scaffolded, not yet written.** The blueprint has its chapter structure but no statement
-nodes, `AXIOMS.md` has no entries, and nothing is formalised. `linkage check` passes
-trivially — zero nodes is consistent, not complete.
+**Written through §12; formalised through §4, plus two thirds of the main theorem.**
+
+The blueprint carries all of §§2–12 — 53 statement nodes, 41 `[T]` and 12 `[A]` — and
+`AXIOMS.md` has 17 ledger entries, each with a page anchor. The Lean development is ~4,800
+lines, `sorry`-free, and rests on Lean core plus **one** axiom: A17, the existence half of the
+subordinator correspondence, which enters at a single point and is phrased so it can be demoted
+to a lemma without touching a downstream statement. CI checks that with `#print axioms` against
+`blueprint/trust-boundary.txt` on every push.
+
+Ten nodes carry `\lean{...}\leanok`:
+
+| Chapter | Proved in Lean |
+|---|---|
+| 2 Preliminaries | `def:levy-exponent`, `lem:vanishing`, `prop:laplace-uniqueness-causal`, `prop:laplace-continuity-causal`, `lem:transform-tightness` |
+| 3 Axioms | `def:cascade-family` — the structure, checked against a model |
+| 4 Convolution representation | `lem:convolution-representation`, `lem:transform-continuity` — chapter complete |
+| 7 Main theorem | `thm:main-construction` (⇐), `prop:main-uniqueness` |
+
+The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
+continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
+restricted cases the article actually uses are proved here, so neither name appears in
+`trust-boundary.txt`. They keep their `[A]` tags because that is the *paper's* stance; the
+`[T]` nodes beneath them record what is machine-checked.
 
 The next work, in order:
 
-1. **Sources.** Resolve citekeys through the librarian for the Bernstein-function spine
-   (Schilling–Song–Vondraček; Feller Vol. 2 §XIII). Both are already in the library.
-2. **Ledger.** Write the `AXIOMS.md` entries for what will be taken on trust, each with a
-   page anchor. Note the overlap with `scale-space-foundations` A5 — same Bernstein theorem,
-   so the anchors should agree.
-3. **Blueprint nodes.** Transcribe the draft's numbered statements (Def. 2.1 → Thm 7.3 →
-   Theorems 3′/4′/5′) as labelled nodes with `\statusT`/`\statusA`. The blueprint is the text
-   of record: statements *and* proofs are written as publication-quality mathematics, not
-   pointers.
-4. **Lean.** `\lean{...}` tags follow the blueprint, `\leanok` once proved.
+1. **Chapter 5.** `thm:increments-bernstein` — the null-array argument, elementary by design,
+   and the one place `[A]` A4 (closure of BF under pointwise limits) earns its keep. Its
+   statement is now also given in `\LE` form (`def:levy-exponent`), which is what a Lean tag can
+   point at; the work is extracting the limiting triple from the finite Lévy measures `Π_n` the
+   argument already produces.
+2. **Chapter 6.** The gauge construction — M5 of the ladder and the most unglamorous stretch.
+   Design `χ` bundled with its inverse and the conjugated action *here*, against
+   `prop:canonical-gauge`, since that is the interface (⇒) needs.
+3. **`thm:main-analysis`** (⇒). Assembly once 1 and 2 are done; it adds no analysis of its own.
+   Finishing it is what lets `thm:main-characterization` go green.
+4. **`lem:selfdecomposable-exponents`.** One implication of three, (3)⇒(1), is in Lean
+   (`levyExponentD_increment`). The node is still an equivalence and could be split the way
+   §7's main theorem now is; the other implications rest on `[A]` A3 and A4.
+5. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
+   there, and most of what they cite (Mellin inversion, Sonine pairs, Courrège, the HCM tower)
+   has no Mathlib counterpart.
 
 ## Relation to `scale-space-foundations`
 

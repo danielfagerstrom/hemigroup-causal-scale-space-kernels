@@ -31,6 +31,12 @@
 \newcommand{\CM}{\mathrm{CM}}
 \newcommand{\BF}{\mathrm{BF}}
 \newcommand{\BFz}{\mathrm{BF}_0}
+% LE = the Levy exponents (Def. 2.7): the SAME class as BF_0, named by its representation
+% rather than by derivative signs. The identification is Prop. 2.3(3), ledger A3. Two names
+% for one class is deliberate -- the Lean development speaks only \LE, and a node whose
+% conclusion is stated in \LE can carry a \lean tag while the same conclusion stated in \BFz
+% cannot. Use \BFz where the argument is the draft's, \LE where a Lean tag is wanted.
+\newcommand{\LE}{\mathrm{LE}}
 \newcommand{\CBF}{\mathrm{CBF}}           % complete Bernstein functions (\S9)
 % The Bondesson tower of \S\S12-13: HCM \subset GGC \subset SD.
 \newcommand{\HCM}{\mathrm{HCM}}

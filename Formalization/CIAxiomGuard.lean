@@ -21,24 +21,70 @@ its declaration here silently exempts it from the guard, so the two are kept in 
 
 Expected output today: Lean core (`propext`, `Classical.choice`, `Quot.sound`) everywhere, plus
 `Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent` — ledger A17 — on the
-constructive direction only.
+constructive direction and on the uniqueness clause, which quantifies over the kernels A17
+builds and so inherits it through `kernel`.
+
+The blueprint's `thm:main-characterization` is a collation and carries no tag of its own; its
+halves `thm:main-construction` and `prop:main-uniqueness` do, and are listed below.
 -/
 
 -- Deliberately no `open Hemigroup`: the guard compares the printed axiom names against
 -- `blueprint/trust-boundary.txt` by exact string match, and opening the namespace would
 -- abbreviate them, so every interface axiom would read as undeclared.
 
+/-! ### `def:levy-exponent` -/
+
+#print axioms Hemigroup.levyExponent
+
 /-! ### `lem:vanishing` -/
 
 #print axioms Hemigroup.levyExponent_eq_zero_of_eq_zero
 
+/-! ### `prop:laplace-uniqueness-causal`
+
+The `[T]` refinement of `prop:laplace-uniqueness` (ledger A6). It reduces to Lean core, which is
+why A6 is absent from `trust-boundary.txt`.
+-/
+
+#print axioms Hemigroup.laplace_injective
+
+/-! ### `prop:laplace-continuity-causal`
+
+Likewise for `prop:laplace-continuity` (ledger A5).
+-/
+
+#print axioms Hemigroup.tendsto_integral_of_tendsto_laplace
+
+/-! ### `lem:transform-tightness`
+
+The Markov bound. It lives in `Continuity.lean`, which imports the interface file, but the
+statement does not mention `kernel`, so it does not inherit A17 — and this line is what checks
+that rather than assuming it.
+-/
+
+#print axioms Hemigroup.measureReal_Ioi_mul_le
+
 /-! ### `def:cascade-family`
 
 The structure carries no proof obligations of its own; what has to hold is that the constructed
-kernels satisfy it. A17 enters here, and only here.
+kernels satisfy it, which is the next entry.
+-/
+
+/-! ### `thm:main-construction`
+
+Theorem 7.3 (⇐), and the instance that checks `def:cascade-family` against a model. A17 enters
+here.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.cascadeFamily
+
+/-! ### `prop:main-uniqueness`
+
+Theorem 7.3's uniqueness clause. A17 reaches it through `kernel`, which the statement quantifies
+over; nothing in the argument itself leaves Lean core.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.gauge_and_exponent_unique
 
 /-! ### `lem:convolution-representation` -/
 

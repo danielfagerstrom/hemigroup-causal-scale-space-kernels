@@ -16,6 +16,21 @@
 %    verification, Proposition 9.2, Theorem 9.5, Lemma 10.3(5)) but never states them, so
 %    their trust was invisible to the dependency graph. Appending them leaves 2.1-2.4 alone.
 %
+% 3. 2.7-2.10 are ADDITIVE for the same reason and by the same rule -- appended, so that
+%    2.1-2.6 keep the draft's numbers. They exist because the FORMALISATION had outrun the
+%    graph: ~900 lines of finished, axiom-guarded Lean (Levy, Injectivity, WeakConvergence,
+%    the Markov bound of Continuity) proved things this chapter either did not state at all
+%    (the representation, Def. 2.7 -- the single most-used object in the Lean development,
+%    and until now nameable only inside Prop. 2.3(3)) or stated only in a stronger cited
+%    form it could not be tagged against (2.5, 2.6). The pattern for the latter is worth
+%    naming, because chapters 8-12 will want it again:
+%
+%      an [A] node keeps the PAPER's statement and its ledger entry; a [T] node beneath it
+%      states the RESTRICTED case the development actually proves, carries the \lean tag,
+%      and is what the downstream node \uses.
+%
+%    So Prop. 2.5 and 2.6 are unchanged -- the paper still cites Feller -- while 2.8 and 2.9
+%    record that nothing formalised here rests on A5 or A6.
 % \notes{} tags are omitted throughout until the hub's content-note slugs exist; an
 % unresolvable slug fails `linkage check --wiki`.
 
@@ -84,7 +99,13 @@ with uniqueness. Part~(2) is \ledger{A2} entire --- all three equivalences of th
 theorem, not only the exponential one: the composition clause is what
 \ref{lem:potential-kernel} inverts a Bernstein function with. Part~(3) is \ledger{A3} entire, including
 the uniqueness of the triple, which Lemma~7.1 needs and which a representation theorem
-without it would not supply. Part~(4) is \ledger{A4} entire; it is the single external fact
+without it would not supply. Part~(3) is also the \emph{bridge} between the two vocabularies
+this project speaks: it is what identifies \ref{def:bernstein-function} with
+\ref{def:levy-exponent}, and therefore the single edge every Lean tag in chapters 5--7 crosses,
+since the development names admissibility by the representation and never by derivative signs.
+A node whose conclusion is stated in $\BFz$ cannot carry a Lean tag without spending this part;
+a node whose conclusion is stated in $\LE$ carries one for free.
+Part~(4) is \ledger{A4} entire; it is the single external fact
 Theorem~5.2 rests on, and the null-array argument that produces the pointwise limit there is
 ours and is held \textbf{[T]}. None of the four carries anything about the hemigroup family:
 they are statements about $\CM$ and $\BF$ as classes of functions, and every step joining
@@ -176,3 +197,137 @@ gap is not a formality --- equality of the moments from some $n_0$ onwards does 
 pin down an atom at the origin of the transported measure, and the argument that ours has none
 is not formalised.)}
 \end{proposition}
+
+\bigskip
+
+The remaining four statements are additive too, and they are the \emph{formalisation's}
+vocabulary rather than the draft's. \ref{def:levy-exponent} names the object the Lean
+development is written in; the three after it are the restricted cases of \ref{prop:laplace-continuity}
+and \ref{prop:laplace-uniqueness} that it proves outright, recorded as \textbf{[T]} nodes beneath
+the \textbf{[A]} ones they refine so that the graph shows what actually rests on \ledger{A5} and
+\ledger{A6}. Nothing formalised does.
+
+% additive: not in the draft. The representation as a named class -- what the Lean
+% development speaks. Used by lem:vanishing, thm:increments-bernstein, prop:canonical-gauge,
+% lem:selfdecomposable-exponents, thm:main-construction.
+\begin{definition}[Lévy exponent]\label{def:levy-exponent}
+\uses{prop:bernstein-toolbox}
+\lean{Hemigroup.levyExponent}\leanok
+A function $g : [0,\infty) \to [0,\infty]$ is a \emph{Lévy exponent} if
+\[
+  g(s) = b_0\,s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu(dt),
+  \qquad b_0 \ge 0,
+\]
+for a drift $b_0$ and a positive Borel measure $\nu$ on $(0,\infty)$ --- with no killing term,
+so that $g(0) = 0$. We write $g \in \LE$, and call $(b_0, \nu)$ its \emph{triple}.
+\statusT\quad\emph{(A \emph{name} for \ref{prop:bernstein-toolbox}(3)'s right-hand side, not a
+new fact: by that part, $\LE = \BFz$ as classes of functions, with the triple unique. Both names
+are kept because the two documents need different ones. The paper argues in $\BFz$, where the
+draft's proofs live; the Lean development argues in $\LE$ and never defines
+\ref{def:completely-monotone} at all --- the reason is \texttt{blueprint/DESIGN-formalization-strategy.md},
+and the payoff is that the Lévy--Khintchine theorem (\ledger{A3}) is crossed once, here, instead
+of inside every proof. Stated in Lean as \texttt{Hemigroup.levyExponent}, valued in
+$[0,\infty]$ so that no integrability hypothesis is carried; the integrability condition
+$\int (1 \wedge t)\,\nu(dt) < \infty$ of \ref{prop:bernstein-toolbox}(3) is equivalent, for
+causal $\nu$, to finiteness of $g$ at a single $s > 0$, and appears in the development as that
+hypothesis instead. \ref{lem:vanishing} and \ref{lem:selfdecomposable-exponents}(3)$\Rightarrow$(1)
+are both proved directly from this definition
+(\texttt{levyExponent\_eq\_zero\_of\_eq\_zero}, \texttt{levyExponentD\_increment}).)}
+\end{definition}
+
+% additive: not in the draft. The [T] refinement of prop:laplace-uniqueness.
+\begin{proposition}[uniqueness of the Laplace transform, causal case]\label{prop:laplace-uniqueness-causal}
+\uses{prop:laplace-uniqueness}
+\lean{Hemigroup.laplace_injective}\leanok
+Let $\mu, \rho$ be finite measures on $\RR$ carried by $[0,\infty)$. If
+$\hat\mu(s) = \hat\rho(s)$ for every $s \ge 0$, then $\mu = \rho$.
+\statusT\quad\emph{(the case of \ref{prop:laplace-uniqueness} that this article's own arguments
+use, and it is \emph{proved}: \texttt{Hemigroup.laplace\_injective},
+\texttt{\#print axioms} reducing to Lean core. It is weaker than the cited statement in exactly
+one respect --- agreement is assumed on all of $[0,\infty)$, not on a tail $(a,\infty)$ --- and
+that gap is not a formality, which is why \ref{prop:laplace-uniqueness} keeps its \ledger{A6}
+tag and this node does not replace it. Every step in the formalised part of the article of the
+form ``the transforms agree, therefore the measures agree'' has both measures carried by
+$[0,\infty)$ and both transforms known on all of it, so it cites this node and not that one; the
+consequence is that \ledger{A6} does not appear in \texttt{blueprint/trust-boundary.txt}.)}
+\end{proposition}
+
+\begin{proof}
+\leanok
+Substitute $x = e^{-t}$: the map is a measurable embedding carrying a measure on $[0,\infty)$
+to one on $(0,1]$, and it turns $\hat\mu(n)$ into the $n$th moment of the image, for every
+$n \in \NN$. Two finite measures on the compact $[0,1]$ with the same moments agree, by the
+Weierstrass approximation theorem. Transporting back along the embedding loses nothing, so
+$\mu = \rho$.
+\end{proof}
+
+% additive: not in the draft. The [T] refinement of prop:laplace-continuity.
+\begin{proposition}[continuity theorem, causal probability case]\label{prop:laplace-continuity-causal}
+\uses{prop:laplace-continuity,prop:laplace-uniqueness-causal}
+\lean{Hemigroup.tendsto_integral_of_tendsto_laplace}\leanok
+Let $\mu_n, \mu$ be probability measures on $\RR$ carried by $[0,\infty)$, and suppose
+\begin{enumerate}
+\item $\hat\mu_n(s) \to \hat\mu(s)$ for every $s \ge 0$; and
+\item the family is \emph{tight}: for every $\eta > 0$ there is a $T$ with
+$\mu_n\bigl((T,\infty)\bigr) \le \eta$ for all $n$, and $\mu\bigl((T,\infty)\bigr) \le \eta$.
+\end{enumerate}
+Then $\mu_n \to \mu$ weakly.
+\statusT\quad\emph{(the direction and the case of \ref{prop:laplace-continuity} that
+\ref{thm:main-construction} uses --- transforms to measures, probability form --- and it is
+\emph{proved}: \texttt{Hemigroup.tendsto\_integral\_of\_tendsto\_laplace},
+\texttt{\#print axioms} reducing to Lean core, so \ledger{A5} does not appear in
+\texttt{blueprint/trust-boundary.txt} either. Tightness is a \emph{hypothesis} here rather than a
+conclusion, which is the honest shape: \ref{prop:laplace-continuity}'s assignment clause always
+held the tightness argument \textbf{[T]}, and \ref{lem:transform-tightness} is where it is
+discharged. Feller's boundedness hypothesis, the classical trap of the general form, is carried
+for free by the probability form and so cannot be forgotten. The general measure form is
+deliberately not formalised.)}
+\end{proposition}
+
+\begin{proof}
+\leanok
+Push forward along $x = e^{-t}$ onto the compact $[0,1]$, as in
+\ref{prop:laplace-uniqueness-causal}. There, convergence of the Laplace transforms at the
+naturals \emph{is} convergence of the moments, so the images converge weakly by Weierstrass; no
+compactness argument is needed, because the carrier is already compact.
+
+Transporting back is where tightness is spent. A bounded continuous $f$ on $[0,\infty)$ pulls
+back to $f \circ (-\log)$, which is unbounded at the origin, so it is replaced by
+$f \circ \bigl(\min(-\log, T)\bigr)$, bounded and continuous on $[0,1]$ and agreeing with it off
+$(T,\infty)$; the two integrals differ by at most $2\|f\|_\infty\,\mu_n\bigl((T,\infty)\bigr)$,
+which hypothesis (2) makes uniformly small. An $\varepsilon/3$ argument concludes.
+\end{proof}
+
+% additive: not in the draft. The tightness half prop:laplace-continuity's assignment clause
+% always held [T] but never stated. Used by thm:main-construction.
+\begin{lemma}[tail bound from the transform]\label{lem:transform-tightness}
+\lean{Hemigroup.measureReal_Ioi_mul_le}\leanok
+Let $\mu$ be a probability measure on $\RR$ carried by $[0,\infty)$. Then for all $s \ge 0$ and
+all $T$,
+\[
+  \mu\bigl((T,\infty)\bigr)\,\bigl(1 - e^{-sT}\bigr) \;\le\; 1 - \hat\mu(s).
+\]
+Consequently a family of such measures whose transforms satisfy
+$\sup_n \bigl(1 - \hat\mu_n(s)\bigr) \to 0$ as $s \to \zp$ is tight.
+\statusT\quad\emph{(this is the tightness argument \ref{prop:laplace-continuity} always claimed
+as ours, now stated rather than left inside a proof. \texttt{Hemigroup.measureReal\_Ioi\_mul\_le},
+\texttt{\#print axioms} reducing to Lean core; the divided form is
+\texttt{measureReal\_Ioi\_le\_div}. No hypothesis on $T$ is needed --- causality supplies the
+sign that $T \ge 0$ would have. Its use in \ref{thm:main-construction} is
+\texttt{kernel\_tail\_le}, which makes the bound uniform over the family as
+$\mu_{a,b}\bigl((T,\infty)\bigr) \le F(Bs)/(1 - e^{-sT})$ for $b \le B$, and what makes that
+bite is $F(\zp) = 0$; \texttt{isTightMeasureSet\_kernel} repackages it in Mathlib's own
+vocabulary, which nothing here now consumes but any other consumer would.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+Pointwise: $1 - \hat\mu(s) = \int \bigl(1 - e^{-st}\bigr)\,\mu(dt)$, the integrand is at least
+$1 - e^{-sT}$ on $(T,\infty)$, and it is nonnegative elsewhere because $\mu$ is carried by
+$[0,\infty)$ and $s \ge 0$. Dropping the complement gives the bound.
+
+For the consequence, fix $\eta > 0$. Choose $s > 0$ with
+$\sup_n \bigl(1 - \hat\mu_n(s)\bigr) \le \eta/2$, then $T$ large enough that
+$1 - e^{-sT} \ge 1/2$; the displayed bound gives $\mu_n\bigl((T,\infty)\bigr) \le \eta$ for
+every $n$.
+\end{proof}
