@@ -653,3 +653,47 @@ mid-proof costs a rewrite.
 2. `exists_subordinatorFamily` — A17 per `t`, then the measurability argument above.
 3. Then `prop:sonine-pair-exists` (9.12) follows immediately, and chapter 9 closes except for its
    `[A]` nodes.
+
+---
+
+# Route B: the measurable family, proved — 2026-08-11
+
+`Hemigroup/Subordinator.lean` (new, three general lemmas, all Lean core) plus the assembly in
+`Skeleton/Chapter9.lean`. **Route B now has exactly one open sub-lemma**,
+`exists_levyTriple_symbol`.
+
+## The measurability gap is closed, and Mathlib had the hard part
+
+`Measurable.measure_of_isPiSystem` is the Dynkin step, already in Mathlib and stated for exactly
+this situation: measurability of `a ↦ μ a s` on a generating π-system plus finiteness gives it on
+every measurable set. With `borel_eq_generateFrom_Iic`, `isPiSystem_Iic` and `Antitone.measurable`
+alongside it, the whole argument is about twenty lines. The part that is *ours* is the single
+inequality `conv_Iic_le`: convolving with a causal probability measure can only move mass right,
+so it can only decrease the cumulative distribution — the increasing paths of the subordinator,
+stated at the level of measures.
+
+**What that inequality is doing is worth stating plainly.** Route B was chosen because it
+constructs the potential measure rather than representing it, and the article's prose describes it
+as "integrating the subordinator's laws over time". Formalising it shows the subordinator is not
+decoration: without `μ_{t+t'} = μ_t ∗ μ_{t'}` and causality there is no antitonicity, without
+antitonicity no measurability, and without measurability no measure. The increasing paths are what
+make `U` *exist*.
+
+## A note on where general lemmas live
+
+`levyExponent_smul`, `conv_Iic_le` and `measurable_of_antitone_measure_Iic` are fully proved and
+mention nothing of chapter 9, so they belong in `Hemigroup/`, not in the skeleton — even though
+their only consumer is a statement that still carries a `sorry` upstream. The consequence is that
+CI's sorry guard cannot see them, so they are listed in `CIAxiomGuard.lean` explicitly; that is
+the only check that they are interface-free. Worth remembering as the general rule: **a proved
+general lemma goes in the library whatever the state of its consumer**, and the guard list is what
+keeps that from being a hole.
+
+## Next
+
+1. `exists_levyTriple_symbol` — the last open piece of Route B, and the largest: the Stieltjes
+   measure `-d[k(·/x)/x]` (needing a right-continuous modification of `k`, since `k` is only
+   `AntitoneOn`) and the integration by parts that turns `s∫e^{-su}h(u)du` into
+   `∫(1-e^{-su})ν(du)`.
+2. `prop:sonine-pair-exists` (9.12), which is `existsUnique_potentialKernel` plus
+   `sonine_conservation` plus σ-finiteness of `ℓ` from local finiteness and causality.

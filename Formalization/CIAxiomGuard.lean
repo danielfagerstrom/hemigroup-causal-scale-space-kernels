@@ -246,3 +246,15 @@ everything downstream of that reduction.
 #print axioms Hemigroup.SelfDecomposableExponent.SameSymbolAction.eventuallyEq
 #print axioms Hemigroup.SelfDecomposableExponent.SameSymbolAction.eq_of_continuousAt
 #print axioms Hemigroup.SelfDecomposableExponent.SameSymbolAction.eqOn
+
+/-! ### Route B's measurability machinery
+
+Not blueprint nodes: the three general lemmas `lem:potential-kernel` needs to form
+`U = ∫₀^∞ μ_t dt` at all. They are listed because the sorry guard cannot see them — they live in
+`Hemigroup/` and are consumed by a `Skeleton/` statement that still carries a `sorry` upstream, so
+this is the only check that they themselves are interface-free. All three reduce to Lean core.
+-/
+
+#print axioms Hemigroup.levyExponent_smul
+#print axioms Hemigroup.conv_Iic_le
+#print axioms Hemigroup.measurable_of_antitone_measure_Iic

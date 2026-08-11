@@ -5,7 +5,7 @@ Authors: Daniel Fagerström
 -/
 -- `Hemigroup.Sonine` rather than `MemoryKernelTransform`: Route B's main argument below uses
 -- `laplaceL_volume_Ici`, which is where `thm:sonine-conservation` needed it too.
-import Hemigroup.Sonine
+import Hemigroup.Subordinator
 
 /-!
 # The target types of chapter 9
@@ -149,14 +149,94 @@ theorem exists_levyTriple_symbol (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) 
       ∀ s, 0 < s → ENNReal.ofReal (F.symbol x s) = levyExponent F.b₀ ν s := by
   sorry
 
-/-- **Route B, step 2.** The subordinator's laws, as a *measurable* family — see the module note
-above for why that clause is the one with content. -/
+/-- **Route B, step 2 — proved 2026-08-11.** The subordinator's laws, as a *measurable* family.
+
+Everything but the triple: A17 applied to the scaled triple `(t b₀, tν)` at each `t ≥ 0` (the
+scaling is `levyExponent_smul`), the family extended by `δ₀` below the origin, the semigroup law
+`μ_{t+t'} = μ_t ∗ μ_{t'}` from the transform and `laplace_injective`, and then the measurability
+that the work order omitted: `conv_Iic_le` makes `t ↦ μ_t(Iic r)` antitone, hence measurable, and
+`measurable_of_antitone_measure_Iic` lifts that to every Borel set by Dynkin. -/
 theorem exists_subordinatorFamily (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
     ∃ μ : ℝ → Measure ℝ, Measurable μ ∧ (∀ t, IsProbabilityMeasure (μ t)) ∧
       (∀ t, IsCausal (μ t)) ∧
       ∀ t, 0 ≤ t → ∀ s, 0 < s →
         laplaceL (μ t) s = ENNReal.ofReal (Real.exp (-(t * F.symbol x s))) := by
-  sorry
+  classical
+  obtain ⟨ν, hνc, hνfin, hνφ⟩ := exists_levyTriple_symbol F hnd hx
+  -- A17 on the scaled triple `(t b₀, t ν)`, for each `t ≥ 0`.
+  have key : ∀ t : ℝ, 0 ≤ t → ∃ m : Measure ℝ, IsProbabilityMeasure m ∧ IsCausal m ∧
+      ∀ s, 0 ≤ s → laplace m s = Real.exp (-(t * F.symbol x s)) := by
+    intro t ht
+    have hscale : ∀ s, levyExponent (t * F.b₀) (ENNReal.ofReal t • ν) s
+        = ENNReal.ofReal t * levyExponent F.b₀ ν s := fun s => levyExponent_smul ν ht s
+    obtain ⟨m, hprob, hcaus, htr⟩ :=
+      exists_isProbabilityMeasure_laplace_eq_exp_neg_levyExponent
+        (mul_nonneg ht F.b₀_nonneg) (hνc.smul _)
+        (fun s hs => by
+          rw [hscale s]; exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top (hνfin s hs))
+    refine ⟨m, hprob, hcaus, fun s hs => ?_⟩
+    rw [htr s hs, hscale s]
+    congr 2
+    rcases hs.eq_or_lt with rfl | hs'
+    · simp [symbol]
+    · rw [← hνφ s hs', ← ENNReal.ofReal_mul ht,
+        ENNReal.toReal_ofReal (mul_nonneg ht (F.symbol_pos hnd hx hs').le)]
+  -- Choose the family, extended by `δ₀` below the origin.
+  have hfam : ∃ μ : ℝ → Measure ℝ, (∀ t, IsProbabilityMeasure (μ t)) ∧ (∀ t, IsCausal (μ t)) ∧
+      (∀ t, t < 0 → μ t = Measure.dirac 0) ∧
+      ∀ t, 0 ≤ t → ∀ s, 0 ≤ s → laplace (μ t) s = Real.exp (-(t * F.symbol x s)) := by
+    refine ⟨fun t => if ht : 0 ≤ t then (key t ht).choose else Measure.dirac 0, ?_, ?_, ?_, ?_⟩
+    · intro t
+      dsimp only
+      by_cases ht : 0 ≤ t
+      · rw [dif_pos ht]; exact (key t ht).choose_spec.1
+      · rw [dif_neg ht]; infer_instance
+    · intro t
+      dsimp only
+      by_cases ht : 0 ≤ t
+      · rw [dif_pos ht]; exact (key t ht).choose_spec.2.1
+      · rw [dif_neg ht]; exact isCausal_dirac le_rfl
+    · intro t ht
+      dsimp only
+      rw [dif_neg (not_le.mpr ht)]
+    · intro t ht s hs
+      dsimp only
+      rw [dif_pos ht]; exact (key t ht).choose_spec.2.2 s hs
+  obtain ⟨μ, hprob, hcaus, hneg, htr⟩ := hfam
+  haveI : ∀ t, IsProbabilityMeasure (μ t) := hprob
+  -- `μ 0 = δ₀`, and the semigroup law.
+  have hzero : μ 0 = Measure.dirac 0 := by
+    refine laplace_injective (hcaus 0) (isCausal_dirac le_rfl) fun s hs => ?_
+    rw [htr 0 le_rfl s hs, laplace, integral_dirac]
+    simp
+  have hsemi : ∀ t t', 0 ≤ t → 0 ≤ t' → μ (t + t') = μ t ∗ μ t' := by
+    intro t t' ht ht'
+    haveI : IsFiniteMeasure (μ t ∗ μ t') := by
+      haveI : IsProbabilityMeasure (μ t ∗ μ t') := inferInstance
+      infer_instance
+    refine laplace_injective (hcaus (t + t')) ((hcaus t).conv (hcaus t')) fun s hs => ?_
+    rw [laplace_conv, htr (t + t') (by linarith) s hs, htr t ht s hs, htr t' ht' s hs,
+      ← Real.exp_add]
+    ring_nf
+  -- Antitone cumulative distributions, hence measurability.
+  have hanti : ∀ r : ℝ, Antitone fun t => μ t (Iic r) := by
+    intro r t₁ t₂ h12
+    dsimp only
+    have hstep : ∀ a b : ℝ, 0 ≤ a → a ≤ b → μ b (Iic r) ≤ μ a (Iic r) := by
+      intro a b ha hab
+      have hb : μ b = μ a ∗ μ (b - a) := by
+        rw [← hsemi a (b - a) ha (by linarith)]; ring_nf
+      rw [hb]
+      exact conv_Iic_le (hcaus _) r
+    rcases lt_or_ge t₁ 0 with h1 | h1
+    · rcases lt_or_ge t₂ 0 with h2 | h2
+      · rw [hneg t₁ h1, hneg t₂ h2]
+      · calc μ t₂ (Iic r) ≤ μ 0 (Iic r) := hstep 0 t₂ le_rfl h2
+          _ = μ t₁ (Iic r) := by rw [hzero, hneg t₁ h1]
+    · exact hstep t₁ t₂ h1 h12
+  refine ⟨μ, measurable_of_antitone_measure_Iic hprob hanti, hprob, hcaus, fun t ht s hs => ?_⟩
+  rw [← htr t ht s hs.le, laplace_eq_toReal_laplaceL,
+    ENNReal.ofReal_toReal (laplaceL_ne_top_of_causal (hcaus t) hs.le)]
 
 /-- **`lem:potential-kernel`.** The potential kernel exists and is unique.
 
