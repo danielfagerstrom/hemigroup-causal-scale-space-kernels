@@ -137,11 +137,9 @@ dropped. It is `Hemigroup.SelfDecomposableExponent.Nondegenerate`, and `symbol_p
 consequence the proofs consume. The blueprint's `thm:sonine-conservation` inherits it by taking
 `(Φ_{x,y})` from `thm:main-characterization`, which is where it hides; a standalone Lean
 statement has to say it, and adding it is the next step here. -/
-theorem sonine_conservation (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) (ℓ : Measure ℝ)
-    [SFinite ℓ] (hcaus : IsCausal ℓ)
-    (hℓ : ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹) :
-    (F.memoryKernel x ∗ ℓ).restrict (Ici 0) = volume.restrict (Ici 0) := by
-  sorry
+-- **Discharged 2026-08-11** as `Hemigroup.SelfDecomposableExponent.sonine_conservation`,
+-- with all three of the hypotheses above added. The docstring is kept because the record of what
+-- the statement was missing is worth more than the statement was.
 
 /-- **`prop:sonine-pair-exists`**, the node split out in Phase 0: at the level of measures the
 pair is unconditional. A collation of the three results above, and the reason it is worth

@@ -24,6 +24,7 @@ import Hemigroup.Operator
 import Hemigroup.OperatorL1
 import Hemigroup.Representation
 import Hemigroup.SelfDecomposable
+import Hemigroup.Sonine
 import Hemigroup.Symmetries
 import Hemigroup.TransformContinuity
 import Hemigroup.Uniqueness

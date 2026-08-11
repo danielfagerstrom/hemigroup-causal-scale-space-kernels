@@ -189,7 +189,7 @@ $\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$.
 % draft: Theorem 9.5
 \begin{theorem}[Sonine conservation]\label{thm:sonine-conservation}
 \uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,prop:laplace-uniqueness}
-\lean{Skeleton.sonine_conservation}\notready
+\lean{Hemigroup.SelfDecomposableExponent.sonine_conservation}\leanok
 For every $x > 0$,
 \[
   \kappa^{(x)} * \ell^{(x)} \;=\; \mathrm{Leb}_{[0,\infty)},
@@ -197,10 +197,32 @@ For every $x > 0$,
   \int_{[0,t]} \ell^{(x)}\bigl([0,\, t - r]\bigr)\,\kappa^{(x)}(dr) \;=\; t
   \quad \text{for all } t \ge 0.
 \]
-\statusT
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.sonine\_conservation}; \texttt{\#print axioms} reduces
+to Lean core, so the chapter's headline crosses no interface at all.}
+
+\emph{\textbf{It does not wait on \ref{lem:potential-kernel}.} The Lean statement quantifies over
+any causal $\ell$ meeting that lemma's specification rather than naming the $\ell^{(x)}$ it
+produces, so the identity is independent of how existence is discharged --- which matters here,
+because existence is the one open question of the chapter and the one place a third
+trust-boundary entry could enter. Only \ref{prop:sonine-pair-exists} needs it. Decoupling the two
+is also what exposed three hypotheses this statement had been borrowing silently: that $\ell$ is
+causal, that its transform is prescribed in $[0,\infty]$ rather than as a Bochner integral
+(which reads $0$, not $\infty$, when the integrand fails to be integrable), and axiom~(ND) ---
+without which $\varphi_x$ vanishes, $\kappa^{(x)} = 0$, and the identity is \emph{false}. All
+three are inherited in the paper by taking $(\Phi_{x,y})$ from
+\ref{thm:main-characterization}; a statement that stands on its own has to say them.}
+
+\emph{Everything the proof needs was built for other reasons, which is the one respect in which
+this node was cheap: transforms multiply over convolution (chapter~4), the first factor is
+\ref{lem:memory-kernel-transform}, the second is the hypothesis, and the conclusion is
+\ref{prop:laplace-uniqueness-sigma-finite} --- the extension of \ledger{A6} to measures that are
+not finite, which was proved in advance precisely because $\kappa^{(x)}$, $\ell^{(x)}$ and
+Lebesgue measure are none of them finite and this identity compares them.)}
 \end{theorem}
 
 \begin{proof}
+\leanok
 Both sides are locally finite measures on $[0,\infty)$ with finite Laplace transforms, and
 those transforms agree:
 \[

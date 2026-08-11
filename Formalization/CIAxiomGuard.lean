@@ -193,3 +193,5 @@ witness. Both reduce to Lean core.
 #print axioms Hemigroup.SelfDecomposableExponent.laplaceL_memoryKernel
 
 #print axioms Hemigroup.SelfDecomposableExponent.symbol_pos
+
+#print axioms Hemigroup.SelfDecomposableExponent.sonine_conservation
