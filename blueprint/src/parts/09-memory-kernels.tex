@@ -33,27 +33,44 @@ vanishes a.e.\ on $(-\infty, 0)$, in which case $\hat f(s) = \int_0^\infty e^{-s
 is defined for $s > 0$ and satisfies $|\hat f(s)| \le \|f\|_1$.
 
 % draft: Lemma 9.1
+% THE SPLIT (2026-08-11). The draft's Lemma 9.1 states the derivative formula and then reads off
+% the memory kernel's transform. The two clauses cost differently: the first is differentiation
+% under the integral sign, which Mathlib has and which is now proved; the second needs the
+% measure kappa^{(x)} and a change of variables, and is still open. A node reporting the maximum
+% cost of its clauses lies about its cheap ones -- the Lemma 7.1 precedent -- so 9.1 is narrowed
+% to the derivative and the transform clause is appended as 9.15.
 \begin{lemma}[the kernel behind $F'$]\label{lem:memory-kernel}
-\uses{lem:selfdecomposable-exponents}
-\lean{Skeleton.hasDerivAt_toRealExponent}\notready
+\uses{lem:selfdecomposable-exponents,lem:criterion-converse}
+\lean{Hemigroup.SelfDecomposableExponent.hasDerivAt_toRealExponent}\leanok
 Let $F$ be as in (7.1). Then
 \[
   F'(s) \;=\; b_0 \;+\; \int_0^\infty e^{-st}\, k(t)\,dt, \qquad s > 0.
 \]
-Consequently, defining for $x > 0$ the locally finite measure
-\[
-  \kappa^{(x)}(dt) \;:=\; b_0\,\delta_0(dt) \;+\; \tfrac{1}{x}\,k\bigl(\tfrac{t}{x}\bigr)\,dt,
-\]
-we have $\partial_x F(xs) = s\,F'(xs) = s\,\widehat{\kappa^{(x)}}(s)$.
-\statusT
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.hasDerivAt\_toRealExponent}; \texttt{\#print axioms}
+reduces to Lean core. Differentiation under the integral sign, which Mathlib has; all the work is
+in the side conditions, and \emph{none of them is a hypothesis}. The dominating function
+$e^{-(s/2)t}k(t)$ is integrable because \ref{lem:criterion-converse} extracts both integrability
+facts from the class membership itself, so this lemma applies to every admissible $F$ with no
+regularity assumed of $k$ beyond the definition. That is worth recording because the proof below
+reads as though $\int_0^1 k < \infty$ and boundedness at infinity were extra conditions to be
+checked per family; they are not, and 8.8 is why.}
+
+\emph{Two small design points the formalisation fixed. The neighbourhood on which the domination
+holds is $(s/2,\infty)$ rather than a ball, which is what makes the bound uniform without a case
+split. And the exponent must first be read as a real-valued Bochner integral --- the development
+carries it in $[0,\infty]$ so that no integrability hypothesis travels with the definition ---
+which is \texttt{toRealExponent\_eq}, valid for $s \ge 0$ by the structure's \texttt{ne\_top}
+field, and it is that identity, not the derivative, that the two readings of the exponent meet
+in.)}
 \end{lemma}
 
 \begin{proof}
+\leanok
 Differentiating the integrand of (7.1) in $s$ gives $e^{-st}k(t)$, which for $s \ge s_0 > 0$ is
 dominated by $e^{-s_0 t} k(t)$. That dominating function is integrable near $0$ because
 $\int_0^1 k < \infty$, and at infinity because $k$ is bounded there, being nonincreasing; so
-differentiation under the integral sign is justified. The second statement is the substitution
-$\tau = t/x$ in $F'(xs) = b_0 + \int_0^\infty e^{-xs\tau} k(\tau)\,d\tau$.
+differentiation under the integral sign is justified.
 \end{proof}
 
 \bigskip
@@ -68,7 +85,7 @@ below is the Riemann--Liouville derivative $D^{\alpha}_{t,+}$ of
 
 % draft: Proposition 9.2
 \begin{proposition}[scale evolution in memory-kernel form]\label{prop:scale-evolution}
-\uses{thm:main-characterization,lem:memory-kernel,lem:transform-ode,prop:laplace-uniqueness}
+\uses{thm:main-characterization,lem:memory-kernel,lem:memory-kernel-transform,lem:transform-ode,prop:laplace-uniqueness}
 Let $(\Phi_{x,y})$ be as in \ref{thm:main-characterization}, in the canonical gauge, let
 $f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f = \mu_{0,x} * f$. Then, with the
 transform equation $\partial_x \hat u = -sF'(xs)\hat u$ of \ref{lem:transform-ode} in hand:
@@ -171,7 +188,7 @@ $\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$.
 
 % draft: Theorem 9.5
 \begin{theorem}[Sonine conservation]\label{thm:sonine-conservation}
-\uses{lem:memory-kernel,lem:potential-kernel,prop:laplace-uniqueness}
+\uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,prop:laplace-uniqueness}
 \lean{Skeleton.sonine_conservation}\notready
 For every $x > 0$,
 \[
@@ -231,7 +248,7 @@ tail decay.
 
 % draft: Proposition 9.7
 \begin{proposition}[regularity of the pair]\label{prop:pair-regularity}
-\uses{lem:memory-kernel,lem:potential-kernel,thm:sonine-conservation,def:completely-monotone}
+\uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,thm:sonine-conservation,def:completely-monotone}
 \lean{Skeleton.hasCMDensity_iff}\notready
 Modulo the drift atoms $b_0\delta_0$:
 \begin{enumerate}
@@ -293,7 +310,7 @@ locality corner of the memory-line realization. For general admissible $F$ the p
 
 % draft: Proposition 9.8
 \begin{proposition}[Volterra equation for the kernels]\label{prop:volterra}
-\uses{lem:memory-kernel,thm:main-characterization,rem:sato-reading,prop:laplace-uniqueness}
+\uses{lem:memory-kernel,lem:memory-kernel-transform,thm:main-characterization,rem:sato-reading,prop:laplace-uniqueness}
 Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. Then, as measures on
 $[0,\infty)$,
 \[
@@ -375,7 +392,7 @@ infinitely divisible laws on the half-line of \sscite{steutel2004infinite}.
 % neither reports a ledger cost its cheap half does not incur -- the same surgery Lemma 7.1
 % received. Numbered 9.12 and 9.13, numbers the draft does not use, its Section 9 ending at 9.11.
 \begin{proposition}[the Sonine pair exists]\label{prop:sonine-pair-exists}
-\uses{lem:memory-kernel,lem:potential-kernel,thm:sonine-conservation}
+\uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,thm:sonine-conservation}
 \lean{Skeleton.exists_sonine_pair}\notready
 For every admissible $F$ and every $x > 0$ the pair $(\kappa^{(x)}, \ell^{(x)})$ exists at the
 level of positive measures on $[0,\infty)$ and satisfies
@@ -439,4 +456,31 @@ $\Distr(\RR)$.)}
 $F$ is smooth on $(0,\infty)$ by \ref{prop:bernstein-toolbox}(3), so $x \mapsto e^{-F(xs)}$ is
 continuously differentiable there with derivative $-sF'(xs)e^{-F(xs)}$; multiply by the
 constant $\hat f(s)$.
+\end{proof}
+
+% additive: not in the draft. The second clause of Lemma 9.1, split off on 2026-08-11 when the
+% first was proved and this one was not. Numbered 9.15, a number the draft does not use.
+\begin{lemma}[the memory kernel's transform]\label{lem:memory-kernel-transform}
+\uses{lem:memory-kernel}
+\lean{Skeleton.laplace_memoryKernel}\notready
+For $x > 0$ define the locally finite measure
+\[
+  \kappa^{(x)}(dt) \;:=\; b_0\,\delta_0(dt) \;+\; \tfrac{1}{x}\,k\bigl(\tfrac{t}{x}\bigr)\,dt .
+\]
+Then $\partial_x F(xs) = s\,F'(xs) = s\,\widehat{\kappa^{(x)}}(s)$, so the symbol
+$\varphi_x(s) := s F'(xs)$ is $s$ times the transform of the memory kernel.
+\statusT\quad\emph{(\textbf{Stated in Lean and not yet proved}, as
+\texttt{Skeleton.laplace\_memoryKernel}. Split from \ref{lem:memory-kernel} because the two
+clauses cost differently and a node reporting the maximum cost of its clauses misreports its
+cheap ones: the derivative formula is differentiation under the integral sign and is done, while
+this one needs the measure $\kappa^{(x)}$ --- a Dirac atom plus a density, neither finite nor a
+probability measure --- and the change of variables $\tau = t/x$ under it. It is the first
+factor of the Sonine identity, which is why it is the next thing on the chapter's ladder.)}
+\end{lemma}
+
+\begin{proof}
+The substitution $\tau = t/x$ in $F'(xs) = b_0 + \int_0^\infty e^{-xs\tau} k(\tau)\,d\tau$,
+which is \ref{lem:memory-kernel} at $xs$, turns the integral into
+$\int_0^\infty e^{-st}\,\tfrac{1}{x}k(\tfrac{t}{x})\,dt$; the drift $b_0$ is the transform of
+$b_0\delta_0$, which is constant in $s$.
 \end{proof}

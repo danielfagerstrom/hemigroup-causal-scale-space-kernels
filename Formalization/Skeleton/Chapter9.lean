@@ -46,21 +46,24 @@ open Hemigroup Hemigroup.SelfDecomposableExponent
 
 variable (F : Hemigroup.SelfDecomposableExponent)
 
-/-! ## `lem:memory-kernel`
+/-! ## `lem:memory-kernel` — **discharged 2026-08-11**
 
-The one statement in the chapter that needs no new machinery: differentiation under the integral
-sign, which Mathlib has. The dominating function is `e^{-s₀t} k(t)`, integrable near `0` because
-`∫₀¹ k < ∞` and at infinity because `k` is bounded there, being nonincreasing.
+The derivative formula `F'(s) = b₀ + ∫₀^∞ e^{-st} k(t) dt` has moved into the library as
+`Hemigroup.SelfDecomposableExponent.hasDerivAt_toRealExponent`, and its node is `\leanok`.
+
+What it cost, against what was expected: the differentiation itself is Mathlib's, and every side
+condition turned out to be free. The dominating function `e^{-(s/2)t} k(t)` is integrable because
+`lem:criterion-converse` extracts both integrability facts from class membership, so no
+hypothesis on `k` beyond the structure's own fields is needed. The chapter was written as though
+`∫₀¹ k < ∞` were a condition to check per family; it is not.
+
+What remains of the draft's Lemma 9.1 is its second clause, the memory kernel's transform, split
+off as node 9.15 and stated below — the two clauses cost differently, and a node reporting the
+maximum cost of its clauses misreports its cheap ones.
 -/
 
-/-- **`lem:memory-kernel`.** `F'(s) = b₀ + ∫₀^∞ e^{-st} k(t) dt`. -/
-theorem hasDerivAt_toRealExponent {s : ℝ} (hs : 0 < s) :
-    HasDerivAt F.toRealExponent
-      (F.b₀ + ∫ t in Ioi (0 : ℝ), Real.exp (-(s * t)) * F.k t) s := by
-  sorry
-
-/-- The memory kernel's Laplace transform is the symbol divided by `s` — the first factor of the
-Sonine identity. -/
+/-- **`lem:memory-kernel-transform`** (node 9.15). The memory kernel's Laplace transform is the
+symbol divided by `s` — the first factor of the Sonine identity. -/
 theorem laplace_memoryKernel {x s : ℝ} (hx : 0 < x) (hs : 0 < s) :
     laplace (F.memoryKernel x) s = F.symbol x s / s := by
   sorry

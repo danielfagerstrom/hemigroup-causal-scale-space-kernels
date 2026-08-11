@@ -5,6 +5,7 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.Examples
 import Hemigroup.MemoryKernel
+import Mathlib.Analysis.Calculus.ParametricIntegral
 
 /-!
 # `F' (s) = b₀ + ∫₀^∞ e^{-st} k(t) dt`
@@ -165,6 +166,23 @@ theorem integrableOn_exp_mul_k (hs : 0 < s) :
       mul_comm (F.k 1)]
     exact mul_le_mul_of_nonneg_left (F.k_le_of_one_le ht1) (Real.exp_pos _).le
 
+/-! ## Measurability, once
+
+`k` is only nonincreasing on `(0,∞)`, so it is a.e. measurable for the restricted measure and
+nothing more; every measurability side condition below routes through `aemeasurable_k`. -/
+
+lemma aestronglyMeasurable_integrand (x : ℝ) {S : Set ℝ} (hS : S ⊆ Ioi 0) :
+    AEStronglyMeasurable (fun t => (1 - Real.exp (-(x * t))) * F.k t / t)
+      (volume.restrict S) := by
+  have hcont : Continuous fun t : ℝ => 1 - Real.exp (-(x * t)) := by fun_prop
+  exact ((hcont.measurable.aemeasurable.mul (F.aemeasurable_k hS)).div
+    aemeasurable_id).aestronglyMeasurable
+
+lemma aestronglyMeasurable_deriv (x : ℝ) {S : Set ℝ} (hS : S ⊆ Ioi 0) :
+    AEStronglyMeasurable (fun t => Real.exp (-(x * t)) * F.k t) (volume.restrict S) := by
+  have hcont : Continuous fun t : ℝ => Real.exp (-(x * t)) := by fun_prop
+  exact (hcont.measurable.aemeasurable.mul (F.aemeasurable_k hS)).aestronglyMeasurable
+
 /-- The integrand of the exponent itself is integrable: bounded by `s k(t)` at the origin and by
 `k(t)/t` at infinity, which are the two halves of the criterion. -/
 theorem integrableOn_exponent_integrand (hs : 0 ≤ s) :
@@ -172,11 +190,7 @@ theorem integrableOn_exponent_integrand (hs : 0 ≤ s) :
   rw [show Ioi (0 : ℝ) = Ioc 0 1 ∪ Ioi 1 from (Ioc_union_Ioi_eq_Ioi zero_le_one).symm]
   have hmeas : ∀ S : Set ℝ, S ⊆ Ioi 0 →
       AEStronglyMeasurable (fun t => (1 - Real.exp (-(s * t))) * F.k t / t)
-        (volume.restrict S) := by
-    intro S hS
-    have hcont : Continuous fun t : ℝ => 1 - Real.exp (-(s * t)) := by fun_prop
-    exact ((hcont.measurable.aemeasurable.mul (F.aemeasurable_k hS)).div
-      aemeasurable_id).aestronglyMeasurable
+        (volume.restrict S) := fun S hS => F.aestronglyMeasurable_integrand s hS
   refine IntegrableOn.union ?_ ?_
   · refine Integrable.mono' (F.integrableOn_k.const_mul s) (hmeas _ Ioc_subset_Ioi_self) ?_
     refine (ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall fun t ht => ?_)
@@ -201,6 +215,77 @@ theorem integrableOn_exponent_integrand (hs : 0 ≤ s) :
     rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (mul_nonneg hnn hkt) htpos.le)]
     gcongr
     nlinarith [Real.exp_pos (-(s * t))]
+
+/-! ## The exponent as a real integral, and its derivative -/
+
+/-- The exponent read as a Bochner integral. `ne_top` is what makes the `ℝ≥0∞` and `ℝ` readings
+agree, and it is a field of the structure, so no hypothesis beyond `s ≥ 0` is needed. -/
+theorem toRealExponent_eq (hs : 0 ≤ s) :
+    F.toRealExponent s
+      = F.b₀ * s + ∫ t in Ioi (0 : ℝ), (1 - Real.exp (-(s * t))) * F.k t / t := by
+  have hjump : levyJump F.k s ≠ ⊤ := (ENNReal.add_ne_top.mp (F.ne_top s hs)).2
+  simp only [toRealExponent, exponent, levyExponentD]
+  rw [ENNReal.toReal_add ENNReal.ofReal_ne_top hjump,
+    ENNReal.toReal_ofReal (mul_nonneg F.b₀_nonneg hs)]
+  congr 1
+  refine (integral_eq_lintegral_of_nonneg_ae ?_
+    (F.aestronglyMeasurable_integrand s subset_rfl)).symm
+  refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall fun t ht => ?_)
+  have htpos : (0 : ℝ) < t := mem_Ioi.mp ht
+  have hkt : 0 ≤ F.k t := F.k_nonneg t ht
+  have hnn : 0 ≤ 1 - Real.exp (-(s * t)) := by
+    have : Real.exp (-(s * t)) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+    linarith
+  exact div_nonneg (mul_nonneg hnn hkt) htpos.le
+
+/-- **`lem:memory-kernel`** (Lemma 9.1): `F'(s) = b₀ + ∫₀^∞ e^{-st} k(t) dt`.
+
+Differentiation under the integral sign. The dominating function is `e^{-(s/2)t} k(t)`, valid on
+the neighbourhood `(s/2, ∞)` of `s`, and it is integrable by `integrableOn_exp_mul_k` — which
+needs no hypothesis, because `lem:criterion-converse` extracts the integrability from the
+structure itself. -/
+theorem hasDerivAt_toRealExponent (hs : 0 < s) :
+    HasDerivAt F.toRealExponent
+      (F.b₀ + ∫ t in Ioi (0 : ℝ), Real.exp (-(s * t)) * F.k t) s := by
+  have hhalf : (0 : ℝ) < s / 2 := by linarith
+  have key := hasDerivAt_integral_of_dominated_loc_of_deriv_le
+      (μ := volume.restrict (Ioi (0 : ℝ)))
+      (F := fun x t => (1 - Real.exp (-(x * t))) * F.k t / t)
+      (F' := fun x t => Real.exp (-(x * t)) * F.k t)
+      (bound := fun t => Real.exp (-(s / 2 * t)) * F.k t)
+      (x₀ := s) (s := Ioi (s / 2))
+      (Ioi_mem_nhds (by linarith))
+      (Filter.Eventually.of_forall fun x => F.aestronglyMeasurable_integrand x subset_rfl)
+      (F.integrableOn_exponent_integrand hs.le)
+      (F.aestronglyMeasurable_deriv s subset_rfl)
+      ?bound (F.integrableOn_exp_mul_k hhalf) ?diff
+  case bound =>
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall fun t ht x hx => ?_)
+    have htpos : (0 : ℝ) < t := mem_Ioi.mp ht
+    have hkt : 0 ≤ F.k t := F.k_nonneg t ht
+    rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.exp_pos _).le hkt)]
+    refine mul_le_mul_of_nonneg_right (Real.exp_le_exp.mpr ?_) hkt
+    have : s / 2 ≤ x := le_of_lt (mem_Ioi.mp hx)
+    nlinarith
+  case diff =>
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall fun t ht x _ => ?_)
+    have htpos : (0 : ℝ) < t := mem_Ioi.mp ht
+    have ht0 : t ≠ 0 := ne_of_gt htpos
+    have hb0 : HasDerivAt (fun y : ℝ => y * t) t x := by
+      simpa using (hasDerivAt_id x).mul_const t
+    have hb : HasDerivAt (fun y : ℝ => -(y * t)) (-t) x := hb0.neg
+    have h2 : HasDerivAt (fun y : ℝ => (1 - Real.exp (-(y * t))) * F.k t / t)
+        (-(Real.exp (-(x * t)) * -t) * F.k t / t) x :=
+      (((hb.exp).const_sub 1).mul_const (F.k t)).div_const t
+    have heq : -(Real.exp (-(x * t)) * -t) * F.k t / t = Real.exp (-(x * t)) * F.k t := by
+      rw [div_eq_iff ht0]; ring
+    rwa [heq] at h2
+  -- the drift term differentiates to `b₀`
+  have hdrift : HasDerivAt (fun x : ℝ => F.b₀ * x) F.b₀ s := by
+    simpa using (hasDerivAt_id s).const_mul F.b₀
+  refine (hdrift.add key.2).congr_of_eventuallyEq ?_
+  filter_upwards [Ioi_mem_nhds hs] with x hx
+  exact F.toRealExponent_eq (le_of_lt (mem_Ioi.mp hx))
 
 end SelfDecomposableExponent
 
