@@ -62,11 +62,17 @@ off as node 9.15 and stated below — the two clauses cost differently, and a no
 maximum cost of its clauses misreports its cheap ones.
 -/
 
-/-- **`lem:memory-kernel-transform`** (node 9.15). The memory kernel's Laplace transform is the
-symbol divided by `s` — the first factor of the Sonine identity. -/
-theorem laplace_memoryKernel {x s : ℝ} (hx : 0 < x) (hs : 0 < s) :
-    laplace (F.memoryKernel x) s = F.symbol x s / s := by
-  sorry
+/-! ## `lem:memory-kernel-transform` — **discharged 2026-08-11**
+
+`laplace (F.memoryKernel x) s = F.symbol x s / s` has moved into the library as
+`Hemigroup.SelfDecomposableExponent.laplace_memoryKernel`, and its node is `\leanok`.
+
+The mathematical content is one substitution, `τ = t/x`. What it cost is measure-theoretic
+bookkeeping: `κ^{(x)}` is the first object here that is neither finite nor a probability measure,
+`laplace` is a Bochner integral, and the measure is a sum of an atom and a density — so the
+integrability of the exponential has to be established separately against each piece, and the
+density is only a.e. measurable because `k` is.
+-/
 
 /-! ## `lem:potential-kernel`
 

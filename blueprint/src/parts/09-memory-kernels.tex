@@ -462,23 +462,31 @@ constant $\hat f(s)$.
 % first was proved and this one was not. Numbered 9.15, a number the draft does not use.
 \begin{lemma}[the memory kernel's transform]\label{lem:memory-kernel-transform}
 \uses{lem:memory-kernel}
-\lean{Skeleton.laplace_memoryKernel}\notready
+\lean{Hemigroup.SelfDecomposableExponent.laplace_memoryKernel}\leanok
 For $x > 0$ define the locally finite measure
 \[
   \kappa^{(x)}(dt) \;:=\; b_0\,\delta_0(dt) \;+\; \tfrac{1}{x}\,k\bigl(\tfrac{t}{x}\bigr)\,dt .
 \]
 Then $\partial_x F(xs) = s\,F'(xs) = s\,\widehat{\kappa^{(x)}}(s)$, so the symbol
 $\varphi_x(s) := s F'(xs)$ is $s$ times the transform of the memory kernel.
-\statusT\quad\emph{(\textbf{Stated in Lean and not yet proved}, as
-\texttt{Skeleton.laplace\_memoryKernel}. Split from \ref{lem:memory-kernel} because the two
-clauses cost differently and a node reporting the maximum cost of its clauses misreports its
-cheap ones: the derivative formula is differentiation under the integral sign and is done, while
-this one needs the measure $\kappa^{(x)}$ --- a Dirac atom plus a density, neither finite nor a
-probability measure --- and the change of variables $\tau = t/x$ under it. It is the first
-factor of the Sonine identity, which is why it is the next thing on the chapter's ladder.)}
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.laplace\_memoryKernel}; \texttt{\#print axioms}
+reduces to Lean core. Split from \ref{lem:memory-kernel} because the two clauses cost
+differently, and the split was worth making even though both are now proved: the derivative
+formula is differentiation under the integral sign, while this is a change of variables under a
+measure that is neither finite nor a probability measure.}
+
+\emph{$\kappa^{(x)}$ is the first such measure in the development, and that is what the clause
+costs. The mathematics is one substitution, $\tau = t/x$, and the $L^1$ normalisation
+$\tfrac1x k(\tfrac{t}{x})$ is exactly what makes it an equality rather than a proportionality.
+Everything else is bookkeeping the paper does not have to do: the transform here is a Bochner
+integral, so the exponential's integrability must be established separately against the atom and
+against the density, and the density is only \emph{a.e.}\ measurable, $k$ being only monotone.
+It is the first factor of the Sonine identity, which is why it came next.)}
 \end{lemma}
 
 \begin{proof}
+\leanok
 The substitution $\tau = t/x$ in $F'(xs) = b_0 + \int_0^\infty e^{-xs\tau} k(\tau)\,d\tau$,
 which is \ref{lem:memory-kernel} at $xs$, turns the integral into
 $\int_0^\infty e^{-st}\,\tfrac{1}{x}k(\tfrac{t}{x})\,dt$; the drift $b_0$ is the transform of
