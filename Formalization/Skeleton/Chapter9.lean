@@ -3,7 +3,7 @@ Copyright (c) 2026 Daniel Fagerström. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
-import Hemigroup.MemoryKernel
+import Hemigroup.MemoryKernelTransform
 
 /-!
 # The target types of chapter 9
@@ -98,7 +98,7 @@ transform is `∫₀^∞ e^{-tφ_x(s)} dt = 1/φ_x(s)` by Tonelli. This adds no 
 -/
 
 /-- **`lem:potential-kernel`.** The potential kernel exists, is unique, and scales. -/
-theorem existsUnique_potentialKernel {x : ℝ} (hx : 0 < x) :
+theorem existsUnique_potentialKernel (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
     ∃! ℓ : Measure ℝ, IsCausal ℓ ∧ (∀ T : ℝ, ℓ (Icc 0 T) ≠ ⊤) ∧
       ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹ := by
   sorry
@@ -129,14 +129,16 @@ could be `⊤` while the Bochner integral reads `0`. Since the proof multiplies 
 `levyExponent` is `ℝ≥0∞`-valued throughout — the development made this choice once already, and
 the skeleton statement quietly departed from it.
 
-*Nondegeneracy is still missing.* The proof needs `φ_x s > 0`, without which
+*Nondegeneracy was missing; `hnd : F.Nondegenerate` added.* The proof needs `φ_x s > 0`, without which
 `ofReal (φ_x s) * ofReal (φ_x s)⁻¹ ≠ 1`. And `φ_x s = s F'(xs)` genuinely can vanish: with
 `b₀ = 0` and `k ≡ 0` we get `F ≡ 0`, `κ^{(x)} = 0`, and the identity is **false**, not merely
 unprovable. So this needs the hypothesis the article carries everywhere and this statement
-dropped — `F ≢ 0`, axiom (ND). The blueprint's `thm:sonine-conservation` inherits it by taking
+dropped. It is `Hemigroup.SelfDecomposableExponent.Nondegenerate`, and `symbol_pos` is the
+consequence the proofs consume. The blueprint's `thm:sonine-conservation` inherits it by taking
 `(Φ_{x,y})` from `thm:main-characterization`, which is where it hides; a standalone Lean
 statement has to say it, and adding it is the next step here. -/
-theorem sonine_conservation {x : ℝ} (hx : 0 < x) (ℓ : Measure ℝ) [SFinite ℓ] (hcaus : IsCausal ℓ)
+theorem sonine_conservation (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) (ℓ : Measure ℝ)
+    [SFinite ℓ] (hcaus : IsCausal ℓ)
     (hℓ : ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹) :
     (F.memoryKernel x ∗ ℓ).restrict (Ici 0) = volume.restrict (Ici 0) := by
   sorry
@@ -144,7 +146,7 @@ theorem sonine_conservation {x : ℝ} (hx : 0 < x) (ℓ : Measure ℝ) [SFinite 
 /-- **`prop:sonine-pair-exists`**, the node split out in Phase 0: at the level of measures the
 pair is unconditional. A collation of the three results above, and the reason it is worth
 stating separately is that it needs no ledger entry, where the regularity clauses do. -/
-theorem exists_sonine_pair {x : ℝ} (hx : 0 < x) :
+theorem exists_sonine_pair (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
     ∃ ℓ : Measure ℝ, IsCausal ℓ ∧ (∀ T : ℝ, ℓ (Icc 0 T) ≠ ⊤) ∧
       ∃ _ : SFinite ℓ, (F.memoryKernel x ∗ ℓ).restrict (Ici 0) = volume.restrict (Ici 0) := by
   sorry

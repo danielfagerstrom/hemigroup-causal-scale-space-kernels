@@ -140,6 +140,55 @@ theorem laplaceL_memoryKernel (hx : 0 < x) (hs : 0 < s) :
   rw [← F.laplace_memoryKernel hx hs, laplace_eq_toReal_laplaceL,
     ENNReal.ofReal_toReal (F.laplaceL_memoryKernel_ne_top hx hs)]
 
+/-! ## Nondegeneracy, in the form the Sonine identity needs
+
+Axiom (ND) says `F ≢ 0`. On the representation side that is exactly "the drift or the Lévy
+density is somewhere positive", and what every downstream statement actually consumes is the
+consequence below: the symbol never vanishes. Without it `κ^{(x)}` is the zero measure and the
+Sonine identity is false, so this is a hypothesis and not a lemma. -/
+
+/-- Axiom (ND) read off the representation. -/
+def Nondegenerate (F : SelfDecomposableExponent) : Prop :=
+  0 < F.b₀ ∨ ∃ t : ℝ, 0 < t ∧ 0 < F.k t
+
+/-- **(ND) makes `F'` strictly positive.** If the drift vanishes the Lévy density carries it:
+`k` is nonincreasing, so a single positive value makes it positive on a whole initial interval,
+and the exponential is bounded below there. -/
+theorem deriv_toRealExponent_pos (hnd : F.Nondegenerate) {u : ℝ} (hu : 0 < u) :
+    0 < deriv F.toRealExponent u := by
+  rw [(F.hasDerivAt_toRealExponent hu).deriv]
+  have hnn : 0 ≤ ∫ t in Ioi (0 : ℝ), Real.exp (-(u * t)) * F.k t :=
+    setIntegral_nonneg measurableSet_Ioi fun t ht =>
+      mul_nonneg (Real.exp_pos _).le (F.k_nonneg t ht)
+  rcases hnd with hb | ⟨t₀, ht₀, hkt₀⟩
+  · linarith
+  · have hpos : 0 < ∫ t in Ioi (0 : ℝ), Real.exp (-(u * t)) * F.k t := by
+      set c : ℝ := Real.exp (-(u * t₀)) * F.k t₀ with hc
+      have hcpos : 0 < c := mul_pos (Real.exp_pos _) hkt₀
+      have hlow : ∀ t ∈ Ioc (0 : ℝ) t₀, c ≤ Real.exp (-(u * t)) * F.k t := by
+        intro t ht
+        refine mul_le_mul (Real.exp_le_exp.mpr (by nlinarith [ht.2, ht.1]))
+          (F.k_antitone (mem_Ioi.mpr ht.1) (mem_Ioi.mpr ht₀) ht.2) hkt₀.le (Real.exp_pos _).le
+      have hsmall : c * t₀ ≤ ∫ t in Ioc (0 : ℝ) t₀, Real.exp (-(u * t)) * F.k t := by
+        have hint : IntegrableOn (fun t => Real.exp (-(u * t)) * F.k t) (Ioc 0 t₀) :=
+          (F.integrableOn_exp_mul_k hu).mono_set Ioc_subset_Ioi_self
+        have h := setIntegral_ge_of_const_le measurableSet_Ioc
+          (by rw [Real.volume_Ioc]; exact ENNReal.ofReal_ne_top) hlow hint
+        rwa [measureReal_def, Real.volume_Ioc, sub_zero, ENNReal.toReal_ofReal ht₀.le,
+          smul_eq_mul, mul_comm] at h
+      have hmono : (∫ t in Ioc (0 : ℝ) t₀, Real.exp (-(u * t)) * F.k t)
+          ≤ ∫ t in Ioi (0 : ℝ), Real.exp (-(u * t)) * F.k t := by
+        refine setIntegral_mono_set (F.integrableOn_exp_mul_k hu) ?_
+          (HasSubset.Subset.eventuallyLE Ioc_subset_Ioi_self)
+        exact (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall fun t ht =>
+          mul_nonneg (Real.exp_pos _).le (F.k_nonneg t ht))
+      nlinarith [mul_pos hcpos ht₀]
+    linarith [F.b₀_nonneg]
+
+/-- **The symbol never vanishes**, which is what the Sonine identity consumes. -/
+theorem symbol_pos (hnd : F.Nondegenerate) (hx : 0 < x) (hs : 0 < s) : 0 < F.symbol x s :=
+  mul_pos hs (F.deriv_toRealExponent_pos hnd (mul_pos hx hs))
+
 end SelfDecomposableExponent
 
 end Hemigroup
