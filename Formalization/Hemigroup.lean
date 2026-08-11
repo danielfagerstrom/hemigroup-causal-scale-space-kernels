@@ -1,5 +1,6 @@
 import Hemigroup.Additivity
 import Hemigroup.Basic
+import Hemigroup.ClosedForms
 import Hemigroup.Construction
 import Hemigroup.Continuity
 import Hemigroup.Covariance

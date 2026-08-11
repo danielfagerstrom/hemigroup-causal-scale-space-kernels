@@ -181,3 +181,6 @@ witness. Both reduce to Lean core.
 #print axioms Hemigroup.SelfDecomposableExponent.integrableOn_of_ne_top
 
 #print axioms Hemigroup.SelfDecomposableExponent.hasDerivAt_toRealExponent
+
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_nhdsGT_zero
+#print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_toRealExponent

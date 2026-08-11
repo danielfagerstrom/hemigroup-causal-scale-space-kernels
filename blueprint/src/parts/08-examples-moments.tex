@@ -47,30 +47,41 @@ $\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case}.
 \end{proof}
 
 % draft: Example 8.2
-\begin{proposition}[the Gamma family]\label{prop:gamma-family}
-\uses{lem:selfdecomposable-exponents,thm:main-characterization,rem:sato-reading}
+% THE SPLIT (2026-08-11). The draft's Example 8.2 states the exponent, the kernels, the moments
+% and the Sato reading in one item. Their costs differ: the exponent is an antiderivative
+% computation and is now proved; the kernels need a Laplace inversion and the moments need
+% \ledger{A7}. Narrowed here to the exponent, with the rest appended as 8.9.
+\begin{proposition}[the Gamma family: the exponent]\label{prop:gamma-family}
+\uses{lem:selfdecomposable-exponents,prop:admissibility-criterion,lem:memory-kernel}
+\lean{Hemigroup.SelfDecomposableExponent.gammaExponent_toRealExponent}\leanok
 For $\gamma > 0$ the exponent $F(s) = \gamma\,\log(1 + s)$ is of the form (7.1) with
-$k(t) = \gamma\, e^{-t}$, which is nonincreasing. Its kernels are
-\[
-  e^{-F(xs)} = (1 + x s)^{-\gamma}, \qquad
-  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
-\]
-the Gamma density of fixed shape $\gamma$ and scale $x$. All moments are finite, with
-$\Ex\,T_x = \gamma x$ and $\operatorname{Var} T_x = \gamma x^2$. The increment measures
-$\mu_{a,b}$ have Laplace transform $\bigl(\tfrac{1 + as}{1 + bs}\bigr)^{\gamma}$ and are the
-increments of the Gamma-type Sato subordinator.
-\statusT
+$k(t) = \gamma\, e^{-t}$, which is nonincreasing.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.gammaExponent\_toRealExponent}, on the kernel
+\texttt{gammaExponent} of \ref{prop:admissibility-criterion}; \texttt{\#print axioms} reduces to
+Lean core.}
+
+\emph{\textbf{The proof is not the draft's.} The draft quotes Frullani's integral, which Mathlib
+does not have. What it does have --- once \ref{lem:memory-kernel} is proved --- is the
+antiderivative reading of the same fact: $F' (s) = \gamma\!\int_0^\infty e^{-(1+s)t}dt =
+\gamma/(1+s)$ by the $a=1$ case of the Gamma integral, and $\log(1+s)$ has the same derivative
+and the same limit $0$ at the origin. The limit is the clause that needs an argument, and it is
+supplied once for the whole class as $F(0{+}) = 0$
+(\texttt{tendsto\_toRealExponent\_nhdsGT\_zero}), by dominated convergence against the $s=1$
+integrand. That is exactly the classical proof of Frullani's integral, so nothing is smuggled in;
+what changes is that the citation becomes a computation.}
+
+\emph{One normalisation is not free: the Lean structure fixes $k(0) = 0$, so the kernel is
+$\gamma e^{-t}$ guarded by $\mathbf{1}_{t>0}$. Without the guard the field is unprovable rather
+than merely inelegant, and $\{0\}$ being null costs nothing downstream.)}
 \end{proposition}
 
 \begin{proof}
+\leanok
 The Frullani integral gives
 $\log(1+s) = \int_0^\infty (1 - e^{-st})\,e^{-t}\,t^{-1}\,dt$, so $F$ has the form (7.1) with
 $b_0 = 0$ and $k(t) = \gamma e^{-t}$, nonincreasing; hence $F$ is admissible by
-\ref{lem:selfdecomposable-exponents}. Then $e^{-F(xs)} = (1+xs)^{-\gamma}$, which is the
-Laplace transform of the stated Gamma density. The moments are those of a Gamma law, and all
-are finite because $\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$. The increment
-transform is the ratio $e^{-F(bs)}/e^{-F(as)}$, and \ref{rem:sato-reading} identifies the
-family as the marginals of a Sato subordinator.
+\ref{lem:selfdecomposable-exponents}.
 \end{proof}
 
 % draft: Example 8.3
@@ -261,4 +272,36 @@ $s$ suffices, and $s = 1$ is taken.}
 Take $s = 1$ in (7.1), so that $\int_0^\infty (1 - e^{-t})k(t)t^{-1}dt < \infty$. For $t > 0$,
 $1 - e^{-t} \ge t/(1+t)$, so the integrand is at least $k(t)/(1+t)$. On $(0,1]$ that is at least
 $k(t)/2$, and on $(1,\infty)$ it is at least $k(t)/(2t)$; both claims follow.
+\end{proof}
+
+% additive: not in the draft. The clauses split out of Example 8.2 on 2026-08-11, when the
+% exponent was proved and these were not. Numbered 8.9, a number the draft does not use.
+\begin{proposition}[the Gamma family: kernels, moments, and the Sato reading]\label{prop:gamma-kernels}
+\uses{prop:gamma-family,thm:main-characterization,rem:sato-reading,prop:moment-criterion}
+With $F$ as in \ref{prop:gamma-family}, the kernels are
+\[
+  e^{-F(xs)} = (1 + x s)^{-\gamma}, \qquad
+  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
+\]
+the Gamma density of fixed shape $\gamma$ and scale $x$. All moments are finite, with
+$\Ex\,T_x = \gamma x$ and $\operatorname{Var} T_x = \gamma x^2$. The increment measures
+$\mu_{a,b}$ have Laplace transform $\bigl(\tfrac{1 + as}{1 + bs}\bigr)^{\gamma}$ and are the
+increments of the Gamma-type Sato subordinator.
+\statusT\quad\emph{(split from \ref{prop:gamma-family} because the costs differ and a node
+reporting the maximum cost of its clauses misreports its cheap ones. The exponent is an
+antiderivative computation and is proved; identifying $\phi_x$ requires inverting
+$(1+xs)^{-\gamma}$, which in this development means computing the Gamma density's transform and
+appealing to \ref{prop:laplace-uniqueness-causal} --- available, but a separate piece of work ---
+and the moment clause runs through \ref{prop:moment-criterion} and so through \ledger{A7}.
+The mean and variance are the only clauses here that are elementary: $\Ex\,T_x = \gamma x$ is
+\ref{prop:moments} applied to $\int_0^\infty \gamma e^{-t}dt = \gamma$.)}
+\end{proposition}
+
+\begin{proof}
+$e^{-F(xs)} = (1+xs)^{-\gamma}$ by \ref{prop:gamma-family}, and this is the Laplace transform of
+the stated Gamma density, so \ref{prop:laplace-uniqueness-causal} identifies $\phi_x$. The
+moments are those of a Gamma law, and all are finite because
+$\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$ (\ref{prop:moment-criterion}). The
+increment transform is the ratio $e^{-F(bs)}/e^{-F(as)}$, and \ref{rem:sato-reading} identifies
+the family as the marginals of a Sato subordinator.
 \end{proof}

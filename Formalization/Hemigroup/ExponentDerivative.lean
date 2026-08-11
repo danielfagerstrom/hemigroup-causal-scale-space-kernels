@@ -287,6 +287,90 @@ theorem hasDerivAt_toRealExponent (hs : 0 < s) :
   filter_upwards [Ioi_mem_nhds hs] with x hx
   exact F.toRealExponent_eq (le_of_lt (mem_Ioi.mp hx))
 
+/-- **`F(0+) = 0`.** The exponent is continuous at the origin from the right — the clause that
+puts an `LE` function in `BF₀` rather than merely `BF`, and the one the closed forms of chapter 8
+need in order to pin the constant of integration.
+
+Dominated convergence, with the `s = 1` integrand as the dominating function: it is integrable by
+`integrableOn_exponent_integrand`, it dominates every `s ≤ 1` because `1 - e^{-st}` increases in
+`s`, and the integrand goes to `0` pointwise. -/
+theorem tendsto_toRealExponent_nhdsGT_zero :
+    Filter.Tendsto F.toRealExponent (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  have hint : Filter.Tendsto
+      (fun x => ∫ t in Ioi (0 : ℝ), (1 - Real.exp (-(x * t))) * F.k t / t)
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have hdct : Filter.Tendsto
+        (fun x => ∫ t in Ioi (0 : ℝ), (1 - Real.exp (-(x * t))) * F.k t / t)
+        (𝓝[>] (0 : ℝ)) (𝓝 (∫ _t in Ioi (0 : ℝ), (0 : ℝ))) := by
+      refine tendsto_integral_filter_of_dominated_convergence (l := 𝓝[>] (0 : ℝ))
+        (fun t => (1 - Real.exp (-(1 * t))) * F.k t / t)
+        (Filter.Eventually.of_forall fun x => F.aestronglyMeasurable_integrand x subset_rfl)
+        ?_ (F.integrableOn_exponent_integrand zero_le_one) ?_
+      · filter_upwards [Ioo_mem_nhdsGT (zero_lt_one (α := ℝ))] with x hx
+        refine (ae_restrict_iff' measurableSet_Ioi).mpr
+          (Filter.Eventually.of_forall fun t ht => ?_)
+        have htpos : (0 : ℝ) < t := mem_Ioi.mp ht
+        have hkt : 0 ≤ F.k t := F.k_nonneg t ht
+        have hxpos : (0 : ℝ) < x := hx.1
+        have hnn : 0 ≤ 1 - Real.exp (-(x * t)) := by
+          have : Real.exp (-(x * t)) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+          linarith
+        rw [Real.norm_eq_abs, abs_of_nonneg (div_nonneg (mul_nonneg hnn hkt) htpos.le)]
+        gcongr
+        exact le_of_lt hx.2
+      · refine (ae_restrict_iff' measurableSet_Ioi).mpr
+          (Filter.Eventually.of_forall fun t ht => ?_)
+        have htpos : (0 : ℝ) < t := mem_Ioi.mp ht
+        have hcont : ContinuousAt (fun x : ℝ => (1 - Real.exp (-(x * t))) * F.k t / t) 0 := by
+          fun_prop
+        simpa using Filter.Tendsto.mono_left hcont nhdsWithin_le_nhds
+    simpa using hdct
+  have hdrift : Filter.Tendsto (fun x : ℝ => F.b₀ * x) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have hc : Filter.Tendsto (fun x : ℝ => F.b₀ * x) (𝓝 (0 : ℝ)) (𝓝 (F.b₀ * 0)) :=
+      tendsto_const_nhds.mul Filter.tendsto_id
+    simpa using hc.mono_left nhdsWithin_le_nhds
+  have hsum := hdrift.add hint
+  rw [add_zero] at hsum
+  refine hsum.congr' ?_
+  filter_upwards [self_mem_nhdsWithin] with x hx
+  exact (F.toRealExponent_eq (le_of_lt (mem_Ioi.mp hx))).symm
+
+/-- Two exponents-in-the-making that agree in derivative on `(0,∞)` and both vanish at `0+` are
+equal: the constant of integration is pinned by `tendsto_toRealExponent_nhdsGT_zero`. -/
+theorem eq_of_hasDerivAt_of_tendsto_zero {g : ℝ → ℝ}
+    (hderiv : ∀ x : ℝ, 0 < x → HasDerivAt g
+      (F.b₀ + ∫ t in Ioi (0 : ℝ), Real.exp (-(x * t)) * F.k t) x)
+    (hg : Filter.Tendsto g (𝓝[>] (0 : ℝ)) (𝓝 0)) {s : ℝ} (hs : 0 < s) :
+    F.toRealExponent s = g s := by
+  -- the difference has vanishing derivative on `(0,∞)`, hence is constant there
+  have hconst : ∀ u : ℝ, 0 < u → u ≤ s →
+      F.toRealExponent u - g u = F.toRealExponent s - g s := by
+    intro u hu hus
+    have hd : ∀ x ∈ Ico u s,
+        HasDerivWithinAt (fun y => F.toRealExponent y - g y) 0 (Ici x) x := by
+      intro x hx
+      have hxpos : (0 : ℝ) < x := lt_of_lt_of_le hu hx.1
+      have hsub := (F.hasDerivAt_toRealExponent hxpos).sub (hderiv x hxpos)
+      rw [sub_self] at hsub
+      exact hsub.hasDerivWithinAt
+    have hcont : ContinuousOn (fun y => F.toRealExponent y - g y) (Icc u s) := by
+      intro x hx
+      have hxpos : (0 : ℝ) < x := lt_of_lt_of_le hu hx.1
+      exact (((F.hasDerivAt_toRealExponent hxpos).sub
+        (hderiv x hxpos)).continuousAt).continuousWithinAt
+    exact (constant_of_has_deriv_right_zero hcont hd s (right_mem_Icc.mpr hus)).symm
+  -- and its limit at `0+` is `0`
+  have hlim : Filter.Tendsto (fun y => F.toRealExponent y - g y) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    simpa using F.tendsto_toRealExponent_nhdsGT_zero.sub hg
+  have heq : (fun y => F.toRealExponent y - g y)
+      =ᶠ[𝓝[>] (0 : ℝ)] fun _ => F.toRealExponent s - g s := by
+    filter_upwards [self_mem_nhdsWithin, Ioc_mem_nhdsGT hs] with x hx hx'
+    exact hconst x (mem_Ioi.mp hx) hx'.2
+  have hc : Filter.Tendsto (fun _ : ℝ => F.toRealExponent s - g s) (𝓝[>] (0 : ℝ)) (𝓝 0) :=
+    hlim.congr' heq
+  have hzero : F.toRealExponent s - g s = 0 := tendsto_nhds_unique tendsto_const_nhds hc
+  linarith
+
 end SelfDecomposableExponent
 
 end Hemigroup
