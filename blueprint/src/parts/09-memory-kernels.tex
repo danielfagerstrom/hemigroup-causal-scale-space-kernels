@@ -176,7 +176,26 @@ on $[0,\infty)$ --- the \emph{potential kernel} --- with
 \]
 Moreover $\ell^{(x)}$ is $x$ times the pushforward of $\ell^{(1)}$ under $t \mapsto xt$; in
 density form, $\ell^{(x)}(t) = \ell^{(1)}(t/x)$.
-\statusT
+\statusT\quad\emph{(\textbf{Stated in Lean and decomposed}, as
+\texttt{Skeleton.existsUnique\_potentialKernel}. Route B --- construct the measure as the
+subordinator's potential $U = \int_0^\infty \mu_t\,dt$ rather than represent it via
+Bernstein--Widder --- is decided, and the main argument is now \texttt{sorry}-free: causality,
+the transform by Tonelli, local finiteness from convergence at one point, and uniqueness from
+Laplace injectivity for measures that are not finite. Two named sub-lemmas remain open: that
+$\varphi_x$ is a L\'evy exponent with its triple exhibited (drift $b_0$, L\'evy measure the
+Stieltjes measure $-d[k(\cdot/x)/x]$), and that the laws $\mu_t$ form a \emph{measurable} family.}
+
+\emph{\textbf{That second clause is the finding, and the work order had omitted it.} Forming
+$\int_0^\infty \mu_t\,dt$ reads as bookkeeping and is not: \ledger{A17} supplies $\mu_t$ for each $t$
+\emph{by choice, independently}, so nothing connects the choices across $t$ and the integral is
+not a measure at all. The route to it is where the \emph{subordinator} structure finally does
+work rather than being merely named: $\mu_{t+t'} = \mu_t * \mu_{t'}$ and causality make
+$t \mapsto \mu_t(Iic\,r)$ antitone, hence measurable; the intervals form a $\pi$-system generating the
+Borel sets and the $\mu_t$ are finite, so Dynkin extends measurability to every Borel set. The
+increasing paths, which the prose treats as intuition, are exactly what make the potential
+measure \emph{exist}. Same shape as the \texttt{IsCausal} clause that writing
+\ref{thm:sonine-conservation} found: a hypothesis that reads as a formality and carries the
+reachability of the statement.)}
 \end{lemma}
 
 \begin{proof}

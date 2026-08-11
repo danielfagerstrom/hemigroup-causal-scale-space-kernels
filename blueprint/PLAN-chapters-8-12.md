@@ -608,3 +608,48 @@ which equality, and the choice it is forced into is information the prose was el
 2. If Route B lands, `prop:sonine-pair-exists` (9.12) follows immediately.
 3. Blocked upstream, unchanged: A12's Γ estimate (chapter 11), semigroup theory (chapter 10),
    Bessel `K` (chapter 12).
+
+---
+
+# Route B decomposed; the main argument is sorry-free — 2026-08-11
+
+`Skeleton/Chapter9.lean`. `existsUnique_potentialKernel` now carries no `sorry` and rests on two
+explicitly named sub-lemmas — article-kit's decomposition gate, in the shape it was written for.
+What is proved is the *sufficiency* of the decomposition, before any of the hard analysis: the
+mixture is `Measure.bind`, its transform is Tonelli plus `∫₀^∞ e^{-tφ} dt = 1/φ`, local finiteness
+is `measure_Icc_ne_top_of_laplaceL_ne_top`, uniqueness is `laplaceL_injective_of_ne_top`.
+
+## The finding: `Measurable μ` is a hypothesis with content
+
+The work order wrote step 3 as "`U := ∫₀^∞ μ_t dt` as a measure, and Tonelli for its transform",
+as though forming `U` were bookkeeping. **It is not.** A17 supplies `μ_t` for each `t` *by choice,
+independently*, so nothing connects the choices across `t`; `∫₀^∞ μ_t dt` is not a measure, and
+`Measure.bind` does not typecheck without `Measurable μ`.
+
+Not an obstacle — but the route to it is where Route B's *subordinator* finally does work rather
+than being named:
+
+* `μ_{t+t'} = μ_t ∗ μ_{t'}`, from the transform and `laplace_injective`;
+* hence `t ↦ μ_t(Iic r)` is **antitone** (`μ_{t+t'}(Iic r) = ∫ μ_t(Iic (r−u)) dμ_{t'}(u) ≤
+  μ_t(Iic r)`, since `μ_{t'}` is causal), and antitone functions are measurable;
+* `{Iic r}` is a π-system generating the Borel sets and the `μ_t` are finite, so Dynkin lifts that
+  to every Borel set;
+* `Measure.measurable_of_measurable_coe` assembles it.
+
+The increasing paths, which Route B's prose treats as intuition, are exactly what make the
+potential measure *exist*.
+
+**Same shape as two earlier findings, and that is now a pattern worth naming.** `IsCausal ℓ` was
+missing from `sonine_conservation`'s specification; `laplaceL` rather than `laplace` was wrong in
+the same statement; `Measurable μ` is missing from this work order. Each reads as a formality and
+each carries the reachability of the statement it belongs to. **Writing the decomposition down
+before proving it is what finds them**, and it costs an afternoon where discovering them
+mid-proof costs a rewrite.
+
+## Next
+
+1. `exists_levyTriple_symbol` — the Stieltjes measure `-d[k(·/x)/x]` and the integration by parts.
+   The larger of the two, and the one that needs a right-continuous modification of `k`.
+2. `exists_subordinatorFamily` — A17 per `t`, then the measurability argument above.
+3. Then `prop:sonine-pair-exists` (9.12) follows immediately, and chapter 9 closes except for its
+   `[A]` nodes.

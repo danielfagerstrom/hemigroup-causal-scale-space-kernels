@@ -3,7 +3,9 @@ Copyright (c) 2026 Daniel Fagerström. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
-import Hemigroup.MemoryKernelTransform
+-- `Hemigroup.Sonine` rather than `MemoryKernelTransform`: Route B's main argument below uses
+-- `laplaceL_volume_Ici`, which is where `thm:sonine-conservation` needed it too.
+import Hemigroup.Sonine
 
 /-!
 # The target types of chapter 9
@@ -95,24 +97,105 @@ complete monotonicity** — not even as a consequence. `ℓ^{(x)}` is the subord
 measure `U = ∫₀^∞ μ_t dt`, where `μ_t` is the law A17 already supplies; its transform is
 `∫₀^∞ e^{-tφ_x(s)} dt = 1/φ_x(s)` by Tonelli. The trust boundary stays at two entries.
 
-**What Route B costs, in order.**
+**Route B, decomposed 2026-08-11.** The main argument below is now `sorry`-free and rests on two
+explicitly named sub-lemmas, which is article-kit's decomposition gate. Writing the decomposition
+down before proving any of it earned its keep again, and this time the finding is in a step the
+work order called routine.
 
-1. `φ_x ∈ LE` with its triple *exhibited* — this is a theorem to prove, not a hypothesis and not
-   an axiom. Integrating `∫₀^∞ s e^{-st} k(t) dt` by parts turns it into `∫₀^∞ (1 - e^{-st}) dμ`
-   with `μ = -dk`, so the triple is drift `b₀` and Lévy measure `-dk`, dilated to scale `x`.
-2. The Stieltjes measure `-dk`. `k` is only `AntitoneOn`, so it needs a right-continuous
-   modification first; Mathlib's `StieltjesFunction` then produces the measure. Note this is the
-   same name flagged in `PLAN-chapters-8-12.md` as a false friend for the Stieltjes *class* — for
-   this, the other meaning, it is exactly the right tool.
-3. `U := ∫₀^∞ μ_t dt` as a measure, and Tonelli for its transform.
-4. Uniqueness is already available: `laplaceL_injective_of_ne_top`.
+1. `exists_levyTriple_symbol` — `φ_x ∈ LE` with its triple *exhibited*. A theorem to prove, not a
+   hypothesis and not an axiom. Integrating `∫₀^∞ s e^{-su} h(u) du` by parts, with
+   `h(u) = k(u/x)/x`, turns it into `∫₀^∞ (1 - e^{-su}) ν(du)` with `ν = -dh`, so the triple is
+   drift `b₀` and Lévy measure `-dh`. The Stieltjes measure `-dh` is the real cost: `k` is only
+   `AntitoneOn`, so it needs a right-continuous modification first, and Mathlib's
+   `StieltjesFunction` then produces the measure. (That name is flagged in
+   `PLAN-chapters-8-12.md` as a false friend for the Stieltjes *class*; for this, the other
+   meaning, it is exactly the right tool.)
+
+2. `exists_subordinatorFamily` — the laws `μ_t`, with transform `e^{-tφ_x(s)}`, **as a measurable
+   family**.
+
+3. The rest is proved below: `U := ∫₀^∞ μ_t dt` is `Measure.bind`, its transform is Tonelli plus
+   `∫₀^∞ e^{-tφ} dt = 1/φ`, local finiteness is `measure_Icc_ne_top_of_laplaceL_ne_top`, and
+   uniqueness is `laplaceL_injective_of_ne_top`.
+
+**The finding: `Measurable μ` is a hypothesis with content, and the work order omitted it.**
+Step 3 was written as "`U := ∫₀^∞ μ_t dt` as a measure, and Tonelli for its transform", as though
+forming `U` were bookkeeping. It is not. A17 supplies `μ_t` for each `t` **by choice,
+independently**, so nothing connects the choices across `t` and `∫₀^∞ μ_t dt` is not a measure at
+all — `Measure.bind` will not even typecheck without `Measurable μ`. This is the same shape as the
+`IsCausal ℓ` omission that writing `sonine_conservation` found: a clause that reads as a
+formality and is in fact the whole reachability of the statement.
+
+It is not an obstacle, and the route to it is worth recording because it is where the
+*subordinator* structure finally gets used rather than merely named:
+
+* `μ_{t+t'} = μ_t ∗ μ_{t'}`, from the transform and `laplace_injective`;
+* hence `t ↦ μ_t (Iic r)` is **antitone** — `μ_{t+t'}(Iic r) = ∫ μ_t(Iic (r-u)) dμ_{t'}(u) ≤
+  μ_t(Iic r)`, because `μ_{t'}` is causal so `u ≥ 0` a.e. — and an antitone function is
+  measurable;
+* `{Iic r}` is a π-system generating the Borel σ-algebra and the `μ_t` are finite, so the sets
+  where `t ↦ μ_t A` is measurable form a λ-system: Dynkin gives every Borel `A`;
+* `Measure.measurable_of_measurable_coe` assembles it.
+
+So the increasing paths of the subordinator, which Route B's prose treats as intuition, are
+exactly what makes the potential measure *exist*. Nothing here needs complete monotonicity, and
+the trust boundary stays at two entries.
 -/
 
-/-- **`lem:potential-kernel`.** The potential kernel exists, is unique, and scales. -/
+/-- **Route B, step 1.** The symbol is a Lévy exponent with an exhibited triple: drift `b₀` and
+Lévy measure the Stieltjes measure of the nonincreasing dilate `u ↦ k(u/x)/x`. -/
+theorem exists_levyTriple_symbol (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
+    ∃ ν : Measure ℝ, IsCausal ν ∧ (∀ s, 0 ≤ s → levyExponent F.b₀ ν s ≠ ⊤) ∧
+      ∀ s, 0 < s → ENNReal.ofReal (F.symbol x s) = levyExponent F.b₀ ν s := by
+  sorry
+
+/-- **Route B, step 2.** The subordinator's laws, as a *measurable* family — see the module note
+above for why that clause is the one with content. -/
+theorem exists_subordinatorFamily (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
+    ∃ μ : ℝ → Measure ℝ, Measurable μ ∧ (∀ t, IsProbabilityMeasure (μ t)) ∧
+      (∀ t, IsCausal (μ t)) ∧
+      ∀ t, 0 ≤ t → ∀ s, 0 < s →
+        laplaceL (μ t) s = ENNReal.ofReal (Real.exp (-(t * F.symbol x s))) := by
+  sorry
+
+/-- **`lem:potential-kernel`.** The potential kernel exists and is unique.
+
+Route B's main argument, `sorry`-free: the mixture `∫₀^∞ μ_t dt` of the subordinator's laws is
+causal because every `μ_t` is, its transform is `∫₀^∞ e^{-tφ_x(s)} dt = 1/φ_x(s)` by Tonelli,
+local finiteness follows from convergence of that transform at a single point, and uniqueness is
+Laplace injectivity for measures that are not finite. Only the two sub-lemmas above are open. -/
 theorem existsUnique_potentialKernel (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
     ∃! ℓ : Measure ℝ, IsCausal ℓ ∧ (∀ T : ℝ, ℓ (Icc 0 T) ≠ ⊤) ∧
       ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹ := by
-  sorry
+  obtain ⟨μ, hmeas, hprob, hcaus, htrans⟩ := exists_subordinatorFamily F hnd hx
+  set ℓ := (volume.restrict (Ioi 0)).bind μ with hℓdef
+  have hcausal : IsCausal ℓ := by
+    have hz : ∀ t, μ t (Iio 0) = 0 := fun t => hcaus t
+    rw [IsCausal, hℓdef, Measure.bind_apply measurableSet_Iio hmeas.aemeasurable]
+    simp only [hz, lintegral_zero]
+  have htr : ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹ := by
+    intro s hs
+    have hφ : 0 < F.symbol x s := F.symbol_pos hnd hx hs
+    rw [hℓdef, laplaceL, Measure.lintegral_bind hmeas.aemeasurable (by fun_prop)]
+    have hcongr : ∀ t ∈ Ioi (0 : ℝ), (∫⁻ u, ENNReal.ofReal (Real.exp (-(s * u))) ∂(μ t))
+        = ENNReal.ofReal (Real.exp (-(F.symbol x s * t))) := by
+      intro t ht
+      rw [show (∫⁻ u, ENNReal.ofReal (Real.exp (-(s * u))) ∂(μ t)) = laplaceL (μ t) s from rfl,
+        htrans t (le_of_lt ht) s hs, mul_comm t (F.symbol x s)]
+    rw [setLIntegral_congr_fun measurableSet_Ioi hcongr,
+      show (∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (Real.exp (-(F.symbol x s * t))))
+        = laplaceL (volume.restrict (Ioi (0 : ℝ))) (F.symbol x s) from rfl,
+      show volume.restrict (Ioi (0 : ℝ)) = volume.restrict (Ici (0 : ℝ)) from
+        Measure.restrict_congr_set Ioi_ae_eq_Ici,
+      laplaceL_volume_Ici hφ, one_div]
+  have hfin : laplaceL ℓ 1 ≠ ⊤ := by
+    rw [htr 1 zero_lt_one]; exact ENNReal.ofReal_ne_top
+  refine ⟨ℓ, ⟨hcausal, fun T => measure_Icc_ne_top_of_laplaceL_ne_top hcausal zero_lt_one hfin T,
+    htr⟩, ?_⟩
+  rintro ρ ⟨hρcaus, -, hρtr⟩
+  exact laplaceL_injective_of_ne_top hρcaus hcausal
+    (by rw [hρtr 1 zero_lt_one]; exact ENNReal.ofReal_ne_top)
+    fun s hs => by rw [hρtr s (by linarith), htr s (by linarith)]
 
 /-! ## `thm:sonine-conservation` and its corollary -/
 
