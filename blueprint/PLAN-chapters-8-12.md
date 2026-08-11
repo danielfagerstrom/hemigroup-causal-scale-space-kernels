@@ -234,3 +234,85 @@ lake env lean CIAxiomGuard.lean    # per-declaration axiom report
 Two rules that earned their place: every new `\leanok` node gets a `#print axioms` line in
 `CIAxiomGuard.lean` in the same commit, and no ledger entry is written without a
 librarian-verified page anchor.
+
+---
+
+# Re-evaluation, 2026-08-11
+
+Written after chapters 8 and 9 were taken as far as they go. This is the checkpoint the scope
+decision asked for ("start with 8–9, then re-evaluate").
+
+## What landed
+
+| node | | how |
+|---|---|---|
+| `prop:admissibility-criterion` (8.7) | new | the one obligation every example shares, proved once |
+| `lem:criterion-converse` (8.8) | new | the criterion is characteristic, not merely sufficient |
+| `prop:stable-family` (8.1) | ✓ | antiderivative, Gamma integral at exponent `1-α` |
+| `prop:gamma-family` (8.2) | ✓ | antiderivative, Gamma integral at exponent `1` |
+| `lem:memory-kernel` (9.1) | ✓ | differentiation under the integral sign |
+| `lem:memory-kernel-transform` (9.15) | new, ✓ | the substitution `τ = t/x` |
+| `thm:sonine-conservation` (9.5) | ✓ | transform comparison; **reduces to Lean core** |
+
+Trust boundary unchanged at two entries. 27 nodes `\leanok`.
+
+**The ordering lesson.** The plan had chapter 8's closed forms before chapter 9. That was wrong:
+both are antiderivative computations, so `lem:memory-kernel` — chapter 9's *first* lemma — is
+chapter 8's tool. Proving 9.1 first bought 8.1 and 8.2 together. Where a chapter's opening lemma
+is a *technique* rather than a result, it should be scheduled ahead of the chapter that reads
+best first.
+
+**The prerequisite lesson.** Phase 3 (Laplace injectivity beyond finite measures) looked at the
+time like unglamorous groundwork. It is the whole of `thm:sonine-conservation`: with it in hand
+the Sonine proof is twenty lines. Prerequisites found by *stating* a chapter are worth more than
+the schedule suggests, because the statement is what reveals them.
+
+## What is blocked, and on what
+
+`lem:potential-kernel`'s existence half is deferred by decision, not stalled — see
+`Formalization/Skeleton/Chapter9.lean` for the two routes and what each costs. Everything else
+left in chapter 9 waits on it or is an `[A]` node.
+
+## Chapters 10–12 against Mathlib as it stands today
+
+The 2026-08-09 survey is out of date in one direction and confirmed in the others.
+
+**Mathlib now has distributions.** `Analysis/Distribution/` carries test functions, the space
+`𝓓'(Ω,F)`, `delta`, and `lineDerivCLM` — a distributional directional derivative as a continuous
+linear map. So the blanket claim "Mathlib has no distribution theory" is **false as of this
+check**, and `prop:scale-evolution`'s status note has been corrected. It is still not enough:
+the file's own docstring says it "contains very few mathematical statements", and what
+`prop:scale-evolution` and `cor:exact-inversion` need — the embedding of a locally integrable
+function as a distribution, and convolution of a distribution with a measure — is not there.
+Closer than it was, and worth re-checking each time Mathlib is bumped, rather than treated as
+permanently out of reach.
+
+**Mellin is available.** `Analysis/MellinTransform.lean` *and* `Analysis/MellinInversion.lean`.
+Chapter 11's `lem:mellin-data` and `lem:symbol-uniqueness` are the most likely next formalisable
+nodes outside chapter 9, and ledger A12 (Mellin inversion on a strip) may be retirable rather
+than cited. That is worth checking before any of chapter 11 is attempted, because A12 is the
+chapter's spine.
+
+**No Bessel functions.** `K_a` is absent, so `prop:bessel-family` (8.3), `ex:bessel-quadratic`
+(11.10) and `thm:locality` (12.5) — the whole memory line — cannot be *stated*, let alone proved.
+This is unchanged and is not a scheduling problem: it is a missing Mathlib theory.
+
+**No semigroup generator theory.** Nothing matching a `C₀`-semigroup or Hille–Yosida. Chapter
+10's `thm:scale-cauchy` (Theorem 3′) and `lem:generator-properties` are out of reach, and A11
+(Phillips subordination) stays cited.
+
+**Bohr–Mollerup is available**, as the original plan noted, which is what chapter 12's
+`lem:log-convexity` would use — but `thm:locality` above it needs Bessel, so the lemma would be
+formalised into a chapter whose conclusion cannot be stated.
+
+## Recommendation
+
+1. **Decide `lem:potential-kernel`.** It is the only thing blocking the rest of chapter 9, and it
+   is a review decision, not work.
+2. **Then chapter 11's Mellin nodes**, not chapter 10. `lem:mellin-data` and
+   `lem:symbol-uniqueness` are the only nodes in 10–12 with a real Mathlib substrate. Check first
+   whether `MellinInversion` retires ledger A12; if it does, that is worth more than the nodes.
+3. **Chapters 10 and 12 are not schedulable** until Mathlib grows semigroup theory and Bessel
+   functions respectively. They should be recorded as blocked-on-upstream in `README.md` rather
+   than carried as pending work — the distinction matters, because the first is a queue and the
+   second is a dependency.

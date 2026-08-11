@@ -113,7 +113,16 @@ family.
 way, so the split is not about cost --- it is about \emph{reach}: the transform equation is a
 chain rule and is formalisable today, while the identity here is distributional, and Mathlib has
 no distribution theory to state it in. Keeping them in one node would have made a provable
-result unreachable behind an unprovable one.)}
+result unreachable behind an unprovable one.}
+
+\emph{\textbf{Corrected 2026-08-11.} That last clause was true when written and is not now:
+\texttt{Analysis/Distribution/} carries test functions, the space $\Distr(\Omega,F)$, the Dirac
+distribution, and a distributional directional derivative as a continuous linear map. It is
+still not enough for this node, whose statement needs a locally integrable function read as a
+distribution and a distribution convolved with a measure, and neither is there yet --- the file's
+own docstring says it ``contains very few mathematical statements''. The correction is recorded
+because this is a moving target: the right habit is to re-check when Mathlib is bumped, not to
+treat the node as permanently out of reach.)}
 \end{proposition}
 
 \begin{proof}
