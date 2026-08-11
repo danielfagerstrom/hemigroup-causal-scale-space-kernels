@@ -37,6 +37,16 @@ namespace Hemigroup
 open MeasureTheory Set
 open scoped ENNReal
 
+/-! ## An elementary inequality
+
+`1 - e^{-u} ≤ u`, used in two unrelated places — the null-array estimate of chapter 5 and the
+admissibility criterion of chapter 8 — which is why it sits here rather than in either. -/
+
+/-- `1 - e^{-u} ≤ u`, so replacing an exponent by `1 - e^{-\text{exponent}}` can only decrease
+it. -/
+theorem one_sub_exp_neg_le (u : ℝ) : 1 - Real.exp (-u) ≤ u := by
+  nlinarith [Real.add_one_le_exp (-u)]
+
 /-! ## Causal measures -/
 
 /-- A measure on `ℝ` is *causal* when it is carried by `[0,∞)`.

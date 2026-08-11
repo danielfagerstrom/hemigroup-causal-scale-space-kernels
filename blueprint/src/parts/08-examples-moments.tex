@@ -179,3 +179,55 @@ The Lévy measure of $T_x$ is $\nu(dt) = k(t)t^{-1}dt$ up to the scaling by $x$,
 $\int_{t>1} t^n\,\nu(dt) = \int_1^\infty t^{\,n-1}k(t)\,dt$; \ledger{A7} equates finiteness of
 that integral with finiteness of $\Ex\,T_x^n$.
 \end{proof}
+
+% additive: not in the draft, which verifies convergence family by family. The one obligation
+% every example of this chapter has in common, isolated so it is discharged once. Numbered 8.7,
+% a number the draft does not use.
+\begin{proposition}[admissibility criterion for a memory kernel]\label{prop:admissibility-criterion}
+\uses{def:levy-exponent}
+\lean{Hemigroup.levyExponentD_ne_top_of_integrableOn}\leanok
+Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing with
+\[
+  \int_0^1 k(t)\,dt < \infty
+  \qquad\text{and}\qquad
+  \int_1^\infty \frac{k(t)}{t}\,dt < \infty .
+\]
+Then $F(s) = b_0 s + \int_0^\infty (1 - e^{-st})\,k(t)\,\frac{dt}{t}$ is finite for every
+$s \ge 0$.
+
+Consequently $F$ is of the form (7.1) and \ref{thm:main-characterization} applies to it --- a
+consequence and not part of the statement, which is why this node's dependency list records only
+\ref{def:levy-exponent}: convergence is all the estimates below establish, and
+admissibility is what \ref{lem:selfdecomposable-exponents} then reads off it.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.levyExponentD\_ne\_top\_of\_integrableOn}; \texttt{\#print axioms} reduces to
+Lean core. Elementary, and stated separately because it is the \emph{only} clause with content
+in exhibiting a concrete admissible exponent: the other five fields of the Lean structure ---
+nonnegativity of $b_0$ and of $k$, monotonicity of $k$, and the normalisation $k(0)=0$ --- are
+immediate for every kernel in this chapter, and this one is not.}
+
+\emph{The two-sided split is forced by the integrand rather than chosen for convenience.
+Near the origin $1 - e^{-st}$ is comparable to $st$, which cancels the $1/t$ and leaves $k$
+itself; at infinity it is bounded by $1$, which leaves $k(t)/t$. The two halves therefore test
+genuinely different things, and the examples separate them: the stable family's $k$ is
+\emph{unbounded} at the origin and integrable there all the same
+(\ref{prop:stable-family}), while a Dickman ray's $k$ has compact support and so passes the
+second test trivially.}
+
+\emph{\textbf{Two instances are built in Lean from it}, as non-vacuity checks on remarks that
+would otherwise assert the existence of members of the class without exhibiting one:
+\texttt{Hemigroup.gammaExponent}, giving the leaky integrator $k = e^{-t}$ of
+\ref{rem:heavy-tails} at $\gamma = 1$, and \texttt{Hemigroup.dickmanExponent}, giving the
+Dickman ray $k = \mathbf{1}_{(0,\tau)}$ that \ref{rem:extreme-rays} identifies as an extreme ray
+of the admissible cone. Each is a witness that the cone in question is inhabited where the
+remark says it is; neither yet carries that remark's closed form, which is
+\ref{prop:gamma-family}'s business.)}
+\end{proposition}
+
+\begin{proof}
+\leanok
+Split the integral at $t = 1$. On $(0,1]$ use $1 - e^{-st} \le st$, which is $1 + x \le e^x$ at
+$x = -st$; the integrand is then at most $s\,k(t)$, integrable by the first hypothesis. On
+$(1,\infty)$ use $1 - e^{-st} \le 1$; the integrand is at most $k(t)/t$, integrable by the
+second. The drift term is finite for every real $s$.
+\end{proof}

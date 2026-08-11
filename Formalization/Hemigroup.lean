@@ -3,6 +3,7 @@ import Hemigroup.Basic
 import Hemigroup.Construction
 import Hemigroup.Continuity
 import Hemigroup.Covariance
+import Hemigroup.Examples
 import Hemigroup.Family
 import Hemigroup.Gauge
 import Hemigroup.Injectivity

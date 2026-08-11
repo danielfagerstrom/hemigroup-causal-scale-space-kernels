@@ -45,10 +45,8 @@ open MeasureTheory Set Filter Finset
 
 /-! ## The elementary inequality -/
 
-/-- `1 - e^{-u} ≤ u`, so replacing an exponent by `1 - e^{-\text{exponent}}` can only decrease
-it. -/
-theorem one_sub_exp_neg_le (u : ℝ) : 1 - Real.exp (-u) ≤ u := by
-  nlinarith [Real.add_one_le_exp (-u)]
+-- `one_sub_exp_neg_le`, which the estimates below use, now lives in `Hemigroup.Levy`: chapter
+-- 8's admissibility criterion needs the same inequality and does not import this file.
 
 /-- `u - (1 - e^{-u}) ≤ u²` for `u ≥ 0` — the error in that replacement is quadratic.
 

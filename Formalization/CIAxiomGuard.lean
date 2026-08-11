@@ -165,3 +165,15 @@ mix.
 
 #print axioms Hemigroup.CascadeCore.similarity_form
 #print axioms Hemigroup.CascadeCore.main_analysis
+
+/-! ### `prop:admissibility-criterion`, and the two instances built from it
+
+The criterion itself, and the two concrete exponents. `#print axioms` on a *definition* is worth
+running for the same reason it is worth running on a theorem: these two carry proof obligations
+in their fields, and an interface leaking into one of them would mean the witness is not a
+witness. Both reduce to Lean core.
+-/
+
+#print axioms Hemigroup.levyExponentD_ne_top_of_integrableOn
+#print axioms Hemigroup.gammaExponent
+#print axioms Hemigroup.dickmanExponent
