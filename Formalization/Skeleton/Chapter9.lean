@@ -21,12 +21,13 @@ have hit one at a time, halfway through:
 class as *representations*. `prop:pair-regularity`(2) is expressible with no new predicate. See
 that file's docstring.
 
-**2. Two statements here need something the development does not have**, and both are the same
-thing: **Laplace injectivity for locally finite measures.** `laplace_injective` is proved only
-for finite measures, and `κ^{(x)}`, `ℓ^{(x)}` and Lebesgue measure are none of them finite.
-`sonine_conservation` cannot even be *proved by the blueprint's argument* without it. Phase 3 of
-the plan says attempt that extension before conceding an interface, and these two statements are
-why it is a prerequisite and not a detail.
+**2. Two statements here needed something the development did not have** — Laplace injectivity
+for measures that are not finite, since `κ^{(x)}`, `ℓ^{(x)}` and Lebesgue measure are none of
+them finite and `sonine_conservation` compares them. **Discharged 2026-08-11** as
+`Hemigroup.laplaceL_injective_of_ne_top`, so ledger A6 stays off the trust boundary in its
+general form too. Writing these statements is what showed it was a prerequisite rather than a
+detail; the sharpening it produced — that the real hypothesis is convergence of the transform at
+one point, not local finiteness — came out of trying to prove it.
 
 **3. `lem:potential-kernel` is where a third trust-boundary entry would enter.** It asserts a
 measure with a prescribed Laplace transform, which is Bernstein–Widder in its general

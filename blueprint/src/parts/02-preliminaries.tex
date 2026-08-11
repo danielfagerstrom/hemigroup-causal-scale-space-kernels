@@ -250,7 +250,63 @@ tag and this node does not replace it. Every step in the formalised part of the 
 form ``the transforms agree, therefore the measures agree'' has both measures carried by
 $[0,\infty)$ and both transforms known on all of it, so it cites this node and not that one; the
 consequence is that \ledger{A6} does not appear in \texttt{blueprint/trust-boundary.txt}.)}
+
+\emph{\textbf{Extended 2026-08-11 to measures that are not finite}, which is what Chapter~9
+needs: $\kappa^{(x)}$, $\ell^{(x)}$ and Lebesgue measure are none of them finite, and
+\ref{thm:sonine-conservation} compares them. That is \ref{prop:laplace-uniqueness-sigma-finite}
+below. The finite case remains the one almost every caller uses, so it keeps this node and its
+tag.}
 \end{proposition}
+
+% additive: not in the draft. The unbounded-measure refinement of A6, split from
+% prop:laplace-uniqueness-causal because its hypothesis is genuinely different -- not finiteness
+% of the measure but convergence of the transform. Numbered 2.13.
+\begin{proposition}[uniqueness without a finiteness assumption]\label{prop:laplace-uniqueness-sigma-finite}
+\uses{prop:laplace-uniqueness-causal}
+\lean{Hemigroup.laplaceL_injective_of_ne_top}\leanok
+Let $\mu, \rho$ be measures on $\RR$ carried by $[0,\infty)$, not assumed finite, and let
+$s_0 \in \RR$ be such that $\hat\mu(s_0) < \infty$. If $\hat\mu(s) = \hat\rho(s)$ for every
+$s \ge s_0$, then $\mu = \rho$.
+\statusT\quad\emph{(\textbf{Proved}, as \texttt{Hemigroup.laplaceL\_injective\_of\_ne\_top},
+reducing to Lean core --- so \ledger{A6} stays off the trust boundary in its general form as
+well as its restricted one. The hypothesis is worth reading carefully, because it is weaker than
+the one the chapter that needs this was expected to supply: what is assumed is not that the
+measures are locally finite but that \emph{the transform converges at a single point}. Local
+finiteness is then a consequence, \ref{lem:laplace-local-finiteness}, not an assumption.}
+
+\emph{The proof is the classical damping trick and nothing more. $e^{-s_0 t}\mu(dt)$ is finite
+precisely because the transform converges at $s_0$; its transform at $s$ is $\hat\mu(s_0 + s)$,
+so \ref{prop:laplace-uniqueness-causal} applies to the damped pair; and the damping is undone by
+multiplying the density back, which is legitimate because $e^{-s_0t}$ is everywhere positive and
+finite. Nothing here needs the tail-agreement form of \ledger{A6} that
+\ref{prop:laplace-uniqueness-causal} declines to claim.)}
+\end{proposition}
+
+\begin{proof}
+\leanok
+The measure $\mu_0(dt) := e^{-s_0 t}\,\mu(dt)$ is finite, its mass being $\hat\mu(s_0) < \infty$,
+and is carried by $[0,\infty)$, being absolutely continuous with respect to $\mu$; likewise
+$\rho_0$, whose mass is $\hat\rho(s_0) = \hat\mu(s_0)$. For $s \ge 0$,
+$\hat{\mu_0}(s) = \hat\mu(s_0 + s) = \hat\rho(s_0 + s) = \hat{\rho_0}(s)$, so $\mu_0 = \rho_0$ by
+\ref{prop:laplace-uniqueness-causal}. Since $e^{-s_0t}\,e^{s_0t} = 1$ pointwise, multiplying both
+by the density $e^{s_0 t}$ recovers $\mu = \rho$.
+\end{proof}
+
+\begin{lemma}[convergence forces local finiteness]\label{lem:laplace-local-finiteness}
+\uses{prop:laplace-uniqueness-sigma-finite}
+Let $\mu$ be carried by $[0,\infty)$ with $\hat\mu(s_0) < \infty$ for some $s_0 > 0$. Then
+$\mu([0,T]) < \infty$ for every $T$.
+\statusT\quad\emph{(\textbf{Proved}, as
+\texttt{Hemigroup.measure\_Icc\_ne\_top\_of\_laplaceL\_ne\_top}. Stated because it is what makes
+the hypothesis of \ref{prop:laplace-uniqueness-sigma-finite} the natural one: ``locally finite''
+would have been an extra assumption, and it is instead a consequence.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+On $[0,T]$ the integrand satisfies $1 \le e^{s_0 T} e^{-s_0 t}$, so
+$\mu([0,T]) \le e^{s_0T}\hat\mu(s_0) < \infty$.
+\end{proof}
 
 \begin{proof}
 \leanok

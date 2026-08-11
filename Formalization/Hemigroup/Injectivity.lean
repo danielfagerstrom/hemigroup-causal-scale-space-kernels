@@ -43,6 +43,7 @@ strength of the moment route.
 namespace Hemigroup
 
 open MeasureTheory Set
+open scoped ENNReal
 
 /-! ## The substitution `x = e^{-t}` -/
 
@@ -212,5 +213,93 @@ theorem laplace_injective {μ ρ : Measure ℝ} [IsFiniteMeasure μ] [IsFiniteMe
     rw [Measure.map_apply continuous_expNeg.measurable himg,
       Set.preimage_image_eq A injective_expNeg]
   rw [← hμA, ← hρA, hmap]
+
+/-! ## Beyond finite measures
+
+Chapter 9 needs the transform to determine measures that are *not* finite: `κ^{(x)}`, the
+potential kernel `ℓ^{(x)}` and Lebesgue measure all fail to be, and the Sonine identity compares
+them. This is the general clause of ledger **A6**, and it is proved here rather than conceded —
+so A6 stays off `trust-boundary.txt` in its general form as well as its restricted one.
+
+The hypothesis that actually does the work is weaker than local finiteness, and worth stating
+in its own terms: **the transform is finite at a single point**. That already forces enough,
+because damping by `e^{-s₀t}` turns the measure into a finite one without losing any
+information — the density is strictly positive everywhere, so the operation is invertible.
+Local finiteness is then a consequence, not an assumption.
+-/
+
+/-- Damping a causal measure by `e^{-s₀ t}` shifts its transform. -/
+theorem laplaceL_withDensity_expNeg (μ : Measure ℝ) (s₀ s : ℝ) :
+    laplaceL (μ.withDensity fun t => ENNReal.ofReal (Real.exp (-(s₀ * t)))) s
+      = laplaceL μ (s₀ + s) := by
+  have hf : Measurable fun t : ℝ => ENNReal.ofReal (Real.exp (-(s₀ * t))) := by fun_prop
+  have hg : Measurable fun t : ℝ => ENNReal.ofReal (Real.exp (-(s * t))) := by fun_prop
+  rw [laplaceL, lintegral_withDensity_eq_lintegral_mul _ hf hg, laplaceL]
+  refine lintegral_congr fun t => ?_
+  rw [Pi.mul_apply, ← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add]
+  congr 2
+  ring
+
+/-- **Injectivity of the Laplace transform without a finiteness assumption on the measures.**
+
+Two causal measures whose transforms agree on `[s₀, ∞)`, one of them finite at `s₀`, are equal.
+The measures themselves may be infinite — Lebesgue measure on the half line is the case chapter 9
+needs.
+
+The proof is the classical damping trick and nothing more: `e^{-s₀t}μ(dt)` is *finite* precisely
+because the transform converges at `s₀`, its transform at `s` is `μ`'s at `s₀ + s`, so
+`laplace_injective` applies; and the damping is undone by multiplying the density back, which is
+legitimate because `e^{-s₀t}` is everywhere positive and finite. -/
+theorem laplaceL_injective_of_ne_top {μ ρ : Measure ℝ} (hμ : IsCausal μ) (hρ : IsCausal ρ)
+    {s₀ : ℝ} (hfin : laplaceL μ s₀ ≠ ⊤) (h : ∀ s, s₀ ≤ s → laplaceL μ s = laplaceL ρ s) :
+    μ = ρ := by
+  set f : ℝ → ℝ≥0∞ := fun t => ENNReal.ofReal (Real.exp (-(s₀ * t))) with hf_def
+  set g : ℝ → ℝ≥0∞ := fun t => ENNReal.ofReal (Real.exp (s₀ * t)) with hg_def
+  have hfm : Measurable f := by fun_prop
+  have hgm : Measurable g := by fun_prop
+  -- The damped measures are finite: their masses are the transforms at `s₀`.
+  have hmass : ∀ ν : Measure ℝ, ∫⁻ t, f t ∂ν = laplaceL ν s₀ := fun ν => rfl
+  haveI : IsFiniteMeasure (μ.withDensity f) :=
+    isFiniteMeasure_withDensity (by rw [hmass]; exact hfin)
+  haveI : IsFiniteMeasure (ρ.withDensity f) :=
+    isFiniteMeasure_withDensity (by rw [hmass, ← h s₀ le_rfl]; exact hfin)
+  -- They are causal, being absolutely continuous with respect to causal measures.
+  have hcau : ∀ ν : Measure ℝ, IsCausal ν → IsCausal (ν.withDensity f) := fun ν hν =>
+    (withDensity_absolutelyContinuous ν f) hν
+  -- Their transforms agree, by the shift.
+  have hdamped : μ.withDensity f = ρ.withDensity f := by
+    refine laplace_injective (hcau μ hμ) (hcau ρ hρ) fun s hs => ?_
+    rw [laplace_eq_toReal_laplaceL, laplace_eq_toReal_laplaceL,
+      laplaceL_withDensity_expNeg, laplaceL_withDensity_expNeg,
+      h (s₀ + s) (by linarith)]
+  -- Undo the damping: `f * g = 1` pointwise, so `withDensity g` inverts `withDensity f`.
+  have hfg : f * g = 1 := by
+    funext t
+    rw [Pi.mul_apply, hf_def, hg_def, ← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add,
+      neg_add_cancel, Real.exp_zero, ENNReal.ofReal_one, Pi.one_apply]
+  calc μ = μ.withDensity (f * g) := by rw [hfg, withDensity_one]
+    _ = (μ.withDensity f).withDensity g := withDensity_mul _ hfm hgm
+    _ = (ρ.withDensity f).withDensity g := by rw [hdamped]
+    _ = ρ.withDensity (f * g) := (withDensity_mul _ hfm hgm).symm
+    _ = ρ := by rw [hfg, withDensity_one]
+
+/-- Local finiteness is a *consequence* of the transform converging, not a hypothesis: a causal
+measure with `laplaceL μ s₀ < ∞` for some `s₀ > 0` is finite on every `[0,T]`. -/
+theorem measure_Icc_ne_top_of_laplaceL_ne_top {μ : Measure ℝ} (hμ : IsCausal μ) {s₀ : ℝ}
+    (hs₀ : 0 < s₀) (hfin : laplaceL μ s₀ ≠ ⊤) (T : ℝ) : μ (Icc 0 T) ≠ ⊤ := by
+  have hle : μ (Icc 0 T) ≤ ENNReal.ofReal (Real.exp (s₀ * T)) * laplaceL μ s₀ := by
+    rw [laplaceL, ← lintegral_const_mul _ (by fun_prop)]
+    calc μ (Icc 0 T) = ∫⁻ _ in Icc 0 T, 1 ∂μ := by
+          rw [lintegral_one, Measure.restrict_apply_univ]
+      _ ≤ ∫⁻ t in Icc 0 T, ENNReal.ofReal (Real.exp (s₀ * T)) *
+            ENNReal.ofReal (Real.exp (-(s₀ * t))) ∂μ := by
+          refine setLIntegral_mono' measurableSet_Icc fun t ht => ?_
+          rw [← ENNReal.ofReal_mul (Real.exp_pos _).le, ← Real.exp_add, ← ENNReal.ofReal_one]
+          refine ENNReal.ofReal_le_ofReal ?_
+          rw [show (1 : ℝ) = Real.exp 0 by simp]
+          exact Real.exp_le_exp.mpr (by nlinarith [ht.1, ht.2])
+      _ ≤ ∫⁻ t, ENNReal.ofReal (Real.exp (s₀ * T)) *
+            ENNReal.ofReal (Real.exp (-(s₀ * t))) ∂μ := setLIntegral_le_lintegral _ _
+  exact ne_top_of_le_ne_top (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin) hle
 
 end Hemigroup

@@ -48,6 +48,15 @@ why A6 is absent from `trust-boundary.txt`.
 
 #print axioms Hemigroup.laplace_injective
 
+/-! ### `prop:laplace-uniqueness-sigma-finite` and `lem:laplace-local-finiteness`
+
+The unbounded-measure refinement, which chapter 9 needs and which keeps A6 off the trust
+boundary in its general form as well as its restricted one.
+-/
+
+#print axioms Hemigroup.laplaceL_injective_of_ne_top
+#print axioms Hemigroup.measure_Icc_ne_top_of_laplaceL_ne_top
+
 /-! ### `prop:laplace-continuity-causal`
 
 Likewise for `prop:laplace-continuity` (ledger A5).
