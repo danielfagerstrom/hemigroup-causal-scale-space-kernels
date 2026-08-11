@@ -28,6 +28,7 @@ import Hemigroup.Representation
 import Hemigroup.SelfDecomposable
 import Hemigroup.Sonine
 import Hemigroup.Symmetries
+import Hemigroup.SymbolUniqueness
 import Hemigroup.TransformContinuity
 import Hemigroup.Uniqueness
 import Hemigroup.WeakConvergence

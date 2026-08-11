@@ -39,7 +39,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Twenty-nine nodes carry `\lean{...}\leanok`:
+Thirty nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -51,7 +51,7 @@ Twenty-nine nodes carry `\lean{...}\leanok`:
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation` — the chapter's headline, and it reduces to Lean core |
-| 11 The signaling form | `lem:mellin-data` — Theorem 4$'$'s entry point: the Mellin identity and its bound; `lem:inversion-symbol` — the symbol `B`, analytic and meromorphic on the strip |
+| 11 The signaling form | `lem:mellin-data` — Theorem 4$'$'s entry point: the Mellin identity and its bound; `lem:inversion-symbol` — the symbol `B`, analytic and meromorphic on the strip; `lem:symbol-rigidity` — the eigenfunction relation pins `B` |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -67,16 +67,18 @@ distinction that matters is between a **queue** and a **dependency**, because on
 schedulable:
 
 1. **Chapter 11, towards Theorem 4$'$** — the formulation the article exists for, and the most
-   reachable unformalised part of it. `lem:mellin-data` and `lem:inversion-symbol` are done;
-   next is `lem:symbol-uniqueness`, the node that earns the definite article in "the"
-   inversion.
+   reachable unformalised part of it. `lem:mellin-data`, `lem:inversion-symbol` and
+   `lem:symbol-rigidity` are done. What is left of the chapter now runs through
+   `def:inversion-operator`, so it waits on A12 with `lem:mellin-vertical` — which moves
+   chapter 11 from the queue to the dependency list below.
 2. **Chapter 9's remainder**, which waits on `lem:potential-kernel`'s existence half. Route B is
    decided — the potential measure is *constructed* rather than represented, so the trust
    boundary stays at two entries; the work order is in `Formalization/Skeleton/Chapter9.lean`.
 3. **Blocked on upstream Mathlib, not queued.** `lem:mellin-vertical` (11.13) needs a decay
    estimate for `|Γ(c+iτ)|` along a vertical line, which Mathlib does not carry in any form — and
-   that clause is what would retire ledger A12. Chapter 10 needs C₀-semigroup and closed-operator
-   theory; chapter 12 needs Bessel `K`. None of the three is a scheduling decision.
+   that clause is what would retire ledger A12, on which the rest of chapter 11 now rests.
+   Chapter 10 needs C₀-semigroup and closed-operator theory; chapter 12 needs Bessel `K`. None of
+   the three is a scheduling decision.
 
 ## Relation to `scale-space-foundations`
 

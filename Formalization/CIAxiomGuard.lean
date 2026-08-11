@@ -233,3 +233,16 @@ A12, and it is not here.
 #print axioms Hemigroup.SelfDecomposableExponent.inversionSymbol_eq
 #print axioms Hemigroup.SelfDecomposableExponent.analyticAt_inversionSymbol
 #print axioms Hemigroup.SelfDecomposableExponent.meromorphicOn_inversionSymbol
+
+/-! ### `lem:symbol-rigidity` (11.15), the core of `lem:symbol-uniqueness`
+
+The step that makes the eigenfunction relation *pin* the symbol rather than merely constrain it.
+A17 and nothing else — and note which entry is absent: the reduction *to* the transform relation
+is `def:inversion-operator`, hence A12, and it is deliberately not in this file. What is here is
+everything downstream of that reduction.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.SameSymbolAction.eqOn_of_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.SameSymbolAction.eventuallyEq
+#print axioms Hemigroup.SelfDecomposableExponent.SameSymbolAction.eq_of_continuousAt
+#print axioms Hemigroup.SelfDecomposableExponent.SameSymbolAction.eqOn

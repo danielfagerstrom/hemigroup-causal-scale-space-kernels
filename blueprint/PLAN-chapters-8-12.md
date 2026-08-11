@@ -558,3 +558,53 @@ this, so it is now unblocked.
 2. `lem:potential-kernel`, Route B, to unblock the rest of chapter 9.
 3. Unchanged and still not schedulable: `lem:mellin-vertical` (Γ's vertical decay, missing
    upstream), chapter 10 (semigroup theory), chapter 12 (Bessel `K`).
+
+---
+
+# `lem:symbol-uniqueness`: the rigidity half proved, the rest is A12 — 2026-08-11
+
+`Hemigroup/SymbolUniqueness.lean`. A17 and nothing else; 30 nodes `\leanok`.
+
+## The node split again, and this time it marks the chapter's boundary
+
+11.4 runs in two steps. Step 1 turns the operator relation `A[H(s·)] = s H(s·)` into a relation
+between Mellin transforms — that is `def:inversion-operator`'s transform-level identity, which is
+exactly what ledger **A12** carries. Step 2 cancels `H̃` off its isolated zeros. Step 2 is the
+mathematical content: it is what makes the eigenfunction relation *pin* the symbol rather than
+merely constrain it. It is now `lem:symbol-rigidity` (11.15) and proved; 11.4 keeps its number and
+its statement and stays unproved.
+
+**This is where chapter 11 stops being a queue.** With 11.2, 11.14 and 11.15 done, every remaining
+node in the chapter — 11.3 itself, 11.4's step 1, 11.5, 11.6 — runs through
+`def:inversion-operator`. So chapter 11 now joins chapters 10 and 12 on the blocked-upstream list,
+and for a sharper reason than either: not a missing theory but a single missing estimate, the
+vertical decay of `|Γ(c+iτ)|`. Everything on this side of that estimate is done.
+
+That is a better place to have stopped than it sounds. The chapter's three genuinely mathematical
+nodes are formalised, and the boundary is now a single named lemma rather than a vague
+"Mathlib doesn't have Mellin theory".
+
+## What Lean forced the prose to decide
+
+The draft concludes `B₁ = B₂ on the strip`. For meromorphic symbols — and `B(-z) =
+H̃(z+1)/H̃(z)` has poles at the zeros of `H̃` — pointwise equality of functions is the wrong
+reading: in Lean a function still has a value at a pole, a junk one, so the statement as written
+would be false. The unconditional form is agreement on a punctured neighbourhood of every point,
+which is what equality of *meromorphic* functions means and what "everywhere on the strip by
+meromorphy" is actually asserting. Pointwise equality comes back under a continuity hypothesis
+that says, in as many words, that the symbols have no poles.
+
+Both are proved and a consumer has to pick. **The general point:** where a paper says "equal" of
+objects that are only defined up to a discrete set, the formalisation cannot stay silent about
+which equality, and the choice it is forced into is information the prose was eliding. Compare the
+`BF₀` / `LE` discipline: the same phenomenon one level down.
+
+## Next
+
+1. `lem:potential-kernel`, Route B — now the only schedulable item, and it unblocks the rest of
+   chapter 9 (`prop:sonine-pair-exists`, `cor:exact-inversion`). Work order is in
+   `Formalization/Skeleton/Chapter9.lean`; the one real cost is the Stieltjes measure `-dk`, which
+   needs a right-continuous modification of `k` first.
+2. If Route B lands, `prop:sonine-pair-exists` (9.12) follows immediately.
+3. Blocked upstream, unchanged: A12's Γ estimate (chapter 11), semigroup theory (chapter 10),
+   Bessel `K` (chapter 12).
