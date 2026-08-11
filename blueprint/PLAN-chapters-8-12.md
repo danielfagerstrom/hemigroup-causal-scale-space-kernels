@@ -370,3 +370,32 @@ inversion — plus `lem:delay-core`. It does not need semigroup theory. Chapter 
 the most reachable unformalized part of the article, not the least, and the earlier
 recommendation understated it. Given that the signalling form is the formulation the author
 intends to build on, it should be promoted above finishing chapter 9.
+
+## The A12 check, 2026-08-11
+
+Asked because ledger A12 is chapter 11's spine and Mathlib turned out to have
+`Analysis/MellinInversion.lean`. **Answer: A12 is not retired.** Full reasoning in the ledger
+entry; the short form is that Mathlib's `mellinInv_mellin_eq` requires the *inversion* integral to
+converge absolutely (`VerticalIntegrable (mellin f) σ`), where Widder's Theorem 9a takes a
+symmetric limit and therefore covers conditionally convergent inversion integrals. Mathlib's
+`mellinInv` is an ordinary line integral, not a principal value.
+
+The standing hypothesis (H) does not close the gap and is not the kind of hypothesis that could:
+`z_*` is the abscissa of the negative-moment function, so (H) fixes the **width of the strip** on
+which the forward transform converges. Vertical integrability is **decay along the line**. The two
+are orthogonal.
+
+**This is a better outcome than a bare "no".** It converts a formalisation question into a
+mathematical one with a known price: A12 becomes retirable the moment (H) or
+`def:inversion-operator` carries a vertical-decay clause. Whether that clause is acceptable is a
+question about the article, and it should be checked family by family before it is adopted — the
+stable family's symbol is a ratio of Gammas and decays exponentially, the Gamma family's is
+rational and decays only polynomially and may fail. That check is cheap and worth doing, because
+it also tells us whether Theorem 4′ as stated is about a class the examples actually inhabit.
+
+**Revised order for chapter 11.** The Mellin substrate is real but does not reach the chapter's
+spine unchanged, so the chapter is not the free win the previous section suggested. Its cheapest
+genuine target is instead `lem:mellin-data` — the *forward* transform and its strip, where
+`MellinConvergent` and (H) line up directly and no inversion is involved. That node is worth
+doing on its own account, and doing it will settle the vertical-decay question empirically for the
+families, which is what the retirement decision needs.

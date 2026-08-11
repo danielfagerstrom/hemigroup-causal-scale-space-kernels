@@ -365,6 +365,44 @@ articles that have not yet pinned a ledger.
   Widder was added to the draft at Definition 11.3 on 2026-08-08.
 - **Confidence.** ✅ well grounded, and better grounded than the draft's own citation. Widder is
   already held and already this ledger's source for A13, so no new trust is introduced.
+- **Mathlib check, 2026-08-11 — A12 is _not_ retired, and the reason is precise.** Mathlib has
+  `Mathlib/Analysis/MellinInversion.lean`, whose `mellinInv_mellin_eq` reads
+
+  ```
+  (σ : ℝ) (f : ℝ → E) (hx : 0 < x)
+  (hf  : MellinConvergent f σ)              -- forward transform absolutely convergent on Re z = σ
+  (hFf : VerticalIntegrable (mellin f) σ)   -- the INVERSION integral absolutely convergent
+  (hfx : ContinuousAt f x)
+  → mellinInv σ (mellin f) x = f x
+  ```
+
+  This is **not** Widder Theorem 9a. Two differences, and the first is the one that matters:
+
+  1. **Mathlib requires the inversion integral to converge absolutely**; Widder does not. Widder
+     takes the symmetric limit `lim_{T→∞} ∫_{c−iT}^{c+iT}`, which is exactly the device that
+     covers conditionally convergent inversion integrals. Mathlib's `mellinInv` is an ordinary
+     integral over the line, not a principal value.
+  2. Mathlib assumes `ContinuousAt f x` where Widder assumes bounded variation near `x` and
+     concludes the midpoint `[ψ(x+) + ψ(x−)]/2`. For continuous `ψ` these agree, so this
+     difference is harmless here.
+
+  **The standing hypothesis (H) does not close the gap.** (H) constrains `z_*`, the abscissa of
+  the *negative-moment* function `E[T_1^{−ζ}]` — that is, the width of the strip on which the
+  forward transform converges. Vertical integrability is a statement about **decay of the
+  transform along the line** as `|Im z| → ∞`, which is a regularity property of the density and
+  is orthogonal to the strip. Nothing in (H) implies it.
+
+  **What retiring A12 would cost.** A vertical-decay clause added to (H) or to
+  `def:inversion-operator`. That is a change to the article's hypotheses, not a formalisation
+  device, and it must be checked against the three families before it is made: the stable
+  family's symbol is a ratio of Gammas and decays exponentially in `|Im z|` (fine), while the
+  Gamma family's is rational and decays only polynomially (needs checking, and may fail). So the
+  decision is mathematical and belongs to the author.
+
+  **Separately, `lem:symbol-uniqueness` may want Mellin _uniqueness_** (Widder Thm 6a, p. 243 —
+  already listed above as a neighbouring statement). Mathlib gives injectivity only as a
+  corollary of `mellinInv_mellin_eq`, i.e. under the same absolute-convergence hypotheses, so
+  that node inherits the same question.
 
 ## A13 — A Laplace transform with nonnegative integrand is singular at its abscissa of convergence
 **Blueprint:** `lem:moment-recursion` · **Lean:** *(not stated yet)*
