@@ -258,6 +258,15 @@ below. The finite case remains the one almost every caller uses, so it keeps thi
 tag.}
 \end{proposition}
 
+\begin{proof}
+\leanok
+Substitute $x = e^{-t}$: the map is a measurable embedding carrying a measure on $[0,\infty)$
+to one on $(0,1]$, and it turns $\hat\mu(n)$ into the $n$th moment of the image, for every
+$n \in \NN$. Two finite measures on the compact $[0,1]$ with the same moments agree, by the
+Weierstrass approximation theorem. Transporting back along the embedding loses nothing, so
+$\mu = \rho$.
+\end{proof}
+
 % additive: not in the draft. The unbounded-measure refinement of A6, split from
 % prop:laplace-uniqueness-causal because its hypothesis is genuinely different -- not finiteness
 % of the measure but convergence of the transform. Numbered 2.13.
@@ -294,6 +303,7 @@ by the density $e^{s_0 t}$ recovers $\mu = \rho$.
 
 \begin{lemma}[convergence forces local finiteness]\label{lem:laplace-local-finiteness}
 \uses{prop:laplace-uniqueness-sigma-finite}
+\lean{Hemigroup.measure_Icc_ne_top_of_laplaceL_ne_top}\leanok
 Let $\mu$ be carried by $[0,\infty)$ with $\hat\mu(s_0) < \infty$ for some $s_0 > 0$. Then
 $\mu([0,T]) < \infty$ for every $T$.
 \statusT\quad\emph{(\textbf{Proved}, as
@@ -306,15 +316,6 @@ would have been an extra assumption, and it is instead a consequence.)}
 \leanok
 On $[0,T]$ the integrand satisfies $1 \le e^{s_0 T} e^{-s_0 t}$, so
 $\mu([0,T]) \le e^{s_0T}\hat\mu(s_0) < \infty$.
-\end{proof}
-
-\begin{proof}
-\leanok
-Substitute $x = e^{-t}$: the map is a measurable embedding carrying a measure on $[0,\infty)$
-to one on $(0,1]$, and it turns $\hat\mu(n)$ into the $n$th moment of the image, for every
-$n \in \NN$. Two finite measures on the compact $[0,1]$ with the same moments agree, by the
-Weierstrass approximation theorem. Transporting back along the embedding loses nothing, so
-$\mu = \rho$.
 \end{proof}
 
 % additive: not in the draft. The [T] refinement of prop:laplace-continuity.

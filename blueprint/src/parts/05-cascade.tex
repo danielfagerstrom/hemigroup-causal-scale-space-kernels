@@ -149,6 +149,7 @@ critical path, and is used only where the blueprint's own argument needs it.)}
 \end{theorem}
 
 \begin{proof}
+\leanok
 Fix $x < y$ and the uniform partition $t_i = x + \tfrac{i}{n}(y - x)$, $i = 0, \dots, n$.
 Write $\mu_i := \mu_{t_i, t_{i+1}}$ and $g_i := g_{t_i, t_{i+1}}$, so that by
 \ref{lem:additivity}
@@ -201,6 +202,7 @@ $(0,\infty)$''. The Lean development also records the $G$ form,
 \end{corollary}
 
 \begin{proof}
+\leanok
 By (ND), $\Phi_{x,y} \ne \Id$, so $\mu_{x,y} \ne \delta_0$ by the uniqueness clause of
 \ref{lem:convolution-representation}, and therefore $g_{x,y} \not\equiv 0$. By
 \ref{thm:increments-bernstein}, $g_{x,y} \in \BFz$; by \ref{lem:vanishing} a member of $\BFz$
