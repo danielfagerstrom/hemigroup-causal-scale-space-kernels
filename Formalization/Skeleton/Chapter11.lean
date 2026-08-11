@@ -91,9 +91,26 @@ plus the Gamma integral, both of which the development already uses.
 
 /-- **`lem:mellin-data`**, the identity: `H̃(z) = Γ(z) · E[T₁^{-z}]` on the strip.
 
-The proof is Tonelli on `∫₀^∞ s^{z-1} ∫ e^{-st} dμ(t) ds`, exchanging to
-`∫ (∫₀^∞ s^{z-1} e^{-st} ds) dμ(t) = ∫ Γ(z) t^{-z} dμ(t)`. The inner integral is Mathlib's
-`Complex.GammaIntegral` after the substitution `u = st`. -/
+The proof is Fubini on `∫₀^∞ s^{z-1} ∫ e^{-st} dμ(t) ds`, exchanging to
+`∫ (∫₀^∞ s^{z-1} e^{-st} ds) dμ(t) = ∫ Γ(z) t^{-z} dμ(t)`.
+
+**The inner integral is already in Mathlib**, as `Complex.integral_cpow_mul_exp_neg_mul_Ioi`:
+`0 < a.re → 0 < r → ∫ t in Ioi 0, (t:ℂ)^(a-1) * exp (-(r*t)) = (1/r)^a * Gamma a`. Taking
+`a = z` and `r = t` gives `(1/t)^z · Γ(z)`, which is `Γ(z) · t^{-z}` for `t > 0`. So no
+substitution is needed and the Gamma function enters as Mathlib's, not as a definition of ours.
+
+**The side condition is the strip condition, not an extra hypothesis.** Fubini needs the
+uncurried integrand integrable for `volume.restrict (Ioi 0) ⊗ lawT₁`, and its absolute value
+integrates to
+
+  `∫∫ s^{c-1} e^{-st} ds dμ(t) = Γ(c) · ∫ t^{-c} dμ(t) = Γ(c) · negMoment c`,
+
+by the same Mathlib lemma applied to the real part. So joint integrability holds **iff**
+`negMoment c ≠ ⊤`, which is exactly `c < zStar`. This is the same shape as chapter 8's
+`prop:admissibility-criterion`: the condition that makes the analysis go through turns out to be
+characteristic rather than merely sufficient, and recognising that is what keeps a hypothesis
+from being invented. Prove the `ℝ≥0∞` computation first and both the exchange and the bound
+below fall out of it. -/
 theorem mellin_profile (hH : StandingHypothesis F) {z : ℂ} (hz : 0 < z.re)
     (hz' : z.re < zStar F) :
     mellin (fun s => (profile F s : ℂ)) z = Complex.Gamma z * ∫ t, (t : ℂ) ^ (-z) ∂(lawT₁ F) := by
