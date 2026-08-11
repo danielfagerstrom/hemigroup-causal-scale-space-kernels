@@ -77,7 +77,24 @@ density is only a.e. measurable because `k` is.
 /-! ## `lem:potential-kernel`
 
 Existence *and* uniqueness of `ℓ^{(x)}`. Uniqueness is Laplace injectivity for locally finite
-measures (see the module docstring); existence is the open question of the chapter.
+measures (see the module docstring); existence is the open question of the chapter, and as of
+2026-08-11 it is **deliberately deferred**, not stalled.
+
+**Why deferring is the right order.** `sonine_conservation` below is stated against an arbitrary
+`ℓ` meeting the specification rather than against a chosen one, so the chapter's headline does
+not depend on how existence is discharged — only `prop:sonine-pair-exists` (9.12) does. Proving
+Sonine first therefore costs no interface and settles whether the potential kernel is on the
+critical path at all.
+
+**The two routes, when the decision comes.** (A) The blueprint's own proof: `1/u` is completely
+monotone, `CM ∘ BF` is `CM` (ledger A2), and Bernstein–Widder for general measures (ledger A1)
+produces the measure. Short and faithful, but A1 is precisely the entry
+`DESIGN-formalization-strategy.md`'s representation-first choice exists to keep off the critical
+path, so taking it would falsify a design claim this article makes. (B) The subordinator's
+potential measure: `U = ∫₀^∞ μ_t dt` with `μ_t` from A17, already on the boundary, whose
+transform is `∫₀^∞ e^{-tφ_x(s)} dt = 1/φ_x(s)` by Tonelli. This adds no entry, but needs
+`φ_x ∈ LE` with its triple exhibited — drift `b₀`, Lévy measure `-dk` — and `k` is only
+`AntitoneOn`, so it needs a right-continuous modification before a Stieltjes measure exists.
 -/
 
 /-- **`lem:potential-kernel`.** The potential kernel exists, is unique, and scales. -/
@@ -92,8 +109,16 @@ theorem existsUnique_potentialKernel {x : ℝ} (hx : 0 < x) :
 
 Stated against an arbitrary `ℓ` satisfying the potential-kernel specification rather than
 against a chosen one, so that it does not depend on how `existsUnique_potentialKernel` is
-discharged. -/
-theorem sonine_conservation {x : ℝ} (hx : 0 < x) (ℓ : Measure ℝ) [SFinite ℓ]
+discharged.
+
+**`IsCausal ℓ` added 2026-08-11**, and it is not a formality. Without it the statement is not
+reachable by the only available route and is very likely false: the proof compares transforms
+and concludes with `laplaceL_injective_of_ne_top`, which needs both measures carried by
+`[0,∞)`, and `IsCausal (μ ∗ ν)` needs it of both factors too. The specification as first written
+pinned `ℓ` only through its transform on `(0,∞)`, which does not confine a measure to the
+half-line. `lem:potential-kernel` asserts causality of `ℓ^{(x)}` and always did — the omission
+was in this statement, not in the mathematics, and writing the proof is what found it. -/
+theorem sonine_conservation {x : ℝ} (hx : 0 < x) (ℓ : Measure ℝ) [SFinite ℓ] (hcaus : IsCausal ℓ)
     (hℓ : ∀ s : ℝ, 0 < s → laplace ℓ s = (F.symbol x s)⁻¹) :
     (F.memoryKernel x ∗ ℓ).restrict (Ici 0) = volume.restrict (Ici 0) := by
   sorry
