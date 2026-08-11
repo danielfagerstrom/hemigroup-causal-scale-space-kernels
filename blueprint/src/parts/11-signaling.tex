@@ -67,6 +67,7 @@ pursue.
 % draft: Lemma 11.2
 \begin{lemma}[Mellin data of the profile]\label{lem:mellin-data}
 \uses{def:standing-hypothesis,thm:main-characterization,prop:moment-criterion}
+\lean{Skeleton.mellin_profile}\notready
 Under (H), for $0 < \operatorname{Re} z < z_*$,
 \[
   \tilde H(z) \;=\; \Gamma(z)\;\Ex\bigl[T_1^{-z}\bigr],
@@ -80,7 +81,22 @@ every vertical line of the strip. Define the \emph{inversion symbol}
   \qquad 0 < \operatorname{Re} z < z_* - 1,
 \]
 meromorphic on the strip, with poles only at the isolated zeros of $\tilde H$.
-\statusT
+\statusT\quad\emph{(\textbf{Stated in Lean and not yet proved}, as
+\texttt{Skeleton.mellin\_profile}, with the bound and the vertical-integrability consequence
+stated alongside it. This is chapter 11's entry point, and the node \ledger{A12}'s retirement
+turns on: the third statement there is \texttt{Complex.VerticalIntegrable}, which is
+\emph{verbatim} the hypothesis Mathlib's \texttt{mellinInv\_mellin\_eq} asks for. Once it is
+proved, the inversion theorem this article cites becomes available as a theorem rather than an
+interface --- see \texttt{blueprint/AXIOMS.md} A12, which records the first assessment of that
+question together with its correction.}
+
+\emph{Three design decisions were taken in writing the statement down. $T_1$ is the kernel
+$\mu_{0,1}$ the construction already produces, so no new object enters and the density $\phi_1$
+is \emph{not} needed --- which matters, because $\phi_1$ would drag in \ledger{A9} for a node
+that does not otherwise need it. The profile is the Laplace transform rather than the density, so
+Mathlib's \texttt{mellin} applies to it directly. And the negative moments are carried in
+$[0,\infty]$: divergence is the whole point of $z_*$, and Chapter~9 is the cautionary tale about
+departing from that convention.)}
 \end{lemma}
 
 \begin{proof}
