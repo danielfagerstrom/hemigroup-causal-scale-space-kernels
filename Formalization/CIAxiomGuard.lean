@@ -177,3 +177,5 @@ witness. Both reduce to Lean core.
 #print axioms Hemigroup.levyExponentD_ne_top_of_integrableOn
 #print axioms Hemigroup.gammaExponent
 #print axioms Hemigroup.dickmanExponent
+
+#print axioms Hemigroup.SelfDecomposableExponent.integrableOn_of_ne_top

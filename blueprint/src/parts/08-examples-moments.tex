@@ -231,3 +231,34 @@ $x = -st$; the integrand is then at most $s\,k(t)$, integrable by the first hypo
 $(1,\infty)$ use $1 - e^{-st} \le 1$; the integrand is at most $k(t)/t$, integrable by the
 second. The drift term is finite for every real $s$.
 \end{proof}
+
+% additive: not in the draft. The converse of 8.7, which is what makes the two integrability
+% conditions the right ones rather than merely convenient ones. Numbered 8.8.
+\begin{lemma}[the criterion is characteristic]\label{lem:criterion-converse}
+\uses{prop:admissibility-criterion,def:levy-exponent}
+\lean{Hemigroup.SelfDecomposableExponent.integrableOn_of_ne_top}\leanok
+Conversely, if $F$ is of the form (7.1) with $F(1) < \infty$, then $\int_0^1 k(t)\,dt < \infty$
+and $\int_1^\infty k(t)t^{-1}dt < \infty$.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.integrableOn\_of\_ne\_top}; \texttt{\#print axioms}
+reduces to Lean core. Worth stating because it changes what \ref{prop:admissibility-criterion}
+is: not a convenient sufficient condition but a characterisation, so that the two integrals are
+the right invariants of the kernel and not an artifact of how the estimate was arranged. It also
+has a practical consequence for the Lean development --- every admissible $F$ carries both
+integrability facts \emph{already}, so the analysis of Chapter~9 needs no hypothesis beyond
+membership of the class, and in particular $F'$ may be differentiated under the integral sign
+without one.)}
+
+\emph{The proof is the same inequality read in the other direction. Where
+\ref{prop:admissibility-criterion} used $1 - e^{-u} \le u$, this uses
+$1 - e^{-u} \ge u/(1+u)$, which is $e^u \ge 1+u$ rearranged; the two together pin $1 - e^{-u}$
+between $u/(1+u)$ and $u$, and every estimate on either side is one of them. A single value of
+$s$ suffices, and $s = 1$ is taken.}
+\end{lemma}
+
+\begin{proof}
+\leanok
+Take $s = 1$ in (7.1), so that $\int_0^\infty (1 - e^{-t})k(t)t^{-1}dt < \infty$. For $t > 0$,
+$1 - e^{-t} \ge t/(1+t)$, so the integrand is at least $k(t)/(1+t)$. On $(0,1]$ that is at least
+$k(t)/2$, and on $(1,\infty)$ it is at least $k(t)/(2t)$; both claims follow.
+\end{proof}
