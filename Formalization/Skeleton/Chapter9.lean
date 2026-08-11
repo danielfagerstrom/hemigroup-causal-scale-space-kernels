@@ -41,8 +41,8 @@ below is deliberately written so either route can discharge it.
 
 namespace Skeleton
 
-open MeasureTheory Set
-open scoped ENNReal
+open MeasureTheory Set Filter
+open scoped ENNReal Topology
 
 open Hemigroup Hemigroup.SelfDecomposableExponent
 
@@ -142,12 +142,108 @@ exactly what makes the potential measure *exist*. Nothing here needs complete mo
 the trust boundary stays at two entries.
 -/
 
-/-- **Route B, step 1.** The symbol is a Lévy exponent with an exhibited triple: drift `b₀` and
-Lévy measure the Stieltjes measure of the nonincreasing dilate `u ↦ k(u/x)/x`. -/
-theorem exists_levyTriple_symbol (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
+/-! ### Route B, step 1, decomposed — 2026-08-11
+
+The symbol is a Lévy exponent with an exhibited triple: drift `b₀` and Lévy measure the tail
+measure of the nonincreasing dilate `h(u) = k(u/x)/x`. The assembly below is `sorry`-free and
+rests on three further named sub-lemmas, of which only the first is substantial.
+
+**Two findings from writing it.**
+
+*Nondegeneracy is not needed.* The statement carried `hnd : F.Nondegenerate`, inherited from its
+consumers, and the proof never uses it — the triple exists for every admissible `F`, degenerate
+ones included, because the identity is just the derivative formula rearranged. (F) enters chapter
+9 only where `1/φ_x` has to make sense, which is `symbol_pos` in `lem:potential-kernel` proper.
+The hypothesis has been dropped.
+
+*The Stieltjes route does not survive contact.* The work order said to build `-dh` with Mathlib's
+`StieltjesFunction`, and `Monotone.stieltjesFunction` does hand over the right-continuous
+modification for free. But a `StieltjesFunction` is `ℝ → ℝ`, so its measure is finite on every
+bounded interval — and a Lévy measure need not be: `h` is unbounded at the origin for the stable
+family (`k(t) = αt^{-α}/Γ(1-α)`), so `ν(0,1]` is infinite there. `-dh` is therefore *not* a
+Stieltjes measure in Mathlib's sense, and `exists_tailMeasure` is stated by the property that is
+actually wanted — the tail `ν(r,∞) = h(r)` — rather than by a construction, so that either route
+(a countable sum of Stieltjes pieces, or the pushforward of Lebesgue under the generalised inverse
+of `h`) can discharge it.
+-/
+
+/-- **Route B, step 1a.** The tail measure of a nonincreasing nonnegative function vanishing at
+infinity: `ν(r,∞) = h(r)` for almost every `r > 0`.
+
+Stated by the tail rather than by a construction — see the note above for why Mathlib's
+`StieltjesFunction` cannot serve, its measures being finite on bounded intervals where a Lévy
+measure need not be. The `a.e.` is not slack: a nonincreasing `h` and its right-continuous
+modification differ on a countable set, and nothing downstream can tell them apart. -/
+theorem exists_tailMeasure {h : ℝ → ℝ} (hmono : AntitoneOn h (Ioi 0))
+    (hnn : ∀ u ∈ Ioi (0 : ℝ), 0 ≤ h u) (htend : Tendsto h atTop (𝓝 0)) :
+    ∃ ν : Measure ℝ, IsCausal ν ∧ SFinite ν ∧
+      ∀ᵐ r ∂(volume.restrict (Ioi (0 : ℝ))), ν (Ioi r) = ENNReal.ofReal (h r) := by
+  sorry
+
+theorem lintegral_one_sub_exp_eq_tail {ν : Measure ℝ} [SFinite ν] (hν : IsCausal ν) {s : ℝ}
+    (hs : 0 < s) :
+    ∫⁻ u, ENNReal.ofReal (1 - Real.exp (-(s * u))) ∂ν
+      = ∫⁻ r in Ioi (0 : ℝ), ENNReal.ofReal (s * Real.exp (-(s * r))) * ν (Ioi r) := by
+  sorry
+
+theorem tendsto_k_atTop_nhds_zero : Tendsto F.k atTop (𝓝 0) := by
+  sorry
+
+theorem exists_levyTriple_symbol {x : ℝ} (hx : 0 < x) :
     ∃ ν : Measure ℝ, IsCausal ν ∧ (∀ s, 0 ≤ s → levyExponent F.b₀ ν s ≠ ⊤) ∧
       ∀ s, 0 < s → ENNReal.ofReal (F.symbol x s) = levyExponent F.b₀ ν s := by
-  sorry
+  -- The dilated density `h(u) = k(u/x)/x`: nonincreasing, nonnegative, vanishing at infinity.
+  have hmono : AntitoneOn (fun u => F.k (u / x) / x) (Ioi 0) := by
+    intro a ha b hb hab
+    have h := antitoneOn_comp_div F.k_antitone hx ha hb hab
+    dsimp only
+    gcongr
+  have hnn : ∀ u ∈ Ioi (0 : ℝ), 0 ≤ F.k (u / x) / x := fun u hu =>
+    div_nonneg (F.k_nonneg _ (mem_Ioi.mpr (div_pos (mem_Ioi.mp hu) hx))) hx.le
+  have htend : Tendsto (fun u => F.k (u / x) / x) atTop (𝓝 0) := by
+    have h1 : Tendsto (fun u : ℝ => u / x) atTop atTop :=
+      Filter.Tendsto.atTop_div_const hx tendsto_id
+    simpa using (((tendsto_k_atTop_nhds_zero F).comp h1).div_const x)
+  obtain ⟨ν, hνc, hνs, hνtail⟩ := exists_tailMeasure hmono hnn htend
+  -- `φ_x(s) = b₀ s + s ∫₀^∞ e^{-su} h(u) du`, from the derivative formula and the substitution.
+  have hsym : ∀ s : ℝ, 0 < s → F.symbol x s
+      = F.b₀ * s + s * ∫ u in Ioi (0 : ℝ), Real.exp (-(s * u)) * (F.k (u / x) / x) := by
+    intro s hs
+    rw [symbol, (F.hasDerivAt_toRealExponent (mul_pos hx hs)).deriv, F.integral_dilate_k hx s]
+    ring
+  -- The identity, on `(0,∞)`.
+  have hkey : ∀ s : ℝ, 0 < s → ENNReal.ofReal (F.symbol x s) = levyExponent F.b₀ ν s := by
+    intro s hs
+    have hnonneg : ∀ r ∈ Ioi (0 : ℝ), 0 ≤ Real.exp (-(s * r)) * (F.k (r / x) / x) :=
+      fun r hr => by have := hnn r hr; positivity
+    have hint0 : IntegrableOn
+        (fun r => s * (Real.exp (-(s * r)) * (F.k (r / x) / x))) (Ioi 0) :=
+      (F.integrableOn_dilate_k hx hs).const_mul s
+    have hint : IntegrableOn
+        (fun r => s * Real.exp (-(s * r)) * (F.k (r / x) / x)) (Ioi 0) :=
+      hint0.congr_fun (fun r _ => by ring) measurableSet_Ioi
+    have hIpos : (0 : ℝ) ≤ ∫ r in Ioi (0 : ℝ), Real.exp (-(s * r)) * (F.k (r / x) / x) :=
+      integral_nonneg_of_ae ((ae_restrict_iff' measurableSet_Ioi).mpr (.of_forall hnonneg))
+    rw [levyExponent, lintegral_one_sub_exp_eq_tail hνc hs]
+    have h1 : (∫⁻ r in Ioi (0 : ℝ), ENNReal.ofReal (s * Real.exp (-(s * r))) * ν (Ioi r))
+        = ∫⁻ r in Ioi (0 : ℝ),
+            ENNReal.ofReal (s * Real.exp (-(s * r)) * (F.k (r / x) / x)) := by
+      refine lintegral_congr_ae ?_
+      filter_upwards [hνtail] with r hr
+      rw [hr, ← ENNReal.ofReal_mul (by positivity)]
+    rw [h1, ← ofReal_integral_eq_lintegral_ofReal hint
+        ((ae_restrict_iff' measurableSet_Ioi).mpr (.of_forall fun r hr => by
+          simpa only [Pi.zero_apply, mul_assoc] using mul_nonneg hs.le (hnonneg r hr))),
+      show (∫ r in Ioi (0 : ℝ), s * Real.exp (-(s * r)) * (F.k (r / x) / x))
+        = s * ∫ r in Ioi (0 : ℝ), Real.exp (-(s * r)) * (F.k (r / x) / x) by
+        rw [← integral_const_mul]; exact integral_congr_ae (.of_forall fun r => by ring),
+      ← ENNReal.ofReal_add (mul_nonneg F.b₀_nonneg hs.le) (mul_nonneg hs.le hIpos),
+      hsym s hs]
+  refine ⟨ν, hνc, fun s hs => ?_, hkey⟩
+  rcases hs.eq_or_lt with rfl | hs'
+  · simp [levyExponent]
+  · rw [← hkey s hs']; exact ENNReal.ofReal_ne_top
+
 
 /-- **Route B, step 2 — proved 2026-08-11.** The subordinator's laws, as a *measurable* family.
 
@@ -162,7 +258,7 @@ theorem exists_subordinatorFamily (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x)
       ∀ t, 0 ≤ t → ∀ s, 0 < s →
         laplaceL (μ t) s = ENNReal.ofReal (Real.exp (-(t * F.symbol x s))) := by
   classical
-  obtain ⟨ν, hνc, hνfin, hνφ⟩ := exists_levyTriple_symbol F hnd hx
+  obtain ⟨ν, hνc, hνfin, hνφ⟩ := exists_levyTriple_symbol F hx
   -- A17 on the scaled triple `(t b₀, t ν)`, for each `t ≥ 0`.
   have key : ∀ t : ℝ, 0 ≤ t → ∃ m : Measure ℝ, IsProbabilityMeasure m ∧ IsCausal m ∧
       ∀ s, 0 ≤ s → laplace m s = Real.exp (-(t * F.symbol x s)) := by

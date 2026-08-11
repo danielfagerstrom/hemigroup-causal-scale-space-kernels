@@ -721,3 +721,51 @@ statements, which is another argument for the statement-first order.
 2. After it: chapter 9's remaining nodes are `[A]` (`prop:pair-regularity` on A9,
    `prop:volterra-density` on A10) or distributional (`prop:scale-evolution`,
    `cor:exact-inversion`), so the chapter closes to what its ledger entries allow.
+
+---
+
+# Route B step 1, decomposed; two findings — 2026-08-11
+
+`exists_levyTriple_symbol` is `sorry`-free and rests on three named sub-lemmas
+(`exists_tailMeasure`, `lintegral_one_sub_exp_eq_tail`, `tendsto_k_atTop_nhds_zero`), of which
+only the first is substantial. The chain from there to `prop:sonine-pair-exists` is complete.
+
+## Finding 1: nondegeneracy is not needed, and the statement said it was
+
+The skeleton statement carried `hnd : F.Nondegenerate`, inherited from its consumers, and the
+proof never touches it. The triple exists for **every** admissible `F`, degenerate ones included,
+because the identity `φ_x(s) = b₀s + s∫e^{-su}h(u)du` is just `hasDerivAt_toRealExponent`
+rearranged through `integral_dilate_k`. (ND) enters chapter 9 only where `1/φ_x` has to make sense
+— `symbol_pos`, inside `lem:potential-kernel` proper. Hypothesis dropped.
+
+Worth contrasting with the earlier findings, which all ran the other way: `IsCausal`, `laplaceL`
+and `Measurable μ` were *missing* clauses that carried the reachability of their statements. This
+one is a clause that was **present and inert**. Both directions are failures of the same kind —
+the statement not saying what the proof needs — and both are found the same way, by writing the
+statement and trying.
+
+## Finding 2: the Stieltjes route does not survive contact with the stable family
+
+The work order said to build `-dh` with Mathlib's `StieltjesFunction`, and `Monotone.stieltjesFunction`
+does hand over the right-continuous modification for free — which was the cost the plan
+anticipated (`k` is only `AntitoneOn`). But that is not where it breaks. **A `StieltjesFunction`
+is `ℝ → ℝ`, so its measure is finite on every bounded interval, and a Lévy measure need not be:**
+`h` is unbounded at the origin for the stable family (`k(t) = αt^{-α}/Γ(1-α)`), so `ν(0,1] = ∞`
+there. `-dh` is therefore not a Stieltjes measure in Mathlib's sense at all.
+
+`exists_tailMeasure` is therefore stated **by the property that is wanted** — the tail
+`ν(r,∞) = h(r)` a.e. — rather than by a construction, so either route can discharge it: a
+countable sum of Stieltjes pieces over `[1/(n+1), 1/n]`, or the pushforward of Lebesgue on `(0,∞)`
+under the generalised inverse `y ↦ sup{u > 0 : h(u) > y}`, which handles the infinite mass
+natively and looks the shorter of the two.
+
+**The transferable point:** a work order that names a *tool* ("use `StieltjesFunction`") is more
+brittle than one that names a *property*. The tool was right about the difficulty it flagged and
+wrong about the obstruction, and only writing the statement separated the two.
+
+## Next
+
+1. `exists_tailMeasure` — the last substantial piece of chapter 9's `[T]` line.
+2. `lintegral_one_sub_exp_eq_tail` — the layer-cake identity, Tonelli on `ν ⊗ volume`.
+3. `tendsto_k_atTop_nhds_zero` — `k` is antitone, nonnegative, and `∫₁^∞ k(t)/t dt < ∞`, so its
+   limit cannot be positive.
