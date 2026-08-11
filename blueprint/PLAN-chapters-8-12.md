@@ -316,3 +316,57 @@ formalised into a chapter whose conclusion cannot be stated.
    functions respectively. They should be recorded as blocked-on-upstream in `README.md` rather
    than carried as pending work — the distinction matters, because the first is a queue and the
    second is a dependency.
+
+---
+
+# Decisions taken, 2026-08-11 (evening)
+
+## Ledger A1 agrees with `scale-space-foundations`
+
+The original plan required that A1's anchor here agree with SSF's A5 — same theorem, and a
+disagreement would mean one of them is wrong. **Checked: they agree exactly.** Both point at
+[Feller] Vol. 2, §XIII.4, Theorem 1 together with Theorem 1a, pp. 439–440, and both record the
+anchor as verified against the held scan.
+
+One structural difference, not a conflict: SSF's A5 is composite — Bernstein *plus* "the power
+symbol is a Bernstein function for `0 ≤ α ≤ 1`" — where this article's A1 is Bernstein alone and
+the composition rule is A2, pinned separately. SSF's own note flags that its composition clause
+is not pinned to a numbered line; ours is. The finer split is the better one, and if the two
+articles are ever reconciled it should be in this direction.
+
+## `lem:potential-kernel`: Route B
+
+Decided. The potential kernel is built as the subordinator's potential measure, not represented
+via Bernstein–Widder. **The trust boundary stays at two entries**, and the article's claim that
+the representation-first design keeps A1 off the critical path survives.
+
+The point worth recording, because it is easy to state wrongly: Route B does not use a
+*consequence* of complete monotonicity. It does not use complete monotonicity at all. The
+classical argument proves `1/φ_x` is CM and then invokes Bernstein–Widder to produce a measure;
+Route B produces the measure directly, by integrating the subordinator's laws over time. Nothing
+in the development ever needs the predicate.
+
+Work order is in `Formalization/Skeleton/Chapter9.lean`. The one real cost is the Stieltjes
+measure `-dk`, which needs a right-continuous modification of `k` first — `k` is only
+`AntitoneOn` by hypothesis, and that has been the recurring tax of this development.
+
+## Chapter 10 is a leaf; chapter 11 is not blocked by it
+
+Checked against the `\uses` graph rather than assumed. `thm:scale-cauchy` (Theorem 3′) is used by
+exactly one node — `rem:recovering-thm3`, inside chapter 10 itself. So are
+`def:phillips-generator`, `lem:generator-properties` and `prop:fixed-scale-semigroup`. Mathlib's
+missing semigroup theory therefore blocks **only that leaf**, not the article.
+
+Chapter 11 needs one node from chapter 10: `lem:delay-core`, via `lem:memory-fractional-integrals`.
+
+And a correction to a natural guess: **Theorem 4′ is not derived from the Sonine pairs.**
+`thm:signaling-form` uses the standing hypothesis, `lem:mellin-data`, `def:inversion-operator`,
+`lem:symbol-uniqueness`, `lem:memory-fractional-integrals`, `def:cascade-family` and
+`thm:main-characterization` — no chapter 9 node appears. The Sonine line and the signalling line
+are parallel developments off the main characterization, not sequential.
+
+**Consequence for priority.** Theorem 4′ needs Mellin — which Mathlib has, transform *and*
+inversion — plus `lem:delay-core`. It does not need semigroup theory. Chapter 11 is therefore
+the most reachable unformalized part of the article, not the least, and the earlier
+recommendation understated it. Given that the signalling form is the formulation the author
+intends to build on, it should be promoted above finishing chapter 9.

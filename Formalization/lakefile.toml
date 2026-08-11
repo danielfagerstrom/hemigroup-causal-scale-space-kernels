@@ -1,7 +1,13 @@
 name = "Hemigroup"
 version = "0.1.0"
 keywords = ["math", "scale-space"]
-defaultTargets = ["Hemigroup"]
+# Both libraries. `Skeleton` was omitted here until 2026-08-11, which meant plain `lake build`
+# -- and therefore CI -- never compiled it: a skeleton statement could be malformed, or name a
+# declaration that does not exist, and nothing would say so. That defeats the point of the
+# statement-first convention, whose whole value is that the target type is *checked* before the
+# proof is attempted. Adding it is safe for the sorry guard, which scans the
+# `Formalization/Hemigroup` directory rather than the build.
+defaultTargets = ["Hemigroup", "Skeleton"]
 
 [leanOptions]
 pp.unicode.fun = true

@@ -77,24 +77,35 @@ density is only a.e. measurable because `k` is.
 /-! ## `lem:potential-kernel`
 
 Existence *and* uniqueness of `ℓ^{(x)}`. Uniqueness is Laplace injectivity for locally finite
-measures (see the module docstring); existence is the open question of the chapter, and as of
-2026-08-11 it is **deliberately deferred**, not stalled.
+measures (see the module docstring); existence was the open question of the chapter.
 
-**Why deferring is the right order.** `sonine_conservation` below is stated against an arbitrary
-`ℓ` meeting the specification rather than against a chosen one, so the chapter's headline does
-not depend on how existence is discharged — only `prop:sonine-pair-exists` (9.12) does. Proving
-Sonine first therefore costs no interface and settles whether the potential kernel is on the
-critical path at all.
+**Route B chosen 2026-08-11.** Deferring it was the right order — `sonine_conservation` is stated
+against an arbitrary `ℓ` meeting the specification, so the chapter's headline turned out not to
+depend on this at all and is now proved interface-free. Only `prop:sonine-pair-exists` (9.12)
+needs existence.
 
-**The two routes, when the decision comes.** (A) The blueprint's own proof: `1/u` is completely
-monotone, `CM ∘ BF` is `CM` (ledger A2), and Bernstein–Widder for general measures (ledger A1)
-produces the measure. Short and faithful, but A1 is precisely the entry
+*The route not taken.* (A) is the blueprint's own proof: `1/u` is completely monotone,
+`CM ∘ BF ⊆ CM` (ledger A2), and Bernstein–Widder for general measures (ledger A1) produces the
+measure. Short and faithful to the text, but A1 is precisely the entry
 `DESIGN-formalization-strategy.md`'s representation-first choice exists to keep off the critical
-path, so taking it would falsify a design claim this article makes. (B) The subordinator's
-potential measure: `U = ∫₀^∞ μ_t dt` with `μ_t` from A17, already on the boundary, whose
-transform is `∫₀^∞ e^{-tφ_x(s)} dt = 1/φ_x(s)` by Tonelli. This adds no entry, but needs
-`φ_x ∈ LE` with its triple exhibited — drift `b₀`, Lévy measure `-dk` — and `k` is only
-`AntitoneOn`, so it needs a right-continuous modification before a Stieltjes measure exists.
+path; taking it would falsify a design claim the article makes about its own trust base.
+
+*The route taken.* (B) constructs the measure instead of representing it, and **never mentions
+complete monotonicity** — not even as a consequence. `ℓ^{(x)}` is the subordinator's potential
+measure `U = ∫₀^∞ μ_t dt`, where `μ_t` is the law A17 already supplies; its transform is
+`∫₀^∞ e^{-tφ_x(s)} dt = 1/φ_x(s)` by Tonelli. The trust boundary stays at two entries.
+
+**What Route B costs, in order.**
+
+1. `φ_x ∈ LE` with its triple *exhibited* — this is a theorem to prove, not a hypothesis and not
+   an axiom. Integrating `∫₀^∞ s e^{-st} k(t) dt` by parts turns it into `∫₀^∞ (1 - e^{-st}) dμ`
+   with `μ = -dk`, so the triple is drift `b₀` and Lévy measure `-dk`, dilated to scale `x`.
+2. The Stieltjes measure `-dk`. `k` is only `AntitoneOn`, so it needs a right-continuous
+   modification first; Mathlib's `StieltjesFunction` then produces the measure. Note this is the
+   same name flagged in `PLAN-chapters-8-12.md` as a false friend for the Stieltjes *class* — for
+   this, the other meaning, it is exactly the right tool.
+3. `U := ∫₀^∞ μ_t dt` as a measure, and Tonelli for its transform.
+4. Uniqueness is already available: `laplaceL_injective_of_ne_top`.
 -/
 
 /-- **`lem:potential-kernel`.** The potential kernel exists, is unique, and scales. -/
@@ -105,7 +116,13 @@ theorem existsUnique_potentialKernel (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 <
 
 /-! ## `thm:sonine-conservation` and its corollary -/
 
-/-- **`thm:sonine-conservation`.** `κ^{(x)} ∗ ℓ^{(x)} = Leb` on `[0,∞)`.
+/-! ## `thm:sonine-conservation` — **discharged 2026-08-11**
+
+Proved as `Hemigroup.SelfDecomposableExponent.sonine_conservation`, with all three of the
+hypotheses below added. The note is kept because the record of what the statement was missing is
+worth more than the statement was.
+
+`κ^{(x)} ∗ ℓ^{(x)} = Leb` on `[0,∞)`.
 
 Stated against an arbitrary `ℓ` satisfying the potential-kernel specification rather than
 against a chosen one, so that it does not depend on how `existsUnique_potentialKernel` is
@@ -129,17 +146,16 @@ could be `⊤` while the Bochner integral reads `0`. Since the proof multiplies 
 `levyExponent` is `ℝ≥0∞`-valued throughout — the development made this choice once already, and
 the skeleton statement quietly departed from it.
 
-*Nondegeneracy was missing; `hnd : F.Nondegenerate` added.* The proof needs `φ_x s > 0`, without which
+*Nondegeneracy was missing; `hnd : F.Nondegenerate` added.* The proof needs `φ_x s > 0`, without
+which
 `ofReal (φ_x s) * ofReal (φ_x s)⁻¹ ≠ 1`. And `φ_x s = s F'(xs)` genuinely can vanish: with
 `b₀ = 0` and `k ≡ 0` we get `F ≡ 0`, `κ^{(x)} = 0`, and the identity is **false**, not merely
 unprovable. So this needs the hypothesis the article carries everywhere and this statement
 dropped. It is `Hemigroup.SelfDecomposableExponent.Nondegenerate`, and `symbol_pos` is the
 consequence the proofs consume. The blueprint's `thm:sonine-conservation` inherits it by taking
 `(Φ_{x,y})` from `thm:main-characterization`, which is where it hides; a standalone Lean
-statement has to say it, and adding it is the next step here. -/
--- **Discharged 2026-08-11** as `Hemigroup.SelfDecomposableExponent.sonine_conservation`,
--- with all three of the hypotheses above added. The docstring is kept because the record of what
--- the statement was missing is worth more than the statement was.
+statement has to say it, and adding it is the next step here.
+-/
 
 /-- **`prop:sonine-pair-exists`**, the node split out in Phase 0: at the level of measures the
 pair is unconditional. A collation of the three results above, and the reason it is worth
