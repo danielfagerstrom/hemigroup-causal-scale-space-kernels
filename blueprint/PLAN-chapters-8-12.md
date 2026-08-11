@@ -399,3 +399,33 @@ genuine target is instead `lem:mellin-data` — the *forward* transform and its 
 `MellinConvergent` and (H) line up directly and no inversion is involved. That node is worth
 doing on its own account, and doing it will settle the vertical-decay question empirically for the
 families, which is what the retirement decision needs.
+
+### Correction to the A12 check, same day
+
+The section above concluded that A12 is not retired because Mathlib needs absolute convergence of
+the inversion integral where Widder does not, and that closing the gap would cost a new
+vertical-decay hypothesis to be checked family by family. **The conclusion was wrong, and it was
+wrong for an avoidable reason: I compared Mathlib against Widder's theorem instead of against the
+article's use of it.**
+
+`def:inversion-operator` already assumes the inversion integrand is absolutely integrable on the
+line — it is written into the definition's quantifier. So the article never relies on Widder's
+conditional-convergence generality, and A12's own Assignment clause already says the entry carries
+only the sufficiency of absolute integrability. That is exactly `mellinInv_mellin_eq`'s
+hypothesis.
+
+`lem:mellin-data` also already proves the vertical integrability that I said would have to be
+assumed: `H̃(z) = Γ(z) E[T_1^{−z}]`, and `|Γ(c+iτ)|` decays super-polynomially. The symbol `B`
+alone does grow — the Γ factors cancel in the ratio — but `B` is never inverted alone; it
+multiplies a transform carrying the Γ decay, and the product is `H̃(z+1)`.
+
+**Revised conclusion.** A12 is retirable at a formalisation cost, not a mathematical one. The two
+remaining pieces are matching the operator formulation to Mathlib's function-recovery statement,
+and supplying `ContinuousAt`. Neither touches the article's hypotheses. Attempt this before
+treating A12 as permanent.
+
+**The general lesson, worth more than the specific finding.** The question "does Mathlib retire
+this ledger entry?" is not answered by comparing Mathlib to the *cited theorem*. Ledger entries
+name a citation, but what they actually carry is the article's *use* of it, which is often
+narrower — here, narrower in exactly the direction that made the difference. Read the Assignment
+clause and the consuming node first; the citation is the last thing to compare against.

@@ -386,18 +386,31 @@ articles that have not yet pinned a ledger.
      concludes the midpoint `[ψ(x+) + ψ(x−)]/2`. For continuous `ψ` these agree, so this
      difference is harmless here.
 
-  **The standing hypothesis (H) does not close the gap.** (H) constrains `z_*`, the abscissa of
-  the *negative-moment* function `E[T_1^{−ζ}]` — that is, the width of the strip on which the
-  forward transform converges. Vertical integrability is a statement about **decay of the
-  transform along the line** as `|Im z| → ∞`, which is a regularity property of the density and
-  is orthogonal to the strip. Nothing in (H) implies it.
+  **Correction, same day, on the decisive point.** The paragraph first written here said (H)
+  cannot supply vertical integrability and that retiring A12 would therefore cost a new
+  hypothesis. The first half is true and irrelevant; the second half is wrong. **The article does
+  not need (H) to supply it, because `def:inversion-operator` already assumes it**: the operator
+  is defined "for `g` such that `g̃` is defined on the line `Re z = c` **and `B(−z) g̃(z)` is
+  absolutely integrable there**". That is exactly `VerticalIntegrable`. The article never relies
+  on Widder's conditional-convergence generality — it imposes the stronger hypothesis in the
+  definition, and A12's Assignment clause says so in as many words: the entry carries "that
+  absolute integrability on the line `Re z = c` is sufficient for the contour integral to recover
+  `B(θ)g`".
 
-  **What retiring A12 would cost.** A vertical-decay clause added to (H) or to
-  `def:inversion-operator`. That is a change to the article's hypotheses, not a formalisation
-  device, and it must be checked against the three families before it is made: the stable
-  family's symbol is a ratio of Gammas and decays exponentially in `|Im z|` (fine), while the
-  Gamma family's is rational and decays only polynomially (needs checking, and may fail). So the
-  decision is mathematical and belongs to the author.
+  Two supporting facts, both already in `lem:mellin-data`: `H̃(z) = Γ(z) E[T_1^{−z}]` is
+  absolutely integrable on every vertical line of the strip, because `|Γ(c+iτ)|` decays
+  super-polynomially — so the *profile's* transform needs no extra assumption. The *symbol* `B`
+  alone is not vertically integrable (`B(−z)` grows at least like `|z|`, being a ratio in which
+  the Γ factors cancel), but `B` is never inverted alone: it always multiplies a transform that
+  carries the Γ decay, and the product is `H̃(z+1)`, which decays again.
+
+  **So A12 is retirable, at a formalisation cost rather than a mathematical one.** What remains
+  between `mellinInv_mellin_eq` and this node: (i) matching the *operator* formulation — Mathlib
+  states `mellinInv σ (mellin f) x = f x`, recovery of a function from its own transform, whereas
+  the node needs the integral against `B(−z) g̃(z)` to agree with the functional-calculus reading,
+  so one must exhibit the `h` whose Mellin transform is that product; and (ii) `ContinuousAt`,
+  which Mathlib requires and Widder replaces with bounded variation. Neither is a change to the
+  article's hypotheses. **This should be attempted before A12 is treated as permanent.**
 
   **Separately, `lem:symbol-uniqueness` may want Mellin _uniqueness_** (Widder Thm 6a, p. 243 —
   already listed above as a neighbouring statement). Mathlib gives injectivity only as a
