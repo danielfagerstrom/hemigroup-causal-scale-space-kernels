@@ -98,4 +98,25 @@ theorem measurable_of_antitone_measure_Iic {μ : ℝ → Measure ℝ}
     simp only [measure_univ]
     exact measurable_const
 
+/-- **A causal measure finite on every `[0,T]` is σ-finite**: the half-line is exhausted by the
+`[0,n]` and everything below the origin is null.
+
+The converse direction of `measure_Icc_ne_top_of_laplaceL_ne_top`, and what
+`prop:sonine-pair-exists` needs: `thm:sonine-conservation` is stated for an `SFinite` measure,
+because it convolves, and the potential kernel arrives from `lem:potential-kernel` carrying local
+finiteness instead. -/
+theorem sigmaFinite_of_isCausal_of_measure_Icc_ne_top {μ : Measure ℝ} (hμ : IsCausal μ)
+    (h : ∀ T : ℝ, μ (Icc 0 T) ≠ ⊤) : SigmaFinite μ := by
+  refine Measure.sigmaFinite_of_countable
+    (S := insert (Iio 0) (range fun n : ℕ => Icc (0 : ℝ) n)) ?_ ?_ ?_
+  · exact (countable_range _).insert _
+  · rintro s (rfl | ⟨n, rfl⟩)
+    · rw [hμ]; exact ENNReal.zero_lt_top
+    · exact lt_top_iff_ne_top.mpr (h _)
+  · refine eq_univ_of_forall fun r => ?_
+    rcases lt_or_ge r 0 with hr | hr
+    · exact ⟨Iio 0, mem_insert _ _, hr⟩
+    · obtain ⟨n, hn⟩ := exists_nat_ge r
+      exact ⟨Icc 0 n, mem_insert_of_mem _ ⟨n, rfl⟩, ⟨hr, hn⟩⟩
+
 end Hemigroup

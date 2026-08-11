@@ -258,3 +258,4 @@ this is the only check that they themselves are interface-free. All three reduce
 #print axioms Hemigroup.levyExponent_smul
 #print axioms Hemigroup.conv_Iic_le
 #print axioms Hemigroup.measurable_of_antitone_measure_Iic
+#print axioms Hemigroup.sigmaFinite_of_isCausal_of_measure_Icc_ne_top

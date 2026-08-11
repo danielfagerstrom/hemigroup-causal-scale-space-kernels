@@ -695,5 +695,29 @@ keeps that from being a hole.
    measure `-d[k(·/x)/x]` (needing a right-continuous modification of `k`, since `k` is only
    `AntitoneOn`) and the integration by parts that turns `s∫e^{-su}h(u)du` into
    `∫(1-e^{-su})ν(du)`.
-2. `prop:sonine-pair-exists` (9.12), which is `existsUnique_potentialKernel` plus
-   `sonine_conservation` plus σ-finiteness of `ℓ` from local finiteness and causality.
+
+---
+
+# `prop:sonine-pair-exists` reduced to the same one sub-lemma — 2026-08-11
+
+Three lines once `lem:potential-kernel` was decomposed, plus one library lemma. **Chapter 9's
+whole `[T]` remainder now waits on exactly one thing**, `exists_levyTriple_symbol`.
+
+The only content of its own was σ-finiteness. `thm:sonine-conservation` is stated for an `SFinite`
+measure because it convolves; `lem:potential-kernel` delivers *local* finiteness. For a causal
+measure the two coincide — exhaust `[0,∞)` by the `[0,n]`, everything below the origin is null —
+and that is `sigmaFinite_of_isCausal_of_measure_Icc_ne_top`, the converse of the implication
+chapter 9 already needed in the other direction (`measure_Icc_ne_top_of_laplaceL_ne_top`: a
+convergent transform forces local finiteness).
+
+**Worth noting as a pattern.** Both implications are about the *same* pair of properties, and each
+was discovered by writing a statement that needed it rather than by planning for it. A chapter's
+"regularity plumbing" is not a fixed list one can enumerate up front; it accumulates from the
+statements, which is another argument for the statement-first order.
+
+## Next
+
+1. `exists_levyTriple_symbol`, the last open piece of chapter 9's `[T]` line.
+2. After it: chapter 9's remaining nodes are `[A]` (`prop:pair-regularity` on A9,
+   `prop:volterra-density` on A10) or distributional (`prop:scale-evolution`,
+   `cor:exact-inversion`), so the chapter closes to what its ledger entries allow.

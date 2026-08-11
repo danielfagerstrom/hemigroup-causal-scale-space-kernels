@@ -326,7 +326,9 @@ stating separately is that it needs no ledger entry, where the regularity clause
 theorem exists_sonine_pair (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
     ∃ ℓ : Measure ℝ, IsCausal ℓ ∧ (∀ T : ℝ, ℓ (Icc 0 T) ≠ ⊤) ∧
       ∃ _ : SFinite ℓ, (F.memoryKernel x ∗ ℓ).restrict (Ici 0) = volume.restrict (Ici 0) := by
-  sorry
+  obtain ⟨ℓ, ⟨hcaus, hloc, htr⟩, -⟩ := existsUnique_potentialKernel F hnd hx
+  haveI : SigmaFinite ℓ := sigmaFinite_of_isCausal_of_measure_Icc_ne_top hcaus hloc
+  exact ⟨ℓ, hcaus, hloc, inferInstance, F.sonine_conservation hnd hx ℓ hcaus htr⟩
 
 /-! ## `prop:pair-regularity`(2), the Phase 1 decision made concrete
 
