@@ -339,7 +339,7 @@ articles that have not yet pinned a ledger.
 - **Confidence.** ✅ well grounded, with the notation caveat recorded above.
 
 ## A12 — Mellin inversion on a vertical line of absolute convergence
-**Blueprint:** `lem:mellin-data`, `def:inversion-operator` · **Lean:** *(not stated yet)*
+**Blueprint:** `lem:mellin-vertical`, `def:inversion-operator` · **Lean:** *(not stated yet)*
 **Cite:** @widder1941laplace — Ch. VI, §9 "The Mellin Transform", Theorem 9a, pp. 246–247
 
 - **Statement as used.** Draft Lemma 11.2 and Definition 11.3: if the Mellin transform
@@ -416,6 +416,40 @@ articles that have not yet pinned a ledger.
   already listed above as a neighbouring statement). Mathlib gives injectivity only as a
   corollary of `mellinInv_mellin_eq`, i.e. under the same absolute-convergence hypotheses, so
   that node inherits the same question.
+
+- **Third reading, 2026-08-11, from the Lean rather than from the library index — the obstacle is
+  upstream.** `lem:mellin-data` is now proved
+  (`Hemigroup.SelfDecomposableExponent.mellin_profile` and `norm_mellin_profile_le`), and proving
+  it is what located the difficulty precisely. The correction above says the vertical
+  integrability `mellinInv_mellin_eq` needs is *already supplied* by `lem:mellin-data`, because
+  `H̃(z) = Γ(z)E[T₁^{−z}]` and `|Γ(c+iτ)|` decays super-polynomially. That is true of the
+  mathematics and false of Mathlib: **there is no bound on `‖Complex.Gamma‖` along a vertical
+  line anywhere in the library.** `Analysis/SpecialFunctions/Stirling.lean` is Stirling's formula
+  for `n !` alone; the complex-plane asymptotic that gives `|Γ(c+iτ)| ∼ √(2π)|τ|^{c−1/2}
+  e^{−π|τ|/2}` is absent, and so is any weaker decay estimate that would serve.
+
+  So the vertical-integrability clause has been split out of `lem:mellin-data` as its own node,
+  `lem:mellin-vertical` (11.13), which is where this entry's Blueprint line now points — that
+  clause, and not the identity, is what A12's retirement turns on. It is stated in Lean as
+  `Skeleton.verticalIntegrable_mellin_profile`, whose type is *verbatim*
+  `Complex.VerticalIntegrable (mellin H) c`, the hypothesis `mellinInv_mellin_eq` asks for.
+  Everything on this side of the Γ estimate is done.
+
+  **What changes for the decision.** A12 is still retirable and is still not a question about the
+  article's hypotheses — both earlier readings were wrong about *where* the cost sits, and this
+  one moves it a third time. It is now a **queue item for Mathlib**, not a decision here: either
+  the Γ decay arrives upstream, or it is proved in this repo as a piece of work in its own right
+  (Stirling in the complex plane, or the reflection formula against `Gamma_mul_Gamma_one_sub`
+  plus a bound on `|1/Γ|`, neither small). That is a different kind of obstacle from "a
+  formalisation cost" and it should be recorded as such rather than left inside a correction that
+  reads as though the remaining work were bookkeeping.
+
+  **The general lesson, again and sharper.** The correction below already recorded that "does
+  Mathlib retire this entry?" is not answered by comparing Mathlib to the *cited theorem*. It is
+  not answered by comparing Mathlib to the article's *use* of it either — that gets the
+  mathematical question right and can still miss a lemma the Lean proof needs and the paper takes
+  for granted. The reliable move is to *write the statement in Lean and try*, which is what
+  located the Γ gap here in an afternoon.
 
 ## A13 — A Laplace transform with nonnegative integrand is singular at its abscissa of convergence
 **Blueprint:** `lem:moment-recursion` · **Lean:** *(not stated yet)*

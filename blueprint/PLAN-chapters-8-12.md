@@ -429,3 +429,132 @@ this ledger entry?" is not answered by comparing Mathlib to the *cited theorem*.
 name a citation, but what they actually carry is the article's *use* of it, which is often
 narrower — here, narrower in exactly the direction that made the difference. Read the Assignment
 clause and the consuming node first; the citation is the last thing to compare against.
+
+---
+
+# Chapter 11's entry point, proved — 2026-08-11 (late)
+
+`lem:mellin-data` is machine-checked, as
+`Hemigroup.SelfDecomposableExponent.mellin_profile` and `norm_mellin_profile_le`. Trust boundary
+unchanged at two entries; `#print axioms` gives A17 and nothing else, inherited through `kernel`
+because `T₁` is `μ_{0,1}`. 28 nodes `\leanok`.
+
+## The hinge did what the plan hoped, and one thing it did not
+
+The `ℝ≥0∞` computation `∫∫ s^{c-1}e^{-ts} ds dμ(t) = Γ(c)·E[T₁^{-c}]` was written first, on the
+grounds that it is the Fubini side condition, the bound, and the vertical-integrability statement
+at once. Two of those three came out of it in a few lines each, exactly as expected. The third
+did not, and the reason is the finding of this round.
+
+What the hinge *did* settle, and it is worth recording because it is the reusable part: it makes
+the exchange of integrals licensed **iff** `c < z_*`. The left-hand side is the total mass of the
+absolute value against the product measure, so joint integrability is not merely implied by the
+strip condition — it is equivalent to it. That is `prop:admissibility-criterion`'s shape a second
+time, and it is what stopped a hypothesis being invented for the Fubini step.
+
+It also showed that the first clause of (H) is load-bearing rather than decorative. `F(∞) = ∞` is
+used exactly once, to give `T₁ > 0` a.s.; without it the hinge is *false*, because the inner Gamma
+integral diverges at an atom that `negMoment`, an integral over `(0,∞)`, cannot see.
+
+## The A12 finding: the obstacle is upstream, and the earlier readings misplaced it twice
+
+The bound `|H̃(c+iτ)| ≤ E[T₁^{-c}]·|Γ(c+iτ)|` is proved. Integrating it in `τ` needs the
+super-polynomial decay of `|Γ(c+iτ)|`, and **Mathlib has no bound on `‖Complex.Gamma‖` along a
+vertical line at all**: `Analysis/SpecialFunctions/Stirling.lean` is Stirling for `n !` only.
+
+So the A12 story now has three readings, and the third is a different *kind* of answer:
+
+| | reading | where the cost sits |
+|---|---|---|
+| first | compare Mathlib to the **cited theorem** (Widder 9a) | a new vertical-decay hypothesis, to be checked family by family — **wrong** |
+| correction | compare Mathlib to the article's **use** of it (`def:inversion-operator`) | a formalisation cost: the operator formulation and `ContinuousAt` — right about the article, **incomplete about Lean** |
+| this round | **write the statement in Lean and try** | an upstream gap: `Γ`'s vertical decay, absent from Mathlib |
+
+The correction's own general lesson was that reading the Assignment clause beats reading the
+citation. That is true and it was not enough: getting the mathematical question right can still
+miss a lemma the Lean proof needs and the paper takes for granted. Attempting the statement is
+what located this one, in an afternoon.
+
+**Consequence for scheduling.** A12 is still retirable and still costs the article nothing. But it
+is now a *dependency*, not a *queue item*: either Γ's decay arrives upstream, or it is proved here
+as a piece of work in its own right (Stirling in the complex plane, or the reflection formula plus
+a bound on `|1/Γ|` — neither small). It belongs on the same list as chapter 10's semigroup theory
+and chapter 12's Bessel `K`, not ahead of it.
+
+## The blueprint surgery this forced
+
+`lem:mellin-data` stated four things — identity, bound, vertical integrability, and the symbol `B`
+with its meromorphy — of which the first two are now proved, the third is blocked upstream, and
+the fourth is complex analysis on a strip. That is the Lemma 7.1 shape for the third time, so 11.2
+was narrowed in place and the split-off clauses appended as `lem:mellin-vertical` (11.13) and
+`lem:inversion-symbol` (11.14). The `\uses` edges of 11.3, 11.4, 11.6, 11.8 and 11.9 were rewired
+onto whichever of the three they actually consume, and 11.2's edge to `prop:moment-criterion`
+(ledger A7) was dropped: that node is about *positive* integer moments, and what is left of 11.2
+is about negative ones. The Lean is the check — A7 appears nowhere in `#print axioms`.
+
+**The general point, since it has now recurred at every split.** Narrowing a node means narrowing
+its edges too. An edge left behind on a node that no longer uses it is not harmless: it puts a
+`\leanok` node behind a cited interface in the graph, which is precisely the claim the graph
+exists to make checkable.
+
+## Next
+
+1. `lem:inversion-symbol` (11.14) — analyticity of `H̃` on the strip and the meromorphy of `B`.
+   It is what `def:inversion-operator`, `lem:symbol-uniqueness` and `rem:poles` all consume, so it
+   is the gate on the rest of chapter 11. Mathlib has `mellin_differentiableAt_of_isBigO_rpow`.
+2. `lem:symbol-uniqueness` (11.4) — the node that earns the definite article in "the" inversion.
+3. `lem:potential-kernel`, Route B, to unblock the rest of chapter 9.
+
+---
+
+# `lem:inversion-symbol` proved — 2026-08-11 (same round)
+
+Item 1 above, done the same day it was scheduled. `Hemigroup/InversionSymbol.lean`: `H̃` analytic on
+`0 < Re z < z_*`, non-vanishing at the real points, zeros isolated, and the symbol
+`B(-z) = z·E[T₁^{-z-1}]/E[T₁^{-z}]` analytic off those zeros and meromorphic on `0 < Re z < z_*-1`.
+A17 and nothing else; 29 nodes `\leanok`.
+
+## The route the plan named was not the route that worked
+
+The plan said "Mathlib has `mellin_differentiableAt_of_isBigO_rpow`", and it does — but using it
+means proving `H(s) = O(s^{-a})` for every `a < z_*`, which is true (`H` is antitone, so
+`H(s)s^a/a ≤ ∫₀^s u^{a-1}H(u)du ≤ Γ(a)E[T₁^{-a}]`) and is *work*, and which re-derives from the
+Mellin integral exactly what `lem:mellin-data` already says.
+
+The identity gives a shorter route, and the shortness is not the interesting part. `m(z) =
+E[T₁^{-z}] = E[e^{-z log T₁}]` is the **complex MGF of `-log T₁`**, so Mathlib's
+`analyticAt_complexMGF` applies, and its hypothesis is that `Re z` lie in the *interior* of the set
+of exponents `c` with `E[T₁^{-c}] < ∞`. That set contains `(0, z_*)`, which is open — so the
+interior step is free and no boundary case arises — and membership is
+`negMoment_ne_top_of_lt_zStar`, already proved for `lem:mellin-data`.
+
+**So the strip of analyticity and the strip of the identity are the same strip for the same
+reason**, not two conditions that happen to coincide. That is worth more than the saved lines: it
+says `z_*` is a single abscissa governing the whole chapter, which is what the article claims and
+what a proof through `IsBigO` would have obscured behind an unrelated decay estimate.
+
+**The transferable form of the lesson.** When a node's content is `f = g·h` with `g` and `h`
+already understood, prove the *analytic* facts about `f` through the factorisation rather than
+through `f`'s own defining integral. Chapter 9 learned the same thing about `lem:memory-kernel`
+being a technique rather than a result; this is the complex-analytic version.
+
+## Two smaller things worth keeping
+
+**The closed form needs no non-vanishing hypothesis.** `B(-z) = H̃(z+1)/H̃(z) = z m(z+1)/m(z)` is
+`Γ(z+1) = zΓ(z)` and nothing else, and Lean's `x/0 = 0` makes both sides vanish together at a zero
+of `H̃`. Stating it unconditionally is the honest choice: a hypothesis `H̃(z) ≠ 0` would read as
+though it had been checked, when in fact it is not needed.
+
+**Non-vanishing is proved at the real points, and that is the whole of it.** `Γ(c) > 0` and
+`E[T₁^{-c}] > 0` for real `c ∈ (0, z_*)`; the identity theorem on the strip — convex, hence
+preconnected — turns that into isolated zeros everywhere. `lem:symbol-uniqueness` consumes exactly
+this, so it is now unblocked.
+
+## Next
+
+1. `lem:symbol-uniqueness` (11.4). Its proof is: evaluate both candidate symbols on the profiles,
+   take Mellin transforms, cancel `H̃` off the isolated set just proved, conclude everywhere by
+   meromorphy. Both inputs are now in the library.
+2. `lem:potential-kernel`, Route B, to unblock the rest of chapter 9.
+3. Unchanged and still not schedulable: `lem:mellin-vertical` (Γ's vertical decay, missing
+   upstream), chapter 10 (semigroup theory), chapter 12 (Bessel `K`).

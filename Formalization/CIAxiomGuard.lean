@@ -195,3 +195,41 @@ witness. Both reduce to Lean core.
 #print axioms Hemigroup.SelfDecomposableExponent.symbol_pos
 
 #print axioms Hemigroup.SelfDecomposableExponent.sonine_conservation
+
+/-! ### `lem:mellin-data`, chapter 11's entry point
+
+The identity and the bound, plus the `ℝ≥0∞` hinge both come out of and the Fubini side condition
+that hinge *is*. All four carry **A17 and nothing else**, which is the expected reading and worth
+saying why: `lawT₁` is `F.kernel 0 1`, so every statement about the profile quantifies over the
+measure A17 builds and inherits it through `kernel`, exactly as `prop:main-uniqueness` does. No
+chapter-11 interface enters — in particular **not A12**, which grounds `def:inversion-operator`
+and not this node.
+-/
+
+#print axioms Hemigroup.lintegral_ofReal_rpow_mul_exp
+#print axioms Hemigroup.SelfDecomposableExponent.lawT₁_singleton_zero
+#print axioms Hemigroup.SelfDecomposableExponent.negMoment_ne_top_of_lt_zStar
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_lintegral_gamma
+#print axioms Hemigroup.SelfDecomposableExponent.integrable_mellin_laplace
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_profile
+#print axioms Hemigroup.SelfDecomposableExponent.norm_mellin_profile_le
+
+/-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
+
+Analyticity of `H̃` on the strip, its non-vanishing at real points, the isolation of its zeros,
+and the symbol `B` with its closed form and meromorphy. A17 again and nothing else: the analysis
+is Mathlib's — `analyticAt_complexMGF` for `E[T₁^{-z}]`, `differentiableAt_Gamma` for the other
+factor — and the article's own interfaces do not enter. `lem:mellin-vertical` is what would carry
+A12, and it is not here.
+-/
+
+#print axioms Hemigroup.analyticAt_Gamma
+#print axioms Hemigroup.SelfDecomposableExponent.negMomentC_eq_complexMGF
+#print axioms Hemigroup.SelfDecomposableExponent.Ioo_subset_integrableExpSet
+#print axioms Hemigroup.SelfDecomposableExponent.analyticAt_negMomentC
+#print axioms Hemigroup.SelfDecomposableExponent.analyticAt_mellin_profile
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_profile_ofReal_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.eventually_mellin_profile_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.inversionSymbol_eq
+#print axioms Hemigroup.SelfDecomposableExponent.analyticAt_inversionSymbol
+#print axioms Hemigroup.SelfDecomposableExponent.meromorphicOn_inversionSymbol

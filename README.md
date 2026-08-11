@@ -20,11 +20,11 @@ positioning and literature work live in the wiki hub's outline page.
 
 ## Status
 
-**Written through §12; formalised through §6, plus two thirds of the main theorem.**
+**Written through §12; formalised through §9 and chapter 11's entry point, plus all three halves of the main theorem.**
 
-The blueprint carries all of §§2–12 — 56 statement nodes, 44 `[T]` and 12 `[A]` — and
-`AXIOMS.md` has 17 ledger entries, each with a page anchor. The Lean development is ~6,600
-lines, `sorry`-free, and rests on Lean core plus **two** axioms, which do not mix:
+The blueprint carries all of §§2–12 — 69 statement nodes — and `AXIOMS.md` has 18 ledger
+entries, each with a page anchor. The Lean development is ~8,500 lines, `sorry`-free, and rests
+on Lean core plus **two** axioms, which do not mix:
 
 * **A17**, the existence half of the subordinator correspondence — what the *constructive*
   direction needs. Phrased so it can be demoted to a lemma without touching a downstream
@@ -39,16 +39,19 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Eighteen nodes carry `\lean{...}\leanok`:
+Twenty-nine nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
-| 2 Preliminaries | `def:levy-exponent`, `lem:vanishing`, `prop:laplace-uniqueness-causal`, `prop:laplace-continuity-causal`, `lem:transform-tightness` |
+| 2 Preliminaries | `def:levy-exponent`, `lem:vanishing`, `prop:laplace-uniqueness-causal`, `prop:laplace-uniqueness-sigma-finite`, `lem:laplace-local-finiteness`, `prop:laplace-continuity-causal`, `lem:transform-tightness` |
 | 3 Axioms | `def:cascade-family` — the structure, checked against a model |
 | 4 Convolution representation | `lem:convolution-representation`, `lem:transform-continuity` — chapter complete |
 | 5 The cascade | `lem:additivity`, `thm:increments-bernstein`, `cor:strict-monotonicity` — chapter complete |
 | 6 Scale covariance | `lem:covariance-laplace`, `lem:action-rigidity`, `prop:canonical-gauge` — chapter complete |
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
+| 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
+| 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation` — the chapter's headline, and it reduces to Lean core |
+| 11 The signaling form | `lem:mellin-data` — Theorem 4$'$'s entry point: the Mellin identity and its bound; `lem:inversion-symbol` — the symbol `B`, analytic and meromorphic on the strip |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -59,11 +62,21 @@ restricted cases the article actually uses are proved here, so neither name appe
 `thm:increments-bernstein` does not: the representation comes straight off the weak limit, so
 that proof reduces to Lean core.
 
-The next work, in order:
+The next work, in order. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; the
+distinction that matters is between a **queue** and a **dependency**, because only the first is
+schedulable:
 
-1. **Chapters 8–12.** Not started, and not in the ladder: 9 of the 12 active ledger entries live
-   there, and most of what they cite (Mellin inversion, Sonine pairs, Courrège, the HCM tower)
-   has no Mathlib counterpart.
+1. **Chapter 11, towards Theorem 4$'$** — the formulation the article exists for, and the most
+   reachable unformalised part of it. `lem:mellin-data` and `lem:inversion-symbol` are done;
+   next is `lem:symbol-uniqueness`, the node that earns the definite article in "the"
+   inversion.
+2. **Chapter 9's remainder**, which waits on `lem:potential-kernel`'s existence half. Route B is
+   decided — the potential measure is *constructed* rather than represented, so the trust
+   boundary stays at two entries; the work order is in `Formalization/Skeleton/Chapter9.lean`.
+3. **Blocked on upstream Mathlib, not queued.** `lem:mellin-vertical` (11.13) needs a decay
+   estimate for `|Γ(c+iτ)|` along a vertical line, which Mathlib does not carry in any form — and
+   that clause is what would retire ledger A12. Chapter 10 needs C₀-semigroup and closed-operator
+   theory; chapter 12 needs Bessel `K`. None of the three is a scheduling decision.
 
 ## Relation to `scale-space-foundations`
 

@@ -18,6 +18,12 @@
 % \ref{thm:signaling-form} carry the \uses edge, and an audit of Theorem 4' can now be done
 % from the graph alone.
 %
+% THE SPLIT OF 11.2 (2026-08-11). Its first two clauses are proved and its last two are not,
+% and the third is blocked on Mathlib rather than on this article -- see \ref{lem:mellin-vertical}.
+% The narrowed 11.2 keeps its number and its edges; the split-off clauses are appended as 11.13
+% and 11.14, and the \uses edges of 11.3, 11.4, 11.6, 11.8 and 11.9 were rewired onto whichever
+% of the three they actually consume.
+%
 % A12 sits on \ref{def:inversion-operator} rather than on the theorem: the definition is what
 % asserts that the contour integral recovers anything, and that is the cited fact. Note the
 % ledger's correction -- the draft cited Samko-Kilbas-Marichev here, which gives Mellin
@@ -65,30 +71,48 @@ there. The construction extends below $z_* = 1$ by meromorphic continuation, whi
 pursue.
 
 % draft: Lemma 11.2
+% THE SPLIT (2026-08-11). The draft's Lemma 11.2 states four things at once: the identity, the
+% bound, absolute integrability on vertical lines, and the definition and meromorphy of the
+% symbol B. They cost differently, and by a wide margin -- the first two are Tonelli plus a
+% Gamma integral and are now proved, the third needs a decay estimate for |Gamma(c+i tau)| that
+% MATHLIB DOES NOT HAVE, and the fourth is complex analysis on the strip. A node reporting the
+% maximum cost of its clauses lies about its cheap ones -- the Lemma 7.1 precedent, applied here
+% for the third time -- so 11.2 is narrowed to the identity and the bound, and the other two
+% clauses are appended as 11.13 and 11.14, numbers the draft does not use.
 \begin{lemma}[Mellin data of the profile]\label{lem:mellin-data}
-\uses{def:standing-hypothesis,thm:main-characterization,prop:moment-criterion}
-\lean{Skeleton.mellin_profile}\notready
+% The edge to prop:moment-criterion went with the narrowing: that node (ledger A7) is the
+% criterion for POSITIVE integer moments of T_x, and the statement left here is about
+% NEGATIVE moments, which z_* governs and def:standing-hypothesis supplies. The Lean proof
+% is the check: #print axioms on mellin_profile gives A17 and nothing else, so no path
+% through A7 is used.
+\uses{def:standing-hypothesis,thm:main-characterization}
+\lean{Hemigroup.SelfDecomposableExponent.mellin_profile}\leanok
 Under (H), for $0 < \operatorname{Re} z < z_*$,
 \[
   \tilde H(z) \;=\; \Gamma(z)\;\Ex\bigl[T_1^{-z}\bigr],
 \]
-analytic on the strip, with
-$|\tilde H(c + i\tau)| \le \Ex[T_1^{-c}]\,|\Gamma(c+i\tau)|$, hence absolutely integrable on
-every vertical line of the strip. Define the \emph{inversion symbol}
-\[
-  B(-z) \;:=\; \frac{\tilde H(z+1)}{\tilde H(z)}
-  \;=\; z\,\frac{\Ex\bigl[T_1^{-z-1}\bigr]}{\Ex\bigl[T_1^{-z}\bigr]},
-  \qquad 0 < \operatorname{Re} z < z_* - 1,
-\]
-meromorphic on the strip, with poles only at the isolated zeros of $\tilde H$.
-\statusT\quad\emph{(\textbf{Stated in Lean and not yet proved}, as
-\texttt{Skeleton.mellin\_profile}, with the bound and the vertical-integrability consequence
-stated alongside it. This is chapter 11's entry point, and the node \ledger{A12}'s retirement
-turns on: the third statement there is \texttt{Complex.VerticalIntegrable}, which is
-\emph{verbatim} the hypothesis Mathlib's \texttt{mellinInv\_mellin\_eq} asks for. Once it is
-proved, the inversion theorem this article cites becomes available as a theorem rather than an
-interface --- see \texttt{blueprint/AXIOMS.md} A12, which records the first assessment of that
-question together with its correction.}
+with $|\tilde H(c + i\tau)| \le \Ex[T_1^{-c}]\,|\Gamma(c+i\tau)|$ for $0 < c < z_*$.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.mellin\_profile} and
+\texttt{norm\_mellin\_profile\_le}; \texttt{\#print axioms} gives \ledger{A17} and nothing else,
+inherited through \texttt{kernel} because $T_1$ is $\mu_{0,1}$. In particular \emph{no} chapter-11
+interface enters --- \ledger{A12} grounds \ref{def:inversion-operator}, not this.}
+
+\emph{\textbf{The exchange of integrals is licensed by the strip condition and by nothing else.}
+Both clauses come out of one $[0,\infty]$-valued computation,
+$\int\!\!\int s^{c-1}e^{-ts}\,ds\,d\mu(t) = \Gamma(c)\,\Ex[T_1^{-c}]$, which is simultaneously the
+Fubini side condition, the bound, and the finiteness underneath \ref{lem:mellin-vertical}. Its
+left-hand side is the total mass of $|{\cdot}|$ for the product measure, so joint integrability
+holds \emph{iff} the right-hand side is finite, which is $c < z_*$. That is the shape of
+\ref{prop:admissibility-criterion} again: the condition that makes the analysis go through is
+characteristic rather than merely sufficient, and seeing that is what keeps a hypothesis from
+being invented.}
+
+\emph{\textbf{The first clause of (H) is load-bearing.} $F(\infty) = \infty$ is used exactly once,
+to give $T_1 > 0$ almost surely --- the mass at the origin is below $\Ex[e^{-sT_1}] = e^{-F(s)}$ for
+every $s$. Without it the computation above is \emph{false}, not merely unprovable: at an atom
+$t = 0$ the inner integral $\int_0^\infty s^{c-1}ds$ diverges, while $\Ex[T_1^{-c}]$, an integral
+over $(0,\infty)$, does not see the atom at all.}
 
 \emph{Three design decisions were taken in writing the statement down. $T_1$ is the kernel
 $\mu_{0,1}$ the construction already produces, so no new object enters and the density $\phi_1$
@@ -100,22 +124,22 @@ departing from that convention.)}
 \end{lemma}
 
 \begin{proof}
+\leanok
 By Tonelli,
 \[
   \tilde H(z) = \int_0^\infty s^{z-1}\,\Ex[e^{-sT_1}]\,ds
   = \Ex\Bigl[\int_0^\infty s^{z-1}e^{-sT_1}ds\Bigr]
-  = \Ex[T_1^{-z}]\,\Gamma(z).
+  = \Ex[T_1^{-z}]\,\Gamma(z),
 \]
-Finiteness on the strip is the definition of $z_*$ together with
-$|T_1^{-z}| = T_1^{-\operatorname{Re}z}$, which also gives the stated bound; and
-$|\Gamma(c+i\tau)|$ decays super-polynomially in $\tau$, so the bound is integrable on vertical
-lines. Analyticity is standard. Finally $\tilde H \not\equiv 0$, so its zeros are isolated and
-$B$ is meromorphic with poles only there.
+the inner integral being the Gamma integral at rate $T_1$. The exchange is legitimate because the
+same computation run on absolute values gives $\Gamma(c)\,\Ex[T_1^{-c}]$ with
+$c = \operatorname{Re} z$, finite exactly when $c < z_*$. Since
+$|T_1^{-z}| = T_1^{-\operatorname{Re} z}$, the identity also gives the stated bound.
 \end{proof}
 
 % draft: Definition 11.3
 \begin{definition}[the inversion operator]\label{def:inversion-operator}
-\uses{lem:mellin-data,def:cascade-family}
+\uses{lem:mellin-data,lem:inversion-symbol,def:cascade-family}
 Fix $c \in (0, z_* - 1)$. For $g$ such that $\tilde g$ is defined on the line
 $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ is absolutely integrable there, set
 \[
@@ -142,7 +166,7 @@ exactly the one imposed above.)}
 
 % draft: Lemma 11.4
 \begin{lemma}[uniqueness of the symbol]\label{lem:symbol-uniqueness}
-\uses{lem:mellin-data,def:inversion-operator}
+\uses{lem:mellin-data,lem:inversion-symbol,def:inversion-operator}
 If two operators of the form $x^{-1}B_1(\theta)$ and $x^{-1}B_2(\theta)$ both satisfy
 $A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is
 the unique inversion within the covariant Mellin class.
@@ -152,7 +176,7 @@ the unique inversion within the covariant Mellin class.
 \begin{proof}
 Evaluating both operators on the profiles and taking Mellin transforms gives
 $B_1(-z)\,s^{-z}\tilde H(z) = B_2(-z)\,s^{-z}\tilde H(z)$ on the line. By
-\ref{lem:mellin-data}, $\tilde H \ne 0$ off an isolated set, so $B_1 = B_2$ almost everywhere
+\ref{lem:inversion-symbol}, $\tilde H \ne 0$ off an isolated set, so $B_1 = B_2$ almost everywhere
 on the line, hence everywhere on the strip by meromorphy.
 \end{proof}
 
@@ -187,7 +211,7 @@ $f(0) = 0$.
 
 % draft: Theorem 11.6
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
-\uses{def:standing-hypothesis,lem:mellin-data,def:inversion-operator,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
+\uses{def:standing-hypothesis,lem:mellin-data,lem:mellin-vertical,lem:inversion-symbol,def:inversion-operator,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
 Assume (H) and work in the canonical gauge. Then:
 \begin{enumerate}
 \item \emph{(Eigenfunctions.)} For every $s > 0$ the profile $H(s\,\cdot)$ lies in the domain
@@ -218,7 +242,7 @@ homogeneity. Proved here, not cited.)}
 \begin{proof}
 (1) $\widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so
 $B(-z)\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z+1)$, which is absolutely integrable on the
-line $(c)$ by \ref{lem:mellin-data}; no pole of $B$ intervenes, the product containing no
+line $(c)$ by \ref{lem:mellin-vertical}; no pole of $B$ intervenes, the product containing no
 division. Then
 \[
   A\bigl[H(s\cdot)\bigr](x)
@@ -255,7 +279,7 @@ admissible weightings classified by \ref{thm:main-characterization}.
 
 % draft: Remark 11.8
 \begin{remark}[classical interpretation; poles]\label{rem:poles}
-\uses{thm:signaling-form,lem:mellin-data}
+\uses{thm:signaling-form,lem:mellin-data,lem:inversion-symbol}
 The time-domain equation in \ref{thm:signaling-form}(2) is stated at the level of Mellin
 transforms, and that is the honest general formulation: $B$ may have poles, at zeros of
 $\tilde H$, and polynomial growth along vertical lines, so $A u(t, \cdot)$ need not be given by
@@ -269,7 +293,7 @@ and of \ref{ex:bessel-quadratic} below.
 
 % draft: Example 11.9
 \begin{example}[extremal stable; recovering Theorem 4 of 2005]\label{ex:stable-signaling}
-\uses{prop:stable-family,lem:mellin-data,thm:signaling-form}
+\uses{prop:stable-family,lem:mellin-data,lem:inversion-symbol,thm:signaling-form}
 For $F(s) = s^\alpha$ we have $\tilde H(z) = \Gamma(z/\alpha)/\alpha$ and
 \[
   B(-z) \;=\; \frac{\Gamma\bigl(\tfrac{z+1}{\alpha}\bigr)}{\Gamma\bigl(\tfrac{z}{\alpha}\bigr)}
@@ -354,3 +378,91 @@ supplies the analytic signaling form --- the operator exists, the process does n
 classification of which admissible $F$ are Markov-realizable is the memory-line inverse
 problem, and is taken up with Theorem~5$'$.
 \end{remark}
+
+% additive: not in the draft. Clauses three and four of Lemma 11.2, split off on 2026-08-11 when
+% the first two were proved and these were not. Numbered 11.13 and 11.14, numbers the draft does
+% not use. The forward reference from 11.3 and 11.4 is the same arrangement chapter 9 uses for
+% \ref{lem:transform-ode}.
+
+\begin{lemma}[the profile's transform is integrable on vertical lines]\label{lem:mellin-vertical}
+\uses{lem:mellin-data}
+\lean{Skeleton.verticalIntegrable_mellin_profile}\notready
+Under (H), for every $c \in (0, z_*)$ the function $\tau \mapsto \tilde H(c + i\tau)$ is
+absolutely integrable on $\RR$.
+\statusT\quad\emph{(\textbf{Stated in Lean and not yet proved}, as
+\texttt{Skeleton.verticalIntegrable\_mellin\_profile}. This is the clause \ledger{A12}'s
+retirement turns on, and it is worth more than the two that were proved: the Lean statement is
+\texttt{Complex.VerticalIntegrable}, which is \emph{verbatim} the hypothesis Mathlib's
+\texttt{mellinInv\_mellin\_eq} asks for. Prove it and the inversion theorem this article cites
+becomes available as a theorem rather than an interface.}
+
+\emph{\textbf{Blocked upstream, and that is a third reading of the A12 question.} The bound of
+\ref{lem:mellin-data} reduces this to the super-polynomial decay of $|\Gamma(c+i\tau)|$, and
+\textbf{Mathlib has no such estimate}: its \texttt{Stirling.lean} is Stirling's formula for $n!$
+alone, and no bound on $\|\Gamma\|$ along a vertical line appears anywhere in the library. The
+ledger's correction of 2026-08-11 concluded that A12 is retirable ``at a formalisation cost, not
+a mathematical one'', the remaining pieces being the operator formulation and
+\texttt{ContinuousAt}. That is right about the \emph{article} and incomplete about \emph{Lean}:
+the vertical integrability the correction described as already supplied by \ref{lem:mellin-data}
+is supplied there by an estimate on $\Gamma$ that Mathlib does not carry. So the obstacle is a
+queue item for Mathlib, not a decision about this article --- a different kind of obstacle from
+either earlier reading, and the reason this clause is a node of its own.)}
+\end{lemma}
+
+\begin{proof}
+$|\tilde H(c+i\tau)| \le \Ex[T_1^{-c}]\,|\Gamma(c+i\tau)|$ by \ref{lem:mellin-data}, the first
+factor being finite because $c < z_*$; and $|\Gamma(c+i\tau)|$ decays like
+$|\tau|^{c-1/2}e^{-\pi|\tau|/2}$ as $|\tau| \to \infty$, by Stirling's formula in the complex
+plane. The bound is therefore integrable in $\tau$.
+\end{proof}
+
+\begin{lemma}[the inversion symbol]\label{lem:inversion-symbol}
+\uses{lem:mellin-data,def:standing-hypothesis}
+\lean{Hemigroup.SelfDecomposableExponent.meromorphicOn_inversionSymbol}\leanok
+Under (H), $\tilde H$ is analytic on the strip $0 < \operatorname{Re} z < z_*$ and does not
+vanish identically there. Define the \emph{inversion symbol}
+\[
+  B(-z) \;:=\; \frac{\tilde H(z+1)}{\tilde H(z)}
+  \;=\; z\,\frac{\Ex\bigl[T_1^{-z-1}\bigr]}{\Ex\bigl[T_1^{-z}\bigr]},
+  \qquad 0 < \operatorname{Re} z < z_* - 1 .
+\]
+Then $B$ is meromorphic on that strip, with poles only at the isolated zeros of $\tilde H$.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.meromorphicOn\_inversionSymbol} together with
+\texttt{analyticAt\_mellin\_profile} (analyticity),
+\texttt{mellin\_profile\_ofReal\_ne\_zero} ($\tilde H \not\equiv 0$),
+\texttt{eventually\_mellin\_profile\_ne\_zero} (the zeros are isolated),
+\texttt{inversionSymbol\_eq} (the closed form) and
+\texttt{analyticAt\_inversionSymbol} (poles only at those zeros);
+\texttt{\#print axioms} gives \ledger{A17} and nothing else. This is the clause every later
+node in the chapter consumes: \ref{def:inversion-operator} needs $B$ and its strip,
+\ref{lem:symbol-uniqueness} needs the isolated zeros, \ref{rem:poles} needs the poles.}
+
+\emph{\textbf{The analyticity came from the identity, not from the Mellin integral.} The direct
+route is Mathlib's \texttt{mellin\_differentiableAt\_of\_isBigO\_rpow}, which wants
+$H(s) = O(s^{-a})$ for every $a < z_*$ --- true, since $H$ is antitone and
+$H(s)s^a/a \le \int_0^s u^{a-1}H(u)du$, but work, and it re-derives from the Mellin integral what
+\ref{lem:mellin-data} already says. Reading $m(z) = \Ex[T_1^{-z}] = \Ex[e^{-z\log T_1}]$ as the
+complex moment-generating function of $-\log T_1$ instead makes it Mathlib's
+\texttt{analyticAt\_complexMGF}, whose hypothesis is finiteness of $\Ex[T_1^{-c}]$ on an open
+interval of exponents --- which is $(0, z_*)$, and is \ref{lem:mellin-data}'s own strip condition
+verbatim. So the strip of analyticity and the strip of the identity are the \emph{same} strip for
+the \emph{same} reason, rather than two conditions that coincide.}
+
+\emph{\textbf{The closed form needs no non-vanishing hypothesis.} $\Gamma(z+1) = z\Gamma(z)$ is the
+whole of it, and that cancellation is also why $B$ alone grows along vertical lines where
+$\tilde H$ decays --- the point \ledger{A12} turns on. Lean's $x/0 = 0$ makes both sides of the
+closed form vanish together at a zero of $\tilde H$, so the statement is unconditional and no
+reader is misled into thinking a side condition was checked.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:mellin-data}
+$\tilde H$ is analytic on the strip by differentiation under the integral sign, the majorant
+$s^{c-1}H(s)$ being locally uniformly integrable there. It is not identically zero: by
+\ref{lem:mellin-data}, $\tilde H(z) = \Gamma(z)\Ex[T_1^{-z}]$, and both factors are strictly
+positive at real $z \in (0, z_*)$. Hence its zeros are isolated, and the quotient
+$\tilde H(z+1)/\tilde H(z)$ --- which is $z\,\Ex[T_1^{-z-1}]/\Ex[T_1^{-z}]$ by
+$\Gamma(z+1) = z\Gamma(z)$ --- is meromorphic with poles only there.
+\end{proof}
