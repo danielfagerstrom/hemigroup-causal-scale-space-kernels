@@ -111,6 +111,35 @@ theorem laplace_memoryKernel (hx : 0 < x) (hs : 0 < s) :
   simp only [mul_zero, neg_zero, Real.exp_zero, smul_eq_mul, mul_one]
   field_simp
 
+/-- The transform of `κ^{(x)}` converges: an infinite measure, so nothing about it is automatic,
+but the integrability is the one already proved for the substitution. -/
+theorem laplaceL_memoryKernel_ne_top (hx : 0 < x) (hs : 0 < s) :
+    laplaceL (F.memoryKernel x) s ≠ ⊤ := by
+  have hdens : AEMeasurable (fun t : ℝ => ENNReal.ofReal (F.k (t / x) / x))
+      (volume.restrict (Ioi 0)) :=
+    ((aemeasurable_of_antitoneOn
+      (antitoneOn_comp_div F.k_antitone hx)).div_const x).ennreal_ofReal
+  rw [laplaceL, memoryKernel, lintegral_add_measure, lintegral_smul_measure, lintegral_dirac,
+    lintegral_withDensity_eq_lintegral_mul₀ hdens (by fun_prop)]
+  refine ENNReal.add_ne_top.mpr ⟨ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top, ?_⟩
+  have hpt : ∀ t ∈ Ioi (0 : ℝ),
+      (fun t => ENNReal.ofReal (F.k (t / x) / x)) t * ENNReal.ofReal (Real.exp (-(s * t)))
+        = ENNReal.ofReal (Real.exp (-(s * t)) * (F.k (t / x) / x)) := by
+    intro t ht
+    have hkt : 0 ≤ F.k (t / x) / x :=
+      div_nonneg (F.k_nonneg _ (mem_Ioi.mpr (div_pos (mem_Ioi.mp ht) hx))) hx.le
+    rw [← ENNReal.ofReal_mul hkt, mul_comm]
+  simp only [Pi.mul_apply]
+  rw [setLIntegral_congr_fun measurableSet_Ioi hpt]
+  exact lintegral_ofReal_ne_top_of_integrableOn (F.integrableOn_dilate_k hx hs)
+
+/-- `lem:memory-kernel-transform` in the `ℝ≥0∞` reading, which is the form the Sonine identity
+compares against — a Bochner integral would leave the degenerate case ambiguous. -/
+theorem laplaceL_memoryKernel (hx : 0 < x) (hs : 0 < s) :
+    laplaceL (F.memoryKernel x) s = ENNReal.ofReal (F.symbol x s / s) := by
+  rw [← F.laplace_memoryKernel hx hs, laplace_eq_toReal_laplaceL,
+    ENNReal.ofReal_toReal (F.laplaceL_memoryKernel_ne_top hx hs)]
+
 end SelfDecomposableExponent
 
 end Hemigroup

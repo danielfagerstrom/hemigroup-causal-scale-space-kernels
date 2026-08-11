@@ -100,7 +100,7 @@ transform is `∫₀^∞ e^{-tφ_x(s)} dt = 1/φ_x(s)` by Tonelli. This adds no 
 /-- **`lem:potential-kernel`.** The potential kernel exists, is unique, and scales. -/
 theorem existsUnique_potentialKernel {x : ℝ} (hx : 0 < x) :
     ∃! ℓ : Measure ℝ, IsCausal ℓ ∧ (∀ T : ℝ, ℓ (Icc 0 T) ≠ ⊤) ∧
-      ∀ s : ℝ, 0 < s → laplace ℓ s = (F.symbol x s)⁻¹ := by
+      ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹ := by
   sorry
 
 /-! ## `thm:sonine-conservation` and its corollary -/
@@ -117,9 +117,27 @@ and concludes with `laplaceL_injective_of_ne_top`, which needs both measures car
 `[0,∞)`, and `IsCausal (μ ∗ ν)` needs it of both factors too. The specification as first written
 pinned `ℓ` only through its transform on `(0,∞)`, which does not confine a measure to the
 half-line. `lem:potential-kernel` asserts causality of `ℓ^{(x)}` and always did — the omission
-was in this statement, not in the mathematics, and writing the proof is what found it. -/
+was in this statement, not in the mathematics, and writing the proof is what found it.
+
+**Two further gaps, found the same way.**
+
+*The specification must be stated in `laplaceL`, not `laplace`* — fixed above. `laplace` is a
+Bochner integral and is `0` by convention when the integrand is not integrable, so
+`laplace ℓ s = (φ_x s)⁻¹` does **not** give `laplaceL ℓ s = ofReal (φ_x s)⁻¹`: the transform
+could be `⊤` while the Bochner integral reads `0`. Since the proof multiplies transforms
+(`laplaceL_conv`), the `ℝ≥0∞` reading is the one that has to appear. This is the same reason
+`levyExponent` is `ℝ≥0∞`-valued throughout — the development made this choice once already, and
+the skeleton statement quietly departed from it.
+
+*Nondegeneracy is still missing.* The proof needs `φ_x s > 0`, without which
+`ofReal (φ_x s) * ofReal (φ_x s)⁻¹ ≠ 1`. And `φ_x s = s F'(xs)` genuinely can vanish: with
+`b₀ = 0` and `k ≡ 0` we get `F ≡ 0`, `κ^{(x)} = 0`, and the identity is **false**, not merely
+unprovable. So this needs the hypothesis the article carries everywhere and this statement
+dropped — `F ≢ 0`, axiom (ND). The blueprint's `thm:sonine-conservation` inherits it by taking
+`(Φ_{x,y})` from `thm:main-characterization`, which is where it hides; a standalone Lean
+statement has to say it, and adding it is the next step here. -/
 theorem sonine_conservation {x : ℝ} (hx : 0 < x) (ℓ : Measure ℝ) [SFinite ℓ] (hcaus : IsCausal ℓ)
-    (hℓ : ∀ s : ℝ, 0 < s → laplace ℓ s = (F.symbol x s)⁻¹) :
+    (hℓ : ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹) :
     (F.memoryKernel x ∗ ℓ).restrict (Ici 0) = volume.restrict (Ici 0) := by
   sorry
 
