@@ -39,17 +39,38 @@ canonical gauge, write $m(z) := \Ex[T_1^{-z}]$, and take $A$ and $B$ as in Chapt
 % draft: Definition 12.1
 \begin{definition}[locality; positive maximum principle]\label{def:locality-pmp}
 \uses{def:inversion-operator}
+\lean{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder}\notready
 The inversion operator $A$ is \emph{local of order $n$} if it agrees on
 $C_c^\infty((0,\infty))$ with a differential expression $\sum_{j=0}^{n} c_j(x)\,\partial_x^j$
 with $c_j \in C((0,\infty))$ and $c_n \not\equiv 0$. It satisfies the \emph{positive maximum
 principle} (PMP) if $(Ag)(x_0) \le 0$ whenever $g \in C_c^\infty((0,\infty))$ attains a
 nonnegative maximum at $x_0$.
-\statusT
+\statusT\quad\emph{(\textbf{Stated in Lean, not yet proved}, as
+\texttt{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder} and \texttt{SatisfiesPMP} in
+\texttt{Skeleton/Chapter12.lean}. Three readings had to be fixed, and each is a choice rather
+than a transcription.
+\textbf{Locality is bundled as data, not as an existential.} ``Agrees with \emph{some}
+differential expression'' would make the coefficients inaccessible, and
+\ref{lem:local-polynomial-symbol}'s conclusion is a statement \emph{about} them --- that
+$c_j(x) = \gamma_j x^{j-1}$. As a structure with a \texttt{coeff} field the lemma says what it
+says here; as a \texttt{Prop} every use would re-obtain coefficients with no way to say they are
+the same ones. The price is that locality is then data, so the ($\Leftarrow$) direction of
+\ref{lem:local-polynomial-symbol} concludes \texttt{Nonempty (IsLocalOfOrder c n)} --- which is
+the propositional reading, and the one \ref{thm:locality} quantifies over.
+\textbf{$C_c^\infty((0,\infty))$ means support inside the open half-line}, not merely compact
+support in $\mathbb{R}$. The distinction is load-bearing rather than pedantic: it is exactly what
+kills the boundary term at the origin in the integrations by parts below, where the weight
+$x^{z-1}$ is singular.
+\textbf{The maximum principle needs a real-valued reading.} $A$ is complex-valued here, and
+$(Ag)(x_0) \le 0$ is not a statement about a complex number. The Lean version quantifies over
+real-valued test functions and asserts $\operatorname{Re}(Ag)(x_0) \le 0$ --- weaker than first
+proving that $A$ preserves realness, and therefore the safer of the two.)}
 \end{definition}
 
 % draft: Lemma 12.2
 \begin{lemma}[covariant local = polynomial symbol]\label{lem:local-polynomial-symbol}
 \uses{def:locality-pmp,def:inversion-operator,lem:mellin-data}
+\lean{Hemigroup.SelfDecomposableExponent.exists_symbol_eq_of_isLocalOfOrder}\notready
 $A$ is local of order $n$ if and only if $B$ is a polynomial of degree $n$; in that case the
 covariance built into the Mellin class forces the coefficients
 \[
@@ -57,7 +78,25 @@ covariance built into the Mellin class forces the coefficients
   A \;=\; \frac{1}{x}\sum_{j=0}^n \gamma_j\,\theta(\theta-1)\cdots(\theta-j+1)
   \;=\; \frac{1}{x}\,B(\theta).
 \]
-\statusT
+\statusT\quad\emph{(\textbf{Stated in Lean, not yet proved}, in two halves ---
+\texttt{isLocalOfOrder\_of\_symbol\_eq} and
+\texttt{exists\_symbol\_eq\_of\_isLocalOfOrder} --- since the two directions need different
+things and only one of them needs covariance.
+\textbf{What the ($\Leftarrow$) direction needs is one analytic fact}, and Mathlib has no part of
+it: the Mellin symbol of the Euler operator,
+$\mathcal{M}\bigl[x^{j} g^{(j)}\bigr](z) = \bigl(\prod_{i<j}(-z-i)\bigr)\,\tilde g(z)$ for test
+functions $g$, which is $j$ integrations by parts against the weight $x^{z-1}$ with no boundary
+terms. The library carries no Mellin/derivative interface at all --- \texttt{MellinTransform.lean}
+and \texttt{MellinInversion.lean} between them prove nothing about derivatives --- so this is
+written from scratch. Everything else in that direction is linearity. The factor is isolated as
+\texttt{mellinEulerFactor} rather than inlined, because the sign convention is where this
+chapter's bookkeeping errors would live: Lean's \texttt{inversionSymbol z} is this chapter's
+$B(-z)$.
+\textbf{The ($\Rightarrow$) direction needs one thing more}, and it is the harder half: that a
+differential expression is determined by its coefficients, so that comparing coefficients of
+$g^{(j)}(x/\sigma)$ is licensed. In Lean that is a prescribed-jet test-function construction, and
+it is the reason this node is the chapter's largest remaining item rather than its
+next one.)}
 \end{lemma}
 
 \begin{proof}

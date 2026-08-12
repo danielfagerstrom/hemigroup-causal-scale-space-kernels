@@ -5,6 +5,7 @@ Authors: Daniel Fagerström
 -/
 import Skeleton.Chapter9
 import Skeleton.Chapter11
+import Skeleton.Chapter12
 
 /-!
 # The skeleton library

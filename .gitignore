@@ -26,3 +26,6 @@ __pycache__/
 Formalization/.lake/
 Formalization/build/
 *.olean
+
+# Agent worktrees (git worktrees live here; never a submodule of this repo)
+.claude/worktrees/
