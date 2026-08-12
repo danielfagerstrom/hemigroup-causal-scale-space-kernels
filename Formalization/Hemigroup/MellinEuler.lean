@@ -363,4 +363,51 @@ theorem mellinInv_mellin_of_isTestFunction {g : ℝ → ℂ} (hg : IsTestFunctio
   mellinInv_mellin_eq c g hx (mellinConvergent_of_isTestFunction hg _)
     (verticalIntegrable_mellin hg c) hg.contDiff.continuous.continuousAt
 
+/-! ## Linearity of the inverse transform along a line
+
+`mellinInv` integrates over a vertical line, so it only ever sees its argument there: two symbols
+agreeing on the line have the same inverse, and a finite sum comes apart provided each summand is
+vertically integrable. Both are needed to turn a *polynomial* symbol into a *differential
+expression*, which is what `lem:local-polynomial-symbol` asserts. -/
+
+/-- The integrand of `mellinInv` is integrable exactly when the symbol is vertically integrable:
+the weight `x^{-(σ+iy)}` has constant modulus `x^{-σ}` along the line. -/
+theorem integrable_mellinInv_integrand {G : ℂ → ℂ} {σ : ℝ}
+    (hG : Complex.VerticalIntegrable G σ) {x : ℝ} (hx : 0 < x) :
+    Integrable fun y : ℝ =>
+      (x : ℂ) ^ (-((σ : ℂ) + y * Complex.I)) • G ((σ : ℂ) + y * Complex.I) := by
+  have hxne : (x : ℂ) ≠ 0 := by simpa using ne_of_gt hx
+  have h1 : Continuous fun y : ℝ => (x : ℂ) ^ (-((σ : ℂ) + y * Complex.I)) := by
+    have harg : Continuous fun y : ℝ => -((σ : ℂ) + y * Complex.I) := by fun_prop
+    exact harg.const_cpow (Or.inl hxne)
+  refine Integrable.mono' (hG.norm.const_mul (x ^ (-σ)))
+    (h1.aestronglyMeasurable.smul hG.aestronglyMeasurable) ?_
+  filter_upwards with y
+  rw [norm_smul, Complex.norm_cpow_eq_rpow_re_of_pos hx]
+  simp
+
+/-- Two symbols agreeing on the line have the same inverse transform there. -/
+theorem mellinInv_congr_line {G G' : ℂ → ℂ} (σ : ℝ) (x : ℝ)
+    (h : ∀ y : ℝ, G ((σ : ℂ) + y * Complex.I) = G' ((σ : ℂ) + y * Complex.I)) :
+    mellinInv σ G x = mellinInv σ G' x := by
+  rw [mellinInv, mellinInv]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  dsimp only
+  rw [h y]
+
+/-- The inverse transform of a finite sum. -/
+theorem mellinInv_finset_sum {ι : Type*} (s : Finset ι) (σ : ℝ) (G : ι → ℂ → ℂ) {x : ℝ}
+    (hx : 0 < x) (hG : ∀ i ∈ s, Complex.VerticalIntegrable (G i) σ) :
+    mellinInv σ (fun z => ∑ i ∈ s, G i z) x = ∑ i ∈ s, mellinInv σ (G i) x := by
+  simp only [mellinInv]
+  rw [← Finset.smul_sum]
+  congr 1
+  have hpt : ∀ y : ℝ,
+      (x : ℂ) ^ (-((σ : ℂ) + y * Complex.I)) • ∑ i ∈ s, G i ((σ : ℂ) + y * Complex.I)
+        = ∑ i ∈ s, (x : ℂ) ^ (-((σ : ℂ) + y * Complex.I)) • G i ((σ : ℂ) + y * Complex.I) :=
+    fun y => Finset.smul_sum
+  simp only [hpt]
+  exact integral_finset_sum s fun i hi => integrable_mellinInv_integrand (hG i hi) hx
+
 end Hemigroup

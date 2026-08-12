@@ -39,15 +39,15 @@ canonical gauge, write $m(z) := \Ex[T_1^{-z}]$, and take $A$ and $B$ as in Chapt
 % draft: Definition 12.1
 \begin{definition}[locality; positive maximum principle]\label{def:locality-pmp}
 \uses{def:inversion-operator}
-\lean{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder}\notready
+\lean{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder}\leanok
 The inversion operator $A$ is \emph{local of order $n$} if it agrees on
 $C_c^\infty((0,\infty))$ with a differential expression $\sum_{j=0}^{n} c_j(x)\,\partial_x^j$
 with $c_j \in C((0,\infty))$ and $c_n \not\equiv 0$. It satisfies the \emph{positive maximum
 principle} (PMP) if $(Ag)(x_0) \le 0$ whenever $g \in C_c^\infty((0,\infty))$ attains a
 nonnegative maximum at $x_0$.
-\statusT\quad\emph{(\textbf{Stated in Lean, not yet proved}, as
+\statusT\quad\emph{(\textbf{Formalised}, as
 \texttt{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder} and \texttt{SatisfiesPMP} in
-\texttt{Skeleton/Chapter12.lean}. Three readings had to be fixed, and each is a choice rather
+\texttt{LocalOperator.lean}. Three readings had to be fixed, and each is a choice rather
 than a transcription.
 \textbf{Locality is bundled as data, not as an existential.} ``Agrees with \emph{some}
 differential expression'' would make the coefficients inaccessible, and
@@ -78,10 +78,19 @@ covariance built into the Mellin class forces the coefficients
   A \;=\; \frac{1}{x}\sum_{j=0}^n \gamma_j\,\theta(\theta-1)\cdots(\theta-j+1)
   \;=\; \frac{1}{x}\,B(\theta).
 \]
-\statusT\quad\emph{(\textbf{Stated in Lean, not yet proved}, in two halves ---
+\statusT\quad\emph{(\textbf{One direction proved, one stated}, in two halves ---
 \texttt{isLocalOfOrder\_of\_symbol\_eq} and
 \texttt{exists\_symbol\_eq\_of\_isLocalOfOrder} --- since the two directions need different
 things and only one of them needs covariance.
+\textbf{($\Leftarrow$) is machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.isLocalOfOrder\_of\_symbol\_eq}, on A17 and nothing
+else. \textbf{And it does not use (H).} The chapter states everything under the standing
+hypothesis, and this direction turns out not to need it: the symbol identity is a hypothesis, and
+everything else --- the Euler factors, the vertical decay, the inversion --- is a fact about test
+functions that says nothing about $F$. (H) still does something here, but something different: it
+is what makes the statement non-vacuous, the strip $0 < c < z_* - 1$ being inhabited only when
+$z_* > 1$. Being used by a proof and being needed for a statement to have content are different
+roles, and this node now distinguishes them.
 \textbf{The ($\Leftarrow$) direction needed one analytic fact, and it is now proved}: the Mellin
 symbol of the Euler operator,
 $\mathcal{M}\bigl[x^{j} g^{(j)}\bigr](z) = \bigl(\prod_{i<j}(-z-i)\bigr)\,\tilde g(z)$ for test

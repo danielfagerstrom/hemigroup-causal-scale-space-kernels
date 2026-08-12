@@ -524,3 +524,13 @@ analysis anywhere. Lean core alone.
 
 #print axioms Hemigroup.verticalIntegrable_mellin
 #print axioms Hemigroup.mellinInv_mellin_of_isTestFunction
+
+/-! ### `def:locality-pmp` and the (⇐) direction of `lem:local-polynomial-symbol`
+
+The polynomial symbol turned into a differential expression. A17 through `inversionOperator`,
+which quantifies over the construction's kernels; nothing else, and in particular none of chapter
+12's own cited interfaces.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrder
+#print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrder_of_symbol_eq
