@@ -313,6 +313,45 @@ theorem inversionOperator_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 
       = (x : ℂ) * ((s : ℂ) * (F.profile (s * x) : ℂ)) from by ring,
     ← mul_assoc, Complex.ofReal_inv, inv_mul_cancel₀ hx0, one_mul]
 
+
+/-- `mellinInv` is linear in the transform, which is all the Laplace form of
+`thm:signaling-form`(2) needs beyond the eigenfunction relation. -/
+theorem mellinInv_const_mul (sigma : ℝ) (a : ℂ) (G : ℂ → ℂ) (x : ℝ) :
+    mellinInv sigma (fun z => a * G z) x = a * mellinInv sigma G x := by
+  simp only [mellinInv, Complex.real_smul, smul_eq_mul]
+  rw [show (∫ y : ℝ, (x : ℂ) ^ (-((sigma : ℂ) + y * Complex.I))
+        * (a * G ((sigma : ℂ) + y * Complex.I)))
+      = a * ∫ y : ℝ, (x : ℂ) ^ (-((sigma : ℂ) + y * Complex.I))
+        * G ((sigma : ℂ) + y * Complex.I) from by
+    rw [← integral_const_mul]
+    exact integral_congr_ae (.of_forall fun y => by ring)]
+  ring
+
+/-- **The inversion operator is homogeneous.** -/
+theorem inversionOperator_const_mul (c : ℝ) (a : ℂ) (g : ℝ → ℂ) (x : ℝ) :
+    F.inversionOperator c (fun u => a * g u) x = a * F.inversionOperator c g x := by
+  have hm : ∀ z : ℂ, mellin (fun u : ℝ => a * g u) z = a * mellin g z := fun z => by
+    simpa [smul_eq_mul] using mellin_const_smul g z a
+  rw [inversionOperator, inversionOperator,
+    show (fun z => F.inversionSymbol z * mellin (fun u : ℝ => a * g u) z)
+      = fun z => a * (F.inversionSymbol z * mellin g z) from by
+      funext z; rw [hm z]; ring,
+    mellinInv_const_mul]
+  ring
+
+/-- **`thm:signaling-form`(2), the Laplace form**: every constant multiple of a profile dilate is
+an eigenfunction of `A` with eigenvalue `s`.
+
+The field's Laplace profile is `û(s,·) = f̂(s)·H(s·)`, so this *is* the Laplace form once that
+identification is made (`laplaceFun_delayedField`). Homogeneity plus
+`lem:profile-eigenfunction`. -/
+theorem inversionOperator_const_mul_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 0 < c)
+    (hc' : c + 1 < F.zStar) (hs : 0 < s) (a : ℂ) {x : ℝ} (hx : 0 < x) :
+    F.inversionOperator c (fun u : ℝ => a * (F.profile (s * u) : ℂ)) x
+      = (s : ℂ) * (a * (F.profile (s * x) : ℂ)) := by
+  rw [F.inversionOperator_const_mul c a _ x, F.inversionOperator_profile hH hc hc' hs hx]
+  ring
+
 end SelfDecomposableExponent
 
 end Hemigroup

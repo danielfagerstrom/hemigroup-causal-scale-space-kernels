@@ -340,6 +340,7 @@ than the definition itself.}
 % draft: Theorem 11.6
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
 \uses{def:standing-hypothesis,lem:mellin-data,lem:mellin-vertical,lem:inversion-symbol,def:inversion-operator,lem:profile-eigenfunction,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
+\lean{Hemigroup.SelfDecomposableExponent.signaling_form}\leanok
 Assume (H) and work in the canonical gauge. Then:
 \begin{enumerate}
 \item \emph{(Eigenfunctions.)} For every $s > 0$ the profile $H(s\,\cdot)$ lies in the domain
@@ -370,9 +371,16 @@ homogeneity. Proved here, not cited.}
 \texttt{Hemigroup.SelfDecomposableExponent.mellin\_signaling\_form}; what is left of (2) is its
 causality and boundary clauses, which are (A3) and (A7), and its Laplace form, which is (1)
 applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$. Clause~(1) is \ref{lem:profile-eigenfunction},
-which is where its Lean tag sits. This theorem itself carries no \leanok: of clause~(2), only
-the Mellin form is machine-checked, its causality and boundary-attainment clauses being (A3) and
-(A7) unassembled and its Laplace form needing $\hat u(s,x) = \hat f(s)H(sx)$ --- the theorem keeps its full statement and its number, on the pattern of
+which is where its Lean tag also sits. All six conjuncts are now assembled into
+\texttt{Hemigroup.SelfDecomposableExponent.signaling\_form}, which is what this node carries:
+clause~(1) is \ref{lem:profile-eigenfunction}, clause~(3) is \ref{lem:symbol-uniqueness}, and
+clause~(2) is four statements --- causality (\texttt{delayedField\_eq\_zero}), boundary attainment
+(\texttt{tendsto\_Phi\_zero}, i.e.\ (A7) with (A6)), the Laplace form
+(\texttt{laplaceFun\_delayedField} with \texttt{inversionOperator\_const\_mul\_profile}) and the
+Mellin form (\ref{lem:signaling-mellin-form}). Two side conditions the display leaves implicit are
+explicit in the formal statement and discussed at the nodes that introduce them: the Mellin form
+needs $\tilde H(z-1) \ne 0$ (\ref{rem:poles}), and ``operators of the form $x^{-1}B(\theta)$'' in
+clause~(3) is the hypothesis that $B(\theta)g$ exists (\ref{def:inversion-operator}) --- the theorem keeps its full statement and its number, on the pattern of
 \ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That clause is also what empties the
 article's use of \ledger{A12}: it \emph{exhibits} the realising function rather than inferring its
 existence, and the Laplace form of clause~(2) is clause~(1) applied to
@@ -380,6 +388,7 @@ $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$, so no other shape of $g$ ever reaches 
 \end{theorem}
 
 \begin{proof}
+\leanok
 (1) The realising function is exhibited: put $h(x) := s\,x\,H(sx)$, so that
 $\tilde h(z) = s^{-z}\tilde H(z+1)$, the weight $x$ shifting the Mellin argument by one and the two
 powers of $s$ combining as $s\cdot s^{-(z+1)}$. On the other side

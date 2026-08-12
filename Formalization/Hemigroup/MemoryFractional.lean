@@ -654,7 +654,7 @@ theorem delayedField_eq_setIntegral {g f : ℝ → ℝ} (hgm : Measurable g) (hg
   -- `g` integrates to zero over any interval to the left of the origin
   have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
     rw [ae_iff]
-    simpa using measure_singleton (0 : ℝ)
+    simp
   have hzero : ∀ a b : ℝ, b ≤ 0 → (∫ w in Ioc a b, g w) = 0 := by
     intro a b hb
     refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
@@ -760,6 +760,154 @@ theorem mellin_signaling_form (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.
   have hbdd : ∀ y : ℝ, |f y| ≤ ∫ w, |g w| := fun y => by rw [hf y]; exact abs_primitive_le hg y
   rw [F.inversionSymbol_mul_mellin_delayedField hH hz hz' hfm hbdd hfc ht hne]
   exact F.mellin_delayedField_deriv hH hz hz' hgm hg hgc hf ht
+
+end SelfDecomposableExponent
+
+
+/-! ## The remaining clauses of `thm:signaling-form`(2)
+
+Causality in `t`, boundary attainment as `x ↓ 0`, and the identification
+`û(s,x) = f̂(s)H(sx)` that turns `inversionOperator_const_mul_profile` into the Laplace form.
+-/
+
+/-- The causal Laplace transform of a function on the half-line. -/
+noncomputable def laplaceFun (f : ℝ → ℝ) (s : ℝ) : ℝ :=
+  ∫ t in Ioi (0 : ℝ), Real.exp (-(s * t)) * f t
+
+namespace SelfDecomposableExponent
+
+variable (F : SelfDecomposableExponent)
+
+/-- **`thm:signaling-form`(2), causality**: the field vanishes before the signal does.
+
+Pointwise and immediate — `f(t - xτ) = 0` for `t < 0` because `τ ≥ 0` almost surely. -/
+theorem delayedField_eq_zero (hH : F.StandingHypothesis) {f : ℝ → ℝ}
+    (hfc : ∀ r : ℝ, r < 0 → f r = 0) {x t : ℝ} (hx : 0 < x) (ht : t < 0) :
+    F.delayedField f t x = 0 := by
+  have hae := F.ae_mem_Ioi_lawT₁ (F.lawT₁_singleton_zero hH.1)
+  refine integral_eq_zero_of_ae ?_
+  filter_upwards [hae] with τ hτ
+  exact hfc _ (by nlinarith [mem_Ioi.mp hτ])
+
+/-- **`thm:signaling-form`(2), boundary attainment**: `Φ_{0,x} f → f` in `X₀` as `x ↓ 0`.
+
+(A7) with (A6): the parameter map is continuous on `{0 ≤ a ≤ b}` and the diagonal is the
+identity. -/
+theorem tendsto_Phi_zero (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) (f : X) :
+    Filter.Tendsto (fun x : ℝ => (F.cascadeFamily hF).Φ 0 x f) (𝓝[≥] (0 : ℝ)) (𝓝 f) := by
+  have hmem : ((0 : ℝ), (0 : ℝ)) ∈ {p : ℝ × ℝ | 0 ≤ p.1 ∧ p.1 ≤ p.2} := ⟨le_rfl, le_rfl⟩
+  have hcont := ((F.cascadeFamily hF).continuous f _ hmem).tendsto
+  have hmap : Filter.Tendsto (fun x : ℝ => ((0 : ℝ), x)) (𝓝[≥] (0 : ℝ))
+      (𝓝[{p : ℝ × ℝ | 0 ≤ p.1 ∧ p.1 ≤ p.2}] ((0 : ℝ), (0 : ℝ))) := by
+    refine tendsto_nhdsWithin_iff.mpr ⟨?_, ?_⟩
+    · exact ((continuous_const.prodMk continuous_id).tendsto 0).mono_left nhdsWithin_le_nhds
+    · exact Filter.Eventually.mono self_mem_nhdsWithin fun x hx => ⟨le_rfl, hx⟩
+  have := hcont.comp hmap
+  simpa [Function.comp_def, (F.cascadeFamily hF).refl 0 le_rfl] using this
+
+/-- **`thm:signaling-form`(2), the Laplace profile of the field**: `û(s,x) = f̂(s)·H(sx)`.
+
+Fubini and a translation. With this, `inversionOperator_const_mul_profile` *is* the Laplace form
+`A[û(s,·)] = s·û(s,·)`. -/
+theorem laplaceFun_delayedField (hH : F.StandingHypothesis) {f : ℝ → ℝ} (hfm : Measurable f)
+    (hf : Integrable f) (hfc : ∀ r : ℝ, r < 0 → f r = 0) {s x : ℝ} (hs : 0 ≤ s) (hx : 0 < x) :
+    laplaceFun (fun t => F.delayedField f t x) s = F.profile (s * x) * laplaceFun f s := by
+  have hae := F.ae_mem_Ioi_lawT₁ (F.lawT₁_singleton_zero hH.1)
+  have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
+    rw [ae_iff]; simp
+  have hzero : ∀ a : ℝ, (∫ w in Ioc a (0 : ℝ), Real.exp (-(s * w)) * f w) = 0 := by
+    intro a
+    refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
+    filter_upwards [hne] with w hw hwmem
+    rw [hfc w (lt_of_le_of_ne hwmem.2 hw), mul_zero]
+    rfl
+  have htrim : ∀ a : ℝ, a ≤ 0 →
+      (∫ w in Ioi a, Real.exp (-(s * w)) * f w) = laplaceFun f s := by
+    intro a ha
+    have hsplit : Ioi a = Ioc a 0 ∪ Ioi (0 : ℝ) := (Ioc_union_Ioi_eq_Ioi ha).symm
+    have hdisj : Disjoint (Ioc a (0 : ℝ)) (Ioi (0 : ℝ)) := by
+      rw [Set.disjoint_left]
+      rintro w ⟨-, hw2⟩ hw3
+      exact absurd hw3 (not_lt.mpr hw2)
+    have hint : IntegrableOn (fun w : ℝ => Real.exp (-(s * w)) * f w) (Ioi a) := by
+      refine Integrable.mono' hf.norm.integrableOn ((by fun_prop : Measurable fun w : ℝ =>
+        Real.exp (-(s * w)) * f w).aestronglyMeasurable.restrict) ?_
+      refine (ae_restrict_iff' measurableSet_Ioi).mpr ?_
+      filter_upwards [hne] with w hw _
+      rcases lt_or_ge 0 w with hpos | hnonpos
+      · rw [norm_mul, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+        refine mul_le_of_le_one_left (norm_nonneg _) ?_
+        exact Real.exp_le_one_iff.mpr (by nlinarith)
+      · rw [hfc w (lt_of_le_of_ne hnonpos hw), mul_zero, norm_zero]
+    rw [laplaceFun, hsplit, setIntegral_union hdisj measurableSet_Ioi
+      (hint.mono_set (by rw [hsplit]; exact subset_union_left))
+      (hint.mono_set (by rw [hsplit]; exact subset_union_right)), hzero a, zero_add]
+  have hinner : ∀ τ : ℝ, 0 < τ →
+      (∫ t in Ioi (0 : ℝ), Real.exp (-(s * t)) * f (t - x * τ))
+        = Real.exp (-(s * x * τ)) * laplaceFun f s := by
+    intro τ hτ
+    have hmp : MeasurePreserving (fun w : ℝ => w + x * τ) volume volume :=
+      measurePreserving_add_right volume (x * τ)
+    have hemb : MeasurableEmbedding (fun w : ℝ => w + x * τ) :=
+      (Homeomorph.addRight (x * τ)).measurableEmbedding
+    have hpre := hmp.setIntegral_preimage_emb hemb
+      (fun t : ℝ => Real.exp (-(s * t)) * f (t - x * τ)) (Ioi 0)
+    have hset : (fun w : ℝ => w + x * τ) ⁻¹' Ioi 0 = Ioi (-(x * τ)) := by
+      ext w; simp [mem_Ioi, neg_lt_iff_pos_add]
+    rw [hset] at hpre
+    rw [← hpre]
+    have hcongr : ∀ w : ℝ, Real.exp (-(s * (w + x * τ))) * f (w + x * τ - x * τ)
+        = Real.exp (-(s * x * τ)) * (Real.exp (-(s * w)) * f w) := by
+      intro w
+      rw [add_sub_cancel_right, show -(s * (w + x * τ)) = -(s * x * τ) + -(s * w) from by ring,
+        Real.exp_add]
+      ring
+    rw [setIntegral_congr_fun measurableSet_Ioi (fun w _ => hcongr w), integral_const_mul,
+      htrim _ (by simpa using (mul_pos hx hτ).le)]
+  have hmeas : Measurable (Function.uncurry fun (t τ : ℝ) =>
+      Real.exp (-(s * t)) * f (t - x * τ)) := by
+    unfold Function.uncurry
+    fun_prop
+  have hswap : Integrable (Function.uncurry fun (t τ : ℝ) => Real.exp (-(s * t)) * f (t - x * τ))
+      ((volume.restrict (Ioi (0 : ℝ))).prod F.lawT₁) := by
+    refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, lintegral_prod_symm _ hmeas.enorm.aemeasurable]
+    have hC : ∫⁻ w, ‖f w‖ₑ ≠ ⊤ := by
+      have h := hf.2
+      rw [hasFiniteIntegral_iff_enorm] at h
+      exact h.ne
+    have hbnd : ∀ τ : ℝ, (∫⁻ t in Ioi (0 : ℝ),
+        ‖Function.uncurry (fun (t τ : ℝ) => Real.exp (-(s * t)) * f (t - x * τ)) (t, τ)‖ₑ)
+          ≤ ∫⁻ w, ‖f w‖ₑ := by
+      intro τ
+      calc (∫⁻ t in Ioi (0 : ℝ), ‖Real.exp (-(s * t)) * f (t - x * τ)‖ₑ)
+          ≤ ∫⁻ t in Ioi (0 : ℝ), ‖f (t - x * τ)‖ₑ := by
+            refine setLIntegral_mono' measurableSet_Ioi fun t ht => ?_
+            rw [enorm_mul]
+            refine mul_le_of_le_one_left' ?_
+            rw [← ofReal_norm, Real.norm_eq_abs, abs_of_pos (Real.exp_pos _)]
+            exact ENNReal.ofReal_le_one.mpr
+              (Real.exp_le_one_iff.mpr (by nlinarith [mem_Ioi.mp ht]))
+        _ ≤ ∫⁻ t, ‖f (t - x * τ)‖ₑ := setLIntegral_le_lintegral _ _
+        _ = ∫⁻ w, ‖f w‖ₑ := lintegral_sub_right_eq_self (fun w => ‖f w‖ₑ) (x * τ)
+    calc ∫⁻ τ, (∫⁻ t in Ioi (0 : ℝ),
+            ‖Function.uncurry (fun (t τ : ℝ) => Real.exp (-(s * t)) * f (t - x * τ)) (t, τ)‖ₑ)
+              ∂F.lawT₁
+        ≤ ∫⁻ _τ, (∫⁻ w, ‖f w‖ₑ) ∂F.lawT₁ := lintegral_mono hbnd
+      _ = ∫⁻ w, ‖f w‖ₑ := by rw [lintegral_const, measure_univ, mul_one]
+      _ < ⊤ := lt_top_iff_ne_top.mpr hC
+  calc laplaceFun (fun t => F.delayedField f t x) s
+      = ∫ t in Ioi (0 : ℝ), ∫ τ, Real.exp (-(s * t)) * f (t - x * τ) ∂F.lawT₁ := by
+        rw [laplaceFun]
+        refine setIntegral_congr_fun measurableSet_Ioi fun t _ => ?_
+        rw [delayedField, ← integral_const_mul]
+    _ = ∫ τ, (∫ t in Ioi (0 : ℝ), Real.exp (-(s * t)) * f (t - x * τ)) ∂F.lawT₁ :=
+        integral_integral_swap hswap
+    _ = ∫ τ, Real.exp (-(s * x * τ)) * laplaceFun f s ∂F.lawT₁ := by
+        refine integral_congr_ae ?_
+        filter_upwards [hae] with τ hτ using hinner τ (mem_Ioi.mp hτ)
+    _ = F.profile (s * x) * laplaceFun f s := by
+        rw [integral_mul_const, profile, laplace]
 
 end SelfDecomposableExponent
 

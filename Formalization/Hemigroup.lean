@@ -19,6 +19,7 @@ import Hemigroup.MemoryKernel
 import Hemigroup.MemoryKernelTransform
 import Hemigroup.MellinData
 import Hemigroup.MemoryFractional
+import Hemigroup.SignalingForm
 import Hemigroup.MellinVertical
 import Hemigroup.MainAnalysis
 import Hemigroup.LevyLimit

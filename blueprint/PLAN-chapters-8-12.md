@@ -1234,53 +1234,34 @@ not an artefact.
 which that is true and which is not a general-purpose lemma about `Γ`, because it is a statement
 about the Riemann–Liouville family that mentions no hemigroup object.
 
-## Chapter 11's lemmas are complete; Theorem 4′ itself is not — 2026-08-12
+## Chapter 11 is complete, Theorem 4′ included — 2026-08-12
 
-Theorem 4′(2)'s Mellin form is proved (`mellin_signaling_form`). Every *lemma* of the chapter is
-now `\leanok`. The repo's only remaining `sorry` is chapter 9's `hasCMDensity_iff`, ledger A9 by
-design, and A17/A18 are still the whole trust boundary.
+All six conjuncts of `thm:signaling-form` are proved and assembled into one declaration,
+`signaling_form`. 42 nodes `\leanok`; the repo's only `sorry` is chapter 9's `hasCMDensity_iff`,
+ledger A9 by design; A17/A18 are still the whole trust boundary.
 
-**`thm:signaling-form` is not `\leanok`, and it is worth being exact about the gap** — it was
-briefly recorded here as though the chapter were finished, which it is not. Clause (2) asserts
-four things, and one is proved:
+**This round began with a correction.** The chapter's *lemmas* were all `\leanok` while
+`thm:signaling-form` was not, and reporting the chapter as finished on that basis was wrong: clause
+(2) asserts four things and only the Mellin form had been proved. **A theorem node exists precisely
+because it asserts more than its lemmas do** — which is what the dependency graph is for, and which
+a summary that counts lemmas cannot see. The three missing pieces then took one round:
 
-| clause (2) asserts | status |
-|---|---|
-| `u` is causal in `t` | not formalised — but it is `CascadeFamily.causal`, a structure field |
-| `u(·,x) → f` in `X₀` as `x ↓ 0` | not formalised — `CascadeFamily.continuous` with `Φ_{0,0} = id` |
-| Laplace form `A[û(s,·)] = s û(s,·)` | not formalised — needs `û(s,x) = f̂(s)H(sx)`, i.e. the Laplace transform of the field, then clause (1) and linearity of `A` |
-| Mellin form | **proved** |
+* causality in `t` — pointwise and immediate, `f(t-xτ) = 0` for `t < 0`;
+* boundary attainment `Φ_{0,x}f → f` in `X₀` — (A7) with (A6), i.e. structure fields;
+* the Laplace form — `û(s,x) = f̂(s)H(sx)` by Fubini and a translation, then homogeneity of `A`
+  applied to `lem:profile-eigenfunction`.
 
-Clauses (1) and (3) are `lem:profile-eigenfunction` and `lem:symbol-uniqueness`, both proved. So
-what stands between the chapter and a green headline is three items, of which two are one line
-each from existing structure fields.
+**Assembling it found one more thing**, and it is the same shape as the round's other findings:
+`f ∈ 𝒟` had been carried along as "the primitive of a causal `g ∈ L¹`", and that is *not* all of
+it. A primitive of an `L¹` function tends to `∫₀^∞ g`, so it lies in `L¹` only when that limit
+vanishes; `𝒟` asks for `f ∈ X₀` *and* `f' ∈ X₀` and thereby imposes it. The bundled statement needs
+`Integrable f` as a separate hypothesis, and only assembling the clauses made the omission visible
+— each clause individually was fine without it.
 
-**The last statement I wrote was false, and the error is worth keeping.** The derivative clause was
-stated as `HasDerivAt` at every `t`. That does not hold: `f ∈ 𝒟` is absolutely continuous, so `f'`
-exists only a.e., and the field `E[f(t-xT₁)]` is a convolution of two `L¹` functions — hence `L¹`,
-not continuous — so `E[f'(t-xT₁)]` has no pointwise values to be a derivative *at*. Continuity
-could be bought from absolute continuity of `T₁`'s law (Sato Thm. 27.13, an interface) for no gain.
-
-The article never meant it pointwise. `∂_t` in chapter 10 is the `X₀ = L¹` derivative, and what
-`lem:delay-core`'s `Φ`-invariance argument establishes is `μ * f = 1_{[0,∞)} * (μ * f')`: **the
-field of `f` is the primitive of the field of `f'`**. That is an identity between two genuine
-functions of `t`, needs no interface, and is what the Mellin computation consumes. Draft and
-blueprint now say which derivative they mean.
-
-This is the third time in the chapter that a statement has had to name its reading — after
-`lem:symbol-rigidity` (which equality on the strip) and `lem:inversion-operator-action` (which
-subset of the line) — and the first time the naïve reading was outright *false* rather than merely
-unavailable. The failure mode is specific and worth naming: **prose can leave a derivative, an
-equality or a domain unqualified and still be right, because the reader supplies the reading from
-context. A formal statement has to pick, and picking wrong is not caught by proof-reading — only
-by trying to prove it.**
-
-Also worth keeping: the part of `f ∈ 𝒟` that is load-bearing turned out to be exactly two things,
-and neither is what the hypothesis is *for*. Boundedness (`abs_primitive_le`) widens 11.5's strip
-so that 11.6(2) can apply it at `z-1`; being a primitive gives the derivative clause its meaning.
-Density, `T_r`-invariance and `Φ`-invariance — the substance of `lem:delay-core`, which the proof
-cites — are not used at all.
-
+Running tally of what `f ∈ 𝒟` is actually for, now that the chapter is closed: boundedness (widens
+11.5's strip), being a primitive (gives the derivative clause its meaning), and integrability (the
+Laplace form). Density, `T_r`-invariance and `Φ`-invariance — the substance of `lem:delay-core`,
+which the draft's proof cites — are used nowhere.
 ## Next
 
 Chapter 11 needs nothing further. What remains in the article:

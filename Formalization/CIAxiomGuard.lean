@@ -434,3 +434,20 @@ function is bounded, which is what widens 11.5's strip from `Re z > 1` to `Re z 
 #print axioms Hemigroup.SelfDecomposableExponent.abs_primitive_le
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_delayedField_deriv
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_signaling_form
+
+/-! ### `thm:signaling-form` — Theorem 4′, assembled
+
+The theorem the article exists for, as one declaration. Its six conjuncts are proved in the files
+that develop them; this line is the check that the assembly costs nothing new — A17 and nothing
+else, for a statement that runs from the construction through the Mellin calculus to uniqueness.
+
+Assembling it is also what showed the chapter was not finished when every *lemma* was `\leanok`:
+clause (2) asserts four things and only the Mellin form had been proved. A theorem node exists
+precisely because it asserts more than its lemmas do.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.delayedField_eq_zero
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_Phi_zero
+#print axioms Hemigroup.SelfDecomposableExponent.laplaceFun_delayedField
+#print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_const_mul_profile
+#print axioms Hemigroup.SelfDecomposableExponent.signaling_form

@@ -39,7 +39,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Forty-one nodes carry `\lean{...}\leanok`:
+Forty-two nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -51,7 +51,7 @@ Forty-one nodes carry `\lean{...}\leanok`:
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
-| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
+| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals`, `thm:signaling-form` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -69,14 +69,10 @@ schedulable:
 1. **Discharge the three formalisation debts.** `lem:selfdecomposable-derivative`,
    `lem:selfdecomposable-exponents` and `thm:main-characterization` are proved on paper only, and
    are now reached by most of the `\leanok` nodes; `linkage check` reports them as advisories.
-   This is the highest-leverage work left. **Chapter 11's lemmas are all machine-checked** — the
-   inversion operator, its symbol, the eigenfunction relation, the uniqueness that earns the
-   definite article in *the* inversion, and Theorem 4$'$(2)'s Mellin form — and none of it spends
-   ledger A12, although the chapter had recorded three separate nodes as waiting on it.
-   `thm:signaling-form` itself is *not* `\leanok`: clause (2) also asserts causality in `t`,
-   boundary attainment `u(·,x) → f` in `X₀`, and the Laplace form, none of which is formalised.
-   The first two are structure fields of `CascadeFamily`; the third needs the Laplace transform of
-   the field. That is what would turn Theorem 4$'$ green.
+   This is the highest-leverage work left. **Chapter 11 is complete, Theorem 4$'$ included** —
+   all six conjuncts of `thm:signaling-form` are machine-checked and assembled into one
+   declaration, and none of the chapter spends ledger A12, although three of its nodes had been
+   recorded as waiting on it.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical
