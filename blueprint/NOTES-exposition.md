@@ -236,3 +236,97 @@ Worth one honest paragraph, because the reasons differ and a reader can check th
   development deliberately does not define.
 - **Lemma 10.1** is not blocked and is not needed by anything now that chapter 11 is closed; it is
   simply optional.
+
+---
+
+# Part 4 — Chapter structure: what the dependency graph licenses
+
+Added after Parts 1–3, from a transitive closure of `\uses` over all 92 blueprint nodes. The
+question asked was which chapters could move to an appendix, or be deferred to the blueprint, to
+reach the main results sooner. The graph answers it more sharply than expected, so the numbers are
+recorded here rather than re-derived.
+
+**The plan is to do this restructuring in the LaTeX article, not in the draft**, so the blueprint
+numbering is not churned by an exposition decision.
+
+## The closure
+
+Nodes needed by **Theorem 2′ (7.3) together with Theorem 4′ (11.6)** — 39 in all:
+
+| chapter | needed / total |
+|---|---|
+| §2 preliminaries | 10 / 12 |
+| §3 axioms | 1 / 2 |
+| §4 representation | 2 / 3 |
+| §5 cascade | 3 / 3 |
+| §6 covariance | 3 / 4 |
+| §7 characterization | 7 / 12 |
+| §8 examples & moments | **0 / 10** |
+| §9 memory kernels | **0 / 15** |
+| §10 scale-Cauchy | **1 / 6** |
+| §11 signaling | 12 / 17 |
+
+Adding **Theorem 5′ (12.5)** brings the total to 49 and pulls in three §8 nodes
+(`prop:moments`, `prop:moment-criterion`, `prop:bessel-family`) plus `cor:semigroup-case` and
+`rem:drift-boundary` from §7 — **and still nothing from §9 or §10.**
+
+## The finding
+
+**§§9–10 is a 21-node, 193-line leaf block.** No theorem in the article depends on it. It sits
+between the two headline theorems, so a reader going from 2′ to 4′ currently crosses 193 lines
+(21% of the draft) that 4′ does not use.
+
+Its single outgoing edge is `lem:delay-core` (Lemma 10.1) → `lem:memory-fractional-integrals`
+(Lemma 11.5), and even that is weaker than the graph shows: §11 states outright that "the density
+of `𝒟` and its invariance under `T_r` and `Φ_{x,y}` — the substance of Lemma 10.1 — are not used
+here." §11 borrows §10's *definitions*, not its lemma. (This is item 8 of Part 1, arrived at from
+the other direction.)
+
+## Recommendation: §§9–10 into one appendix, moved together
+
+Together, because §10 is built on §9 — Lemma 10.3(2) uses Lemma 9.1, Lemma 10.3(5) identifies the
+Phillips form with §9's memory-kernel operator, and §10 opens by upgrading Prop 9.2. Split them and
+a cross-appendix reference is created for nothing; moved as a unit, none is.
+
+This also disposes of the Cauchy-problem worry correctly. The scale-Cauchy problem *is*
+standard-expected in scale-space axiomatics, and an appendix **keeps** it, in full, with proofs.
+What it stops doing is standing between Theorem 2′ and Theorem 4′ as though 4′ needed it.
+
+Three repairs, all small:
+
+1. **Lift `X₀`, `T_r`, `𝒟` into §2.** §11 needs them and §14 needs `𝒟ⁿ` (which it already
+   redefines). After this §11 cites nothing in §§9–10 and the appendix is a true leaf.
+2. **Lift Lemma 9.1 out of §9** — about ten lines. §8's Gamma and stable families both
+   `\uses{lem:memory-kernel}`, so leaving it in the appendix creates a backward reference from §8.
+   It belongs at the end of §7 or the head of §8: it is the statement that `k` *is* the memory
+   kernel, which is where a reader wants it anyway.
+3. **§13's Prop 13.6** cites Prop 9.7(3) for the classical Sonine case. That becomes a citation
+   into the appendix — harmless; it already reads as a citation (Thorin, Bondesson, SSV).
+
+Net effect: a main line of about 640 lines, reaching Theorem 4′ at roughly line 410.
+
+## What should not move
+
+**§8 stays** — Theorem 5′ needs its moment criterion and Bessel family, it is 26 lines, and the
+examples are what make Theorem 7.3 mean anything. **§12 stays** — it is a headline.
+
+## Why "refer to the blueprint" is the wrong lever here
+
+The instinct inverts. The material that can be compressed to a sketch plus a pointer is the
+material that is **machine-checked**, because nothing then rests on the reader's trust in the
+prose. §§9–10 are the article's *least*-formalised region — §10 entirely unformalised, and §9's
+Prop 9.2, Cor 9.6 and Prop 9.7(3) all cited rather than verified. That makes them the worst
+candidate for "see blueprint" and the best for an appendix: they need their proofs printed, they
+just do not need to be on the critical path. Meanwhile the regions that *could* be compressed —
+§§4–6 — are 111 lines in total, which is not worth the loss of rigour.
+
+**So: appendix yes, blueprint deferral no.**
+
+## The one open editorial fork
+
+§1 currently advertises Sonine conservation as the **first** of three instances of the embodiment
+principle, and §15 repeats it. If §9 moves to an appendix, that claim points into an appendix.
+Either demote it in §1 to two instances, with Sonine mentioned as a further consequence, or keep §9
+in the main text on the ground that the conservation identity is a headline in its own right
+regardless of what depends on it. The graph cannot settle this: it is a question about what the
+article claims, not about what it proves.

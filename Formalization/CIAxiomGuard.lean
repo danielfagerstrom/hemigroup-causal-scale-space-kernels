@@ -462,3 +462,22 @@ therefore print both names, and that is correct rather than a regression.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.main_characterization
+
+/-! ## Chapter 12 — locality
+
+### `lem:log-convexity` — the first node of chapter 12
+
+Log-convexity of the negative moments, in two readings. The `[0,∞]` form is unconditional and the
+real form is the blueprint's, on `Ioo 0 z_*` rather than the blueprint's `(0,∞)` because the
+latter presupposes `z_* = ∞`, which is the clause of `lem:moment-recursion` that ledger **A13**
+carries.
+
+All three lines print **A17 and nothing else** — A17 because `lawT₁` is a kernel of the construction
+and so every statement about `T₁` inherits it, not because anything here uses it. What matters for
+chapter 12 is what is *absent*: none of the chapter's own cited interfaces (A13 Widder, A14
+Courrège, A15 Krull--Webster) is touched by this node.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.negMoment_le_rpow_mul_rpow
+#print axioms Hemigroup.SelfDecomposableExponent.negMoment_pos
+#print axioms Hemigroup.SelfDecomposableExponent.convexOn_log_negMoment

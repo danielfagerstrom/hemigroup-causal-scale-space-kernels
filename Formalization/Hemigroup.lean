@@ -15,6 +15,7 @@ import Hemigroup.InversionSymbol
 import Hemigroup.Interfaces
 import Hemigroup.L1Continuity
 import Hemigroup.Levy
+import Hemigroup.Locality
 import Hemigroup.MemoryKernel
 import Hemigroup.MemoryKernelTransform
 import Hemigroup.MellinData

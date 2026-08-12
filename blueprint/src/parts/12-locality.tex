@@ -116,15 +116,41 @@ follows from $m > 0$.
 % draft: Lemma 12.4
 \begin{lemma}[log-convexity]\label{lem:log-convexity}
 \uses{lem:mellin-data}
+\lean{Hemigroup.SelfDecomposableExponent.convexOn_log_negMoment}\leanok
 $z \mapsto m(z)$ is log-convex on $(0, \infty)$.
-\statusT
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.convexOn\_log\_negMoment}, together with the
+$[0,\infty]$-valued form \texttt{negMoment\_le\_rpow\_mul\_rpow} from which it is read off.
+\texttt{\#print axioms} shows A17 and nothing else --- A17 only because $T_1$ is a kernel of the
+construction, so every statement about it inherits the entry. None of this chapter's own cited
+interfaces is touched.
+\textbf{Two readings, and the difference matters.} The $[0,\infty]$ form is
+\emph{unconditional}: no standing hypothesis, no finiteness, no strip, since divergence is a
+value there rather than a failure. The real-valued form stated above needs $m$ finite and
+positive, so the formal statement carries the domain $(0, z_*)$ rather than $(0,\infty)$ ---
+which is the same interval once $z_* = \infty$, but that is \ref{lem:moment-recursion}(2), the
+one clause of that lemma \ledger{A13} carries, and this node does not presuppose it. Positivity
+of $m$ is where (H)'s first clause enters: the integral runs over $(0,\infty)$, so an atom at the
+origin would be invisible to it.)}
 \end{lemma}
 
 \begin{proof}
+\leanok
 By Cauchy--Schwarz,
 $m\bigl(\tfrac{z_1+z_2}{2}\bigr) = \Ex\bigl[T_1^{-z_1/2}\,T_1^{-z_2/2}\bigr]
 \le m(z_1)^{1/2} m(z_2)^{1/2}$, which is midpoint log-convexity; with continuity of $m$ this
 gives log-convexity.
+
+The appeal to continuity is avoidable, and the formalisation does without it: H\"older at the
+exponent pair $\bigl(\tfrac1\theta, \tfrac1{1-\theta}\bigr)$, applied to $T_1^{-z_1}$ and
+$T_1^{-z_2}$, gives
+\[
+  m\bigl(\theta z_1 + (1-\theta) z_2\bigr)
+    \;=\; \Ex\bigl[(T_1^{-z_1})^{\theta}\,(T_1^{-z_2})^{1-\theta}\bigr]
+    \;\le\; m(z_1)^{\theta}\,m(z_2)^{1-\theta}
+\]
+at every $\theta \in [0,1]$ at once, Cauchy--Schwarz being the case $\theta = \tfrac12$. Since
+that inequality is the definition of log-convexity, nothing remains to upgrade.
 \end{proof}
 
 % draft: Theorem 12.5
