@@ -1061,11 +1061,59 @@ instance proves and which makes `SameSymbolAction` hold on the whole strip (at a
 vanish). Weakest the consumer can use, strongest the producer can supply, and they coincide — but
 only writing the consumer showed it. The a.e. version survives as a derived lemma.
 
+---
+
+# The last of chapter 11, scouted — and a modelling fork that is not mine to take
+
+`thm:signaling-form`(2)'s Mellin form runs through `lem:memory-fractional-integrals` (11.5):
+`ũ(t,·)(z) = H̃(z)·(Iᶻf)(t)`. Scouting it turned up two things, one cheap and one a decision.
+
+## Cheap: Mathlib has no fractional integral, of any order
+
+There is no Riemann–Liouville anywhere in the library — `Analysis/` carries Mellin, Fourier,
+convolution and distributions and nothing fractional. So `Iᶻ` is *defined* in the development
+(`Skeleton.riemannLiouville`). That is not an interface and does not touch the ledger: the draft
+cites Samko–Kilbas–Marichev for the notation and theory of `Iᶻ`, and nothing in chapter 11 uses
+more of that theory than the definition. Worth noting for the record that this makes the second
+SKM citation in §11 load-bearing in a way the first (retracted in favour of Widder, ledger A12)
+was not — it is where the object comes from, not where a theorem does.
+
+## The decision: the field is `L¹`-valued and Lemma 11.5 is pointwise in `t`
+
+`Φ_{x,y}` in `Hemigroup/Family.lean` maps `X →L[ℝ] X` with `X` an `L¹` space. **An `L¹` class has
+no value at a point**, and 11.5 asserts an identity at each `t > 0`. So `u(t,x) = (Φ_{0,x}f)(t)`
+is not, as it stands, a statement the development can make. Two readings, and they cost
+differently:
+
+**(a) Weaken to almost every `t`.** `u(t,x)` is then the convolution `(μ_{0,x} * f)(t)`, defined
+a.e. for `f ∈ L¹`, and 11.5 becomes an a.e. identity. Cheap, faithful to how the rest of the
+development treats the field, and nothing in Theorem 4′(2)'s Mellin form obviously needs more.
+The cost lands on `∂_t u`: the derivative clause of 11.5 needs `f ∈ 𝒟` and an a.e. reading of a
+derivative of an `L¹`-valued object, which is exactly the kind of thing that is fine until it is
+not.
+
+**(b) Build a pointwise model of the field.** A chosen representative — for causal `f` and `x > 0`
+the convolution with a probability measure has a canonical continuous-in-`t` version when `f`
+does — makes every statement of chapters 10–12 pointwise and removes the friction permanently.
+It is a new layer under three chapters, and it is the layer chapter 10 would want anyway if
+Mathlib's C₀-semigroup theory ever unblocks it.
+
+**Recommendation: (a) now, and let chapter 10 force (b) if it ever becomes schedulable.** The
+reason is that (b)'s value is almost entirely in chapter 10, which is blocked for independent
+reasons; paying for it now would be building a layer against a consumer that may never arrive.
+
+**What is decision-free, and is therefore what got stated.** The *analytic core* of 11.5 —
+`Skeleton.mellin_delayed_average` — takes the integrand as `E[f(t - xT₁)]` for a genuine function
+`f` and proves the substitution `y = x·T₁`. Both readings need it, unchanged. What the readings
+differ about is only the step that identifies that integrand with `Φ_{0,x}f`.
+
 ## Next
 
-1. `thm:signaling-form`(2)'s Mellin form — `lem:memory-fractional-integrals` (11.5) combined with
-   `lem:mellin-data`. Clauses (1) and (3) are done, so this is what is left of chapter 11. Note
-   that (2)'s causality and boundary clauses are (A3) and (A7), i.e. structure already in hand.
-2. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
+1. **Decide (a) vs (b)** — or accept the recommendation. Only the identification step depends on
+   it.
+2. Prove `Skeleton.mellin_delayed_average`, which does not: Tonelli plus the substitution
+   `y = x·T₁`, with `Re z > 1` where `lem:mellin-data` needed only `Re z > 0`. That gap is what
+   makes (H)'s second clause `z_* > 1` the hypothesis that keeps the chapter non-empty.
+3. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
    `prop:scale-evolution` and `cor:exact-inversion` (distributions).
-3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` left in the repo.
+4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the other `sorry` in the repo.

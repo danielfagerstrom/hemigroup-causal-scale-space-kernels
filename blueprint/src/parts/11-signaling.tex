@@ -256,6 +256,7 @@ outright.
 % draft: Lemma 11.5
 \begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
 \uses{def:standing-hypothesis,lem:mellin-data,thm:main-characterization,lem:delay-core}
+\lean{Skeleton.mellin_delayed_average}\notready
 Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
 and $1 < \operatorname{Re} z < z_*$,
 \[
@@ -281,6 +282,23 @@ which is the claim by \ref{lem:mellin-data}. For $f \in \core$ we have
 $\partial_t u(t, x) = \Ex[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1} f$ using
 $f(0) = 0$.
 \end{proof}
+
+\emph{\textbf{Stated in Lean 2026-08-12, in two pieces, and the split is forced by how the field
+is modelled.} \texttt{Skeleton.mellin\_delayed\_average} is the analytic core --- the substitution
+above, applied to a genuine function $f$, with the integrand written as $\Ex[f(t - xT_1)]$
+outright. What it does \emph{not} do is identify that integrand with $\Phi_{0,x}f$. The reason is
+that $\Phi_{x,y}$ acts on an $L^1$ space, and an $L^1$ class has no value at a point, whereas this
+lemma is pointwise in $t$; so the identification needs either a chosen representative or a
+weakening to ``almost every $t$'', and that is a modelling decision affecting Chapters 10--12 as
+well as this one. It is recorded in \texttt{PLAN-chapters-8-12.md} rather than taken in passing.
+The core is needed under either reading, which is why it is what got stated.}
+
+\emph{\textbf{The Riemann--Liouville integral is defined in the development, not cited.} Mathlib
+has no fractional integral of any order --- \texttt{Analysis/} carries Mellin, Fourier,
+convolution and distributions and nothing fractional --- so \texttt{Skeleton.riemannLiouville}
+gives $I^z$ its definition. That is not an interface: \sscite{samko1993fractional} is cited here
+for the notation and the theory of $I^z$, and nothing in this chapter uses more of that theory
+than the definition itself.}
 
 % draft: Theorem 11.6
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
