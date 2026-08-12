@@ -385,3 +385,19 @@ being Laplace injectivity. `coeFn_Phi_zero` then identifies the chosen represent
 #print axioms Hemigroup.SelfDecomposableExponent.kernel_zero_eq_map_lawT₁
 #print axioms Hemigroup.SelfDecomposableExponent.coeFn_Phi_zero
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_delayedField
+
+/-! ### `thm:signaling-form`(2), the Mellin form — transform side
+
+The displayed computation of Theorem 4′(2), entire. What stands between it and the node's
+conclusion is the derivative clause of `lem:memory-fractional-integrals`, which needs `∂_t u` and
+hence `lem:delay-core`.
+
+`integrableOn_pastIntegrand_of_bounded` is the range repair: 11.5 is stated for `1 < Re z < z_*`
+and 11.6(2) applies it at `z-1` while stating the same range, so the chain does not close as
+written. It closes because 11.6(2) hypothesises `f ∈ 𝒟`, which is bounded, and boundedness moves
+the lower end of the strip from `1` to `0`. Nothing about the result changes; what changes is what
+the lemma says.
+-/
+
+#print axioms Hemigroup.integrableOn_pastIntegrand_of_bounded
+#print axioms Hemigroup.SelfDecomposableExponent.inversionSymbol_mul_mellin_delayedField

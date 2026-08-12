@@ -263,7 +263,9 @@ and $1 < \operatorname{Re} z < z_*$,
   \;=\; \tilde H(z)\,\bigl(I^{z} f\bigr)(t),
 \]
 absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ with
-$I^z f$ replaced by $I^z f' = I^{z-1} f$.
+$I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the identity extends to the wider strip
+$0 < \operatorname{Re} z < z_*$, since $f \in \core$ is bounded ($f(0) = 0$ and $f' \in \Xz$ give
+$\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$ is then integrable at the origin on its own.
 \statusT
 \end{lemma}
 
@@ -288,6 +290,14 @@ at the level of measures. What is left here is the \emph{derivative} clause, $f 
 $I^zf' = I^{z-1}f$, which needs $\partial_t u$ and so \ref{lem:delay-core}. See that node's remark
 for why a representative of the field has to be named at all --- the quantifiers ``for each $x$,
 a.e.\ $t$'' do not commute, so this is not avoided by weakening the reading.}
+
+\emph{\textbf{The wider strip is not decoration; \ref{thm:signaling-form}(2) needs it.} That node
+applies this lemma at $z-1$, and states the range $1 < \operatorname{Re} z < z_*$ --- which puts
+$z - 1$ outside the range stated here for $f \in \Xz$. The chain closes because (2) hypothesises
+$f \in \core$, which is bounded; so nothing about the result changes, and what changes is what
+this lemma \emph{says}. The gap was invisible on paper and surfaced immediately on chaining the
+two in Lean, the second clause's hypothesis having quietly been doing work the first clause's
+range did not advertise.)}
 
 \emph{\textbf{The Riemann--Liouville integral is defined in the development, not cited.} Mathlib
 has no fractional integral of any order --- \texttt{Analysis/} carries Mellin, Fourier,
@@ -791,4 +801,43 @@ integral, and the outer integral of $\tau^{-z}$ is $\Ex[T_1^{-z}]$. The past int
 $\Gamma(z)(I^zf)(t)$ by the reflection $y \mapsto t-y$, whose domains match because causality has
 already confined the integral to $(0,t]$; and $\Ex[T_1^{-z}]\Gamma(z) = \tilde H(z)$ by
 \ref{lem:mellin-data}. The two $\Gamma$'s cancel, which is why the statement has none.
+\end{proof}
+
+% additive: not in the draft. The transform-side half of Theorem 11.6(2)'s Mellin form, split off
+% on 2026-08-12 when it was proved and the derivative clause of 11.5 was not. Numbered 11.19.
+
+\begin{lemma}[the Mellin form of the signaling equation, transform side]\label{lem:signaling-mellin-form}
+\uses{lem:delayed-average-mellin,lem:inversion-symbol,lem:memory-fractional-integrals}
+\lean{Hemigroup.SelfDecomposableExponent.inversionSymbol_mul_mellin_delayedField}\leanok
+Assume (H), canonical gauge; let $f \in \core$ be causal, $t > 0$ and
+$1 < \operatorname{Re} z < z_*$, and suppose $\tilde H(z-1) \ne 0$. Then
+\[
+  B(1-z)\;\widetilde{u(t,\cdot)}(z-1) \;=\; \tilde H(z)\,\bigl(I^{z-1}f\bigr)(t).
+\]
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.inversionSymbol\_mul\_mellin\_delayedField};
+\texttt{\#print axioms} gives \ledger{A17} and nothing else. This is the displayed computation in
+the proof of \ref{thm:signaling-form}(2), entire; what stands between it and that node's
+conclusion is the identification of the right-hand side with
+$\widetilde{\partial_t u(t,\cdot)}(z)$, which is the derivative clause of
+\ref{lem:memory-fractional-integrals} and needs \ref{lem:delay-core}.}
+
+\emph{\textbf{Two hypotheses that the prose does not carry, for the same two reasons the chapter
+has met before.} $\operatorname{Re} z > 1$ is used at $z-1$, where the strip must start at $0$
+rather than $1$ --- so the boundedness of $f \in \core$ is load-bearing here and not incidental;
+see \ref{lem:memory-fractional-integrals}. And $\tilde H(z-1) \ne 0$ is needed because $B$ is a
+quotient: \ref{rem:poles} says the identity ``is nevertheless regular, the factor $\tilde H(z-1)$
+cancelling every denominator'', which is true of the product as a \emph{meromorphic function} and
+not of $B$ evaluated at a point, where the division is present and has to be cancelled. That is
+the third time in this chapter that a symbolic cancellation has had to become a pointwise one,
+after \ref{thm:signaling-form}(1) and \ref{lem:symbol-rigidity}.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:delayed-average-mellin,lem:inversion-symbol}
+$B(1-z) = \tilde H(z)/\tilde H(z-1)$ by \ref{lem:inversion-symbol}, and
+$\widetilde{u(t,\cdot)}(z-1) = \tilde H(z-1)(I^{z-1}f)(t)$ by \ref{lem:delayed-average-mellin} at
+$z-1$, whose strip condition $0 < \operatorname{Re}(z-1) < z_*$ is the hypothesis. Cancel
+$\tilde H(z-1)$.
 \end{proof}

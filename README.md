@@ -39,7 +39,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Thirty-eight nodes carry `\lean{...}\leanok`:
+Thirty-nine nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -51,7 +51,7 @@ Thirty-eight nodes carry `\lean{...}\leanok`:
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
-| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and the fractional-integral clause of Theorem 4$'$(2), with the canonical gauge at the level of measures beneath it |
+| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -69,17 +69,21 @@ schedulable:
 1. **Theorem 4$'$(2)'s Mellin form, which is what is left of chapter 11.** Clauses (1) and (3)
    are machine-checked — `lem:profile-eigenfunction` and `lem:symbol-uniqueness` — and neither
    spends ledger A12, though the chapter had recorded both as waiting on it. Of (2), the
-   fractional-integral clause is proved as `lem:delayed-average-mellin`, identification of the
-   field included; what remains is the Mellin form itself, which combines that with
-   `lem:mellin-data` exactly as the draft's proof does.
+   Mellin form is proved as `lem:signaling-mellin-form`, field identification included. What
+   remains of the whole chapter is one thing: the derivative clause of
+   `lem:memory-fractional-integrals`, which needs `∂_t u` and hence `lem:delay-core`.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical
    path — checked by `#print axioms`, not asserted. What is left in the chapter is `[A]`
    (`prop:pair-regularity` on A9, `prop:volterra-density` on A10) or distributional
    (`prop:scale-evolution`, `cor:exact-inversion`), which Mathlib cannot yet state.
-3. **Blocked on upstream Mathlib, not queued.** Chapter 10 needs C₀-semigroup and closed-operator
-   theory; chapter 12 needs Bessel `K`; `prop:scale-evolution` and `cor:exact-inversion` need a
+3. **`lem:delay-core` (10.1) is not blocked, and had been counted as though it were.** The core
+   `𝒟`, its density, its invariance under the delay semigroup and under `Φ`, and the `L¹`
+   difference quotient — no C₀-semigroup theory and no closed operators. It is what chapter 11
+   now waits on.
+4. **Blocked on upstream Mathlib, not queued.** The rest of chapter 10 needs C₀-semigroup and
+   closed-operator theory; chapter 12 needs Bessel `K`; `prop:scale-evolution` and `cor:exact-inversion` need a
    locally integrable function read as a distribution and a distribution convolved with a measure,
    neither of which `Analysis/Distribution/` yet has. None of the three is a scheduling decision,
    and all are worth re-checking on each Mathlib bump.

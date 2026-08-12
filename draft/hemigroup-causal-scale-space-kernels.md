@@ -516,9 +516,9 @@ at every point of the line where the realising identity holds. Cancelling the no
 
 $$\widetilde{u(t, \cdot)}(z) \;=\; \int_0^\infty x^{z-1}\, u(t, x)\,dx \;=\; \tilde H(z)\,\big(I^{z} f\big)(t),$$
 
-absolutely convergent. If moreover $f \in \mathcal{D}$, the same holds for $\partial_t u$ with $I^z f$ replaced by $I^z f' = I^{z-1} f$.
+absolutely convergent. If moreover $f \in \mathcal{D}$, the same holds for $\partial_t u$ with $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the identity extends to the wider strip $0 < \operatorname{Re} z < z_*$, since $f \in \mathcal{D}$ is bounded ($f(0) = 0$ and $f' \in X_0$ give $\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$ is then integrable at the origin on its own. **Theorem 11.6(2) uses the wider strip**: it applies this lemma at $z - 1$, which $\operatorname{Re} z > 1$ places outside the range stated for $f \in X_0$.
 
-*Proof.* $u(t, x) = \mathbb{E}\big[f(t - x T_1)\big]$, so by Tonelli (justified since, for $c = \operatorname{Re} z > 1$, $\mathbb{E}[T_1^{-c}]\int_0^t y^{c-1}|f(t-y)|\,dy \le \mathbb{E}[T_1^{-c}]\, t^{c-1}\|f\|_1 < \infty$),
+*Proof.* $u(t, x) = \mathbb{E}\big[f(t - x T_1)\big]$, so by Tonelli — justified because the same computation on absolute values gives $\mathbb{E}[T_1^{-c}]\int_0^t y^{c-1}|f(t-y)|\,dy$, $c = \operatorname{Re} z$, whose two factors are finite for the two ends of the strip separately: the first because $c < z_*$, the second because $c > 1$ makes $y^{c-1} \le t^{c-1}$ on $(0,t]$, so that it is at most $t^{c-1}\|f\|_1$ (or, for bounded $f$, because $\int_0^t y^{c-1}dy = t^c/c$ for every $c > 0$) —
 
 $$\int_0^\infty x^{z-1}\,\mathbb{E}\big[f(t - xT_1)\big]\,dx \;=\; \mathbb{E}\big[T_1^{-z}\big]\int_0^t y^{z-1} f(t - y)\,dy \;=\; \mathbb{E}\big[T_1^{-z}\big]\,\Gamma(z)\,(I^z f)(t),$$
 
@@ -552,7 +552,7 @@ $$A\big[H(s\cdot)\big](x) \;=\; \frac{h(x)}{x} \;=\; s\,H(sx).$$
 
 Equivalently, and this is the same computation read as a contour integral: the weight $x^{-1}$ of Definition 11.3 is exactly what cancels the weight $x$ that shifted the transform, so the eigenfunction relation and the exhibition of $h$ are one statement rather than two.
 
-(2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form is Lemma 11.5 combined with Lemma 11.2:
+(2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form is Lemma 11.5 combined with Lemma 11.2 — note that it applies Lemma 11.5 at $z - 1$, so it is the wider strip that is used there, available because $f \in \mathcal{D}$ is bounded; and that the cancellation below is of $\tilde H(z-1)$, hence valid wherever that does not vanish, which by Lemma 11.2 is all of the strip off an isolated set:
 
 $$B(1-z)\,\widetilde{u(t,\cdot)}(z-1) = \frac{\tilde H(z)}{\tilde H(z-1)}\cdot\tilde H(z-1)\,(I^{z-1}f)(t) = \tilde H(z)\,(I^{z-1}f)(t) = \widetilde{\partial_t u(t,\cdot)}(z).$$
 

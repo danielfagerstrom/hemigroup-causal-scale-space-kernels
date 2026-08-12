@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.MellinData
+import Hemigroup.InversionSymbol
 import Hemigroup.Instance
 import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 
@@ -107,6 +108,48 @@ theorem integrableOn_pastIntegrand (hz : 1 < z.re) (hf : Integrable f)
   rw [← Ioc_union_Ioi_eq_Ioi ht.le]
   exact hIoc.union hIoi
 
+/-- **Bounded `f` extends the strip down to `Re z > 0`.**
+
+This is what `f ∈ 𝒟` supplies — absolutely continuous with `f' ∈ L¹` and `f(0) = 0` forces
+`‖f‖_∞ ≤ ‖f'‖₁` — and it is what `thm:signaling-form`(2) needs, because that node applies
+`lem:memory-fractional-integrals` at `z-1`. With `f` merely `L¹` the weight `y^{c-1}` has to be
+absorbed by `t^{c-1}`, which needs `c > 1`; with `f` bounded the weight is integrable at the origin
+on its own for every `c > 0`.
+
+**The gap this closes is in the draft.** `lem:memory-fractional-integrals` states the range
+`1 < Re z < z_*`, and `thm:signaling-form`(2) states the same range while applying that lemma at
+`z-1` — which its stated range does not cover. The repair is not a change of result: (2) hypothesises
+`f ∈ 𝒟`, which is bounded, so the lemma holds there for `0 < Re z < z_*` and the chain closes. It is
+a gap in what the lemma *says*, not in what is true, and chaining the two in Lean is what surfaced
+it. -/
+theorem integrableOn_pastIntegrand_of_bounded (hz : 0 < z.re) {C : ℝ} (hfm : Measurable f)
+    (hbdd : ∀ y : ℝ, |f y| ≤ C) (hcausal : ∀ r : ℝ, r < 0 → f r = 0) (ht : 0 < t) :
+    IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0) := by
+  have hIoc : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioc 0 t) := by
+    have hw : IntegrableOn (fun y : ℝ => y ^ (z.re - 1) * C) (Ioc 0 t) := by
+      have hr := intervalIntegral.intervalIntegrable_rpow' (a := (0 : ℝ)) (b := t)
+        (r := z.re - 1) (by linarith)
+      rw [intervalIntegrable_iff_integrableOn_Ioc_of_le ht.le] at hr
+      exact hr.mul_const C
+    have hmeas : AEStronglyMeasurable
+        (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) volume := by
+      have h1 : Measurable fun y : ℝ => (y : ℂ) ^ (z - 1) := by fun_prop
+      exact (h1.mul (Complex.measurable_ofReal.comp
+        (hfm.comp (measurable_const_sub t)))).aestronglyMeasurable
+    refine Integrable.mono' hw hmeas.restrict ?_
+    refine (ae_restrict_iff' measurableSet_Ioc).mpr (.of_forall fun y hy => ?_)
+    obtain ⟨hy0, hyt⟩ := hy
+    rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hy0, Complex.norm_real, Real.norm_eq_abs]
+    simp only [Complex.sub_re, Complex.one_re]
+    gcongr
+    exact hbdd _
+  have hIoi : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi t) := by
+    refine (integrable_zero ℝ ℂ _).congr ?_
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr (.of_forall fun y hy => ?_)
+    exact (pastIntegrand_eq_zero hcausal (mem_Ioi.mp hy)).symm
+  rw [← Ioc_union_Ioi_eq_Ioi ht.le]
+  exact hIoc.union hIoi
+
 /-- **The past integral is `Γ(z)` times the Riemann–Liouville integral.**
 
 The reflection `y ↦ t - y`, and causality is what makes the domains match: the past integral over
@@ -134,11 +177,11 @@ theorem mul_riemannLiouville (hz : 0 < z.re) (hcausal : ∀ r : ℝ, r < 0 → f
     mul_inv_cancel₀ (Complex.Gamma_ne_zero_of_re_pos hz), one_mul]
 
 /-- The past integrand's norm, as a real function: `y^{c-1}|f(t-y)|`. -/
-theorem integrableOn_pastNorm (hz : 1 < z.re) (hf : Integrable f)
-    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) (ht : 0 < t) :
+theorem integrableOn_pastNorm
+    (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
     IntegrableOn (fun y : ℝ => y ^ (z.re - 1) * |f (t - y)|) (Ioi 0) := by
   have hn : IntegrableOn (fun y : ℝ => ‖(y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)‖) (Ioi 0) :=
-    (integrableOn_pastIntegrand hz hf hcausal ht).norm
+    hpast.norm
   refine hn.congr_fun (fun y hy => ?_) measurableSet_Ioi
   dsimp only
   rw [norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos (mem_Ioi.mp hy), Complex.norm_real,
@@ -210,9 +253,9 @@ the exchange is licensed by the *two* ends of the strip at once, one apiece — 
 `(x,τ) ↦ t - xτ`, and a null set for `volume` need not pull back to one for the product measure —
 `lawT₁` may have atoms. Choosing a measurable representative is free for an `L¹` class, so this
 costs the article nothing. -/
-theorem integrable_delayed (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
-    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) (hf : Integrable f)
-    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t) :
+theorem integrable_delayed (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
+    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) {t : ℝ}
+    (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
     Integrable (Function.uncurry fun x τ : ℝ => (x : ℂ) ^ (z - 1) * (f (t - x * τ) : ℂ))
       ((volume.restrict (Ioi 0)).prod F.lawT₁) := by
   have h0 := F.lawT₁_singleton_zero hH.1
@@ -224,7 +267,7 @@ theorem integrable_delayed (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
   refine (integrable_prod_iff' hmeas.aestronglyMeasurable).mpr ⟨?_, ?_⟩
   · filter_upwards [hae] with τ hτ
     have hbase : MellinConvergent (fun y : ℝ => ((f (t - y) : ℝ) : ℂ)) z := by
-      simpa only [MellinConvergent, smul_eq_mul] using integrableOn_pastIntegrand hz hf hcausal ht
+      simpa only [MellinConvergent, smul_eq_mul] using hpast
     have hdil := (MellinConvergent.comp_mul_left (f := fun y : ℝ => ((f (t - y) : ℝ) : ℂ))
       (s := z) (mem_Ioi.mp hτ)).mpr hbase
     have hdil' : IntegrableOn
@@ -233,8 +276,7 @@ theorem integrable_delayed (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
     refine hdil'.congr_fun (fun x hx => ?_) measurableSet_Ioi
     dsimp only [Function.uncurry]
     rw [mul_comm τ x]
-  · have hC := integrableOn_pastNorm hz hf hcausal ht
-    have heq : (fun τ : ℝ => ∫ x in Ioi (0 : ℝ),
+  · have heq : (fun τ : ℝ => ∫ x in Ioi (0 : ℝ),
           ‖Function.uncurry (fun x τ : ℝ => (x : ℂ) ^ (z - 1) * (f (t - x * τ) : ℂ)) (x, τ)‖)
         =ᵐ[F.lawT₁] fun τ : ℝ =>
           τ ^ (-z.re) * ∫ y in Ioi (0 : ℝ), y ^ (z.re - 1) * |f (t - y)| := by
@@ -255,14 +297,15 @@ a dilate, contributing `τ^{-z}` times the past integral, and the outer integral
 `E[T₁^{-z}]`. `lem:mellin-data` turns `Γ(z)E[T₁^{-z}]` into `H̃(z)` and `mul_riemannLiouville`
 turns the past integral into `Γ(z)(Iᶻf)(t)`; the two `Γ`s cancel, which is why the statement has
 no `Γ` in it. -/
-theorem mellin_delayed_average (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
-    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) (hf : Integrable f)
-    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t) :
+theorem mellin_delayed_average (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
+    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f)
+    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t)
+    (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
     mellin (fun x : ℝ => ∫ τ, (f (t - x * τ) : ℂ) ∂F.lawT₁) z
       = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville z f t := by
   have h0 := F.lawT₁_singleton_zero hH.1
   have hae := F.ae_mem_Ioi_lawT₁ h0
-  have hzpos : 0 < z.re := by linarith
+  have hzpos : 0 < z.re := hz
   have hinner : ∀ x : ℝ, (x : ℂ) ^ (z - 1) • (∫ τ, (f (t - x * τ) : ℂ) ∂F.lawT₁)
       = ∫ τ, (x : ℂ) ^ (z - 1) * (f (t - x * τ) : ℂ) ∂F.lawT₁ := by
     intro x
@@ -285,14 +328,13 @@ theorem mellin_delayed_average (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z
         rw [mellin]
         exact setIntegral_congr_fun measurableSet_Ioi (fun x _ => hinner x)
     _ = ∫ τ, (∫ x in Ioi (0 : ℝ), (x : ℂ) ^ (z - 1) * (f (t - x * τ) : ℂ)) ∂F.lawT₁ :=
-        integral_integral_swap (integrable_delayed hH hz hz' hfm hf hcausal ht)
+        integral_integral_swap (integrable_delayed hH hz hz' hfm hpast)
     _ = ∫ τ, (τ : ℂ) ^ (-z) * pastIntegral z f t ∂F.lawT₁ := by
         refine integral_congr_ae ?_
         filter_upwards [hae] with τ hτ using hdil τ (mem_Ioi.mp hτ)
     _ = (∫ τ, (τ : ℂ) ^ (-z) ∂F.lawT₁) * pastIntegral z f t := integral_mul_const _ _
     _ = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville z f t := by
-        rw [F.mellin_profile hH hzpos hz',
-          ← mul_riemannLiouville hzpos hcausal ht (integrableOn_pastIntegrand hz hf hcausal ht)]
+        rw [F.mellin_profile hH hzpos hz', ← mul_riemannLiouville hzpos hcausal ht hpast]
         ring
 
 end Core
@@ -382,16 +424,48 @@ The field is read through `delayedField`, which `coeFn_Phi_zero` shows represent
 every scale `x > 0`. So the memory line at time `t`, seen through the Mellin transform, holds the
 whole analytic family `{(Iᶻf)(t)}` weighted by the negative delay-moments — which is what the
 article's Remark 11.7 reads as the observer's embodiment of its past. -/
-theorem mellin_delayedField (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
-    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) (hf : Integrable f)
-    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t) :
+theorem mellin_delayedField (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
+    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f)
+    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t)
+    (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
     mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) z
       = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville z f t := by
-  rw [← mellin_delayed_average hH hz hz' hfm hf hcausal ht]
+  rw [← mellin_delayed_average hH hz hz' hfm hcausal ht hpast]
   congr 1
   funext x
   exact (integral_ofReal (𝕜 := ℂ)).symm
 
+
+/-- **`thm:signaling-form`(2), the Mellin form**, up to its derivative clause:
+`B(1-z)·ũ(t,·)(z-1) = H̃(z)·(I^{z-1}f)(t)`.
+
+The draft's displayed computation, exactly: the symbol is `H̃(z)/H̃(z-1)`, the transform of the
+field at `z-1` is `H̃(z-1)(I^{z-1}f)(t)`, and the `H̃(z-1)` cancels. What remains to reach
+`∂̃_t u(t,·)(z)` is the derivative clause of `lem:memory-fractional-integrals`, which needs
+`∂_t u` and hence `lem:delay-core`.
+
+Two hypotheses are worth reading. `Re z > 1` is used at `z-1`, which is where the strip has to
+start at `0` rather than `1` — hence the boundedness of `f`, supplied by `f ∈ 𝒟`. And `H̃(z-1) ≠ 0`
+is not a side condition the article states: its `rem:poles` says the identity "is nevertheless
+regular, the factor `H̃(z-1)` cancelling every denominator", which is true of the product as a
+*meromorphic function* and not of `B` as a function, where the division is present and has to be
+cancelled at the point. That is the third time in this chapter the same distinction has had to be
+drawn. -/
+theorem inversionSymbol_mul_mellin_delayedField (hH : F.StandingHypothesis) {z : ℂ}
+    (hz : 1 < z.re) (hz' : z.re < F.zStar) {f : ℝ → ℝ} {C : ℝ} (hfm : Measurable f)
+    (hbdd : ∀ y : ℝ, |f y| ≤ C) (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t)
+    (hne : mellin (fun s => (F.profile s : ℂ)) (z - 1) ≠ 0) :
+    F.inversionSymbol (z - 1) * mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) (z - 1)
+      = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville (z - 1) f t := by
+  have hre : (z - 1).re = z.re - 1 := by simp
+  have hz1 : 0 < (z - 1).re := by rw [hre]; linarith
+  have hz1' : (z - 1).re < F.zStar := by rw [hre]; linarith
+  have hpast := integrableOn_pastIntegrand_of_bounded (z := z - 1) hz1 hfm hbdd hcausal ht
+  rw [F.mellin_delayedField hH hz1 hz1' hfm hcausal ht hpast, inversionSymbol,
+    sub_add_cancel]
+  field_simp
+
 end SelfDecomposableExponent
+
 
 end Hemigroup

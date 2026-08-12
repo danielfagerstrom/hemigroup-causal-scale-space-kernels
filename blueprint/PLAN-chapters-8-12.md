@@ -1158,14 +1158,41 @@ the trade than the one recorded when the fork was written: the question was neve
 name a representative but *how widely*. Worth remembering if chapter 10 ever becomes schedulable,
 because it means (b)'s cost is not "a new layer" so much as "the same choice, promoted".
 
+## The Mellin form, same round — and an off-by-one in a stated strip
+
+`lem:signaling-mellin-form` (11.19) is proved: `B(1-z)ũ(t,·)(z-1) = H̃(z)(I^{z-1}f)(t)`, which is
+Theorem 4′(2)'s displayed computation entire. A17 alone.
+
+**Chaining the two lemmas found a gap in the draft, and it is a range.** 11.5 states
+`1 < Re z < z_*`. 11.6(2) states the same range and applies 11.5 **at `z-1`** — which that range
+does not cover. The chain does not close as written.
+
+It closes on the hypotheses actually present: 11.6(2) assumes `f ∈ 𝒟`, and `f ∈ 𝒟` is *bounded*
+(`f(0) = 0` with `f' ∈ X₀` gives `‖f‖_∞ ≤ ‖f'‖₁`). Boundedness moves 11.5's lower endpoint from `1`
+to `0`, because the weight `y^{c-1}` is then integrable at the origin on its own rather than having
+to be absorbed by `t^{c-1}`. So **nothing about the result changes; what changes is what the lemma
+says.** Draft and blueprint now say it.
+
+Worth naming the shape, because it is not the same as the chapter's other findings. Those were
+about *which statement* a piece of prose was making (which equality, which set). This one is a
+plain range error that survived because the second clause's hypothesis was quietly doing work the
+first clause's range did not advertise. It is exactly the kind of thing that is invisible while
+the lemmas are read one at a time and immediate on composing them — and composition is what a
+formalisation does whether or not one is looking for it.
+
+The refactor it forced is worth keeping: the strip hypothesis is now *supplied* rather than
+assumed. `integrableOn_pastIntegrand` (from `Re z > 1` and `f ∈ L¹`) and
+`integrableOn_pastIntegrand_of_bounded` (from `Re z > 0` and `f` bounded) are two producers of one
+hypothesis that the four downstream lemmas take as input, so the strip appears once, at the place
+that decides it.
+
 ## Next
 
-1. `thm:signaling-form`(2)'s Mellin form: `lem:delayed-average-mellin` combined with
-   `lem:mellin-data`, exactly as the draft's proof does it. This is the last piece of Theorem 4′
-   that is not blocked.
-2. 11.5's *derivative* clause (`f ∈ 𝒟`, `Iᶻf' = I^{z-1}f`) needs `∂_t u` and so `lem:delay-core`,
-   which is unformalised — the core `𝒟` and its `Φ`-invariance. That is a small, self-contained
-   piece of chapter 10 and the first thing from that chapter that is *not* blocked on Mathlib.
-3. Still blocked upstream, unchanged: the rest of chapter 10 (C₀-semigroups), chapter 12
+1. **`lem:delay-core`** (10.1), which is what stands between 11.19 and `thm:signaling-form`(2)
+   entire: 11.5's derivative clause needs `∂_t u`, and that needs the core `𝒟`, its density, its
+   invariance under the delay semigroup and under `Φ`, and the `L¹` difference quotient. **None of
+   this is blocked on Mathlib** — no C₀-semigroup theory, no closed operators — so the "chapter 10
+   is blocked" line was true of the chapter and wrong about this node.
+2. Still blocked upstream, unchanged: the rest of chapter 10 (C₀-semigroups), chapter 12
    (Bessel `K`), `prop:scale-evolution` and `cor:exact-inversion` (distributions).
-4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` in the repo.
+3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` in the repo.
