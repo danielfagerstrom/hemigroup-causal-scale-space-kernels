@@ -41,6 +41,11 @@ esac
 step() { printf '\n\033[1m== %s\033[0m\n' "$1"; }
 
 if [ "$DO_CHECK" = 1 ]; then
+  # Cheap and first: a stray control character makes latexmk fail hundreds of lines later with a
+  # message that names the character rather than the cause. See the script's docstring.
+  step "control characters"
+  python scripts/check-control-chars.py
+
   step "linkage check"
   linkage check
 fi

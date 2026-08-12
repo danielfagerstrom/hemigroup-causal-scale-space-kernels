@@ -121,6 +121,7 @@ $T_{\sigma \tilde x} \stackrel{d}{=} \sigma\, T_{\tilde x}$.
 % draft: Theorem 7.3
 \begin{theorem}[Main theorem]\label{thm:main-characterization}
 \uses{def:cascade-family,thm:main-construction,thm:main-analysis,prop:main-uniqueness}
+\lean{Hemigroup.SelfDecomposableExponent.main_characterization}\leanok
 A family $(\Phi_{x,y})_{0 \le x \le y}$ satisfies (A1)--(A8) and (ND) \textbf{iff} there exist
 an increasing bijection $\chi$ of $[0,\infty)$ --- the gauge --- and a function $F$ of the
 form (7.1) with $F \not\equiv 0$ such that
@@ -139,14 +140,27 @@ axioms. Proved here, not cited: the 2005 theorem is the semigroup statement, rec
 as \ref{cor:semigroup-case}. \textbf{Formalisation state.} This node is a collation, and its
 three halves are \ref{thm:main-construction}, \ref{thm:main-analysis} and
 \ref{prop:main-uniqueness}, where the formalisation state of each is recorded. All three
-are now machine-checked; the node itself still carries no tag, because it is a collation and an
-equivalence is established by its parts rather than by a statement of its own. That is the whole
-reason the halves are stated separately --- see the note at the head of this file. What the
-separation buys is visible in the ledger: $(\Leftarrow)$ and the uniqueness clause rest on
-\ledger{A17}, $(\Rightarrow)$ on \ledger{A18}, and neither borrows the other's.)}
+are machine-checked, and since 2026-08-12 so is the collation itself, as
+\texttt{Hemigroup.SelfDecomposableExponent.main\_characterization} --- a statement with no
+content of its own beyond assembling the three. It was added because the dependency graph
+reported the article's main theorem as unproved while all of it was proved, which is the same
+gap \ref{thm:signaling-form} had.}
+
+\emph{\textbf{The halves remain where the trust boundary is read off, and the bundle cannot
+replace them.} $(\Leftarrow)$ and the uniqueness clause rest on \ledger{A17}, $(\Rightarrow)$ on
+\ledger{A18}, and neither borrows the other's --- a separation \texttt{CIAxiomGuard.lean} checks
+per half and that a bundle necessarily destroys, since it depends on both. That is why the halves
+are stated separately (see the note at the head of this file), and adding the collation does not
+weaken the reason; it only stops the graph from understating what is done.}
+
+\emph{\textbf{One shape note.} \ref{thm:main-construction} is a \emph{definition} in Lean --- it
+exhibits the structure rather than asserting a property of it, which is the stronger reading. A
+conjunction needs a proposition, so $(\Leftarrow)$ appears in the bundle as the existence
+statement that definition witnesses, with the witness being \texttt{cascadeFamily} itself.)}
 \end{theorem}
 
 \begin{proof}
+\leanok
 $(\Rightarrow)$ is \ref{thm:main-analysis}, $(\Leftarrow)$ is \ref{thm:main-construction}, and
 the uniqueness clause is \ref{prop:main-uniqueness}.
 \end{proof}

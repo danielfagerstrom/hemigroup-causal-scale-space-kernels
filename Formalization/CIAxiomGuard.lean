@@ -451,3 +451,14 @@ precisely because it asserts more than its lemmas do.
 #print axioms Hemigroup.SelfDecomposableExponent.laplaceFun_delayedField
 #print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_const_mul_profile
 #print axioms Hemigroup.SelfDecomposableExponent.signaling_form
+
+/-! ### `thm:main-characterization` — the main theorem, assembled
+
+The bundle, so that the graph stops reporting the article's main theorem as unproved when all of
+it is proved. **The per-half lines above remain the load-bearing ones**: the three halves cross the
+trust boundary in different places — `(⇐)` and uniqueness on A17, `(⇒)` on A18, neither borrowing
+the other's — and a bundle cannot show that, since it necessarily depends on both. This line will
+therefore print both names, and that is correct rather than a regression.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.main_characterization
