@@ -617,4 +617,150 @@ theorem inversionSymbol_mul_mellin_delayedField (hH : F.StandingHypothesis) {z :
 end SelfDecomposableExponent
 
 
+/-! ## The derivative clause, field half
+
+`lem:memory-fractional-integrals`' second clause says `∂_t u(t,x) = E[f'(t - xT₁)]` for `f ∈ 𝒟`.
+Stating that as a pointwise derivative — `HasDerivAt` at every `t` — **is false**, and it is worth
+being exact about why, because the repair is not a technicality.
+
+`f ∈ 𝒟` is absolutely continuous, so `f' = g` only almost everywhere. The field is
+`E[f(t - xT₁)] = (f ⋆ ν_x)(t)` for `ν_x` the law of `xT₁`, and a convolution of two `L¹` functions
+is `L¹`, not continuous; so `E[g(t - xT₁)]` has no pointwise values to be a derivative *at*. One
+could buy continuity by using absolute continuity of `T₁`'s law — but that is `Sato, Thm 27.13`,
+an interface, spent for nothing.
+
+The article never meant the pointwise reading. `∂_t` in Chapter 10 is the `X₀ = L¹` derivative of
+`lem:delay-core`, and what that lemma's `Φ`-invariance argument actually establishes is
+`μ * f = 1_{[0,∞)} * (μ * f')` — the field of `f` is the **primitive** of the field of `f'`. That
+is the statement below: an identity between two genuine functions of `t`, needing no interface and
+no representative-choosing, and it is the form the Mellin computation consumes.
+-/
+
+namespace SelfDecomposableExponent
+
+variable (F : SelfDecomposableExponent)
+
+/-- **The field of `f` is the primitive of the field of `f'`.**
+
+The derivative clause of `lem:memory-fractional-integrals`, in the only form in which it is true
+without an interface. Fubini plus a translation, and causality of `g` is what makes the inner
+integral land on `(0, t - xτ]` rather than `(-xτ, t - xτ]`. -/
+theorem delayedField_eq_setIntegral {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ)
+    (hH : F.StandingHypothesis) {x : ℝ} (hx : 0 < x) {t : ℝ} (ht : 0 ≤ t) :
+    F.delayedField f t x = ∫ s in Ioc (0 : ℝ) t, F.delayedField g s x := by
+  have h0 := F.lawT₁_singleton_zero hH.1
+  have hae := F.ae_mem_Ioi_lawT₁ h0
+  -- `g` integrates to zero over any interval to the left of the origin
+  have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
+    rw [ae_iff]
+    simpa using measure_singleton (0 : ℝ)
+  have hzero : ∀ a b : ℝ, b ≤ 0 → (∫ w in Ioc a b, g w) = 0 := by
+    intro a b hb
+    refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
+    filter_upwards [hne] with w hw hwmem
+    exact hgc w (lt_of_le_of_ne (hwmem.2.trans hb) hw)
+  have htrim : ∀ a b : ℝ, a ≤ 0 → (∫ w in Ioc a b, g w) = ∫ w in Ioc (0 : ℝ) b, g w := by
+    intro a b ha
+    rcases lt_or_ge 0 b with hb | hb
+    · have hsplit : Ioc a b = Ioc a 0 ∪ Ioc (0 : ℝ) b := (Ioc_union_Ioc_eq_Ioc ha hb.le).symm
+      have hdisj : Disjoint (Ioc a (0 : ℝ)) (Ioc (0 : ℝ) b) := by
+        rw [Set.disjoint_left]
+        rintro w ⟨-, hw2⟩ ⟨hw3, -⟩
+        exact absurd hw3 (not_lt.mpr hw2)
+      rw [hsplit, setIntegral_union hdisj measurableSet_Ioc hg.integrableOn hg.integrableOn,
+        hzero a 0 le_rfl, zero_add]
+    · rw [hzero a b hb, Ioc_eq_empty (not_lt.mpr hb), Measure.restrict_empty, integral_zero_measure]
+  -- the inner integral, at a fixed delay
+  have hinner : ∀ τ : ℝ, 0 ≤ τ →
+      (∫ s in Ioc (0 : ℝ) t, g (s - x * τ)) = f (t - x * τ) := by
+    intro τ hτ
+    have hsub : (∫ s in Ioc (0 : ℝ) t, g (s - x * τ))
+        = ∫ w in Ioc (0 - x * τ) (t - x * τ), g w := by
+      rw [← intervalIntegral.integral_of_le ht, ← intervalIntegral.integral_of_le (by linarith)]
+      exact intervalIntegral.integral_comp_sub_right (fun w => g w) (x * τ)
+    rw [hsub, htrim _ _ (by simpa using mul_nonneg hx.le hτ), hf]
+  -- the exchange
+  have hint : Integrable (Function.uncurry fun (s τ : ℝ) => g (s - x * τ))
+      ((volume.restrict (Ioc (0 : ℝ) t)).prod F.lawT₁) := by
+    have hmeas : Measurable (Function.uncurry fun (s τ : ℝ) => g (s - x * τ)) := by
+      unfold Function.uncurry
+      fun_prop
+    refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, lintegral_prod_symm _ hmeas.enorm.aemeasurable]
+    have hC : ∫⁻ w, ‖g w‖ₑ ≠ ⊤ := by
+      have := hg.2
+      rw [hasFiniteIntegral_iff_enorm] at this
+      exact this.ne
+    have hbnd : ∀ τ : ℝ,
+        (∫⁻ s in Ioc (0 : ℝ) t, ‖Function.uncurry (fun (s τ : ℝ) => g (s - x * τ)) (s, τ)‖ₑ)
+          ≤ ∫⁻ w, ‖g w‖ₑ := by
+      intro τ
+      calc (∫⁻ s in Ioc (0 : ℝ) t, ‖g (s - x * τ)‖ₑ)
+          ≤ ∫⁻ s, ‖g (s - x * τ)‖ₑ := setLIntegral_le_lintegral _ _
+        _ = ∫⁻ w, ‖g w‖ₑ := lintegral_sub_right_eq_self (fun w => ‖g w‖ₑ) (x * τ)
+    calc ∫⁻ τ, (∫⁻ s in Ioc (0 : ℝ) t,
+            ‖Function.uncurry (fun (s τ : ℝ) => g (s - x * τ)) (s, τ)‖ₑ) ∂F.lawT₁
+        ≤ ∫⁻ _τ, (∫⁻ w, ‖g w‖ₑ) ∂F.lawT₁ := lintegral_mono hbnd
+      _ = ∫⁻ w, ‖g w‖ₑ := by rw [lintegral_const, measure_univ, mul_one]
+      _ < ⊤ := lt_top_iff_ne_top.mpr hC
+  calc F.delayedField f t x
+      = ∫ τ, f (t - x * τ) ∂F.lawT₁ := rfl
+    _ = ∫ τ, (∫ s in Ioc (0 : ℝ) t, g (s - x * τ)) ∂F.lawT₁ := by
+        refine (integral_congr_ae ?_).symm
+        filter_upwards [hae] with τ hτ using hinner τ (mem_Ioi.mp hτ).le
+    _ = ∫ s in Ioc (0 : ℝ) t, ∫ τ, g (s - x * τ) ∂F.lawT₁ := (integral_integral_swap hint).symm
+    _ = ∫ s in Ioc (0 : ℝ) t, F.delayedField g s x := rfl
+
+
+/-- The primitive of an `L¹` function is bounded by its norm — the concrete content of "`f ∈ 𝒟` is
+bounded", which is what widens the strip in `lem:memory-fractional-integrals`. -/
+theorem abs_primitive_le {g : ℝ → ℝ} (hg : Integrable g) (r : ℝ) :
+    |∫ ρ in Ioc (0 : ℝ) r, g ρ| ≤ ∫ w, |g w| := by
+  refine le_trans abs_integral_le_integral_abs ?_
+  exact setIntegral_le_integral hg.abs (.of_forall fun w => abs_nonneg _)
+
+/-- **`lem:memory-fractional-integrals`, derivative clause, transformed**:
+`∂̃_t u(t,·)(z) = H̃(z)(I^{z-1}f)(t)`.
+
+The field of `f'` transformed by `lem:delayed-average-mellin`, then
+`lem:fractional-integral-derivative` to turn `Iᶻf'` into `I^{z-1}f`. -/
+theorem mellin_delayedField_deriv (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
+    (hz' : z.re < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ)
+    {t : ℝ} (ht : 0 < t) :
+    mellin (fun x : ℝ => (F.delayedField g t x : ℂ)) z
+      = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville (z - 1) f t := by
+  have hpast := integrableOn_pastIntegrand (z := z) hz hg hgc ht
+  rw [F.mellin_delayedField hH (by linarith) hz' hgm hgc ht hpast,
+    ← riemannLiouville_integral hz hgm hg.integrableOn ht]
+  congr 1
+  rw [riemannLiouville, riemannLiouville]
+  congr 1
+  refine setIntegral_congr_fun measurableSet_Ioc fun r _ => ?_
+  rw [hf r]
+
+/-- **`thm:signaling-form`(2), the Mellin form**, entire:
+`∂̃_t u(t,·)(z) = B(1-z)·ũ(t,·)(z-1)`.
+
+Both sides equal `H̃(z)(I^{z-1}f)(t)`; the left by `mellin_delayedField_deriv`, the right by
+`inversionSymbol_mul_mellin_delayedField`. The boundedness of `f` that the right-hand side needs
+— because it applies `lem:delayed-average-mellin` at `z-1`, below the strip an `L¹` hypothesis
+would give — is `abs_primitive_le`, i.e. exactly the part of `f ∈ 𝒟` that is load-bearing. -/
+theorem mellin_signaling_form (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
+    (hz' : z.re < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hfm : Measurable f)
+    (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) {t : ℝ} (ht : 0 < t)
+    (hne : mellin (fun s => (F.profile s : ℂ)) (z - 1) ≠ 0) :
+    mellin (fun x : ℝ => (F.delayedField g t x : ℂ)) z
+      = F.inversionSymbol (z - 1) * mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) (z - 1) := by
+  have hfc : ∀ r : ℝ, r < 0 → f r = 0 := by
+    intro r hr
+    rw [hf r, Ioc_eq_empty (not_lt.mpr hr.le), Measure.restrict_empty, integral_zero_measure]
+  have hbdd : ∀ y : ℝ, |f y| ≤ ∫ w, |g w| := fun y => by rw [hf y]; exact abs_primitive_le hg y
+  rw [F.inversionSymbol_mul_mellin_delayedField hH hz hz' hfm hbdd hfc ht hne]
+  exact F.mellin_delayedField_deriv hH hz hz' hgm hg hgc hf ht
+
+end SelfDecomposableExponent
+
 end Hemigroup

@@ -39,7 +39,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Forty nodes carry `\lean{...}\leanok`:
+Forty-one nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -51,7 +51,7 @@ Forty nodes carry `\lean{...}\leanok`:
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
-| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
+| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -66,15 +66,13 @@ The next work, in order. `blueprint/PLAN-chapters-8-12.md` carries the reasoning
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable:
 
-1. **Theorem 4$'$(2)'s Mellin form, which is what is left of chapter 11.** Clauses (1) and (3)
-   are machine-checked — `lem:profile-eigenfunction` and `lem:symbol-uniqueness` — and neither
-   spends ledger A12, though the chapter had recorded both as waiting on it. Of (2), the
-   Mellin form is proved as `lem:signaling-mellin-form`, field identification included. What
-   remains of the whole chapter is the derivative clause of `lem:memory-fractional-integrals`,
-   whose two pieces are the fractional-integral identity `Iᶻf' = I^{z-1}f` (**proved**, and it
-   reduces to Lean core alone) and differentiation under the integral sign, the single remaining
-   `sorry` in the chapter. Neither needs `lem:delay-core`, which the draft's proof cites — what a
-   proof cites is an upper bound on what a statement needs.
+1. **Discharge the three formalisation debts.** `lem:selfdecomposable-derivative`,
+   `lem:selfdecomposable-exponents` and `thm:main-characterization` are proved on paper only, and
+   are now reached by most of the `\leanok` nodes; `linkage check` reports them as advisories.
+   This is the highest-leverage work left. **Chapter 11 is complete** — Theorem 4$'$'s three
+   clauses, the inversion operator, its symbol, and the uniqueness that earns the definite article
+   in *the* inversion, all machine-checked, and none of it spending ledger A12 although the
+   chapter had recorded three separate nodes as waiting on it.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical

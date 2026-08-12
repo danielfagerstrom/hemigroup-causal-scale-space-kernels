@@ -256,14 +256,15 @@ outright.
 % draft: Lemma 11.5
 \begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
 \uses{def:standing-hypothesis,lem:mellin-data,thm:main-characterization,lem:delay-core,lem:delayed-average-mellin}
-\lean{Skeleton.hasDerivAt_delayedField}\notready
+\lean{Hemigroup.SelfDecomposableExponent.mellin_delayedField_deriv}\leanok
 Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
 and $1 < \operatorname{Re} z < z_*$,
 \[
   \widetilde{u(t, \cdot)}(z) \;=\; \int_0^\infty x^{z-1}\, u(t, x)\,dx
   \;=\; \tilde H(z)\,\bigl(I^{z} f\bigr)(t),
 \]
-absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ with
+absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ --- the
+$\Xz$-derivative of \S10, i.e.\ $u(\cdot, x)$ is the primitive of $\Ex[f'(\cdot - xT_1)]$ --- with
 $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the identity extends to the wider strip
 $0 < \operatorname{Re} z < z_*$, since $f \in \core$ is bounded ($f(0) = 0$ and $f' \in \Xz$ give
 $\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$ is then integrable at the origin on its own.
@@ -291,10 +292,10 @@ at the level of measures. See that node's remark for why a representative of the
 named at all --- the quantifiers ``for each $x$, a.e.\ $t$'' do not commute, so this is not avoided
 by weakening the reading.}
 
-\emph{\textbf{The derivative clause is half proved.} Its two pieces are
-\ref{lem:fractional-integral-derivative} (done) and
-\texttt{Skeleton.hasDerivAt\_delayedField} (stated), and writing them down showed that
-\textbf{the node this proof cites is not the node it needs}. The derivation goes through $f \in \core$ and hence
+\emph{\textbf{The derivative clause is machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.mellin\_delayedField\_deriv}, its two pieces being
+\ref{lem:fractional-integral-derivative} and \texttt{delayedField\_eq\_setIntegral}; writing them
+down showed that \textbf{the node this proof cites is not the node it needs}. The derivation goes through $f \in \core$ and hence
 \ref{lem:delay-core} --- density of the core, invariance under the delay semigroup and under
 $\Phi$, the $L^1$ difference quotient --- and uses none of it. What it uses is differentiation
 under the integral sign (which needs $f$ to be an integral of an $L^1$ function, and nothing about
@@ -302,6 +303,19 @@ $\Phi$) and the identity $I^zf' = I^{z-1}f$ (which mentions neither the field no
 enters only as a convenient source of those hypotheses. \emph{What a proof cites is an upper bound
 on what a statement needs}, and this is the third place in the chapter where the two have come
 apart.}
+
+\emph{\textbf{And ``$\partial_t u$'' has to say which derivative it means, or the clause is false.}
+Read pointwise it asserts a derivative at every $t$, and that does not hold: $f \in \core$ is
+absolutely continuous, so $f' $ exists only almost everywhere, and $\Ex[f(t-xT_1)]$ is a
+convolution of two $L^1$ functions --- hence $L^1$, not continuous, so $\Ex[f'(t-xT_1)]$ has no
+pointwise values to be a derivative \emph{at}. Continuity could be bought from absolute continuity
+of $T_1$'s law (\sscite{sato1999levy}, Thm.~27.13), an interface, for no gain. The article never
+meant the pointwise reading --- $\partial_t$ in \S10 is the $\Xz$-derivative --- and what
+\ref{lem:delay-core}'s $\Phi$-invariance argument establishes is
+$\mu * f = \mathbf{1}_{[0,\infty)} * (\mu * f')$: the field of $f$ is the \emph{primitive} of the
+field of $f'$. That is the form proved, it is an identity between two genuine functions of $t$, and
+it needs no interface. Third instance in this chapter of a statement having to name its reading,
+after \ref{lem:symbol-rigidity} and \ref{lem:inversion-operator-action}.)}
 
 \emph{\textbf{The wider strip is not decoration; \ref{thm:signaling-form}(2) needs it.} That node
 applies this lemma at $z-1$, and states the range $1 < \operatorname{Re} z < z_*$ --- which puts
@@ -347,8 +361,11 @@ property (1), hence with property (2).
 translation-invariant operator is recovered in \ref{ex:stable-signaling} as an accident of
 homogeneity. Proved here, not cited.}
 
-\emph{\textbf{Clause~(1) is machine-checked}, as \ref{lem:profile-eigenfunction}, which is where
-its Lean tag sits --- the theorem keeps its full statement and its number, on the pattern of
+\emph{\textbf{Clauses (1) and (3) are machine-checked, and so is (2)'s Mellin form}, the last as
+\texttt{Hemigroup.SelfDecomposableExponent.mellin\_signaling\_form}; what is left of (2) is its
+causality and boundary clauses, which are (A3) and (A7), and its Laplace form, which is (1)
+applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$. Clause~(1) is \ref{lem:profile-eigenfunction},
+which is where its Lean tag sits --- the theorem keeps its full statement and its number, on the pattern of
 \ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That clause is also what empties the
 article's use of \ledger{A12}: it \emph{exhibits} the realising function rather than inferring its
 existence, and the Laplace form of clause~(2) is clause~(1) applied to

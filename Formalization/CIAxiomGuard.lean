@@ -415,3 +415,22 @@ would have to be proved in its own right. Fubini over the triangle avoids it ent
 
 #print axioms Hemigroup.integral_cpow_sub_left
 #print axioms Hemigroup.riemannLiouville_integral
+
+/-! ### `thm:signaling-form`(2)'s Mellin form, entire
+
+The derivative clause and with it Theorem 4′(2)'s Mellin form. Note the reading:
+`delayedField_eq_setIntegral` says the field of `f` is the **primitive** of the field of `f'`,
+which is what `∂_t u` means in `X₀`. The pointwise reading — a derivative at every `t` — is false:
+`f ∈ 𝒟` is absolutely continuous so `f'` exists only a.e., and the field is a convolution of two
+`L¹` functions, hence `L¹` and not continuous. Buying continuity would cost Sato Thm. 27.13, an
+interface, for nothing.
+
+`abs_primitive_le` is the part of `f ∈ 𝒟` that is actually load-bearing: the primitive of an `L¹`
+function is bounded, which is what widens 11.5's strip from `Re z > 1` to `Re z > 0` and lets
+`thm:signaling-form`(2) apply it at `z-1`.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.delayedField_eq_setIntegral
+#print axioms Hemigroup.SelfDecomposableExponent.abs_primitive_le
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_delayedField_deriv
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_signaling_form

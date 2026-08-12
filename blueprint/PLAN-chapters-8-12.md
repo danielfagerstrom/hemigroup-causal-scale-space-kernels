@@ -1234,12 +1234,48 @@ not an artefact.
 which that is true and which is not a general-purpose lemma about `Γ`, because it is a statement
 about the Riemann–Liouville family that mentions no hemigroup object.
 
+## Chapter 11 is complete — 2026-08-12
+
+Theorem 4′(2)'s Mellin form is proved (`mellin_signaling_form`), and with it the chapter. The
+repo's only remaining `sorry` is chapter 9's `hasCMDensity_iff`, which is ledger A9 by design.
+A17 and A18 are still the whole trust boundary.
+
+**The last statement I wrote was false, and the error is worth keeping.** The derivative clause was
+stated as `HasDerivAt` at every `t`. That does not hold: `f ∈ 𝒟` is absolutely continuous, so `f'`
+exists only a.e., and the field `E[f(t-xT₁)]` is a convolution of two `L¹` functions — hence `L¹`,
+not continuous — so `E[f'(t-xT₁)]` has no pointwise values to be a derivative *at*. Continuity
+could be bought from absolute continuity of `T₁`'s law (Sato Thm. 27.13, an interface) for no gain.
+
+The article never meant it pointwise. `∂_t` in chapter 10 is the `X₀ = L¹` derivative, and what
+`lem:delay-core`'s `Φ`-invariance argument establishes is `μ * f = 1_{[0,∞)} * (μ * f')`: **the
+field of `f` is the primitive of the field of `f'`**. That is an identity between two genuine
+functions of `t`, needs no interface, and is what the Mellin computation consumes. Draft and
+blueprint now say which derivative they mean.
+
+This is the third time in the chapter that a statement has had to name its reading — after
+`lem:symbol-rigidity` (which equality on the strip) and `lem:inversion-operator-action` (which
+subset of the line) — and the first time the naïve reading was outright *false* rather than merely
+unavailable. The failure mode is specific and worth naming: **prose can leave a derivative, an
+equality or a domain unqualified and still be right, because the reader supplies the reading from
+context. A formal statement has to pick, and picking wrong is not caught by proof-reading — only
+by trying to prove it.**
+
+Also worth keeping: the part of `f ∈ 𝒟` that is load-bearing turned out to be exactly two things,
+and neither is what the hypothesis is *for*. Boundedness (`abs_primitive_le`) widens 11.5's strip
+so that 11.6(2) can apply it at `z-1`; being a primitive gives the derivative clause its meaning.
+Density, `T_r`-invariance and `Φ`-invariance — the substance of `lem:delay-core`, which the proof
+cites — are not used at all.
+
 ## Next
 
-1. `Skeleton.hasDerivAt_delayedField` — differentiation under the integral sign for
-   `∂_t E[f(t - xT₁)]`; Mathlib's `hasDerivAt_integral_of_dominated_loc_of_deriv_le` is the tool.
-   **This is the last piece of chapter 11**, and the only `sorry` in it.
-2. Still blocked upstream, unchanged: chapter 10's C₀-semigroup content, chapter 12 (Bessel `K`),
-   `prop:scale-evolution` and `cor:exact-inversion` (distributions). `lem:delay-core` is not
-   blocked and is not on the critical path.
-3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9).
+Chapter 11 needs nothing further. What remains in the article:
+
+1. **The three formalisation debts** that `linkage check` reports as advisories:
+   `lem:selfdecomposable-derivative`, `lem:selfdecomposable-exponents` and
+   `thm:main-characterization` are proved on paper only and are now reached by most of the
+   `\leanok` nodes. This is the highest-leverage work left in the repo.
+2. `lem:delay-core` (10.1) — not blocked on Mathlib, and no longer needed by chapter 11 either, so
+   optional rather than queued. Formalising it would discharge a `\uses` edge and nothing more.
+3. Blocked upstream, unchanged: chapter 10's C₀-semigroup content, chapter 12 (Bessel `K`),
+   `prop:scale-evolution` and `cor:exact-inversion` (distributions).
+4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the repo's one `sorry`.

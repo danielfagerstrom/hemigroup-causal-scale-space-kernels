@@ -65,7 +65,7 @@ the substitution `y = x·T₁` applied to a genuine function `f`, with the integ
 step, and it is the one that carries the modelling decision (settled as (a), a.e. in `t`, on
 2026-08-12). The core was needed under either reading, which is why it went first.
 
-## What is stated here: the derivative clause of `lem:memory-fractional-integrals`
+## The derivative clause of `lem:memory-fractional-integrals` — **discharged**
 
 `thm:signaling-form`(2)'s Mellin form is proved on the transform side
 (`lem:signaling-mellin-form`): `B(1-z)ũ(t,·)(z-1) = H̃(z)(I^{z-1}f)(t)`. What is left is to
@@ -78,35 +78,25 @@ using `f(0) = 0`.
 semigroup and under `Φ`, the `L¹` difference quotient. None of that is used. What is used is two
 facts, stated below, and `𝒟` enters only as a convenient source of their hypotheses:
 
-* `hasDerivAt_delayedField` — differentiation under the integral sign, which needs `f` to be an
-  integral of an `L¹` function and nothing about `Φ`;
+* the field half — **and stating it as a pointwise derivative was wrong.** `f ∈ 𝒟` is absolutely
+  continuous, so `f' = g` only a.e., and the field `E[f(t-xT₁)]` is a convolution of two `L¹`
+  functions, hence `L¹` and not continuous; `E[g(t-xT₁)]` has no pointwise values to be a
+  derivative *at*. Continuity could be bought with absolute continuity of `T₁`'s law — Sato
+  Thm. 27.13, an interface — for nothing. The article never meant the pointwise reading: `∂_t` in
+  chapter 10 is the `X₀ = L¹` derivative, and what `lem:delay-core`'s `Φ`-invariance argument
+  establishes is `μ * f = 1_{[0,∞)} * (μ * f')`. So the true statement is that the field of `f` is
+  the **primitive** of the field of `f'`, which is `delayedField_eq_setIntegral` and needs no
+  interface;
 * `riemannLiouville_integral` — the fractional-integral identity `Iᶻf' = I^{z-1}f`, which is
   Fubini over a triangle plus `∫_ρ^t (t-r)^{z-2}dr = (t-ρ)^{z-1}/(z-1)`, and mentions neither the
   field nor the core. **Proved**, and moved into `Hemigroup/MemoryFractional.lean`; what is left
   here is the field half alone.
 
-So the correction recorded one round ago — that `lem:delay-core` is what chapter 11 waits on — is
+So the correction recorded one round ago — that `lem:delay-core` is what chapter 11 waits on — was
 itself wrong, and in the same way: a node was read as a prerequisite because the *proof* invokes
 it, not because the *obligation* needs it. That is the third time in this chapter, and by now the
 pattern deserves its name: **what a proof cites is an upper bound on what a statement needs.**
+
+Both pieces are proved, and with them `thm:signaling-form`(2)'s Mellin form
+(`mellin_signaling_form`). **This file holds no declarations.**
 -/
-
-namespace Skeleton
-
-open MeasureTheory Set Filter Hemigroup
-
-variable (F : Hemigroup.SelfDecomposableExponent)
-
-/-! ## `lem:memory-fractional-integrals`, the derivative clause -/
-
-/-- **The field half**: `∂_t u(t,x) = E[f'(t - x T₁)]`, i.e. differentiation under the integral
-sign for the delayed field.
-
-`f` is presented as the integral of `g`, which is what absolute continuity with `f(0) = 0`
-amounts to and is all the statement uses. Nothing here is about `Φ` or the core. -/
-theorem hasDerivAt_delayedField {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
-    (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) {x : ℝ} (hx : 0 < x) (t : ℝ) :
-    HasDerivAt (fun τ : ℝ => F.delayedField f τ x) (F.delayedField g t x) t := by
-  sorry
-
-end Skeleton
