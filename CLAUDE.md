@@ -39,10 +39,18 @@ blueprint.
 
 ## Status
 
-Blueprint written through §12; Lean through §4 plus the constructive half and the uniqueness
-clause of the main theorem. See `README.md` for the node-level state and what is next. The
-working text is `draft/hemigroup-causal-scale-space-kernels.md` (15 sections, Theorems 3′/4′/5′);
-the blueprint is written *from* it.
+Blueprint written through §12; Lean through §9 and §11 entire, including both headline theorems
+(2′ `thm:main-characterization`, 4′ `thm:signaling-form`). See `README.md` for the node-level
+state and `blueprint/PLAN-chapters-8-12.md` for the inventory of what is open and *why* — sorted
+into deliberate, blocked upstream, absent by design, and available. The working text is
+`draft/hemigroup-causal-scale-space-kernels.md` (15 sections, Theorems 3′/4′/5′); the blueprint is
+written *from* it, and corrections found by formalising flow back into both.
+
+**Before proposing work, read `PLAN`'s inventory rather than `linkage check`'s advisories.** The
+three advisories it reports are deliberate: `lem:selfdecomposable-derivative` is ledger A18 by a
+recorded review decision, and the two collation nodes above it cannot be proved without
+formalising A3/A4 — which the trust boundary exists to decline, and which cannot even be *stated*
+here, since both quantify over `BF` and the development has no `CM`.
 
 **Statement first, and `sorry` has a home.** Attacking a `[T]` node starts by writing its
 *target type* in `Formalization/Skeleton/`, `sorry`-marked, and tagging the node
@@ -52,6 +60,19 @@ only, so the library stays sorry-free and README's claim needs no footnote, whil
 gains the middle state it is built to show. A declaration **moves** into `Hemigroup/` when
 proved, and its node goes `\leanok`. Nothing in `Skeleton/` is ever cited by the library or
 listed in `CIAxiomGuard.lean`, because nothing there is claimed.
+
+**Two collation nodes carry bundles, and the halves still carry the ledger.** `thm:main-characterization`
+and `thm:signaling-form` each have a declaration (`main_characterization`, `signaling_form`) that
+assembles their parts, because the graph otherwise reports the article's headline theorems as
+unproved when all of them are proved. Those bundles depend on every ledger entry their parts do,
+so **the per-half `#print axioms` lines in `CIAxiomGuard.lean` are the load-bearing ones** — for
+Theorem 2′ they are what shows `(⇐)` on A17 and `(⇒)` on A18 with neither borrowing the other's.
+Do not replace them with the bundle's line.
+
+**Never write LaTeX or Lean through a non-raw Python string.** `"\begin"` is a backspace,
+`"\texttt"` a tab, `"\ref"` a carriage return; the diff looks almost right and `latexmk` fails
+hundreds of lines later naming the character rather than the cause. `scripts/check-control-chars.py`
+runs first in `scripts/build-blueprint.sh`. Use the Edit tool, a raw string, or `bytes([92])`.
 
 **Two vocabularies, one class.** The paper argues in `BF₀` (derivative signs, Def. 2.2); the Lean
 development argues in `LE` (the Lévy representation, Def. 2.7) and never defines complete
