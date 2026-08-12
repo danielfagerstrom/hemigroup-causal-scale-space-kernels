@@ -481,3 +481,14 @@ Courrège, A15 Krull--Webster) is touched by this node.
 #print axioms Hemigroup.SelfDecomposableExponent.negMoment_le_rpow_mul_rpow
 #print axioms Hemigroup.SelfDecomposableExponent.negMoment_pos
 #print axioms Hemigroup.SelfDecomposableExponent.convexOn_log_negMoment
+
+/-! ### `lem:symbol-vanishes-at-origin` — clause (1) of `lem:moment-recursion`, split off
+
+`B(-z) → 0` as `z ↓ 0`, with `m(z) → 1` as its first half. The node it was split from spends
+ledger **A13** on its clause (2); these lines show that clause (1) does not, printing A17 and
+nothing else. The polynomial hypothesis under which the blueprint states clause (1) is inert in
+the argument, which is why the split-off node does not carry it.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_negMoment_nhdsGT_zero
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_inversionSymbol_nhdsGT_zero

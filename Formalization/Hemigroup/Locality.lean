@@ -131,6 +131,110 @@ theorem convexOn_log_negMoment (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
     _ = θ • Real.log (F.negMoment ζ₁).toReal + (1 - θ) • Real.log (F.negMoment ζ₂).toReal := by
         simp [smul_eq_mul]
 
+/-! ## `lem:moment-recursion`(1): the symbol vanishes at the origin -/
+
+/-- **`m(c) → 1` as `c ↓ 0`.**
+
+Dominated convergence. Pointwise on `(0,∞)` the integrand `t^{-c} = exp(-c log t)` tends to `1`;
+for `0 < c ≤ 1` it is dominated by `1 + t^{-1}`, integrable because (H)'s second clause puts `1`
+strictly below `z_*`. That second clause is used here and nowhere else in this file. -/
+theorem tendsto_negMoment_nhdsGT_zero (hH : F.StandingHypothesis) :
+    Tendsto (fun c : ℝ => (F.negMoment c).toReal) (𝓝[>] (0 : ℝ)) (𝓝 1) := by
+  have h0 := F.lawT₁_singleton_zero hH.1
+  have hae := F.ae_mem_Ioi_lawT₁ h0
+  have hbound : Integrable (fun t : ℝ => 1 + t ^ (-(1 : ℝ))) F.lawT₁ :=
+    (integrable_const 1).add (integrable_rpow_neg F hH one_pos hH.2)
+  have hle1 : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c ≤ 1 :=
+    Filter.Eventually.mono (nhdsWithin_le_nhds (gt_mem_nhds (by norm_num : (0 : ℝ) < 1)))
+      fun _ h => le_of_lt h
+  have key : Tendsto (fun c : ℝ => ∫ t, t ^ (-c) ∂F.lawT₁) (𝓝[>] (0 : ℝ))
+      (𝓝 (∫ _t, (1 : ℝ) ∂F.lawT₁)) := by
+    refine tendsto_integral_filter_of_dominated_convergence
+      (fun t : ℝ => 1 + t ^ (-(1 : ℝ))) (Filter.Eventually.of_forall fun c => by fun_prop)
+      ?_ hbound ?_
+    · filter_upwards [self_mem_nhdsWithin, hle1] with c hc hc1
+      filter_upwards [hae] with t ht
+      have ht0 : (0 : ℝ) < t := ht
+      have hnn : (0 : ℝ) ≤ t ^ (-(1 : ℝ)) := Real.rpow_nonneg ht0.le _
+      rw [Real.norm_eq_abs, abs_of_nonneg (Real.rpow_nonneg ht0.le _)]
+      rcases le_total t 1 with h1 | h1
+      · have := Real.rpow_le_rpow_of_exponent_ge ht0 h1 (by linarith [mem_Ioi.mp hc] : -1 ≤ -c)
+        linarith
+      · have := Real.rpow_le_one_of_one_le_of_nonpos h1
+          (by linarith [mem_Ioi.mp hc] : -c ≤ 0)
+        linarith
+    · filter_upwards [hae] with t ht
+      have ht0 : (0 : ℝ) < t := ht
+      have hexp : ∀ c : ℝ, t ^ (-c) = Real.exp (Real.log t * (-c)) :=
+        fun c => Real.rpow_def_of_pos ht0 _
+      have hcont : Continuous fun c : ℝ => Real.exp (Real.log t * (-c)) := by fun_prop
+      simpa [hexp] using (hcont.tendsto 0).mono_left nhdsWithin_le_nhds
+  have hrw : ∀ c : ℝ, ∫ t, t ^ (-c) ∂F.lawT₁ = (F.negMoment c).toReal :=
+    fun c => F.integral_rpow_neg_eq_negMoment h0
+  simpa [hrw] using key
+
+/-- **`lem:moment-recursion`(1), `B(0) = 0`,** as the limit it actually is:
+`B(-c) = c · m(c+1)/m(c) → 0` as `c ↓ 0`.
+
+The blueprint states `B(0) = 0` under the hypothesis that `B` is a polynomial, and gets it by
+continuity from this limit. The polynomial hypothesis is inert in the argument -- what the proof
+uses is that `m(c) → 1`, that `m(c+1)` stays bounded, and that `c → 0` -- so the limit is stated
+here without it, and `B(0) = 0` for a *continuous* `B` follows by uniqueness of limits. This is
+the same pattern as `lem:mellin-vertical`: a hypothesis carried by the statement it is proved
+under, rather than by the proof.
+
+Boundedness of the numerator is `negMoment_le_of_le` at any `ζ ∈ (1, z_*)`; (H) is what makes
+that interval nonempty. -/
+theorem tendsto_inversionSymbol_nhdsGT_zero (hH : F.StandingHypothesis) :
+    Tendsto (fun c : ℝ => F.inversionSymbol (c : ℂ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+  have h0 := F.lawT₁_singleton_zero hH.1
+  have hz1 : (1 : ℝ) < F.zStar := hH.2
+  set ζ : ℝ := (1 + F.zStar) / 2 with hζdef
+  have hζ1 : 1 < ζ := by rw [hζdef]; linarith
+  have hζ2 : ζ < F.zStar := by rw [hζdef]; linarith
+  have hζtop : F.negMoment ζ ≠ ⊤ := F.negMoment_ne_top_of_lt_zStar (by linarith) hζ2
+  -- the denominator
+  have hden : Tendsto (fun c : ℝ => (F.negMoment c).toReal) (𝓝[>] (0 : ℝ)) (𝓝 1) :=
+    F.tendsto_negMoment_nhdsGT_zero hH
+  -- the numerator, by squeezing against `c · ((m(ζ)).toReal + 1)`
+  have hsmall : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c < ζ - 1 :=
+    nhdsWithin_le_nhds (gt_mem_nhds (by linarith : (0 : ℝ) < ζ - 1))
+  have hid : Tendsto (fun c : ℝ => c) (𝓝[>] (0 : ℝ)) (𝓝 0) :=
+    tendsto_id.mono_left nhdsWithin_le_nhds
+  have hlin : Tendsto (fun c : ℝ => c * ((F.negMoment ζ).toReal + 1)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    simpa using hid.mul_const ((F.negMoment ζ).toReal + 1)
+  have hnum : Tendsto (fun c : ℝ => c * (F.negMoment (c + 1)).toReal) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    refine squeeze_zero' ?_ ?_ hlin
+    · filter_upwards [self_mem_nhdsWithin] with c hc
+      have hc0 : (0 : ℝ) < c := hc
+      exact mul_nonneg hc0.le ENNReal.toReal_nonneg
+    · filter_upwards [self_mem_nhdsWithin, hsmall] with c hc hcζ
+      have hc0 : (0 : ℝ) < c := hc
+      have hb : (F.negMoment (c + 1)).toReal ≤ (F.negMoment ζ).toReal + 1 := by
+        have hmono := ENNReal.toReal_mono
+          (ENNReal.add_ne_top.mpr ⟨hζtop, ENNReal.one_ne_top⟩)
+          (F.negMoment_le_of_le (by linarith : (0:ℝ) ≤ c + 1) (by linarith : c + 1 ≤ ζ))
+        rwa [ENNReal.toReal_add hζtop ENNReal.one_ne_top, ENNReal.toReal_one] at hmono
+      exact mul_le_mul_of_nonneg_left hb hc0.le
+  have hreal : Tendsto (fun c : ℝ => c * (F.negMoment (c + 1)).toReal / (F.negMoment c).toReal)
+      (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    simpa [Pi.div_def] using hnum.div hden one_ne_zero
+  -- transport to the symbol
+  have hstrip : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c < F.zStar - 1 :=
+    nhdsWithin_le_nhds (gt_mem_nhds (by linarith : (0 : ℝ) < F.zStar - 1))
+  have heq : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
+      Complex.ofReal (c * (F.negMoment (c + 1)).toReal / (F.negMoment c).toReal)
+        = F.inversionSymbol (c : ℂ) := by
+    filter_upwards [self_mem_nhdsWithin, hstrip] with c hc hcz
+    have hmem : (c : ℂ) ∈ verticalStrip 0 (F.zStar - 1) := ⟨by simpa using hc, by simpa using hcz⟩
+    have hshift : ((c : ℂ) + 1) = ((c + 1 : ℝ) : ℂ) := by push_cast; ring
+    rw [F.inversionSymbol_eq hH hmem, hshift, F.negMomentC_ofReal h0 c,
+      F.negMomentC_ofReal h0 (c + 1)]
+    push_cast
+    ring
+  refine Tendsto.congr' heq ?_
+  simpa [Function.comp_def] using (Complex.continuous_ofReal.tendsto (0 : ℝ)).comp hreal
+
 end SelfDecomposableExponent
 
 end Hemigroup

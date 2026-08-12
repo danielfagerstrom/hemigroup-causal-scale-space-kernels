@@ -182,28 +182,38 @@ theorem ae_mem_Ioi_lawT₁ (h0 : F.lawT₁ {(0 : ℝ)} = 0) : ∀ᵐ t ∂F.lawT
 
 /-! ## Negative moments below `z_*` -/
 
-/-- The negative moments are finite *downwards*: below `1` the exponent `-c` is dominated by
-`-ζ`, above `1` it is bounded by `1`, and `T₁` has unit mass. This is what makes `z_*` an
-abscissa rather than merely a supremum. -/
+/-- The pointwise domination behind the two statements below: on `(0,∞)` and for `c ≤ ζ`, the
+integrand `t^{-c}` is at most `t^{-ζ} + 1` --- below `1` the exponent `-c` is dominated by `-ζ`,
+above `1` the power is itself at most `1`. -/
+theorem rpow_neg_le_of_le {c ζ : ℝ} (hc : 0 ≤ c) (hcζ : c ≤ ζ) {t : ℝ}
+    (ht : t ∈ Ioi (0 : ℝ)) :
+    ENNReal.ofReal (t ^ (-c)) ≤ ENNReal.ofReal (t ^ (-ζ)) + 1 := by
+  rcases le_total t 1 with h1 | h1
+  · exact le_trans (ENNReal.ofReal_le_ofReal
+      (Real.rpow_le_rpow_of_exponent_ge (mem_Ioi.mp ht) h1 (by linarith))) le_self_add
+  · refine le_trans (ENNReal.ofReal_le_ofReal
+      (Real.rpow_le_one_of_one_le_of_nonpos h1 (by linarith))) ?_
+    simp
+
+/-- **The moments decrease downwards up to one unit of mass**: `m(c) ≤ m(ζ) + 1` for `c ≤ ζ`.
+
+Stated separately from `negMoment_ne_top_of_le` because chapter 12 needs the *bound* and not only
+the finiteness it implies: it is what keeps `m(c+1)` bounded as `c ↓ 0`, which is the numerator
+estimate in `lem:moment-recursion`(1). -/
+theorem negMoment_le_of_le {c ζ : ℝ} (hc : 0 ≤ c) (hcζ : c ≤ ζ) :
+    F.negMoment c ≤ F.negMoment ζ + 1 :=
+  calc F.negMoment c
+      ≤ ∫⁻ t in Ioi (0 : ℝ), (ENNReal.ofReal (t ^ (-ζ)) + 1) ∂F.lawT₁ :=
+        setLIntegral_mono' measurableSet_Ioi fun _ ht => rpow_neg_le_of_le hc hcζ ht
+    _ = F.negMoment ζ + F.lawT₁ (Ioi 0) := by
+        rw [lintegral_add_right _ measurable_const, setLIntegral_const, one_mul, negMoment]
+    _ ≤ F.negMoment ζ + 1 := by gcongr; exact prob_le_one
+
+/-- The negative moments are finite *downwards*. This is what makes `z_*` an abscissa rather than
+merely a supremum. -/
 theorem negMoment_ne_top_of_le {c ζ : ℝ} (hc : 0 < c) (hcζ : c ≤ ζ)
-    (h : F.negMoment ζ ≠ ⊤) : F.negMoment c ≠ ⊤ := by
-  have hpt : ∀ t ∈ Ioi (0 : ℝ),
-      ENNReal.ofReal (t ^ (-c)) ≤ ENNReal.ofReal (t ^ (-ζ)) + 1 := by
-    intro t ht
-    rcases le_total t 1 with h1 | h1
-    · exact le_trans (ENNReal.ofReal_le_ofReal
-        (Real.rpow_le_rpow_of_exponent_ge (mem_Ioi.mp ht) h1 (by linarith))) le_self_add
-    · refine le_trans (ENNReal.ofReal_le_ofReal
-        (Real.rpow_le_one_of_one_le_of_nonpos h1 (by linarith))) ?_
-      simp
-  have hle : F.negMoment c ≤ F.negMoment ζ + 1 := by
-    calc F.negMoment c
-        ≤ ∫⁻ t in Ioi (0 : ℝ), (ENNReal.ofReal (t ^ (-ζ)) + 1) ∂F.lawT₁ :=
-          setLIntegral_mono' measurableSet_Ioi hpt
-      _ = F.negMoment ζ + F.lawT₁ (Ioi 0) := by
-          rw [lintegral_add_right _ measurable_const, setLIntegral_const, one_mul, negMoment]
-      _ ≤ F.negMoment ζ + 1 := by gcongr; exact prob_le_one
-  exact ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨h, ENNReal.one_ne_top⟩) hle
+    (h : F.negMoment ζ ≠ ⊤) : F.negMoment c ≠ ⊤ :=
+  ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨h, ENNReal.one_ne_top⟩) (F.negMoment_le_of_le hc.le hcζ)
 
 /-- **`c < z_*` is exactly finiteness of the `c`-th negative moment.**
 
@@ -391,5 +401,25 @@ theorem norm_mellin_profile_le (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c
   gcongr
 
 end SelfDecomposableExponent
+
+/-- `E[T₁^{-c}]` as a Bochner-integrable function.
+
+Chapter 11 uses it as the outer factor of a Fubini side condition; chapter 12 uses it as the
+dominating function of a dominated-convergence argument. It belongs here rather than at either
+use, being a statement about `negMoment` and nothing else. -/
+theorem integrable_rpow_neg (F : SelfDecomposableExponent) (hH : F.StandingHypothesis) {c : ℝ}
+    (hc : 0 < c) (hc' : c < F.zStar) : Integrable (fun τ : ℝ => τ ^ (-c)) F.lawT₁ := by
+  have h0 := F.lawT₁_singleton_zero hH.1
+  have hae := F.ae_mem_Ioi_lawT₁ h0
+  refine ⟨by fun_prop, ?_⟩
+  rw [hasFiniteIntegral_iff_enorm]
+  have hcalc : ∫⁻ τ, ‖τ ^ (-c)‖ₑ ∂F.lawT₁ = F.negMoment c := by
+    rw [SelfDecomposableExponent.negMoment, Measure.restrict_eq_self_of_ae_mem hae]
+    refine lintegral_congr_ae ?_
+    filter_upwards [hae] with τ hτ
+    rw [← ofReal_norm, Real.norm_eq_abs,
+      abs_of_nonneg (Real.rpow_nonneg (mem_Ioi.mp hτ).le _)]
+  rw [hcalc]
+  exact lt_top_iff_ne_top.mpr (F.negMoment_ne_top_of_lt_zStar hc hc')
 
 end Hemigroup

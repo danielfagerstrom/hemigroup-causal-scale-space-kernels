@@ -88,7 +88,9 @@ Thm.~5b, pp.~58--59. Cited, not reproven here.
 \textbf{Assignment.} \ledger{A13} carries clause~(2) alone, and only its final step: that a
 finite $z_*$ would be a singularity of $\tilde H$, contradicting the analytic continuation the
 recursion supplies. Clauses~(1) and~(3) are \textbf{[T]}, proved below from
-\ref{lem:mellin-data} by letting $z \downarrow 0$. Two cautions recorded in the ledger. First,
+\ref{lem:mellin-data} by letting $z \downarrow 0$; clause~(1) is machine-checked, as
+\ref{lem:symbol-vanishes-at-origin}, which also records that the polynomial hypothesis plays no
+part in it. Two cautions recorded in the ledger. First,
 the anchor is the theorem number: Widder's own footnote credits the result to Hamburger
 (1921), and ``Pringsheim--Landau'' --- the name the draft uses, and the received one --- is
 attached to the Dirichlet- and power-series forms rather than to this page. Second, the
@@ -336,3 +338,49 @@ covariance forces stable kernels, which have no mean; locality together with cov
 the PMP allows any finite number of moments but polynomial tails; full moment control requires
 nonlocal delay accrual.
 \end{remark}
+
+% additive: not in the draft. Clause (1) of Lemma 12.3, split off so that the part of that lemma
+% which is [T] and machine-checked is not reported under the node carrying A13. Numbered 12.9, a
+% number the draft does not use, its Section 12 ending at 12.8.
+\begin{lemma}[the symbol vanishes at the origin]\label{lem:symbol-vanishes-at-origin}
+\uses{def:standing-hypothesis,lem:mellin-data,lem:inversion-symbol}
+\lean{Hemigroup.SelfDecomposableExponent.tendsto_inversionSymbol_nhdsGT_zero}\leanok
+Assume (H). Then, along the reals,
+\[
+  m(z) \;\longrightarrow\; 1
+  \qquad\text{and}\qquad
+  B(-z) \;=\; \frac{z\,m(z+1)}{m(z)} \;\longrightarrow\; 0
+  \qquad (z \downarrow 0).
+\]
+Consequently $B(0) = 0$ for any $B$ continuous at the origin --- in particular whenever $B$ is a
+polynomial, which is \ref{lem:moment-recursion}(1).
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.tendsto\_inversionSymbol\_nhdsGT\_zero}, with the
+first limit as \texttt{tendsto\_negMoment\_nhdsGT\_zero}. \texttt{\#print axioms} shows A17 and
+nothing else; \ledger{A13} is not touched.
+\textbf{Why this is separate from \ref{lem:moment-recursion}.} That lemma states clause~(1) under
+the hypothesis that $B$ is a polynomial of degree $n$, and gets $B(0) = 0$ from this limit by
+continuity. \textbf{The polynomial hypothesis is inert in the argument}: what the proof uses is
+that $m(z) \to 1$, that $m(z+1)$ stays bounded, and that $z \to 0$ --- none of which mentions
+$B$'s form. Stating the limit without it is what makes the machine-checked content visible, and
+keeps a node that spends \ledger{A13} on clause~(2) from appearing to spend it on clause~(1) as
+well. This is the same distinction the article draws for \ref{lem:mellin-vertical}: what a proof
+cites is an upper bound on what its statement needs.
+\textbf{Where (H) enters, in both clauses and differently.} Its first clause, no atom at zero
+delay, is what makes every $m(z)$ positive, the integral defining $m$ running over $(0,\infty)$;
+its second, $z_* > 1$, is what makes the dominating function of the first limit integrable and
+the interval $(1, z_*)$ --- from which the bound on $m(z+1)$ is taken --- nonempty.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\emph{The first limit.} Dominated convergence. For $t > 0$ the integrand $t^{-z} = e^{-z\log t}$
+tends to $1$ as $z \to 0$; for $0 < z \le 1$ it is dominated by $1 + t^{-1}$, which is
+$\mu_{0,1}$-integrable because (H) places $1$ strictly below $z_*$. Hence
+$m(z) = \Ex\,T_1^{-z} \to \Ex\,1 = 1$.
+
+\emph{The second.} Fix $\zeta \in (1, z_*)$, nonempty by (H). For $0 < z \le \zeta - 1$ we have
+$z + 1 \le \zeta$, and splitting the integral at $t = 1$ --- below it $t^{-(z+1)} \le t^{-\zeta}$,
+above it $t^{-(z+1)} \le 1$ --- gives $m(z+1) \le m(\zeta) + 1$, a bound independent of $z$. So
+$z\,m(z+1) \to 0$, while $m(z) \to 1 \ne 0$ by the first limit, and the quotient tends to $0$.
+\end{proof}

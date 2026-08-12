@@ -222,22 +222,6 @@ section Core
 
 variable (F : SelfDecomposableExponent)
 
-/-- `E[T₁^{-c}]` as a Bochner-integrable function: the outer factor of the Fubini side condition. -/
-theorem integrable_rpow_neg (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) : Integrable (fun τ : ℝ => τ ^ (-c)) F.lawT₁ := by
-  have h0 := F.lawT₁_singleton_zero hH.1
-  have hae := F.ae_mem_Ioi_lawT₁ h0
-  refine ⟨by fun_prop, ?_⟩
-  rw [hasFiniteIntegral_iff_enorm]
-  have hcalc : ∫⁻ τ, ‖τ ^ (-c)‖ₑ ∂F.lawT₁ = F.negMoment c := by
-    rw [SelfDecomposableExponent.negMoment, Measure.restrict_eq_self_of_ae_mem hae]
-    refine lintegral_congr_ae ?_
-    filter_upwards [hae] with τ hτ
-    rw [← ofReal_norm, Real.norm_eq_abs,
-      abs_of_nonneg (Real.rpow_nonneg (mem_Ioi.mp hτ).le _)]
-  rw [hcalc]
-  exact lt_top_iff_ne_top.mpr (F.negMoment_ne_top_of_lt_zStar hc hc')
-
 variable {F}
 
 /-- **The Fubini side condition**: the delayed integrand is jointly integrable for
