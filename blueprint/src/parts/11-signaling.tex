@@ -272,6 +272,7 @@ $\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$ is then integrable at the 
 \end{lemma}
 
 \begin{proof}
+\leanok
 In the canonical gauge $u(t, x) = \Ex\bigl[f(t - x T_1)\bigr]$. Tonelli applies, since for
 $c = \operatorname{Re} z > 1$,
 $\Ex[T_1^{-c}]\int_0^t y^{c-1}|f(t-y)|\,dy \le \Ex[T_1^{-c}]\, t^{c-1}\|f\|_1 < \infty$, and
@@ -281,9 +282,13 @@ gives
   \;=\; \Ex\bigl[T_1^{-z}\bigr]\int_0^t y^{z-1} f(t - y)\,dy
   \;=\; \Ex\bigl[T_1^{-z}\bigr]\,\Gamma(z)\,(I^z f)(t),
 \]
-which is the claim by \ref{lem:mellin-data}. For $f \in \core$ we have
-$\partial_t u(t, x) = \Ex[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1} f$ using
-$f(0) = 0$.
+which is the claim by \ref{lem:mellin-data}. For $f \in \core$: $u(\cdot,x) = \mu_{0,x} * f$ and
+$f = \mathbf{1}_{[0,\infty)} * f'$, so $u(\cdot,x) = \mathbf{1}_{[0,\infty)} * (\mu_{0,x} * f')$ ---
+that is, $u(\cdot,x)$ is the primitive of $\Ex[f'(\cdot - xT_1)]$, which is what
+$\partial_t u = \Ex[f'(\cdot - xT_1)]$ asserts in $\Xz$. Finally $I^zf' = I^{z-1}f$: substituting
+$f(r) = \int_0^r f'$ and exchanging the order of integration over $0 < \rho \le r \le t$ leaves
+$\int_\rho^t (t-r)^{z-2}dr = (t-\rho)^{z-1}/(z-1)$, and $\Gamma(z) = (z-1)\Gamma(z-1)$; the
+semigroup identity $I^{z-1}I^1 = I^z$ is not needed (\ref{lem:fractional-integral-derivative}).
 \end{proof}
 
 \emph{\textbf{The first clause is machine-checked}, as \ref{lem:delayed-average-mellin}, which
@@ -365,7 +370,9 @@ homogeneity. Proved here, not cited.}
 \texttt{Hemigroup.SelfDecomposableExponent.mellin\_signaling\_form}; what is left of (2) is its
 causality and boundary clauses, which are (A3) and (A7), and its Laplace form, which is (1)
 applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$. Clause~(1) is \ref{lem:profile-eigenfunction},
-which is where its Lean tag sits --- the theorem keeps its full statement and its number, on the pattern of
+which is where its Lean tag sits. This theorem itself carries no \leanok: of clause~(2), only
+the Mellin form is machine-checked, its causality and boundary-attainment clauses being (A3) and
+(A7) unassembled and its Laplace form needing $\hat u(s,x) = \hat f(s)H(sx)$ --- the theorem keeps its full statement and its number, on the pattern of
 \ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That clause is also what empties the
 article's use of \ledger{A12}: it \emph{exhibits} the realising function rather than inferring its
 existence, and the Laplace form of clause~(2) is clause~(1) applied to

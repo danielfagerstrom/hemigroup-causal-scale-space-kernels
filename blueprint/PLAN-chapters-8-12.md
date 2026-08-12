@@ -1234,11 +1234,26 @@ not an artefact.
 which that is true and which is not a general-purpose lemma about `Γ`, because it is a statement
 about the Riemann–Liouville family that mentions no hemigroup object.
 
-## Chapter 11 is complete — 2026-08-12
+## Chapter 11's lemmas are complete; Theorem 4′ itself is not — 2026-08-12
 
-Theorem 4′(2)'s Mellin form is proved (`mellin_signaling_form`), and with it the chapter. The
-repo's only remaining `sorry` is chapter 9's `hasCMDensity_iff`, which is ledger A9 by design.
-A17 and A18 are still the whole trust boundary.
+Theorem 4′(2)'s Mellin form is proved (`mellin_signaling_form`). Every *lemma* of the chapter is
+now `\leanok`. The repo's only remaining `sorry` is chapter 9's `hasCMDensity_iff`, ledger A9 by
+design, and A17/A18 are still the whole trust boundary.
+
+**`thm:signaling-form` is not `\leanok`, and it is worth being exact about the gap** — it was
+briefly recorded here as though the chapter were finished, which it is not. Clause (2) asserts
+four things, and one is proved:
+
+| clause (2) asserts | status |
+|---|---|
+| `u` is causal in `t` | not formalised — but it is `CascadeFamily.causal`, a structure field |
+| `u(·,x) → f` in `X₀` as `x ↓ 0` | not formalised — `CascadeFamily.continuous` with `Φ_{0,0} = id` |
+| Laplace form `A[û(s,·)] = s û(s,·)` | not formalised — needs `û(s,x) = f̂(s)H(sx)`, i.e. the Laplace transform of the field, then clause (1) and linearity of `A` |
+| Mellin form | **proved** |
+
+Clauses (1) and (3) are `lem:profile-eigenfunction` and `lem:symbol-uniqueness`, both proved. So
+what stands between the chapter and a green headline is three items, of which two are one line
+each from existing structure fields.
 
 **The last statement I wrote was false, and the error is worth keeping.** The derivative clause was
 stated as `HasDerivAt` at every `t`. That does not hold: `f ∈ 𝒟` is absolutely continuous, so `f'`

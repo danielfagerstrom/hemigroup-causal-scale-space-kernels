@@ -69,10 +69,14 @@ schedulable:
 1. **Discharge the three formalisation debts.** `lem:selfdecomposable-derivative`,
    `lem:selfdecomposable-exponents` and `thm:main-characterization` are proved on paper only, and
    are now reached by most of the `\leanok` nodes; `linkage check` reports them as advisories.
-   This is the highest-leverage work left. **Chapter 11 is complete** — Theorem 4$'$'s three
-   clauses, the inversion operator, its symbol, and the uniqueness that earns the definite article
-   in *the* inversion, all machine-checked, and none of it spending ledger A12 although the
-   chapter had recorded three separate nodes as waiting on it.
+   This is the highest-leverage work left. **Chapter 11's lemmas are all machine-checked** — the
+   inversion operator, its symbol, the eigenfunction relation, the uniqueness that earns the
+   definite article in *the* inversion, and Theorem 4$'$(2)'s Mellin form — and none of it spends
+   ledger A12, although the chapter had recorded three separate nodes as waiting on it.
+   `thm:signaling-form` itself is *not* `\leanok`: clause (2) also asserts causality in `t`,
+   boundary attainment `u(·,x) → f` in `X₀`, and the Laplace form, none of which is formalised.
+   The first two are structure fields of `CascadeFamily`; the third needs the Laplace transform of
+   the field. That is what would turn Theorem 4$'$ green.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical
