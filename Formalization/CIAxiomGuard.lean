@@ -502,3 +502,13 @@ that the entry really is discharged rather than relocated.
 -/
 
 #print axioms Hemigroup.eq_gamma_form_of_logConvex_of_recursion
+
+/-! ### The engine of `lem:local-polynomial-symbol`
+
+The Mellin symbol of the Euler operator, `M[xʲg⁽ʲ⁾](z) = (∏_{i<j}(-z-i))·M[g](z)`. Mathlib has no
+Mellin/derivative interface, so this is written from scratch; it mentions nothing of this
+development, so like `eq_gamma_form_of_logConvex_of_recursion` it should print **Lean core alone**.
+-/
+
+#print axioms Hemigroup.mellin_pow_mul_iteratedDeriv
+#print axioms Hemigroup.integral_cpow_mul_deriv

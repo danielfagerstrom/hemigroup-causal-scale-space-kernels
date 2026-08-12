@@ -5,17 +5,28 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.InversionOperator
 import Hemigroup.Locality
+import Hemigroup.MellinEuler
 
 /-!
 # The target types of chapter 12
 
 **This file carries `sorry`s and is not part of the `Hemigroup` library.**
 
-Three of chapter 12's nodes are already proved and live under `Hemigroup/`:
-`lem:log-convexity` and `lem:symbol-vanishes-at-origin` in `Locality.lean`, and
-`lem:gamma-recursion-uniqueness` in `GammaRecursion.lean`. What is stated here is the chapter's
-remaining structural layer — `def:locality-pmp` and `lem:local-polynomial-symbol` — where the
-work is not analytic but definitional, and where writing the statement is most of the decision.
+## What is already proved, and lives under `Hemigroup/`
+
+| node | declaration | file |
+|---|---|---|
+| `lem:log-convexity` (12.4) | `convexOn_log_negMoment` | `Locality.lean` |
+| `lem:symbol-vanishes-at-origin` (12.9) | `tendsto_inversionSymbol_nhdsGT_zero` | `Locality.lean` |
+| `lem:gamma-recursion-uniqueness` (12.10) | `eq_gamma_form_of_logConvex_of_recursion` | `GammaRecursion.lean` |
+| — (the engine of 12.2) | `mellin_pow_mul_iteratedDeriv` | `MellinEuler.lean` |
+
+`IsTestFunction` and `mellinEulerFactor` moved to `MellinEuler.lean` with that last one: they are
+no longer target types but the vocabulary of a proved theorem.
+
+What remains here is chapter 12's structural layer --- `def:locality-pmp` and
+`lem:local-polynomial-symbol` --- where the work is not analytic but definitional, and where
+writing the statement is most of the decision.
 
 ## The modelling choice, and why it went this way
 
@@ -43,45 +54,30 @@ The one place the cost is visible is that the (⇐) direction cannot be a `theor
 what `thm:locality` quantifies over; a caller that needs the coefficients themselves takes the
 structure instead. Both are available and neither is the default in disguise.
 
-## Two readings that had to be fixed, and are recorded rather than left implicit
+## The reading of the maximum principle
 
-**The test class is `(0,∞)`-interior, not merely compactly supported.** `tsupport g ⊆ Ioi 0` is
-stronger than `HasCompactSupport g` and is what the integrations by parts below need: it is what
-kills the boundary term at the origin, where the weight `x^{z-1}` is singular. The blueprint's
-`C_c^∞((0,∞))` already says this; a Lean rendering that asked only for compact support in `ℝ`
-would be a different and false statement.
+`inversionOperator` is `ℂ`-valued, and `(Ag)(x₀) ≤ 0` is not a statement about a complex number.
+`SatisfiesPMP` below quantifies over real-valued test functions and asserts the inequality of the
+*real part*. That is the intended content --- in the application `A` maps real functions to real
+functions --- but it is a choice, and stating it as `.re ≤ 0` rather than proving realness first
+is the weaker and therefore safer of the two.
 
-**The positive maximum principle needs a real-valued reading.** `inversionOperator` is
-`ℂ`-valued, and `(Ag)(x₀) ≤ 0` is not a statement about a complex number. `SatisfiesPMP` below
-quantifies over real-valued test functions and asserts the inequality of the *real part*. That is
-the intended content --- in the application `A` maps real functions to real functions --- but it
-is a choice, and stating it as `.re ≤ 0` rather than proving realness first is the weaker and
-therefore safer of the two.
+(The other reading that had to be fixed, `C_c^∞((0,∞))` meaning `tsupport g ⊆ Ioi 0` rather than
+mere compact support, is now recorded where it is spent: `MellinEuler.lean`'s docstring, since
+that is the file whose integrations by parts would otherwise acquire a boundary term.)
 
 ## What the remaining work is
 
-`lem:local-polynomial-symbol` needs, in the (⇐) direction, the Mellin symbol of the Euler
-operator: `mellin (x ↦ x^j g^{(j)}(x)) z = (∏_{i<j} (-z-i)) · mellin g z` for test functions `g`.
-Mathlib has no Mellin/derivative interface at all, so that is `j` integrations by parts against
-the weight `x^{z-1}` --- elementary, and the engine of the whole node. The (⇒) direction needs in
-addition that a differential expression is determined by its coefficients, which is a
-prescribed-jet test-function construction.
+The (⇐) direction now needs no analysis: `mellin_pow_mul_iteratedDeriv` is proved, and what is
+left is to run it through `mellin_inversionOperator_eq` and Mellin injectivity. The (⇒) direction
+needs in addition that a differential expression is determined by its coefficients, which is a
+prescribed-jet test-function construction and is the chapter's largest remaining item.
 -/
 
 namespace Hemigroup
 
 open MeasureTheory Set Filter
 open scoped ENNReal Topology
-
-/-- The test class of `def:locality-pmp`: smooth, compactly supported, and supported **inside**
-`(0,∞)`. The last clause is not decoration --- see the file docstring. -/
-structure IsTestFunction (g : ℝ → ℂ) : Prop where
-  /-- Smooth on all of `ℝ`. -/
-  contDiff : ContDiff ℝ (⊤ : ℕ∞) g
-  /-- Compactly supported. -/
-  hasCompactSupport : HasCompactSupport g
-  /-- Supported away from the origin, which is what makes the boundary terms vanish. -/
-  tsupport_subset : tsupport g ⊆ Ioi (0 : ℝ)
 
 namespace SelfDecomposableExponent
 
@@ -107,32 +103,6 @@ def SatisfiesPMP (c : ℝ) : Prop :=
   ∀ {g : ℝ → ℝ}, IsTestFunction (fun x => (g x : ℂ)) → ∀ {x₀ : ℝ}, 0 < x₀ → 0 ≤ g x₀ →
     (∀ x : ℝ, 0 < x → g x ≤ g x₀) →
       (F.inversionOperator c (fun x => (g x : ℂ)) x₀).re ≤ 0
-
-end SelfDecomposableExponent
-
-/-- The Mellin symbol of the `j`-th Euler factor: `θ(θ-1)⋯(θ-j+1)` has symbol
-`(-z)(-z-1)⋯(-z-j+1)`, because `θ = x∂_x` has symbol `-z`.
-
-Stated as a definition rather than inlined because both directions of
-`lem:local-polynomial-symbol` are about it, and the sign convention is where this chapter's
-bookkeeping errors would live: Lean's `inversionSymbol z` is the blueprint's `B(-z)`. -/
-noncomputable def mellinEulerFactor (j : ℕ) (z : ℂ) : ℂ := ∏ i ∈ Finset.range j, (-z - (i : ℂ))
-
-/-- **The engine of `lem:local-polynomial-symbol`.** `j` integrations by parts of the weight
-`x^{z-1}` against `x^j g^{(j)}(x)`, with no boundary terms because `g` is supported inside
-`(0,∞)`.
-
-Mathlib has no Mellin/derivative interface, so nothing about this is available off the shelf.
-It is the one genuinely analytic obligation the node has, and everything else in the (⇐)
-direction follows from it by linearity. -/
-theorem mellin_pow_mul_iteratedDeriv {g : ℝ → ℂ} (hg : IsTestFunction g) (j : ℕ) (z : ℂ) :
-    mellin (fun x => (x : ℂ) ^ j * iteratedDeriv j g x) z
-      = mellinEulerFactor j z * mellin g z := by
-  sorry
-
-namespace SelfDecomposableExponent
-
-variable (F : SelfDecomposableExponent)
 
 /-- **`lem:local-polynomial-symbol`, the (⇐) direction.** A polynomial symbol, expanded in
 falling factorials, gives a differential expression whose coefficients are `γ_j x^{j-1}`. -/

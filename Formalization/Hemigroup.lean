@@ -20,6 +20,7 @@ import Hemigroup.Locality
 import Hemigroup.MemoryKernel
 import Hemigroup.MemoryKernelTransform
 import Hemigroup.MellinData
+import Hemigroup.MellinEuler
 import Hemigroup.MemoryFractional
 import Hemigroup.SignalingForm
 import Hemigroup.MellinVertical

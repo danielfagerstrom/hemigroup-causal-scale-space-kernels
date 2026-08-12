@@ -82,16 +82,25 @@ covariance built into the Mellin class forces the coefficients
 \texttt{isLocalOfOrder\_of\_symbol\_eq} and
 \texttt{exists\_symbol\_eq\_of\_isLocalOfOrder} --- since the two directions need different
 things and only one of them needs covariance.
-\textbf{What the ($\Leftarrow$) direction needs is one analytic fact}, and Mathlib has no part of
-it: the Mellin symbol of the Euler operator,
+\textbf{The ($\Leftarrow$) direction needed one analytic fact, and it is now proved}: the Mellin
+symbol of the Euler operator,
 $\mathcal{M}\bigl[x^{j} g^{(j)}\bigr](z) = \bigl(\prod_{i<j}(-z-i)\bigr)\,\tilde g(z)$ for test
 functions $g$, which is $j$ integrations by parts against the weight $x^{z-1}$ with no boundary
-terms. The library carries no Mellin/derivative interface at all --- \texttt{MellinTransform.lean}
-and \texttt{MellinInversion.lean} between them prove nothing about derivatives --- so this is
-written from scratch. Everything else in that direction is linearity. The factor is isolated as
-\texttt{mellinEulerFactor} rather than inlined, because the sign convention is where this
-chapter's bookkeeping errors would live: Lean's \texttt{inversionSymbol z} is this chapter's
-$B(-z)$.
+terms. Mathlib carries no Mellin/derivative interface at all --- \texttt{MellinTransform.lean} and
+\texttt{MellinInversion.lean} between them prove nothing about derivatives --- so it is written
+from scratch, as \texttt{Hemigroup.mellin\_pow\_mul\_iteratedDeriv}, and \texttt{\#print axioms}
+gives Lean core alone. Everything else in that direction is linearity.
+\textbf{Where the support hypothesis is spent}, since it is the reason the statement is true:
+Mathlib's integration by parts on the whole line asks for differentiability of each factor only on
+the \emph{other's} support. The weight $x \mapsto x^{w}$ is differentiable away from the origin,
+and $C_c^\infty((0,\infty))$ says exactly that the origin is not in the region where its
+derivative is needed. Compact support alone would leave a boundary term at $0$, where the weight
+is singular, and the identity would be false as stated --- which is why \ref{def:locality-pmp}'s
+test class is rendered with support inside $(0,\infty)$ and not with compact support in
+$\mathbb{R}$.
+The factor is isolated as \texttt{mellinEulerFactor} rather than inlined, because the sign
+convention is where this chapter's bookkeeping errors would live: Lean's
+\texttt{inversionSymbol z} is this chapter's $B(-z)$.
 \textbf{The ($\Rightarrow$) direction needs one thing more}, and it is the harder half: that a
 differential expression is determined by its coefficients, so that comparing coefficients of
 $g^{(j)}(x/\sigma)$ is licensed. In Lean that is a prescribed-jet test-function construction, and
