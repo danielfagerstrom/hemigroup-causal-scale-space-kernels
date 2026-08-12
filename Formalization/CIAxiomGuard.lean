@@ -370,3 +370,18 @@ What they do not cover is the identification of the integrand with `Φ_{0,x}f`, 
 #print axioms Hemigroup.integrable_rpow_neg
 #print axioms Hemigroup.integrable_delayed
 #print axioms Hemigroup.mellin_delayed_average
+
+/-! ### `lem:memory-fractional-integrals` (11.5), first clause complete
+
+The bridge from the analytic core to the field. `kernel_zero_eq_map_lawT₁` is the canonical gauge
+at the level of measures — the article reads `μ_{0,x}` as the law of `x·T₁` off the notation,
+which in Lean is a lemma, both sides being causal with transform `e^{-F(xs)}` and `kernel_unique`
+being Laplace injectivity. `coeFn_Phi_zero` then identifies the chosen representative with
+`Φ_{0,x}f` at each scale, and `mellin_delayedField` is the clause itself. A17 alone throughout.
+-/
+
+#print axioms Hemigroup.laplace_map_mul
+#print axioms Hemigroup.isCausal_map_mul
+#print axioms Hemigroup.SelfDecomposableExponent.kernel_zero_eq_map_lawT₁
+#print axioms Hemigroup.SelfDecomposableExponent.coeFn_Phi_zero
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_delayedField

@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.MellinData
+import Hemigroup.Instance
 import Mathlib.Analysis.SpecialFunctions.Gamma.Beta
 
 /-!
@@ -295,5 +296,102 @@ theorem mellin_delayed_average (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z
         ring
 
 end Core
+
+/-! ## The canonical gauge at the level of measures, and the field
+
+`lem:memory-fractional-integrals` is about the field `u(t,x) = (Φ_{0,x}f)(t)`, and `Φ` is
+`L¹`-valued. The decision recorded in `PLAN-chapters-8-12.md` was to read the identification
+almost everywhere in `t` rather than build a pointwise model of the field.
+
+**What that decision does not avoid, and this is worth naming.** "For each `x`, for a.e. `t`" does
+*not* give "for a.e. `t`, for every `x`": the null set depends on `x`. So a Mellin transform in `x`
+at a fixed `t` cannot be taken of `(Φ_{0,x}f)(t)` as it stands, whichever way the identification is
+read — a representative has to be chosen. What (a) buys is that the choice is *local*: it is the
+one function `delayedField`, defined outright, with a bridge saying it represents `Φ_{0,x}f` for
+each `x`. What (b) would have bought is the same choice made once, globally, under all of
+chapters 10–12.
+-/
+
+/-- Dilating a measure dilates the Laplace variable. -/
+theorem laplace_map_mul (μ : Measure ℝ) {x : ℝ} (hx : 0 ≤ x) (s : ℝ) :
+    laplace (μ.map (fun t : ℝ => x * t)) s = laplace μ (x * s) := by
+  rw [laplace, laplace, integral_map (by fun_prop) (by fun_prop)]
+  refine integral_congr_ae (.of_forall fun t => ?_)
+  congr 1
+  ring
+
+/-- A positive dilation preserves causality. -/
+theorem isCausal_map_mul {μ : Measure ℝ} (hμ : IsCausal μ) {x : ℝ} (hx : 0 < x) :
+    IsCausal (μ.map (fun t : ℝ => x * t)) := by
+  rw [IsCausal, Measure.map_apply (by fun_prop) measurableSet_Iio]
+  have hpre : (fun t : ℝ => x * t) ⁻¹' Iio 0 = Iio 0 := by
+    ext t
+    simp [mem_Iio, mul_neg_iff, hx, hx.le, not_lt.mpr hx.le, hx.ne']
+  rw [hpre]
+  exact hμ
+
+namespace SelfDecomposableExponent
+
+variable (F : SelfDecomposableExponent)
+
+/-- **The canonical gauge, at the level of measures**: `μ_{0,x}` is the law of `x·T₁`.
+
+The article works in the canonical gauge throughout Chapter 11 and reads this off the notation;
+in Lean the kernels are produced by `kernel_spec` from their transforms, so it is a lemma. Both
+sides are causal with transform `e^{-F(xs)}`, and `kernel_unique` is Laplace injectivity. -/
+theorem kernel_zero_eq_map_lawT₁ {x : ℝ} (hx : 0 < x) :
+    F.kernel 0 x = F.lawT₁.map (fun t : ℝ => x * t) := by
+  haveI : IsProbabilityMeasure F.lawT₁ := F.isProbabilityMeasure_lawT₁
+  haveI : IsProbabilityMeasure (F.lawT₁.map (fun t : ℝ => x * t)) :=
+    Measure.isProbabilityMeasure_map (by fun_prop)
+  refine (kernel_unique (isCausal_map_mul F.isCausal_lawT₁ hx) le_rfl hx.le fun s hs => ?_).symm
+  rw [laplace_map_mul _ hx.le, show laplace F.lawT₁ (x * s) = F.profile (x * s) from rfl,
+    F.profile_eq_exp_neg (mul_nonneg hx.le hs), increment_zero_left hx.le, toRealExponent]
+
+/-- **The field, as a genuine function of `(t,x)`**: `u(t,x) = E[f(t - x T₁)]`.
+
+The representative the article's `Φ_{0,x}f` is read through. Choosing it is what makes a Mellin
+transform in `x` at a fixed `t` meaningful; see the section docstring for why no reading of the
+identification avoids the choice. -/
+noncomputable def delayedField (f : ℝ → ℝ) (t x : ℝ) : ℝ := ∫ τ, f (t - x * τ) ∂F.lawT₁
+
+/-- **The bridge**: at each scale `x`, the chosen representative *is* `Φ_{0,x}f`, almost
+everywhere in `t`.
+
+`Φ` is convolution with `μ_{0,x}` at the level of `L¹` classes (`coeFn_mconvL1`), and `μ_{0,x}` is
+the law of `x·T₁`; pushing the dilation through the convolution integral gives the delayed
+average. -/
+theorem coeFn_Phi_zero (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) {x : ℝ} (hx : 0 < x)
+    {f : ℝ → ℝ} (hfm : Measurable f) (hf : Integrable f) :
+    ⇑((F.cascadeFamily hF).Φ 0 x (hf.toL1 f)) =ᵐ[volume] fun t => F.delayedField f t x := by
+  haveI := isProbabilityMeasure_kernel (F := F) (le_refl (0 : ℝ)) hx.le
+  refine (coeFn_mconvL1 (F.kernel 0 x) (hf.toL1 f)).trans ?_
+  refine (mconv_congr_ae (F.kernel 0 x) hf.coeFn_toL1).trans (.of_forall fun t => ?_)
+  have hmap : ∫ r, f (t - r) ∂(F.lawT₁.map fun u : ℝ => x * u)
+      = ∫ τ, f (t - x * τ) ∂F.lawT₁ :=
+    integral_map (by fun_prop) (hfm.comp (measurable_const_sub t)).aestronglyMeasurable
+  rw [mconv_apply, F.kernel_zero_eq_map_lawT₁ hx, hmap]
+  rfl
+
+
+/-- **`lem:memory-fractional-integrals`**, first clause: at each time `t > 0`, the Mellin
+transform in `x` of the field is `H̃(z)` times the Riemann–Liouville integral of order `z` of the
+past signal.
+
+The field is read through `delayedField`, which `coeFn_Phi_zero` shows represents `Φ_{0,x}f` at
+every scale `x > 0`. So the memory line at time `t`, seen through the Mellin transform, holds the
+whole analytic family `{(Iᶻf)(t)}` weighted by the negative delay-moments — which is what the
+article's Remark 11.7 reads as the observer's embodiment of its past. -/
+theorem mellin_delayedField (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
+    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) (hf : Integrable f)
+    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t) :
+    mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) z
+      = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville z f t := by
+  rw [← mellin_delayed_average hH hz hz' hfm hf hcausal ht]
+  congr 1
+  funext x
+  exact (integral_ofReal (𝕜 := ℂ)).symm
+
+end SelfDecomposableExponent
 
 end Hemigroup

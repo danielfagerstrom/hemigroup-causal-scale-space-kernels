@@ -282,15 +282,12 @@ $\partial_t u(t, x) = \Ex[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1}
 $f(0) = 0$.
 \end{proof}
 
-\emph{\textbf{Split in Lean 2026-08-12, and the split is forced by how the field is modelled.}
-\ref{lem:delayed-average-mellin} is the analytic core --- the substitution above, applied to a
-genuine function $f$, with the integrand written as $\Ex[f(t - xT_1)]$ outright --- and it is
-\textbf{machine-checked}. What it does \emph{not} do is identify that integrand with
-$\Phi_{0,x}f$. The reason is that $\Phi_{x,y}$ acts on an $L^1$ space, and an $L^1$ class has no
-value at a point, whereas this lemma is pointwise in $t$; so the identification needs either a
-chosen representative or a weakening to ``almost every $t$'', and that is a modelling decision
-affecting Chapters 10--12 as well as this one. It was taken as the weakening, on 2026-08-12; see
-\texttt{PLAN-chapters-8-12.md}. The core is what both readings needed, which is why it went first.}
+\emph{\textbf{The first clause is machine-checked}, as \ref{lem:delayed-average-mellin}, which
+also carries the identification of $\Ex[f(t-xT_1)]$ with $\Phi_{0,x}f$ and so the canonical gauge
+at the level of measures. What is left here is the \emph{derivative} clause, $f \in \core$ and
+$I^zf' = I^{z-1}f$, which needs $\partial_t u$ and so \ref{lem:delay-core}. See that node's remark
+for why a representative of the field has to be named at all --- the quantifiers ``for each $x$,
+a.e.\ $t$'' do not commute, so this is not avoided by weakening the reading.}
 
 \emph{\textbf{The Riemann--Liouville integral is defined in the development, not cited.} Mathlib
 has no fractional integral of any order --- \texttt{Analysis/} carries Mellin, Fourier,
@@ -739,21 +736,35 @@ $A[H(s\cdot)](x) = h(x)/x = s\,H(sx)$.
 % proved and the L1-level identification of the integrand with Phi_{0,x}f was not. 11.5 keeps its
 % number and its full statement; this is the node that carries the Lean tag. Numbered 11.18.
 
-\begin{lemma}[the delayed average, transformed]\label{lem:delayed-average-mellin}
-\uses{def:standing-hypothesis,lem:mellin-data}
-\lean{Hemigroup.mellin_delayed_average}\leanok
-Assume (H), let $1 < \operatorname{Re} z < z_*$ and $t > 0$, and let $f \in L^1$ be causal. Then
+\begin{lemma}[the delayed average is the field, and its transform]\label{lem:delayed-average-mellin}
+\uses{def:standing-hypothesis,lem:mellin-data,prop:canonical-gauge,def:cascade-family}
+\lean{Hemigroup.SelfDecomposableExponent.mellin_delayedField}\leanok
+Assume (H) and work in the canonical gauge; let $f \in L^1$ be causal and $t > 0$. Then for every
+$x > 0$,
+\[
+  \bigl(\Phi_{0,x}f\bigr)(\cdot) \;=\; \Ex\bigl[f(\,\cdot - xT_1)\bigr] \quad\text{a.e.},
+\]
+and for $1 < \operatorname{Re} z < z_*$ the right-hand side, read as a function of $x$, has
 \[
   \int_0^\infty x^{z-1}\,\Ex\bigl[f(t - xT_1)\bigr]\,dx \;=\; \tilde H(z)\,\bigl(I^z f\bigr)(t),
 \]
 both sides absolutely convergent.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
-\texttt{Hemigroup.mellin\_delayed\_average}, with \texttt{integrable\_delayed} (the Fubini side
-condition) and \texttt{mul\_riemann\-Liouville} (the reflection) alongside it;
-\texttt{\#print axioms} gives \ledger{A17} and nothing else. The analytic core of
-\ref{lem:memory-fractional-integrals}, split off from it because the remaining step --- reading
-$\Ex[f(t-xT_1)]$ as $\Phi_{0,x}f$ evaluated at $t$ --- is an $L^1$-level statement about the field
-and not analysis.}
+\texttt{Hemigroup.SelfDecomposableExponent.mellin\_delayedField}, with
+\texttt{coeFn\_Phi\_zero} (the first display), \texttt{kernel\_zero\_eq\_map\_lawT}$_1$ (the
+canonical gauge at the level of measures), \texttt{integrable\_delayed} (the Fubini side
+condition) and \texttt{mul\_riemannLiouville} (the reflection);
+\texttt{\#print axioms} gives \ledger{A17} and nothing else. This is the first clause of
+\ref{lem:memory-fractional-integrals}; what is left there is its derivative clause.}
+
+\emph{\textbf{The quantifiers do not commute, and that is the honest reason a representative has to
+be chosen.} $\Phi_{0,x}$ acts on $L^1$ classes, so the first display holds for each $x$ only up to
+a null set of times --- and the null set depends on $x$. ``For each $x$, for a.e.\ $t$'' does not
+give ``for a.e.\ $t$, for every $x$'', so the second display, which is an integral over $x$ at a
+fixed $t$, cannot be taken of $(\Phi_{0,x}f)(t)$ as it stands. Some representative must be named
+whichever way the identification is read. What the choice made here buys is that it is
+\emph{local}: one function, $\Ex[f(t-xT_1)]$, defined outright, with the first display as its
+bridge --- rather than a pointwise model of $\Phi$ built under all of Chapters 10--12.}
 
 \emph{\textbf{$I^z$ is defined in the development, not cited.} Mathlib carries no fractional
 integral of any order, so the Riemann--Liouville integral is given its definition here. That adds

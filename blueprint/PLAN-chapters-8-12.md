@@ -1136,14 +1136,36 @@ Three things it settled:
   class, so the article pays nothing; but it is the kind of hypothesis that is invisible on paper
   and mandatory in Lean, and worth recording as such.
 
+## The identification, same round — and (a) does not avoid choosing a representative
+
+Done: `coeFn_Phi_zero` gives `(Φ_{0,x}f)(t) = E[f(t - xT₁)]` a.e. in `t` for each `x > 0`, and
+`mellin_delayedField` is the first clause of 11.5 outright. One new lemma was needed and it is
+worth having on its own account: `kernel_zero_eq_map_lawT₁`, **the canonical gauge at the level of
+measures** — `μ_{0,x}` is the law of `x·T₁`. The article reads this off the notation; here the
+kernels come from their transforms, so it is Laplace injectivity (`kernel_unique`) applied to two
+causal measures with transform `e^{-F(xs)}`.
+
+**The finding, and it qualifies the decision rather than confirming it.** "For each `x`, for a.e.
+`t`" does *not* give "for a.e. `t`, for every `x`" — the null set depends on `x`. The Mellin
+transform in the second display is an integral over `x` at a *fixed* `t`, so it cannot be taken of
+`(Φ_{0,x}f)(t)` as it stands, **whichever way the identification is read**. A representative has to
+be named either way.
+
+So (a) did not avoid the pointwise field; it localised it. What is defined is one function,
+`delayedField f t x = E[f(t - xT₁)]`, with `coeFn_Phi_zero` as its bridge — where (b) would have
+made the same choice once, globally, under all of chapters 10–12. That is a better description of
+the trade than the one recorded when the fork was written: the question was never *whether* to
+name a representative but *how widely*. Worth remembering if chapter 10 ever becomes schedulable,
+because it means (b)'s cost is not "a new layer" so much as "the same choice, promoted".
+
 ## Next
 
-1. **The identification**, now that (a) is decided: `(Φ_{0,x}f)(t) = E[f(t - xT₁)]` for a.e. `t`.
-   The pieces are `coeFn_mconvL1` (`Φ` is `mconv` a.e.) and `mconv_apply`, plus the canonical-gauge
-   fact that `μ_{0,x}` is the law of `x·T₁` — check whether chapter 6's gauge development already
-   states the latter as a dilation of `lawT₁`; if not, that is the one new lemma.
-2. Then `thm:signaling-form`(2)'s Mellin form: `lem:delayed-average-mellin` combined with
-   `lem:mellin-data`, exactly as the draft's proof does it.
-3. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
-   `prop:scale-evolution` and `cor:exact-inversion` (distributions).
+1. `thm:signaling-form`(2)'s Mellin form: `lem:delayed-average-mellin` combined with
+   `lem:mellin-data`, exactly as the draft's proof does it. This is the last piece of Theorem 4′
+   that is not blocked.
+2. 11.5's *derivative* clause (`f ∈ 𝒟`, `Iᶻf' = I^{z-1}f`) needs `∂_t u` and so `lem:delay-core`,
+   which is unformalised — the core `𝒟` and its `Φ`-invariance. That is a small, self-contained
+   piece of chapter 10 and the first thing from that chapter that is *not* blocked on Mathlib.
+3. Still blocked upstream, unchanged: the rest of chapter 10 (C₀-semigroups), chapter 12
+   (Bessel `K`), `prop:scale-evolution` and `cor:exact-inversion` (distributions).
 4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` in the repo.
