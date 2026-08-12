@@ -1,0 +1,189 @@
+% §2 Temporal measurement — NEW prose (2026-08-12). Per-axiom motivation in the manner of
+% the 2005 IJCV article's §2 (one desideratum per subsection, stated in words first, then
+% formalized), assembling the axiom system at the end. The formal statements are shared
+% with the blueprint (def:cascade-family, rem:axiom-provenance) and are verbatim
+% transcriptions of those nodes, linkage markup stripped.
+%
+% The subsections motivate; the definition states. A formula appears in a subsection only
+% where the subsection has something to derive (the covariance relabelling, the two
+% readings of the cascade); everything else is words plus the clause letter.
+
+\section{Temporal measurement}\label{sec:measurement}
+
+A measurement of a temporal signal is an average over an extended region of the immediate
+past: a point value is an idealization that no physical aperture realizes, and what an
+observer can hold is a \emph{record} of the signal at some resolution, not the signal
+itself. A multi-scale front end accordingly maintains a family of such records, indexed by
+a scale parameter, and if the front end is \emph{uncommitted} --- built ahead of any
+knowledge of what the signals will contain --- the family cannot be derived from a signal
+model. It must be derived from general requirements on measurement. This section collects
+those requirements. All but one are the requirements of \sscite{fagerstrom2005temporal};
+the exception, the cascade property of \S\ref{sec:measurement-cascade}, is the subject of
+this paper.
+
+Two asymmetries distinguish time from space. The observer cannot access the future:
+measurement must be causal. And the observer cannot return to the past: whatever of the
+signal's history is to influence the present output must be carried in the observer's own
+state --- the observer must \emph{embody} its past. The two enter the theory differently.
+Causality is a condition on the measured values and becomes an axiom directly
+(\S\ref{sec:measurement-causality}). Embodiment is a condition on \emph{realizability},
+not on the values, and no axiom below mentions it; it returns instead as theorem content,
+when \S\ref{sec:signaling} exhibits the state that a covariant observer carries and
+\S\ref{sec:jet} reads the temporal derivatives of the signal off that state.
+
+Throughout, signals are integrable transients: $X = \Lone$, with positive cone $X_+$ and
+$\int f := \int_{\RR} f(t)\,dt$. The primitive object is the operator carrying the record
+at a finer scale to the record at a coarser one,
+\[
+  \Phi_{x,y} : X \to X, \qquad 0 \le x \le y < \infty,
+\]
+with the signal itself as the record at scale $0$. That the family is indexed by ordered
+\emph{pairs} of scales, rather than by a single scale increment, is deliberate; the reason
+is the business of \S\ref{sec:measurement-cascade}. The remaining notation is collected in
+\S\ref{sec:preliminaries}.
+
+\subsection{Linearity, positivity, and mass}\label{sec:measurement-linearity}
+
+An uncommitted front end has no preferred signal values: it must treat a superposition of
+signals as the superposition of their records, which is linearity, and a measurement must
+be stable --- a small signal must leave a small record --- which on $X$ is boundedness of
+each $\Phi_{x,y}$ (clause (A1) of Definition~\ref{def:cascade-family} below).
+
+Two further requirements say that smoothing may not create structure of its own. An
+intensity signal is nonnegative, and a record that changes sign in response to a
+nonnegative signal exhibits structure of the apparatus rather than of the signal;
+measurement must preserve the positive cone (A4). And the crudest measurement of a
+transient --- its total mass --- is the reading at infinite scale, on which all stages must
+already agree: smoothing redistributes mass and neither creates nor absorbs it (A5). A
+device that loses mass is admissible physics but different physics --- leakage rather than
+measurement --- and is set aside in Remark~\ref{rem:axiom-provenance}.
+
+\subsection{Causality}\label{sec:measurement-causality}
+
+The record at time $t$ may depend on the signal only through its restriction to
+$(-\infty, t]$. Formally: if the signal vanishes before some time $t_0$, so does every
+record of it (A3). This is the one requirement with no spatial counterpart whatever, and
+it is what removes the Gaussian: the Gaussian aperture reads the future, and its causal
+truncations destroy the cascade structure discussed below.
+
+\subsection{Covariance}\label{sec:measurement-covariance}
+
+A front end built before its signals has no preferred origin of time and no preferred unit
+of time.
+
+No preferred origin: each $\Phi_{x,y}$ commutes with the translations
+$(\shift_a f)(t) = f(t-a)$ (A2).
+
+No preferred unit: rescaling the time axis must carry the family into itself. Write
+$(\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma)$ for the mass-preserving dilation. The
+subtlety is that nothing so far ties the scale index $x$ to any unit --- the scale axis
+carries no intrinsic parametrization --- so the rescaled family can only be required to
+reappear \emph{with relabelled indices}: there is an increasing bijection $\Sact_\sigma$
+of $[0,\infty)$ with
+\[
+  \dil_\sigma\,\Phi_{x,y} \;=\; \Phi_{\Sact_\sigma x,\,\Sact_\sigma y}\,\dil_\sigma
+  \qquad \text{for all } 0 \le x \le y,\ \sigma > 0,
+\]
+which is (A8). The relabelling $\Sact_\sigma$ enters as data, not as a choice: the axioms
+determine it uniquely, and \S\ref{sec:covariance} shows that a canonical scale
+parametrization can be recovered from it. We emphasize that the covariance demanded is
+\emph{full}: every $\sigma > 0$, not a discrete ladder $\sigma \in q^{\ZZ}$ of preferred
+ratios --- a preferred ratio is a preferred unit in disguise. The weaker discrete form
+defines a stratum of its own, taken up in \S\ref{sec:conclusions}.
+
+\subsection{The cascade property}\label{sec:measurement-cascade}
+
+A record at a coarser scale must be computable from the record at any finer scale, without
+returning to the raw signal: a measurement of a measurement is a measurement, and the
+family closes under composition,
+\[
+  \Phi_{y,z}\,\Phi_{x,y} \;=\; \Phi_{x,z}, \qquad x \le y \le z,
+  \qquad\qquad \Phi_{x,x} = \Id,
+\]
+which is (A6). This is the axiom the paper changes, and it is worth being precise about
+what the classical form asserts. In \sscite{fagerstrom2005temporal}, as throughout the
+scale-space literature, the cascade is a one-parameter \emph{semigroup},
+\[
+  \Phi_\tau\,\Phi_{\tau'} \;=\; \Phi_{\tau + \tau'},
+\]
+and this single equation contains two separable assumptions. The first is the one just
+motivated: composites of measurements are measurements. The second is tacit: that the
+composite depends only on the total \emph{amount} of scale crossed --- equivalently, that
+the elementary smoothing applied between fine scales equals the one applied between coarse
+scales, so that measurement stages are interchangeable. Nothing in the measurement picture
+supports the second assumption. A stage that carries a fine record to a slightly coarser
+one and a stage that does the same deep in the hierarchy act on different records; there
+is no a priori reason the two operations should coincide.
+
+The hemigroup form (A6) keeps the first assumption and drops the second, and nothing else:
+scale becomes an ordered interval structure rather than an additive quantity. Two
+consequences are immediate. The family must be indexed by pairs, since an increment
+$\Phi_{x,y}$ is no longer determined by $y - x$; and the scale axis acquires a gauge
+freedom --- any increasing reparametrization of $[0,\infty)$ yields the same family
+relabelled --- which is why (A8) had to be stated with the relabelling $\Sact_\sigma$ left
+free. The derivation of \S\ref{sec:covariance} closes both books at once: covariance
+rigidifies the gauge up to normalization, and the semigroup case is recovered exactly when
+stage-interchangeability is reimposed (Corollary~\ref{cor:semigroup-case}).
+
+\subsection{Continuity and nondegeneracy}\label{sec:measurement-continuity}
+
+Measurement degrades gracefully: the record depends continuously on the pair of scales,
+jointly, in the norm of $X$ (A7). Together with the diagonal condition
+$\Phi_{x,x} = \Id$ this is the two-parameter form of the \emph{extended point} axiom of
+\sscite{fagerstrom2005temporal}, $\lim_{\tau \to 0} \phi_\tau = \delta$: as $y \downarrow x$
+the record at scale $y$ recovers the record at scale $x$. Finally, the scale axis carries
+no idle stretches: strictly coarser means strictly more smoothed, $\Phi_{x,y} \ne \Id$ for
+$x < y$ (ND). Nondegeneracy is a normalization rather than a restriction --- a family that
+stalls on an interval of scales is the same family on a smaller scale axis.
+
+\subsection{The axiom system}\label{sec:measurement-axioms}
+
+% shared with blueprint def:cascade-family
+\begin{definition}[causal cascade measurement family]\label{def:cascade-family}
+A family of linear operators
+\[
+  \Phi_{x,y} : X \to X, \qquad 0 \le x \le y < \infty,
+\]
+is a \emph{causal cascade measurement family} if it satisfies:
+\begin{itemize}
+\item \textbf{(A1) Boundedness.} Each $\Phi_{x,y}$ is a bounded operator on $X$.
+\item \textbf{(A2) Time-translation covariance.} $\Phi_{x,y}\,\shift_a = \shift_a\,\Phi_{x,y}$
+for all $a \in \RR$.
+\item \textbf{(A3) Causality.} If $f \in X$ vanishes a.e.\ on $(-\infty, t_0)$, then so does
+$\Phi_{x,y} f$.
+\item \textbf{(A4) Positivity.} $\Phi_{x,y} X_+ \subseteq X_+$.
+\item \textbf{(A5) Unit area.} $\int \Phi_{x,y} f = \int f$ for all $f \in X_+$.
+\item \textbf{(A6) Cascade (hemigroup).} $\Phi_{x,x} = \Id$, and
+$\Phi_{y,z}\,\Phi_{x,y} = \Phi_{x,z}$ for all $x \le y \le z$.
+\item \textbf{(A7) Continuity.} For every $f \in X$, the map $(x,y) \mapsto \Phi_{x,y} f$ is
+continuous from $\{0 \le x \le y\}$ to $X$.
+\item \textbf{(A8) Scale covariance.} There is a family $(\Sact_\sigma)_{\sigma > 0}$ of
+increasing bijections of $[0,\infty)$ such that
+\[
+  \dil_\sigma\,\Phi_{x,y} = \Phi_{\Sact_\sigma x,\,\Sact_\sigma y}\,\dil_\sigma
+  \qquad \text{for all } 0 \le x \le y,\ \sigma > 0.
+\]
+\item \textbf{(ND) Nondegeneracy.} $\Phi_{x,y} \ne \Id$ whenever $x < y$.
+\end{itemize}
+\end{definition}
+
+% Verbatim from the blueprint's rem:axiom-provenance (remarks are not statement nodes,
+% so this is not a `shared with blueprint` edge; keep the two texts in step by hand).
+\begin{remark}[provenance of the axioms]\label{rem:axiom-provenance}
+(A1)--(A5) and (A7) are as in \sscite{fagerstrom2005temporal}; the diagonal condition in (A6)
+together with (A7) is the two-parameter form of the \emph{extended point} axiom
+$\lim_{\tau\to 0}\phi_\tau = \delta$.
+
+The single change is (A6). In \sscite{fagerstrom2005temporal} the cascade reads
+$\Phi_\tau \Phi_{\tau'} = \Phi_{\tau + \tau'}$, which additionally assumes that the composite
+measurement depends only on the total amount of scale --- that measurement stages are
+interchangeable. (A6) drops exactly that assumption, and nothing else: this is the whole
+difference between the semigroup axiomatics and the present one, and every result that
+follows is a consequence of dropping it.
+
+(A8) is the two-parameter form of scaling covariance; note that an increasing bijection of
+$[0,\infty)$ automatically fixes $0$. (ND) excludes idle stretches of the scale axis.
+
+A \emph{passive} variant replaces (A5) by $\int \Phi_{x,y} f \le \int f$ on $X_+$; all results
+below hold with sub-probability kernels and an extra killing term, and we do not pursue it.
+\end{remark}
