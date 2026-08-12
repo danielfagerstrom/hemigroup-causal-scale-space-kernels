@@ -167,15 +167,13 @@ scale-Cauchy problem of \sscite{fagerstrom2005temporal}, Thm.~3.
 % draft: Lemma 9.4
 \begin{lemma}[potential kernel]\label{lem:potential-kernel}
 \uses{lem:selfdecomposable-exponents,prop:bernstein-toolbox,lem:vanishing}
-\lean{Skeleton.existsUnique_potentialKernel}\notready
+\lean{Hemigroup.SelfDecomposableExponent.existsUnique_potentialKernel}\leanok
 For $x > 0$ set $\varphi_x(s) := s F'(xs)$. Then $\varphi_x$ is a nonzero Bernstein function,
 positive on $(0,\infty)$, and there is a unique positive, locally finite measure $\ell^{(x)}$
 on $[0,\infty)$ --- the \emph{potential kernel} --- with
 \[
   \widehat{\ell^{(x)}}(s) \;=\; \frac{1}{\varphi_x(s)} \;=\; \frac{1}{s\,F'(xs)}, \qquad s > 0.
 \]
-Moreover $\ell^{(x)}$ is $x$ times the pushforward of $\ell^{(1)}$ under $t \mapsto xt$; in
-density form, $\ell^{(x)}(t) = \ell^{(1)}(t/x)$.
 \statusT\quad\emph{(\textbf{Stated in Lean and decomposed}, as
 \texttt{Skeleton.existsUnique\_potentialKernel}. Route B --- construct the measure as the
 subordinator's potential $U = \int_0^\infty \mu_t\,dt$ rather than represent it via
@@ -443,7 +441,7 @@ infinitely divisible laws on the half-line of \sscite{steutel2004infinite}.
 % received. Numbered 9.12 and 9.13, numbers the draft does not use, its Section 9 ending at 9.11.
 \begin{proposition}[the Sonine pair exists]\label{prop:sonine-pair-exists}
 \uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,thm:sonine-conservation}
-\lean{Skeleton.exists_sonine_pair}\notready
+\lean{Hemigroup.SelfDecomposableExponent.exists_sonine_pair}\leanok
 For every admissible $F$ and every $x > 0$ the pair $(\kappa^{(x)}, \ell^{(x)})$ exists at the
 level of positive measures on $[0,\infty)$ and satisfies
 $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}_{[0,\infty)}$.
@@ -550,4 +548,29 @@ The substitution $\tau = t/x$ in $F'(xs) = b_0 + \int_0^\infty e^{-xs\tau} k(\ta
 which is \ref{lem:memory-kernel} at $xs$, turns the integral into
 $\int_0^\infty e^{-st}\,\tfrac{1}{x}k(\tfrac{t}{x})\,dt$; the drift $b_0$ is the transform of
 $b_0\delta_0$, which is constant in $s$.
+\end{proof}
+
+% additive: not in the draft. The scaling clause of Lemma 9.4, split off on 2026-08-11 when the
+% existence and uniqueness clauses were proved and this one was not stated in Lean. Numbered
+% 9.16, a number the draft does not use. It is [T] and cheap; what it needs first is a NAMED
+% potential kernel, and the Lean statement is an existence-and-uniqueness one, so the object has
+% to be chosen before the scaling law can be said about it.
+\begin{lemma}[the potential kernel scales]\label{lem:potential-kernel-scaling}
+\uses{lem:potential-kernel}
+For $x > 0$, $\ell^{(x)}$ is $x$ times the pushforward of $\ell^{(1)}$ under $t \mapsto xt$; in
+density form, $\ell^{(x)}(t) = \ell^{(1)}(t/x)$.
+\statusT\quad\emph{(a comparison of transforms and nothing else:
+$\widehat{\ell^{(x)}}(s) = 1/(sF'(xs)) = x/\varphi_1(xs) = x\,\widehat{\ell^{(1)}}(xs)$, and
+\ref{lem:potential-kernel}'s uniqueness clause does the rest. Split off because it is the one
+clause of 9.4 that presupposes a \emph{named} $\ell^{(x)}$: the Lean statement asserts existence
+and uniqueness, so the object must be chosen before a scaling law can be predicated of it, and
+that choice is a definition this development has not needed for anything else --- \ref{thm:sonine-conservation}
+and \ref{prop:sonine-pair-exists} both quantify over an arbitrary $\ell$ meeting the
+specification.)}
+\end{lemma}
+
+\begin{proof}
+\uses{lem:potential-kernel}
+Both measures are causal and locally finite, and their transforms agree on $(0,\infty)$; apply the
+uniqueness clause of \ref{lem:potential-kernel}.
 \end{proof}

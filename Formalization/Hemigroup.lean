@@ -24,6 +24,7 @@ import Hemigroup.Nondegeneracy
 import Hemigroup.NullArray
 import Hemigroup.Operator
 import Hemigroup.OperatorL1
+import Hemigroup.PotentialKernel
 import Hemigroup.Representation
 import Hemigroup.SelfDecomposable
 import Hemigroup.Sonine

@@ -39,7 +39,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Thirty nodes carry `\lean{...}\leanok`:
+Thirty-two nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -50,7 +50,7 @@ Thirty nodes carry `\lean{...}\leanok`:
 | 6 Scale covariance | `lem:covariance-laplace`, `lem:action-rigidity`, `prop:canonical-gauge` — chapter complete |
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
-| 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation` — the chapter's headline, and it reduces to Lean core |
+| 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
 | 11 The signaling form | `lem:mellin-data` — Theorem 4$'$'s entry point: the Mellin identity and its bound; `lem:inversion-symbol` — the symbol `B`, analytic and meromorphic on the strip; `lem:symbol-rigidity` — the eigenfunction relation pins `B` |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
@@ -71,9 +71,12 @@ schedulable:
    `lem:symbol-rigidity` are done. What is left of the chapter now runs through
    `def:inversion-operator`, so it waits on A12 with `lem:mellin-vertical` — which moves
    chapter 11 from the queue to the dependency list below.
-2. **Chapter 9's remainder**, which waits on `lem:potential-kernel`'s existence half. Route B is
-   decided — the potential measure is *constructed* rather than represented, so the trust
-   boundary stays at two entries; the work order is in `Formalization/Skeleton/Chapter9.lean`.
+2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
+   *constructed* as the subordinator's potential measure rather than represented through
+   Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical
+   path — checked by `#print axioms`, not asserted. What is left in the chapter is `[A]`
+   (`prop:pair-regularity` on A9, `prop:volterra-density` on A10) or distributional
+   (`prop:scale-evolution`, `cor:exact-inversion`), which Mathlib cannot yet state.
 3. **Blocked on upstream Mathlib, not queued.** `lem:mellin-vertical` (11.13) needs a decay
    estimate for `|Γ(c+iτ)|` along a vertical line, which Mathlib does not carry in any form — and
    that clause is what would retire ledger A12, on which the rest of chapter 11 now rests.

@@ -261,3 +261,20 @@ this is the only check that they themselves are interface-free. All three reduce
 #print axioms Hemigroup.sigmaFinite_of_isCausal_of_measure_Icc_ne_top
 #print axioms Hemigroup.lintegral_one_sub_exp_eq_tail
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_k_atTop_nhds_zero
+
+/-! ### `lem:potential-kernel` and `prop:sonine-pair-exists` — Route B complete
+
+The lines that matter most in chapter 9, because they are what the route was *chosen* for. The
+blueprint's own proof of `lem:potential-kernel` goes through Bernstein–Widder for general measures
+— ledger **A1**, the entry the representation-first design exists to keep off the critical path.
+Route B constructs the measure instead, and these lines are the check that it worked: **A17 and
+nothing else**, with A1 and A2 absent. The article's claim about its own trust base is therefore
+machine-checked rather than asserted, in the one place it was most at risk.
+-/
+
+#print axioms Hemigroup.tailInv
+#print axioms Hemigroup.exists_tailMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.exists_levyTriple_symbol
+#print axioms Hemigroup.SelfDecomposableExponent.exists_subordinatorFamily
+#print axioms Hemigroup.SelfDecomposableExponent.existsUnique_potentialKernel
+#print axioms Hemigroup.SelfDecomposableExponent.exists_sonine_pair

@@ -160,6 +160,138 @@ theorem sigmaFinite_of_isCausal_of_measure_Icc_ne_top {μ : Measure ℝ} (hμ : 
     · obtain ⟨n, hn⟩ := exists_nat_ge r
       exact ⟨Icc 0 n, mem_insert_of_mem _ ⟨n, rfl⟩, ⟨hr, hn⟩⟩
 
+/-! ## The tail measure
+
+The Lévy measure of the symbol is `-dh` for the nonincreasing dilate `h`. It is **not** a Stieltjes
+measure in Mathlib's sense: a `StieltjesFunction` is `ℝ → ℝ`, so its measure is finite on every
+bounded interval, and `h` is unbounded at the origin for the stable family. The quantile transform
+handles that natively — push Lebesgue measure on `(0,∞)` forward under the generalised inverse
+`y ↦ sup {u > 0 : h u > y}`, and the mass that piles up near the origin is simply the mass at large
+`y`.
+
+What comes out is a sandwich, `h(r+) ≤ ν(r,∞) ≤ h(r)`, and the two sides agree off the countably
+many discontinuities of `h`. That countability is `Monotone.countable_not_continuousAt`, applied
+not to `h` — which is only `AntitoneOn (Ioi 0)` — but to `t ↦ -h(eᵗ)`, which is monotone on all of
+`ℝ`. Composing with `exp` is what turns a half-line hypothesis into a global one.
+-/
+
+section TailMeasure
+
+/-- The generalised inverse of a nonincreasing `h`: `tailInv h y = sup {u > 0 : h u > y}`. -/
+noncomputable def tailInv (h : ℝ → ℝ) (y : ℝ) : ℝ := sSup {u : ℝ | 0 < u ∧ y < h u}
+
+variable {h : ℝ → ℝ}
+
+theorem tailInv_nonneg (y : ℝ) : 0 ≤ tailInv h y := by
+  rcases eq_empty_or_nonempty {u : ℝ | 0 < u ∧ y < h u} with he | ⟨u, hu⟩
+  · rw [tailInv, he, Real.sSup_empty]
+  · by_cases hbd : BddAbove {u : ℝ | 0 < u ∧ y < h u}
+    · exact le_trans hu.1.le (le_csSup hbd hu)
+    · rw [tailInv, Real.sSup_of_not_bddAbove hbd]
+
+theorem bddAbove_tailSet (htend : Tendsto h atTop (𝓝 0)) {y : ℝ} (hy : 0 < y) :
+    BddAbove {u : ℝ | 0 < u ∧ y < h u} := by
+  obtain ⟨M, hM⟩ := eventually_atTop.mp (htend.eventually_lt_const hy)
+  refine ⟨M, fun u hu => ?_⟩
+  by_contra hc
+  exact absurd (hM u (le_of_lt (not_le.mp hc))) (not_lt.mpr hu.2.le)
+
+/-- The upper half of the sandwich: above `r`, the inverse only sees values below `h r`. -/
+theorem lt_of_lt_tailInv (hmono : AntitoneOn h (Ioi 0))
+    {y r : ℝ} (hr : 0 < r) (hlt : r < tailInv h y) : y < h r := by
+  have hne : {u : ℝ | 0 < u ∧ y < h u}.Nonempty := by
+    rcases eq_empty_or_nonempty {u : ℝ | 0 < u ∧ y < h u} with he | hne
+    · rw [tailInv, he, Real.sSup_empty] at hlt; linarith
+    · exact hne
+  obtain ⟨u, hu, hru⟩ := exists_lt_of_lt_csSup hne hlt
+  exact lt_of_lt_of_le hu.2 (hmono (mem_Ioi.mpr hr) (mem_Ioi.mpr hu.1) hru.le)
+
+/-- The lower half: any `y` below `h u` is mapped past every `r < u`. -/
+theorem lt_tailInv_of_lt (htend : Tendsto h atTop (𝓝 0)) {y u r : ℝ} (hy : 0 < y) (hu : 0 < u)
+    (hru : r < u) (hlt : y < h u) : r < tailInv h y :=
+  lt_of_lt_of_le hru (le_csSup (bddAbove_tailSet htend hy) ⟨hu, hlt⟩)
+
+theorem antitoneOn_tailInv (htend : Tendsto h atTop (𝓝 0)) :
+    AntitoneOn (tailInv h) (Ioi 0) := by
+  intro y₁ h₁ y₂ h₂ h12
+  rcases eq_empty_or_nonempty {u : ℝ | 0 < u ∧ y₂ < h u} with he | hne
+  · rw [tailInv, he, Real.sSup_empty]; exact tailInv_nonneg _
+  · exact csSup_le_csSup (bddAbove_tailSet htend (mem_Ioi.mp h₁)) hne
+      (fun u hu => ⟨hu.1, lt_of_le_of_lt h12 hu.2⟩)
+
+/-- **The tail measure.** `ν = (Leb on `(0,∞)`) ∘ tailInv⁻¹` has `ν(r,∞) = h(r)` at every
+continuity point of `h`, hence almost everywhere. -/
+theorem exists_tailMeasure (hmono : AntitoneOn h (Ioi 0)) (htend : Tendsto h atTop (𝓝 0)) :
+    ∃ ν : Measure ℝ, IsCausal ν ∧
+      ∀ᵐ r ∂(volume.restrict (Ioi (0 : ℝ))), ν (Ioi r) = ENNReal.ofReal (h r) := by
+  have hmeas : AEMeasurable (tailInv h) (volume.restrict (Ioi (0 : ℝ))) :=
+    aemeasurable_of_antitoneOn (antitoneOn_tailInv htend)
+  refine ⟨(volume.restrict (Ioi (0 : ℝ))).map (tailInv h), ?_, ?_⟩
+  · rw [IsCausal, Measure.map_apply_of_aemeasurable hmeas measurableSet_Iio]
+    convert measure_empty (μ := volume.restrict (Ioi (0 : ℝ)))
+    ext y
+    simp only [mem_preimage, mem_Iio, mem_empty_iff_false, iff_false, not_lt]
+    exact tailInv_nonneg y
+  · -- the sandwich, at continuity points
+    have hup : ∀ r : ℝ, 0 < r →
+        ((volume.restrict (Ioi (0 : ℝ))).map (tailInv h)) (Ioi r) ≤ ENNReal.ofReal (h r) := by
+      intro r hr
+      rw [Measure.map_apply_of_aemeasurable hmeas measurableSet_Ioi,
+        Measure.restrict_apply' measurableSet_Ioi]
+      refine le_trans (measure_mono (fun y hy => ?_)) (le_of_eq (by
+        rw [Real.volume_Ioo, sub_zero]))
+      exact ⟨mem_Ioi.mp hy.2, lt_of_lt_tailInv hmono hr hy.1⟩
+    have hlow : ∀ r u : ℝ, 0 < r → r < u →
+        ENNReal.ofReal (h u) ≤ ((volume.restrict (Ioi (0 : ℝ))).map (tailInv h)) (Ioi r) := by
+      intro r u hr hru
+      rw [Measure.map_apply_of_aemeasurable hmeas measurableSet_Ioi,
+        Measure.restrict_apply' measurableSet_Ioi]
+      have hvol : volume (Ioo (0 : ℝ) (h u)) = ENNReal.ofReal (h u) := by
+        rw [Real.volume_Ioo, sub_zero]
+      rw [← hvol]
+      refine measure_mono ?_
+      rintro y ⟨hy0, hyu⟩
+      exact ⟨lt_tailInv_of_lt htend hy0 (lt_trans hr hru) hru hyu, hy0⟩
+    -- `h` is continuous off a countable set: transport to `t ↦ h (exp t)`, antitone on all of `ℝ`.
+    have hcount : {r : ℝ | 0 < r ∧ ¬ ContinuousWithinAt h (Ioi r) r}.Countable := by
+      have hH : Monotone (fun t : ℝ => -h (Real.exp t)) := by
+        intro a b hab
+        exact neg_le_neg (hmono (mem_Ioi.mpr (Real.exp_pos a)) (mem_Ioi.mpr (Real.exp_pos b))
+          (Real.exp_le_exp.mpr hab))
+      refine Countable.mono ?_ (hH.countable_not_continuousAt.image Real.exp)
+      rintro r ⟨hr, hnc⟩
+      refine ⟨Real.log r, fun hc => hnc ?_, Real.exp_log hr⟩
+      -- `-h ∘ exp` continuous at `log r` gives `h` continuous at `r`.
+      have hc' : ContinuousAt (fun t : ℝ => h (Real.exp t)) (Real.log r) := by
+        simpa using hc.neg
+      have hlog : ContinuousAt Real.log r := Real.continuousAt_log (ne_of_gt hr)
+      refine (ContinuousAt.congr (hc'.comp hlog) ?_).continuousWithinAt
+      filter_upwards [Ioi_mem_nhds hr] with y hy
+      simp [Real.exp_log (mem_Ioi.mp hy)]
+    have h0 : volume {r : ℝ | 0 < r ∧ ¬ ContinuousWithinAt h (Ioi r) r} = 0 :=
+      hcount.measure_zero volume
+    have hnull : (volume.restrict (Ioi (0 : ℝ)))
+        {r : ℝ | 0 < r ∧ ¬ ContinuousWithinAt h (Ioi r) r} = 0 := by
+      rw [Measure.restrict_apply₀' measurableSet_Ioi.nullMeasurableSet]
+      exact measure_mono_null inter_subset_left h0
+    have hae : ∀ᵐ r ∂(volume.restrict (Ioi (0 : ℝ))),
+        r ∉ {r : ℝ | 0 < r ∧ ¬ ContinuousWithinAt h (Ioi r) r} := by
+      rw [ae_iff]
+      simpa using hnull
+    filter_upwards [ae_restrict_mem measurableSet_Ioi, hae] with r hr hcont
+    have hrp : (0 : ℝ) < r := mem_Ioi.mp hr
+    have hcr : ContinuousWithinAt h (Ioi r) r := by
+      by_contra hc
+      exact hcont ⟨hrp, hc⟩
+    refine le_antisymm (hup r hrp) ?_
+    have hlim : Tendsto (fun u => ENNReal.ofReal (h u)) (𝓝[>] r) (𝓝 (ENNReal.ofReal (h r))) :=
+      (ENNReal.continuous_ofReal.tendsto _).comp hcr
+    refine le_of_tendsto hlim ?_
+    filter_upwards [self_mem_nhdsWithin] with u hu
+    exact hlow r u hrp (mem_Ioi.mp hu)
+
+end TailMeasure
+
 namespace SelfDecomposableExponent
 
 variable (F : SelfDecomposableExponent)

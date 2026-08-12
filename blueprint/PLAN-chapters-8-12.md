@@ -810,3 +810,66 @@ regularity fact that fell out of a statement rather than being planned for.
    inclusions, and `h(r+) = h(r)` off a countable set because a monotone function has countably
    many discontinuities — applied to `u ↦ h(e^u)`, which is antitone on *all* of `ℝ` and so
    dodges the fact that `h` itself is only `AntitoneOn (Ioi 0)` and unbounded at the origin.
+
+---
+
+# Route B is complete — 2026-08-11
+
+`exists_tailMeasure` is proved, and with it the whole of chapter 9's `[T]` line.
+`lem:potential-kernel` and `prop:sonine-pair-exists` are `\leanok`; `Hemigroup/PotentialKernel.lean`
+and `Hemigroup/Subordinator.lean` hold the development. **`#print axioms` gives A17 and nothing
+else** — A1 and A2 absent, which is the whole point: the blueprint's own proof of 9.4 goes through
+Bernstein–Widder for general measures, and the article's claim that its representation-first design
+keeps A1 off the critical path is now machine-checked in the one place it was most at risk.
+32 nodes `\leanok`. `exists_levyTriple_symbol` reduces to **Lean core**.
+
+## The tail measure: the quantile transform, and where the countability came from
+
+`ν := (Leb on (0,∞)) ∘ tailInv⁻¹` with `tailInv h y = sup {u > 0 : h u > y}`. Two inclusions give
+the sandwich `h(r+) ≤ ν(r,∞) ≤ h(r)`, and the two ends agree off the countably many
+discontinuities of `h`.
+
+The countability is `Monotone.countable_not_continuousAt` — but not applied to `h`, which is only
+`AntitoneOn (Ioi 0)` and unbounded at the origin. Applied instead to `t ↦ -h(eᵗ)`, which is
+monotone on **all** of `ℝ`. **Composing with `exp` is what turns a half-line hypothesis into a
+global one**, and it is worth remembering as a general move: this development is full of
+`AntitoneOn (Ioi 0)` hypotheses that Mathlib's monotone-function theory does not accept, and the
+multiplicative-to-additive change of variable converts them at no cost.
+
+## The scaling clause was split off
+
+9.4 also asserted `ℓ^{(x)} = x · (ℓ^{(1)} ∘ (t ↦ xt))`. That clause presupposes a *named*
+`ℓ^{(x)}`, and the Lean statement is an existence-and-uniqueness one — the object has to be chosen
+before a scaling law can be predicated of it, and this development has never needed that choice:
+`thm:sonine-conservation` and `prop:sonine-pair-exists` both quantify over an arbitrary `ℓ` meeting
+the specification. Appended as `lem:potential-kernel-scaling` (9.16), `[T]`, untagged; it is a
+transform comparison plus 9.4's uniqueness clause once someone wants the definition.
+
+## Tally of what the statement-first order found, across Route B
+
+Four findings, all from writing statements before proving them, and no two of the same kind:
+
+| | what | kind |
+|---|---|---|
+| `Measurable μ` | missing from the work order | a clause carrying the reachability of the statement |
+| `F.Nondegenerate` | present in `exists_levyTriple_symbol`, unused | an inert clause |
+| `SFinite ν` | demanded by the decomposition, not by the statement | a clause introduced by an anticipated *proof method* |
+| `StieltjesFunction` | named by the work order, wrong for the job | a *tool* named where a *property* was meant |
+
+The last two are the ones worth carrying forward. A decomposition should say what each piece must
+*achieve*, not how it will be proved or with what: the layer cake removed the `SFinite` hypothesis
+the Tonelli plan had introduced, and stating the tail measure by its tail rather than by
+`StieltjesFunction` is what left both constructions available when the named one turned out not to
+apply.
+
+## Next
+
+Chapter 9 is closed to what its ledger allows. What remains anywhere is `[A]` or blocked upstream:
+
+1. `prop:pair-regularity`(2) — ledger A9, an interface by design.
+2. `prop:scale-evolution`, `cor:exact-inversion` — distributional; Mathlib's `Analysis/Distribution/`
+   still lacks the embedding of a locally integrable function and convolution with a measure.
+   Re-check on each Mathlib bump.
+3. `lem:mellin-vertical` — Γ's vertical decay, absent upstream; it is what would retire A12 and
+   with it the rest of chapter 11.
+4. Chapters 10 and 12 — C₀-semigroup theory and Bessel `K`, both absent upstream.
