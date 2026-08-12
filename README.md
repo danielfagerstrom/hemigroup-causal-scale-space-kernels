@@ -39,7 +39,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Thirty-five nodes carry `\lean{...}\leanok`:
+Thirty-six nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -51,7 +51,7 @@ Thirty-five nodes carry `\lean{...}\leanok`:
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
-| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action` — Theorem 4$'$'s Mellin data, the symbol `B`, and the inversion operator with everything that follows once `B(θ)g` has a referent |
+| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, and its eigenfunction relation `A[H(s·)] = s·H(s·)`, which is Theorem 4$'$(1) |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -66,14 +66,13 @@ The next work, in order. `blueprint/PLAN-chapters-8-12.md` carries the reasoning
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable:
 
-1. **`lem:symbol-uniqueness` and `thm:signaling-form`, and with them ledger A12's fate.**
-   `def:inversion-operator` is now formalised, split into the operator (total, hypothesis-free)
-   and `lem:inversion-operator-action`, which computes it *given* the function `h` that
-   `B(θ)g` names — everything after that referent exists is `[T]` and proved. What A12 is left
-   carrying is one step, the production of `h`, and every use of `A` in the article applies it to
-   a profile `H(s·)` where `h(x) = s x H(sx)` is explicit. So whether A12 retires with no citation
-   spent is a checkable question about *this article*, and checking it node by node is exactly
-   what the two remaining chapter-11 theorems consist of.
+1. **`lem:symbol-uniqueness`, and then Theorem 4$'$ entire.** `def:inversion-operator` is
+   formalised, and so is its only instance: `lem:profile-eigenfunction` is Theorem 4$'$(1), and it
+   *exhibits* the function `B(θ)g` names rather than inferring its existence. Since clause (2)'s
+   Laplace form is clause (1) applied to `û(s,·) = f̂(s)H(s·)`, the profile dilate is the only
+   shape in which `A` is ever applied — so the one step ledger A12 is still assigned is never
+   invoked. What is left of chapter 11 is clause (3), whose rigidity half (`lem:symbol-rigidity`)
+   is already proved, and clause (2)'s Mellin form.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical

@@ -310,3 +310,27 @@ every use of `A` exhibit its `h`? — and the profile case is the one to settle 
 #print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_eq
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator_eq
+
+/-! ### The profile instance, and what it does to **A12**
+
+`def:inversion-operator`'s remaining interface is the production of the function `B(θ)g` names.
+These lines are the check that the article never calls on it: for the only shape in which `A` is
+ever applied — the profile dilate `g = H(s·)` — the referent `h(x) = s x H(sx)` is *exhibited*,
+and `#print axioms` on the instance gives A17 and nothing else.
+
+`inversionOperator_profile` is then the eigenfunction relation `A[H(s·)] = s H(s·)`, i.e.
+`thm:signaling-form`(1). Note that the instance and the eigenfunction relation are the same
+statement: `A g = x⁻¹h` and `h(x) = s x H(sx)` give `s H(sx)` with the weights cancelling.
+
+The two `mellin_profile_ne_zero` lines are what the a.e. reading of the realising identity costs.
+The blueprint's proof of clause (1) says the product `B(-z)g̃(z)` "contain[s] no division"; that is
+true of the simplified product and false of `B` as a function, so the division has to be cancelled
+on the line, which needs its zeros to be null.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.countable_zeros_mellin_profile
+#print axioms Hemigroup.SelfDecomposableExponent.ae_mellin_profile_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.mellinConvergent_profile
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_profile_comp_mul_weight
+#print axioms Hemigroup.SelfDecomposableExponent.realisesSymbolAction_profile
+#print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_profile

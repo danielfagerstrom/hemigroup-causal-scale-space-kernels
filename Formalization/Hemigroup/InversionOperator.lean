@@ -5,6 +5,9 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.InversionSymbol
 import Hemigroup.MellinVertical
+-- For `continuousOn_laplace`: the profile instance below needs `H` continuous at a point, which is
+-- the standing continuity of a causal finite measure's transform on `[0,∞)`.
+import Hemigroup.TransformContinuity
 
 /-!
 # The inversion operator
@@ -143,6 +146,137 @@ theorem mellin_inversionOperator_eq {c : ℝ} {g h : ℝ → ℂ} (hrep : F.Real
     (hz : mellin h (z - 1) = F.inversionSymbol (z - 1) * mellin g (z - 1)) :
     mellin (F.inversionOperator c g) z = F.inversionSymbol (z - 1) * mellin g (z - 1) := by
   rw [F.mellin_inversionOperator hrep hcont z, hz]
+
+/-! ## The profile instance, and the eigenfunction relation
+
+The case the article actually uses, and the one that decides ledger A12: `g = H(s·)`, the dilate of
+the profile, with the referent `h(x) = s x H(sx)` exhibited outright. Nothing here is a hypothesis
+about `g` — the realising function is produced, so this is the check that A12's remaining step is
+never called upon.
+
+The two transforms are one Mellin shift apart, `h̃(w) = s^{-w} H̃(w+1)` against
+`g̃(w) = s^{-w} H̃(w)`, and their ratio is `inversionSymbol` by definition. So the realising
+identity is not a computation at all: it is `B` written out, with the denominator cleared — which
+is why it needs `H̃(w) ≠ 0`, and why it can only be asked for almost everywhere. The blueprint's
+proof says "no pole of `B` intervenes, the product containing no division", and that is true of
+the *simplified* product; `B` here is a function, so the division is present and has to be
+cancelled, which costs `ae_mellin_profile_ne_zero`.
+
+And then `A g = x⁻¹ h` reads `(A[H(s·)])(x) = s H(sx)`, which is Theorem 4′'s eigenfunction
+relation. The instance and the eigenfunction relation are the same statement. -/
+
+/-- The Mellin transform of a dilate: `g̃(w) = s^{-w} H̃(w)`. -/
+theorem mellin_profile_comp_mul {s : ℝ} (hs : 0 < s) (w : ℂ) :
+    mellin (fun x : ℝ => (F.profile (s * x) : ℂ)) w
+      = (s : ℂ) ^ (-w) * mellin (fun u => (F.profile u : ℂ)) w := by
+  rw [mellin_comp_mul_left (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) w hs, smul_eq_mul]
+
+/-- The Mellin transform of the realising function: `h̃(w) = s^{-w} H̃(w+1)`.
+
+`h(x) = s·x·H(sx)` is `s • (x^1 • g(x))`, so the weight `x` is a Mellin shift by one and the
+constant comes out; the two powers of `s` then combine as `s^1 · s^{-(w+1)} = s^{-w}`. -/
+theorem mellin_profile_comp_mul_weight {s : ℝ} (hs : 0 < s) (w : ℂ) :
+    mellin (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) w
+      = (s : ℂ) ^ (-w) * mellin (fun u => (F.profile u : ℂ)) (w + 1) := by
+  have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
+  have hfun : (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ))
+      = fun x : ℝ => (s : ℂ) • ((x : ℂ) ^ (1 : ℂ) • ((F.profile (s * x) : ℝ) : ℂ)) := by
+    funext x
+    simp [Complex.cpow_one, smul_eq_mul, mul_assoc]
+  rw [hfun, mellin_const_smul, mellin_cpow_smul, smul_eq_mul,
+    mellin_comp_mul_left (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) (w + 1) hs, smul_eq_mul,
+    ← mul_assoc]
+  congr 1
+  rw [show (-w : ℂ) = 1 + -(w + 1) from by ring, Complex.cpow_add _ _ hs0, Complex.cpow_one]
+
+/-- `MellinConvergent` for the realising function, from the profile's own convergence one step
+higher in the strip: the weight `x` and the dilation are both Mellin-transparent. -/
+theorem mellinConvergent_profile_comp_mul_weight (hH : F.StandingHypothesis) {c s : ℝ}
+    (hc : 0 < c) (hc' : c + 1 < F.zStar) (hs : 0 < s) :
+    MellinConvergent (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) c := by
+  have hbase : MellinConvergent (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) ((c : ℂ) + 1) :=
+    F.mellinConvergent_profile hH (z := (c : ℂ) + 1) (by simp; linarith) (by simp; linarith)
+  have hdil : MellinConvergent (fun x : ℝ => ((F.profile (s * x) : ℝ) : ℂ)) ((c : ℂ) + 1) :=
+    (MellinConvergent.comp_mul_left hs).mpr hbase
+  have hweight : MellinConvergent
+      (fun x : ℝ => (x : ℂ) ^ (1 : ℂ) • ((F.profile (s * x) : ℝ) : ℂ)) (c : ℂ) :=
+    MellinConvergent.cpow_smul.mpr hdil
+  have hfun : (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ))
+      = fun x : ℝ => (s : ℂ) • ((x : ℂ) ^ (1 : ℂ) • ((F.profile (s * x) : ℝ) : ℂ)) := by
+    funext x
+    simp [Complex.cpow_one, smul_eq_mul, mul_assoc]
+  rw [hfun]
+  exact hweight.const_smul _
+
+/-- Vertical integrability for the realising function: `lem:mellin-vertical` at height `c+1`,
+carried across by a multiplier of constant modulus `s^{-c}`. -/
+theorem verticalIntegrable_mellin_profile_comp_mul_weight (hH : F.StandingHypothesis) {c s : ℝ}
+    (hc : 0 < c) (hc' : c + 1 < F.zStar) (hs : 0 < s) :
+    Complex.VerticalIntegrable
+      (mellin fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) c := by
+  have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
+  have harg : ∀ y : ℝ, (((c + 1 : ℝ) : ℂ) + y * Complex.I) = ((c : ℂ) + y * Complex.I) + 1 := by
+    intro y
+    push_cast
+    ring
+  have hbase : Integrable fun y : ℝ =>
+      mellin (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) (((c + 1 : ℝ) : ℂ) + y * Complex.I) :=
+    F.verticalIntegrable_mellin_profile hH (c := c + 1) (by linarith) hc'
+  have hshift : Integrable fun y : ℝ =>
+      mellin (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) (((c : ℂ) + y * Complex.I) + 1) := by
+    simpa only [harg] using hbase
+  have hmeas : AEStronglyMeasurable
+      (fun y : ℝ => (s : ℂ) ^ (-((c : ℂ) + y * Complex.I))) volume := by
+    refine Continuous.aestronglyMeasurable (continuous_iff_continuousAt.mpr fun y => ?_)
+    exact ContinuousAt.const_cpow (by fun_prop) (Or.inl hs0)
+  have hbound : ∀ᵐ y : ℝ, ‖(s : ℂ) ^ (-((c : ℂ) + y * Complex.I))‖ ≤ s ^ (-c) := by
+    refine .of_forall fun y => ?_
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hs]
+    simp
+  have := hshift.bdd_mul hmeas hbound
+  refine this.congr (.of_forall fun y => ?_)
+  exact (F.mellin_profile_comp_mul_weight hs _).symm
+
+/-- **The profile realises the symbol's action on its own dilate.**
+
+Ledger A12's remaining step is never called upon in this article, because this is the only shape in
+which `A` is ever applied and the referent is exhibited rather than asserted. The realising
+identity is `inversionSymbol` written out with its denominator cleared, so it holds exactly where
+`H̃` does not vanish — a set of full measure on the line by `ae_mellin_profile_ne_zero`. -/
+theorem realisesSymbolAction_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 0 < c)
+    (hc' : c + 1 < F.zStar) (hs : 0 < s) :
+    F.RealisesSymbolAction c (fun x : ℝ => (F.profile (s * x) : ℂ))
+      (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) where
+  mellin_eq := by
+    filter_upwards [F.ae_mellin_profile_ne_zero hH hc (by linarith)] with y hy
+    rw [F.mellin_profile_comp_mul_weight hs, F.mellin_profile_comp_mul hs, inversionSymbol]
+    field_simp
+  convergent := F.mellinConvergent_profile_comp_mul_weight hH hc hc' hs
+  verticalIntegrable := F.verticalIntegrable_mellin_profile_comp_mul_weight hH hc hc' hs
+
+/-- **The eigenfunction relation**, `A[H(s·)] = s·H(s·)`: the clause `thm:signaling-form` is built
+on, and the same statement as the instance above.
+
+`A g = x⁻¹ h` with `h(x) = s x H(sx)` is `s H(sx)` on the nose — the weight `x⁻¹` in
+`def:inversion-operator` is exactly what cancels the weight `x` that shifts the transform. -/
+theorem inversionOperator_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 0 < c)
+    (hc' : c + 1 < F.zStar) (hs : 0 < s) {x : ℝ} (hx : 0 < x) :
+    F.inversionOperator c (fun u : ℝ => (F.profile (s * u) : ℂ)) x
+      = (s : ℂ) * (F.profile (s * x) : ℂ) := by
+  have hprof : ContinuousAt (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) (s * x) := by
+    have hcont := continuousOn_laplace (μ := F.lawT₁) F.isCausal_lawT₁
+    have hat : ContinuousAt (fun u : ℝ => laplace F.lawT₁ u) (s * x) :=
+      hcont.continuousAt (Ici_mem_nhds (mul_pos hs hx))
+    exact Complex.continuous_ofReal.continuousAt.comp hat
+  have hcont : ContinuousAt
+      (fun u : ℝ => (s : ℂ) * (u : ℂ) * (F.profile (s * u) : ℂ)) x := by
+    exact ((continuousAt_const.mul (Complex.continuous_ofReal.continuousAt)).mul
+      (hprof.comp (by fun_prop)))
+  rw [F.inversionOperator_eq (F.realisesSymbolAction_profile hH hc hc' hs) hx hcont]
+  have hx0 : (x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
+  rw [show (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)
+      = (x : ℂ) * ((s : ℂ) * (F.profile (s * x) : ℂ)) from by ring,
+    ← mul_assoc, Complex.ofReal_inv, inv_mul_cancel₀ hx0, one_mul]
 
 end SelfDecomposableExponent
 

@@ -999,14 +999,49 @@ line — but "discrete implies countable" has to be found or proved in Mathlib, 
 to scout before claiming the instance is routine. Recording it here rather than discovering it
 mid-proof is the whole point of this file.
 
+## The profile instance, same day — A12's use is empty
+
+Done in the same round, and it changes the answer above rather than deferring it.
+`lem:profile-eigenfunction` (11.17) is proved: for `g = H(s·)` the realising function is
+`h(x) = s x H(sx)`, exhibited, and `realisesSymbolAction_profile` discharges all three fields.
+A17 and nothing else.
+
+Three things came out of it worth keeping.
+
+**The instance and the eigenfunction relation are the same statement.** `A g = x⁻¹h` with
+`h(x) = s x H(sx)` is `s H(sx)` — the weight `x⁻¹` in the definition of `A` is exactly what
+cancels the weight `x` that shifts the transform. So proving the instance *is* proving
+`thm:signaling-form`(1); there was no second step.
+
+**Hence A12 is never invoked.** The one step it is still assigned — that absolute integrability
+produces `B(θ)g` — is not used, because the function is written down instead. And the profile
+dilate is the only shape in which `A` is ever applied here: clause (2)'s Laplace form is clause (1)
+applied to `û(s,·) = f̂(s)H(s·)`. The `[A]` tag stays on 11.3, because it records the *paper's*
+stance and the paper is entitled to cite Widder for its inversion integral — the A5/A6 situation of
+chapter 2 exactly. What is new is that the record underneath it is complete.
+
+**The null-set step was correctly flagged and correctly priced.** Isolated zeros give a set
+discrete in the strip, `ℂ` is hereditarily Lindelöf, so it is countable and its preimage on a line
+is null. Mathlib has every piece (`isDiscrete_of_codiscreteWithin`,
+`IsLindelof.countable_of_isDiscrete`) and the proof is fifteen lines. What the flag bought was not
+avoiding a surprise but knowing where to look; scouting it took longer than proving it.
+
+And it caught something in the prose. The draft's proof of clause (1) says of `B(-z)g̃(z)` that
+"no pole of `B` intervenes, the product containing no division". True of the *simplified* product
+`s^{-z}H̃(z+1)`, false of `B` read as a function — where the division is present and cancelling it
+is what needs the zeros to be null. **The prose does algebra on symbols; the formalisation does it
+on functions, and that is where the gap between them lives.** It is the same shape as the two
+"which equality on the strip" findings, and the third instance of it in this chapter.
+
 ## Next
 
-1. **The profile instance** — `RealisesSymbolAction` for `g = H(s·)`, `h = s x H(sx)`. It settles
-   A12's fate and is simultaneously the eigenfunction clause of `thm:signaling-form`. Scout the
-   null-set-of-zeros step first.
-2. `lem:symbol-uniqueness` (11.4) step 1 — the reduction of the operator relation to the transform
-   relation, which is `lem:inversion-operator-action` applied twice; the rigidity half (11.15) is
-   already proved.
+1. `lem:symbol-uniqueness` (11.4) step 1 — the reduction of the operator relation to the transform
+   relation. With the operator now computed through its realising function, this is: two operators
+   agreeing on the profiles have `h₁ = h₂` on `(0,∞)`, hence `h̃₁ = h̃₂`, hence the hypothesis of
+   `lem:symbol-rigidity` (11.15), which is already proved. Note that this route needs no
+   injectivity of `mellinInv` — the realising function carries the information instead.
+2. `thm:signaling-form`(2)'s Mellin form — `lem:memory-fractional-integrals` (11.5) combined with
+   `lem:mellin-data`. Clause (1) is done.
 3. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
    `prop:scale-evolution` and `cor:exact-inversion` (distributions).
 4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` left in the repo.

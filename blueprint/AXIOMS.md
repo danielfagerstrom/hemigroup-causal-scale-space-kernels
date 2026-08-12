@@ -339,7 +339,7 @@ articles that have not yet pinned a ledger.
 - **Confidence.** ✅ well grounded, with the notation caveat recorded above.
 
 ## A12 — Mellin inversion on a vertical line of absolute convergence
-**Blueprint:** `def:inversion-operator` · **Lean:** `Hemigroup.SelfDecomposableExponent.inversionOperator` (the operator; the entry carries only the production of `B(θ)g`)
+**Blueprint:** `def:inversion-operator` · **Lean:** `Hemigroup.SelfDecomposableExponent.inversionOperator` (the operator; the one step the entry still carries is never invoked — see the sixth reading)
 **Cite:** @widder1941laplace — Ch. VI, §9 "The Mellin Transform", Theorem 9a, pp. 246–247
 
 - **Statement as used.** Draft Lemma 11.2 and Definition 11.3: if the Mellin transform
@@ -480,6 +480,8 @@ articles that have not yet pinned a ledger.
   | 2 | the article's **use** of it | retirable at formalisation cost | right about the article, silent about Lean |
   | 3 | the **named lemma** the classical proof needs | blocked upstream on Γ decay | reasoned about the proof, not the obligation |
   | 4 | **the statement, by attempting it** | proved | — |
+  | 5 | the **node**, by formalising it | narrowed to one step | (the narrowing *was* the finding) |
+  | 6 | the article's **uses**, by proving them | the use is empty | — |
 
   A survey answers "is this theory present?". Only attempting the proof answers "is this theorem
   reachable?", and here the two answers differed by two orders of magnitude of work.
@@ -523,6 +525,37 @@ articles that have not yet pinned a ledger.
   integral does not see them. This is the second time in chapter 11 that "equality on the strip"
   has had to say which equality it means; `lem:symbol-rigidity` was the first, and both times it
   was writing the statement, not reading it, that raised the question.
+
+- **Sixth reading, 2026-08-12, same round — the article's use of A12 is empty.** The fifth reading
+  ended by saying that whether A12 retires is now a question about this article: does every use of
+  `A` exhibit its `h`? It does, and the check is machine-checked.
+
+  `lem:profile-eigenfunction` (11.17), Lean
+  `Hemigroup.SelfDecomposableExponent.inversionOperator_profile`: for the profile dilate
+  `g = H(s·)` the realising function is `h(x) = s x H(sx)`, written down rather than inferred, and
+  the instance `realisesSymbolAction_profile` is proved outright. `#print axioms` gives A17 and
+  nothing else. The exhibition is free — `h̃(w) = s^{-w}H̃(w+1)` and `g̃(w) = s^{-w}H̃(w)` are one
+  Mellin shift apart and their ratio is `B` by construction — and the conclusion `A g = x⁻¹h` reads
+  `A[H(s·)](x) = s H(sx)`, which *is* `thm:signaling-form`(1). The instance and the eigenfunction
+  relation are the same statement.
+
+  That dilate is the only shape in which `A` is ever applied here: clause (2)'s Laplace form is
+  clause (1) applied to `û(s,·) = f̂(s)H(s·)`. So the step A12 was left carrying is never invoked.
+
+  **The entry stays.** Retiring it would be a claim about the *paper*, which cites Widder for the
+  inversion integral and is entitled to. This is the A5/A6 situation of Chapter 2 exactly: the `[A]`
+  tag records the paper's stance, and the `[T]` nodes underneath record what is machine-checked.
+  What changes is that the record is now complete — nothing in the formal development reaches this
+  citation, and `trust-boundary.txt` still holds two names.
+
+  **One line of the draft's proof did not survive transcription.** It says of the product
+  `B(-z)g̃(z)` that "no pole of `B` intervenes, the product containing no division". True of the
+  *simplified* product `s^{-z}H̃(z+1)`; false of `B` read as a function, where the division is
+  present and cancelling it needs `H̃(z) ≠ 0`. Hence the a.e. reading, and hence a small new lemma:
+  the zeros of `H̃` on a vertical line are null, because isolated zeros form a discrete subset of
+  the strip and `ℂ` is hereditarily Lindelöf, so the set is countable. The prose was doing algebra
+  on symbols where the formalisation does it on functions, and that is where the gap between them
+  sits.
 
 ## A13 — A Laplace transform with nonnegative integrand is singular at its abscissa of convergence
 **Blueprint:** `lem:moment-recursion` · **Lean:** *(not stated yet)*

@@ -37,6 +37,13 @@
 % (11.16), a number the draft does not use, and 11.3 keeps its number, its statement and A12 --
 % now narrowed to the one step that produces the referent. Same discipline as the 11.2 split and
 % the Lemma 7.1 precedent behind it.
+%
+% AND THE REFERENT IS ALWAYS EXHIBITED (2026-08-12, same round). Clause (1) of 11.6 is proved and
+% split off as lem:profile-eigenfunction (11.17): for the profile dilate H(s.) the realising
+% function is h(x) = s x H(sx), written down rather than inferred. Since 11.6(2)'s Laplace form is
+% (1) applied to hat u(s,.) = hat f(s) H(s.), that dilate is the ONLY shape in which A is ever
+% applied here -- so the article's use of A12 is empty. The [A] tag stays on 11.3 because it is
+% the paper's stance (as A5/A6 do in chapter 2); what is checked is recorded on 11.16 and 11.17.
 
 Theorem~4 of \sscite{fagerstrom2005temporal} inverts the scale-Cauchy problem into an
 evolution \emph{in time} over the memory line: $\partial_t u = D^{1/\alpha}_{x,-} u$ with
@@ -247,7 +254,7 @@ $f(0) = 0$.
 
 % draft: Theorem 11.6
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
-\uses{def:standing-hypothesis,lem:mellin-data,lem:mellin-vertical,lem:inversion-symbol,def:inversion-operator,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
+\uses{def:standing-hypothesis,lem:mellin-data,lem:mellin-vertical,lem:inversion-symbol,def:inversion-operator,lem:profile-eigenfunction,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
 Assume (H) and work in the canonical gauge. Then:
 \begin{enumerate}
 \item \emph{(Eigenfunctions.)} For every $s > 0$ the profile $H(s\,\cdot)$ lies in the domain
@@ -272,7 +279,14 @@ property (1), hence with property (2).
 \end{enumerate}
 \statusT\quad\emph{(the hemigroup analogue of \sscite{fagerstrom2005temporal}, Thm.~4, whose
 translation-invariant operator is recovered in \ref{ex:stable-signaling} as an accident of
-homogeneity. Proved here, not cited.)}
+homogeneity. Proved here, not cited.}
+
+\emph{\textbf{Clause~(1) is machine-checked}, as \ref{lem:profile-eigenfunction}, which is where
+its Lean tag sits --- the theorem keeps its full statement and its number, on the pattern of
+\ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That clause is also what empties the
+article's use of \ledger{A12}: it \emph{exhibits} the realising function rather than inferring its
+existence, and the Laplace form of clause~(2) is clause~(1) applied to
+$\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$, so no other shape of $g$ ever reaches $A$.)}
 \end{theorem}
 
 \begin{proof}
@@ -607,4 +621,60 @@ integral is the inverse Mellin transform of $\tilde h$ at height $c$; under the 
 hypotheses that recovers $h(x)$ at every point of continuity, which is the first display. The
 second is then the Mellin transform of $x^{-1}h(x)$, i.e.\ $\tilde h$ with its argument shifted by
 one.
+\end{proof}
+
+% additive: not in the draft. Clause (1) of Theorem 11.6, split off on 2026-08-12 when it was
+% proved. 11.6 keeps its full statement and its number; this is the node that carries the Lean
+% tag, as 11.15 does for 11.4. Numbered 11.17.
+
+\begin{lemma}[the profiles are eigenfunctions]\label{lem:profile-eigenfunction}
+\uses{def:inversion-operator,lem:inversion-operator-action,lem:inversion-symbol,lem:mellin-vertical}
+\lean{Hemigroup.SelfDecomposableExponent.inversionOperator_profile}\leanok
+Assume (H), let $c \in (0, z_*-1)$ and $s > 0$. Then the dilate $H(s\,\cdot)$ lies in the domain of
+\ref{def:inversion-operator} --- its realising function is $h(x) = s\,x\,H(sx)$, exhibited --- and
+\[
+  A\bigl[H(s\,\cdot)\bigr](x) \;=\; s\,H(sx), \qquad x > 0 .
+\]
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.inversionOperator\_profile}, with
+\texttt{realisesSymbolAction\_profile} carrying the domain clause;
+\texttt{\#print axioms} gives \ledger{A17} and nothing else. Clause~(1) of
+\ref{thm:signaling-form}, split off when proved, on the pattern of \ref{lem:symbol-rigidity}
+and 
+ef{lem:symbol-uniqueness}: 11.6 keeps its full statement, and the Lean tag sits on the
+clause that carries it.}
+
+\emph{\textbf{This is what settles \ledger{A12}, and it settles it by never using it.} That entry is
+left carrying one step --- that absolute integrability of $B(-z)\tilde g(z)$ on the line \emph{produces}
+the function $B(\theta)g$. Here the function is produced by exhibition instead, and the exhibition is
+free: $\tilde h(w) = s^{-w}\tilde H(w+1)$ against $\tilde g(w) = s^{-w}\tilde H(w)$ are one Mellin shift
+apart, and their ratio is $B$ by \ref{lem:inversion-symbol}. Since this dilate is the \emph{only}
+shape in which $A$ is ever applied --- 
+ef{thm:signaling-form}(2)'s Laplace form is this clause
+applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$ --- the article's use of \ledger{A12} is empty. The
+entry keeps its \textbf{[A]} tag on 
+ef{def:inversion-operator} because that is the \emph{paper's}
+stance, as \ledger{A5} and \ledger{A6} do in Chapter~2; what is machine-checked is recorded here.}
+
+\emph{\textbf{One line of the draft's proof does not survive transcription, and it is instructive.}
+It reads ``no pole of $B$ intervenes, the product containing no division''. That is true of the
+\emph{simplified} product $s^{-z}\tilde H(z+1)$ and false of $B$ read as a function: the division is
+there, and cancelling it needs $\tilde H(z) \ne 0$. So the identity holds only off the zeros, which
+is a null set of the line --- countable, because isolated zeros form a discrete subset of the
+strip and $\CC$ is hereditarily Lindel\"of. The prose was doing algebra on symbols where the
+formalisation has to do it on functions, and that is exactly where the gap between them lives.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:inversion-operator-action,lem:mellin-vertical}
+$\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z)$ and $\widetilde{s\,x\,H(sx)}(z) = s^{-z}\tilde H(z+1)$, the
+second because the weight $x$ shifts the Mellin argument by one. Their ratio is $B(-z)$ wherever
+$\tilde H(z) \ne 0$, which is almost every point of the line. The transform of $h$ converges there
+by 
+ef{lem:mellin-data} and its inversion integral by 
+ef{lem:mellin-vertical}, both at height
+$c+1 \in (1, z_*)$, so 
+ef{lem:inversion-operator-action} applies and gives
+$A[H(s\cdot)](x) = h(x)/x = s\,H(sx)$.
 \end{proof}

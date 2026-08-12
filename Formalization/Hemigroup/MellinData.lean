@@ -334,6 +334,32 @@ theorem mellin_profile (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
     _ = Complex.Gamma z * ∫ t, (t : ℂ) ^ (-z) ∂F.lawT₁ := by
         rw [integral_mul_const, mul_comm]
 
+/-- **`lem:mellin-data`**, convergence: the Mellin integral of the profile converges absolutely on
+the strip.
+
+The hinge again, read the other way round. `integrable_mellin_laplace` is joint integrability for
+the product measure; Fubini's `Integrable.integral_prod_left` projects it onto the `s`-marginal,
+and the inner `μ`-integral *is* `s^{z-1}H(s)`. So this costs nothing beyond what the identity
+already paid for, and it is `MellinConvergent` verbatim — the first of the two hypotheses
+`mellinInv_mellin_eq` asks for, the other being `lem:mellin-vertical`. -/
+theorem mellinConvergent_profile (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
+    (hz' : z.re < F.zStar) : MellinConvergent (fun s => (F.profile s : ℂ)) z := by
+  have h0 := F.lawT₁_singleton_zero hH.1
+  have hprod := (F.integrable_mellin_laplace hz hz' h0).integral_prod_left
+  refine hprod.congr (.of_forall fun s => ?_)
+  have hprof : ((F.profile s : ℝ) : ℂ) = ∫ t, Complex.exp (-((t : ℂ) * (s : ℂ))) ∂F.lawT₁ := by
+    have hof : ((∫ t, Real.exp (-(s * t)) ∂F.lawT₁ : ℝ) : ℂ)
+        = ∫ t, ((Real.exp (-(s * t)) : ℝ) : ℂ) ∂F.lawT₁ := (integral_ofReal (𝕜 := ℂ)).symm
+    rw [profile, laplace, hof]
+    refine integral_congr_ae (.of_forall fun t => ?_)
+    dsimp only
+    rw [Complex.ofReal_exp]
+    congr 1
+    push_cast
+    ring
+  dsimp only [Function.uncurry]
+  rw [integral_const_mul, ← hprof, smul_eq_mul]
+
 /-- `E[T₁^{-c}]` as a Bochner integral. The two readings agree because `T₁ > 0` almost surely. -/
 theorem integral_rpow_neg_eq_negMoment {c : ℝ} (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
     ∫ t, t ^ (-c) ∂F.lawT₁ = (F.negMoment c).toReal := by

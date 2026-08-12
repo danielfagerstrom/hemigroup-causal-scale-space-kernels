@@ -222,6 +222,46 @@ theorem eventually_mellin_profile_ne_zero (hH : F.StandingHypothesis) {z : ℂ}
     exact F.mellin_profile_ofReal_ne_zero hH hz.1 hz.2 (hzero hmem)
   · exact h
 
+/-- **`lem:inversion-symbol`**, the zeros counted: the zero set of `H̃` in the strip is countable.
+
+Isolated zeros give a set that is *discrete in the strip*; `ℂ` is hereditarily Lindelöf, so a
+discrete subset of it is countable. Both steps are Mathlib's, and the second is the one that has
+to be looked up rather than assumed — "isolated implies countable" is true here because of the
+topology of `ℂ`, not because of anything analytic. -/
+theorem countable_zeros_mellin_profile (hH : F.StandingHypothesis) :
+    ({z : ℂ | mellin (fun s => (F.profile s : ℂ)) z = 0} ∩ verticalStrip 0 F.zStar).Countable := by
+  have hcod : {z : ℂ | mellin (fun s => (F.profile s : ℂ)) z = 0}ᶜ
+      ∈ Filter.codiscreteWithin (verticalStrip 0 F.zStar) := by
+    rw [mem_codiscreteWithin_iff_forall_mem_nhdsNE]
+    intro x hx
+    exact Filter.mem_of_superset (F.eventually_mellin_profile_ne_zero hH hx)
+      fun w hw => Or.inl hw
+  exact (HereditarilyLindelofSpace.isLindelof _).countable_of_isDiscrete
+    (isDiscrete_of_codiscreteWithin hcod)
+
+/-- **`lem:inversion-symbol`**, the zeros on a line: `H̃(c+iy) ≠ 0` for almost every `y`.
+
+The form every inversion integral over the line needs, and the reason
+`def:inversion-operator`'s realising condition is an `∀ᵐ` rather than a `∀`. Countable in `ℂ`
+becomes countable in `ℝ` because `y ↦ c + iy` is injective, and a countable subset of `ℝ` is
+Lebesgue-null. -/
+theorem ae_mellin_profile_ne_zero (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : c < F.zStar) :
+    ∀ᵐ y : ℝ, mellin (fun s => (F.profile s : ℂ)) ((c : ℂ) + y * Complex.I) ≠ 0 := by
+  have hinj : Function.Injective fun y : ℝ => (c : ℂ) + y * Complex.I := by
+    intro y₁ y₂ hy
+    simpa using congrArg Complex.im hy
+  have hsub : {y : ℝ | mellin (fun s => (F.profile s : ℂ)) ((c : ℂ) + y * Complex.I) = 0}
+      ⊆ (fun y : ℝ => (c : ℂ) + y * Complex.I) ⁻¹'
+        ({z : ℂ | mellin (fun s => (F.profile s : ℂ)) z = 0} ∩ verticalStrip 0 F.zStar) := by
+    intro y hy
+    exact ⟨hy, by simpa [mem_verticalStrip] using ⟨hc, hc'⟩⟩
+  have hcount :
+      {y : ℝ | mellin (fun s => (F.profile s : ℂ)) ((c : ℂ) + y * Complex.I) = 0}.Countable :=
+    Set.Countable.mono hsub ((F.countable_zeros_mellin_profile hH).preimage hinj)
+  rw [ae_iff]
+  simpa using hcount.measure_zero volume
+
 /-! ## The symbol -/
 
 /-- **The inversion symbol**, the blueprint's `B(-z) = H̃(z+1)/H̃(z)`.
