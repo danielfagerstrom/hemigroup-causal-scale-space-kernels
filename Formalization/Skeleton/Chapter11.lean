@@ -3,6 +3,7 @@ Copyright (c) 2026 Daniel Fagerström. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
+import Hemigroup.MemoryFractional
 import Hemigroup.InversionOperator
 
 /-!
@@ -42,7 +43,7 @@ with `h̃ = B(-z)g̃(z)` on the line. Given that `h`, everything is interface-fr
 which, by `lem:profile-eigenfunction`, is never called upon. See `Hemigroup/InversionOperator.lean`
 for the second finding, about which equality the identity on the line can be asked for.
 
-## What is stated here: the analytic core of `lem:memory-fractional-integrals` (11.5)
+## The analytic core of `lem:memory-fractional-integrals` (11.5) — **discharged**
 
 Clause (2) of Theorem 4′ is what is left of the chapter, and it runs through 11.5:
 `ũ(t,·)(z) = H̃(z)·(Iᶻf)(t)`, the memory line at time `t` holding the analytic family of
@@ -57,46 +58,12 @@ nothing in chapter 11 needs more of that theory than the definition.
 **The field is `L¹`-valued and the lemma is pointwise in `t`, so the statement below is about a
 function.** `Φ_{x,y}` in `Hemigroup/Family.lean` maps `X →L[ℝ] X` with `X` an `L¹` space, and an
 `L¹` class has no value at a point; `u(t,x)` is meaningful only after choosing a representative or
-weakening to "a.e. `t`". Rather than decide that here, the statement below is the *analytic core*
-— the substitution `y = x·T₁` applied to a genuine function `f` — with the integrand written as
+weakening to "a.e. `t`". Rather than decide that here, what was stated — and is now proved, as
+`Hemigroup.mellin_delayed_average` in `Hemigroup/MemoryFractional.lean` — is the *analytic core*:
+the substitution `y = x·T₁` applied to a genuine function `f`, with the integrand written as
 `E[f(t - x T₁)]` outright. Identifying that integrand with `Φ_{0,x} f` is a separate, `L¹`-level
-step, and it is the one that carries the modelling decision. See `PLAN-chapters-8-12.md`, which
-records the fork rather than resolving it: the core is needed under either reading, so it is
-what gets stated.
+step, and it is the one that carries the modelling decision (settled as (a), a.e. in `t`, on
+2026-08-12). The core was needed under either reading, which is why it went first.
+
+So this file holds no declarations again.
 -/
-
-namespace Skeleton
-
-open MeasureTheory Set Filter Hemigroup
-
-open scoped Topology
-
-variable (F : Hemigroup.SelfDecomposableExponent)
-
-/-! ## `lem:memory-fractional-integrals` (11.5), analytic core -/
-
-/-- The **Riemann–Liouville integral of complex order** `z`,
-`(Iᶻf)(t) = Γ(z)⁻¹ ∫₀ᵗ (t-r)^{z-1} f(r) dr`, for `Re z > 0`.
-
-Defined here because Mathlib has no fractional integral of any order. Total in `z` and `t`:
-`Complex.Gamma` and `cpow` are total, so no side condition is carried in the definition and the
-hypotheses live on the theorems, as they do for `inversionOperator`. -/
-noncomputable def riemannLiouville (z : ℂ) (f : ℝ → ℝ) (t : ℝ) : ℂ :=
-  (Complex.Gamma z)⁻¹ * ∫ r in Ioc (0 : ℝ) t, ((t - r : ℝ) : ℂ) ^ (z - 1) * (f r : ℂ)
-
-/-- **`lem:memory-fractional-integrals`**, the analytic core: the Mellin transform in `x` of the
-delayed average `x ↦ E[f(t - x T₁)]` is `H̃(z)` times the Riemann–Liouville integral of order `z`.
-
-The whole content is the substitution `y = x·T₁` under Tonelli, which turns
-`∫₀^∞ x^{z-1} E[f(t - xT₁)] dx` into `E[T₁^{-z}] ∫₀^t y^{z-1} f(t-y) dy`; `lem:mellin-data` then
-replaces `E[T₁^{-z}]Γ(z)` by `H̃(z)`. The exchange needs `Re z > 1`, which is where the strip of
-this lemma differs from `lem:mellin-data`'s and why (H)'s second clause `z_* > 1` is what makes
-the chapter non-empty. -/
-theorem mellin_delayed_average (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
-    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hf : Integrable f)
-    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t) :
-    mellin (fun x : ℝ => ∫ τ, (f (t - x * τ) : ℂ) ∂F.lawT₁) z
-      = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville z f t := by
-  sorry
-
-end Skeleton

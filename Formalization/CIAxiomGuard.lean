@@ -350,3 +350,23 @@ every point and the symbols come off directly.
 
 #print axioms Hemigroup.SelfDecomposableExponent.sameSymbolAction_of_realisesAction
 #print axioms Hemigroup.SelfDecomposableExponent.eventuallyEq_inversionSymbol_of_realisesAction
+
+/-! ### `lem:memory-fractional-integrals` (11.5), analytic core
+
+The Mellin transform in `x` of the delayed average is `H̃(z)` times the Riemann–Liouville integral
+of the past signal. `riemannLiouville` is *defined* here rather than cited: Mathlib carries no
+fractional integral of any order, and the article's Samko–Kilbas–Marichev citation is for the
+notation and theory of `Iᶻ`, of which chapter 11 uses only the definition. So these lines add no
+interface, and `#print axioms` gives A17 alone.
+
+What they do not cover is the identification of the integrand with `Φ_{0,x}f`, which is an
+`L¹`-level statement and carries the modelling decision recorded in `PLAN-chapters-8-12.md`.
+-/
+
+#print axioms Hemigroup.riemannLiouville
+#print axioms Hemigroup.integrableOn_pastIntegrand
+#print axioms Hemigroup.mul_riemannLiouville
+#print axioms Hemigroup.integral_pastNorm_comp_mul
+#print axioms Hemigroup.integrable_rpow_neg
+#print axioms Hemigroup.integrable_delayed
+#print axioms Hemigroup.mellin_delayed_average

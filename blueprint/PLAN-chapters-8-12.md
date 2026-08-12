@@ -1107,13 +1107,43 @@ reasons; paying for it now would be building a layer against a consumer that may
 `f` and proves the substitution `y = x·T₁`. Both readings need it, unchanged. What the readings
 differ about is only the step that identifies that integrand with `Φ_{0,x}f`.
 
+## Decided (a), and the core is proved — 2026-08-12
+
+**(a) taken.** The identification of `E[f(t - xT₁)]` with `Φ_{0,x}f` will be an a.e.-in-`t`
+statement; no pointwise model of the field is built. (b) stays available and stays unbuilt, since
+its value is almost entirely in chapter 10, which is blocked for independent reasons.
+
+**The analytic core is proved**, as `Hemigroup.mellin_delayed_average`
+(`Hemigroup/MemoryFractional.lean`), A17 alone, and appended to the blueprint as
+`lem:delayed-average-mellin` (11.18). `lem:memory-fractional-integrals` keeps its number and its
+full statement, on the pattern of the other three chapter-11 splits.
+
+Three things it settled:
+
+* **`Iᶻ` is defined, not cited.** Mathlib has no fractional integral of any order, so
+  `Hemigroup.riemannLiouville` gives it a definition. This adds no interface — SKM is cited for the
+  notation and theory of `Iᶻ`, of which the chapter uses only the definition.
+* **The exchange is licensed by the two ends of the strip, one apiece.** Inside, the dilate of the
+  past integrand is integrable because `Re z > 1`; outside, the dilation leaves `τ^{-z}`, whose
+  expectation is finite because `Re z < z_*`. The same shape as `lem:mellin-data`'s hinge with the
+  lower end moved from `0` to `1` — **and the move is what makes (H) ask for `z_* > 1`**. Below `1`
+  the lemma has no strip to live in. That is also where `prop:extreme-rays`'s observation that
+  every extreme ray has `z_* = 1` bites, and it is worth saying in the text that the two facts are
+  the same fact.
+* **`f` has to be measurable, not merely a.e.-measurable.** The integrand composes `f` with
+  `(x,τ) ↦ t - xτ`, and a `volume`-null set need not pull back to a null set for the product
+  measure, since `lawT₁` may have atoms. Choosing a measurable representative is free for an `L¹`
+  class, so the article pays nothing; but it is the kind of hypothesis that is invisible on paper
+  and mandatory in Lean, and worth recording as such.
+
 ## Next
 
-1. **Decide (a) vs (b)** — or accept the recommendation. Only the identification step depends on
-   it.
-2. Prove `Skeleton.mellin_delayed_average`, which does not: Tonelli plus the substitution
-   `y = x·T₁`, with `Re z > 1` where `lem:mellin-data` needed only `Re z > 0`. That gap is what
-   makes (H)'s second clause `z_* > 1` the hypothesis that keeps the chapter non-empty.
+1. **The identification**, now that (a) is decided: `(Φ_{0,x}f)(t) = E[f(t - xT₁)]` for a.e. `t`.
+   The pieces are `coeFn_mconvL1` (`Φ` is `mconv` a.e.) and `mconv_apply`, plus the canonical-gauge
+   fact that `μ_{0,x}` is the law of `x·T₁` — check whether chapter 6's gauge development already
+   states the latter as a dilation of `lawT₁`; if not, that is the one new lemma.
+2. Then `thm:signaling-form`(2)'s Mellin form: `lem:delayed-average-mellin` combined with
+   `lem:mellin-data`, exactly as the draft's proof does it.
 3. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
    `prop:scale-evolution` and `cor:exact-inversion` (distributions).
-4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the other `sorry` in the repo.
+4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` in the repo.

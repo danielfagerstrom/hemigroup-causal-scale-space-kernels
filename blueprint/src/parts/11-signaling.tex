@@ -255,8 +255,7 @@ outright.
 
 % draft: Lemma 11.5
 \begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
-\uses{def:standing-hypothesis,lem:mellin-data,thm:main-characterization,lem:delay-core}
-\lean{Skeleton.mellin_delayed_average}\notready
+\uses{def:standing-hypothesis,lem:mellin-data,thm:main-characterization,lem:delay-core,lem:delayed-average-mellin}
 Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
 and $1 < \operatorname{Re} z < z_*$,
 \[
@@ -283,15 +282,15 @@ $\partial_t u(t, x) = \Ex[f'(t - xT_1)]$, and $I^z f' = I^{z-1} I^1 f' = I^{z-1}
 $f(0) = 0$.
 \end{proof}
 
-\emph{\textbf{Stated in Lean 2026-08-12, in two pieces, and the split is forced by how the field
-is modelled.} \texttt{Skeleton.mellin\_delayed\_average} is the analytic core --- the substitution
-above, applied to a genuine function $f$, with the integrand written as $\Ex[f(t - xT_1)]$
-outright. What it does \emph{not} do is identify that integrand with $\Phi_{0,x}f$. The reason is
-that $\Phi_{x,y}$ acts on an $L^1$ space, and an $L^1$ class has no value at a point, whereas this
-lemma is pointwise in $t$; so the identification needs either a chosen representative or a
-weakening to ``almost every $t$'', and that is a modelling decision affecting Chapters 10--12 as
-well as this one. It is recorded in \texttt{PLAN-chapters-8-12.md} rather than taken in passing.
-The core is needed under either reading, which is why it is what got stated.}
+\emph{\textbf{Split in Lean 2026-08-12, and the split is forced by how the field is modelled.}
+\ref{lem:delayed-average-mellin} is the analytic core --- the substitution above, applied to a
+genuine function $f$, with the integrand written as $\Ex[f(t - xT_1)]$ outright --- and it is
+\textbf{machine-checked}. What it does \emph{not} do is identify that integrand with
+$\Phi_{0,x}f$. The reason is that $\Phi_{x,y}$ acts on an $L^1$ space, and an $L^1$ class has no
+value at a point, whereas this lemma is pointwise in $t$; so the identification needs either a
+chosen representative or a weakening to ``almost every $t$'', and that is a modelling decision
+affecting Chapters 10--12 as well as this one. It was taken as the weakening, on 2026-08-12; see
+\texttt{PLAN-chapters-8-12.md}. The core is what both readings needed, which is why it went first.}
 
 \emph{\textbf{The Riemann--Liouville integral is defined in the development, not cited.} Mathlib
 has no fractional integral of any order --- \texttt{Analysis/} carries Mellin, Fourier,
@@ -734,4 +733,51 @@ ef{lem:mellin-vertical}, both at height
 $c+1 \in (1, z_*)$, so 
 ef{lem:inversion-operator-action} applies and gives
 $A[H(s\cdot)](x) = h(x)/x = s\,H(sx)$.
+\end{proof}
+
+% additive: not in the draft. The analytic core of Lemma 11.5, split off on 2026-08-12 when it was
+% proved and the L1-level identification of the integrand with Phi_{0,x}f was not. 11.5 keeps its
+% number and its full statement; this is the node that carries the Lean tag. Numbered 11.18.
+
+\begin{lemma}[the delayed average, transformed]\label{lem:delayed-average-mellin}
+\uses{def:standing-hypothesis,lem:mellin-data}
+\lean{Hemigroup.mellin_delayed_average}\leanok
+Assume (H), let $1 < \operatorname{Re} z < z_*$ and $t > 0$, and let $f \in L^1$ be causal. Then
+\[
+  \int_0^\infty x^{z-1}\,\Ex\bigl[f(t - xT_1)\bigr]\,dx \;=\; \tilde H(z)\,\bigl(I^z f\bigr)(t),
+\]
+both sides absolutely convergent.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.mellin\_delayed\_average}, with \texttt{integrable\_delayed} (the Fubini side
+condition) and \texttt{mul\_riemann\-Liouville} (the reflection) alongside it;
+\texttt{\#print axioms} gives \ledger{A17} and nothing else. The analytic core of
+\ref{lem:memory-fractional-integrals}, split off from it because the remaining step --- reading
+$\Ex[f(t-xT_1)]$ as $\Phi_{0,x}f$ evaluated at $t$ --- is an $L^1$-level statement about the field
+and not analysis.}
+
+\emph{\textbf{$I^z$ is defined in the development, not cited.} Mathlib carries no fractional
+integral of any order, so the Riemann--Liouville integral is given its definition here. That adds
+no interface: \sscite{samko1993fractional} is cited in this chapter for the notation and the
+theory of $I^z$, and nothing here uses more of that theory than the definition itself.}
+
+\emph{\textbf{The exchange is licensed by the two ends of the strip, one apiece.} Inside, the
+dilate of the past integrand is integrable because $\operatorname{Re} z > 1$: on $(0,t]$ the
+weight $y^{c-1}$ is bounded by $t^{c-1}$, so $f$ needs nothing beyond $L^1$, and beyond $t$
+causality kills the integrand outright. Outside, the dilation $x \mapsto \tau x$ leaves exactly
+the factor $\tau^{-z}$, whose expectation is finite because $\operatorname{Re} z < z_*$. That is
+the same shape as \ref{lem:mellin-data}'s hinge with the lower end moved from $0$ to $1$ --- and
+the move is what \emph{makes} (H) ask for $z_* > 1$ rather than $z_* > 0$. Below $1$ this lemma
+has no strip to live in and \ref{thm:signaling-form}(2) would have nothing to say, which is also
+why \ref{prop:extreme-rays}'s observation that every extreme ray has $z_* = 1$ bites here.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:mellin-data}
+Everything factors through the past integral $\int_0^\infty y^{z-1}f(t-y)\,dy$. Fubini exchanges
+the two integrals; the inner one is then a dilate, contributing $\tau^{-z}$ times the past
+integral, and the outer integral of $\tau^{-z}$ is $\Ex[T_1^{-z}]$. The past integral is
+$\Gamma(z)(I^zf)(t)$ by the reflection $y \mapsto t-y$, whose domains match because causality has
+already confined the integral to $(0,t]$; and $\Ex[T_1^{-z}]\Gamma(z) = \tilde H(z)$ by
+\ref{lem:mellin-data}. The two $\Gamma$'s cancel, which is why the statement has none.
 \end{proof}

@@ -39,7 +39,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Thirty-seven nodes carry `\lean{...}\leanok`:
+Thirty-eight nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -51,7 +51,7 @@ Thirty-seven nodes carry `\lean{...}\leanok`:
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
-| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), and the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)) |
+| 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and the fractional-integral transform under Theorem 4$'$(2) |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
@@ -68,9 +68,9 @@ schedulable:
 
 1. **Theorem 4$'$(2)'s Mellin form, which is what is left of chapter 11.** Clauses (1) and (3)
    are machine-checked — `lem:profile-eigenfunction` and `lem:symbol-uniqueness` — and neither
-   spends ledger A12, though the chapter had recorded both as waiting on it. The remaining piece
-   combines `lem:memory-fractional-integrals` with `lem:mellin-data`; the causality and boundary
-   clauses of (2) are (A3) and (A7).
+   spends ledger A12, though the chapter had recorded both as waiting on it. Of (2), the analytic
+   core is proved as `lem:delayed-average-mellin`; what remains is reading `E[f(t-xT₁)]` as
+   `Φ_{0,x}f` at `t`, which is an `L¹`-level statement and is taken almost everywhere in `t`.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical
