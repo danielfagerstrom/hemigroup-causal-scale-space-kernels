@@ -157,7 +157,7 @@ that inequality is the definition of log-convexity, nothing remains to upgrade.
 
 % draft: Theorem 12.5
 \begin{theorem}[Theorem 5$'$: the locality theorem]\label{thm:locality}
-\uses{def:locality-pmp,lem:local-polynomial-symbol,lem:moment-recursion,lem:log-convexity,prop:bessel-family,ex:bessel-quadratic,cor:semigroup-case,thm:signaling-form,rem:drift-boundary}
+\uses{def:locality-pmp,lem:local-polynomial-symbol,lem:moment-recursion,lem:log-convexity,lem:gamma-recursion-uniqueness,prop:bessel-family,ex:bessel-quadratic,cor:semigroup-case,thm:signaling-form,rem:drift-boundary}
 Assume (H). The inversion operator $A$ of \ref{thm:signaling-form} is local \emph{and}
 satisfies the positive maximum principle \textbf{iff} one of the following holds.
 \begin{enumerate}
@@ -178,23 +178,26 @@ Within case (2), the depth-homogeneous (semigroup) members are exactly $a = \tfr
 $\beta = 0$ --- the heat signaling equation --- recovering
 \sscite{fagerstrom2005temporal}, Thm.~5, as the zero-drift point of the family. The kernel
 moments in case (2) satisfy $\Ex\,T_x^{\,n} < \infty$ iff $n < a$.
-\statusA\quad\ledger{A14}\quad\ledger{A15}\quad\emph{(Courrège's classification of operators
-satisfying the positive maximum principle, \sscite{courrege1966sur}, Corollaire~2, p.~2-10;
-and the Krull--Webster uniqueness theorem, \sscite{webster1997log}, Thm.~3.1, p.~609. Cited,
-not reproven here.
-\textbf{Assignment.} The two entries carry two different steps of the ($\Rightarrow$)
-direction and nothing else. \ledger{A14} carries the order bound: that a local operator
-satisfying the PMP is a pure second-order diffusion operator, with no jump part --- the
-locality clause specifically, not the general integro-differential structure theorem. Note its
-scan paginates by exposé, so the anchor reads p.~2-10 and not p.~10. \ledger{A15} carries the
-uniqueness of the log-convex solution of the recursion in the order-2 case, which is what pins
-$m$ to the gamma form; its hypotheses --- the asymptotic condition on $Q$ and the
-normalization $m(0) = 1$ --- are discharged in the proof and are not assumed. The order-1 case
-does \emph{not} use \ledger{A15}: there $\log m$ is convex with constant unit increments,
-hence affine, which is elementary and given below. Everything in the ($\Leftarrow$) direction
-is \textbf{[T]}: admissibility of the Bessel family is \ref{prop:bessel-family}, locality is
-\ref{ex:bessel-quadratic}, and the PMP verification is two lines of calculus. The homogeneity
-claim is \textbf{[T]} through \ref{cor:semigroup-case}.)}
+\statusA\quad\ledger{A14}\quad\emph{(Courrège's classification of operators satisfying the
+positive maximum principle, \sscite{courrege1966sur}, Corollaire~2, p.~2-10. Cited, not
+reproven here.
+\textbf{Assignment.} \ledger{A14} carries one step of the ($\Rightarrow$) direction and
+nothing else: the order bound, that a local operator satisfying the PMP is a pure second-order
+diffusion operator with no jump part --- the locality clause specifically, not the general
+integro-differential structure theorem. Note its scan paginates by exposé, so the anchor reads
+p.~2-10 and not p.~10.
+\textbf{\ledger{A15} used to appear here and no longer does.} It carried the uniqueness of the
+log-convex solution of the recursion, which is what pins $m$ to the gamma form. In the order-2
+case the recursion has a \emph{single} Gamma factor, and uniqueness is then the classical
+Bohr--Mollerup theorem rather than the general Krull--Webster theorem; that case is now proved
+in-repo as \ref{lem:gamma-recursion-uniqueness}, so this node is \textbf{[T]} at that step. The
+general entry stays alive at \ref{prop:local-ladder}, whose order-$n$ ladder has $n-1$ Gamma
+factors and for which Bohr--Mollerup is not enough. The order-1 case never used the entry:
+there $\log m$ is convex with constant unit increments, hence affine, which is elementary and
+given below. Everything in the ($\Leftarrow$) direction is \textbf{[T]}: admissibility of the
+Bessel family is \ref{prop:bessel-family}, locality is \ref{ex:bessel-quadratic}, and the PMP
+verification is two lines of calculus. The homogeneity claim is \textbf{[T]} through
+\ref{cor:semigroup-case}.)}
 \end{theorem}
 
 \begin{proof}
@@ -212,8 +215,8 @@ $A = -c'x^{-1}\theta = -c'\partial_x$; positivity of $Q$ gives $c' > 0$.
 \emph{Order 2.} Here $Q(z) = c_2 z + q_0$ with $c_2 > 0$, by positivity of $Q$ as
 $z \to \infty$ in \ref{lem:moment-recursion}(3), and $q_0 = Q(0) = m(1) > 0$; write
 $Q(z) = c_2(z + a)$ with $a := q_0/c_2 > 0$. The recursion $m(z+1) = c_2(z+a)\,m(z)$ with
-$m(0)=1$ has $\log Q$ concave and $Q(z+w)/Q(z) \to 1$ as $z \to \infty$ for each $w$, so
-\ledger{A15} applies: it has a \emph{unique} log-convex solution, namely
+$m(0{+}) = 1$ --- the normalisation being \ref{lem:symbol-vanishes-at-origin}'s first limit ---
+has a \emph{unique} log-convex solution by \ref{lem:gamma-recursion-uniqueness}, namely
 \[
   m(z) \;=\; c_2^{\,z}\,\frac{\Gamma(a + z)}{\Gamma(a)}
   \;=\; \Ex\Bigl[\bigl(c_2\,\gamma_a\bigr)^{z}\Bigr],
@@ -383,4 +386,66 @@ $m(z) = \Ex\,T_1^{-z} \to \Ex\,1 = 1$.
 $z + 1 \le \zeta$, and splitting the integral at $t = 1$ --- below it $t^{-(z+1)} \le t^{-\zeta}$,
 above it $t^{-(z+1)} \le 1$ --- gives $m(z+1) \le m(\zeta) + 1$, a bound independent of $z$. So
 $z\,m(z+1) \to 0$, while $m(z) \to 1 \ne 0$ by the first limit, and the quotient tends to $0$.
+\end{proof}
+
+% additive: not in the draft. The order-2 case of the Krull-Webster step of Theorem 12.5,
+% isolated because in that case it is Bohr-Mollerup and can be proved rather than cited.
+% Numbered 12.10.
+\begin{lemma}[the shifted Gamma recursion; Krull--Webster at a linear $Q$]
+\label{lem:gamma-recursion-uniqueness}
+\uses{lem:log-convexity}
+\lean{Hemigroup.eq_gamma_form_of_logConvex_of_recursion}\leanok
+Let $c, a > 0$ and let $m : (0,\infty) \to (0,\infty)$ be log-convex and satisfy
+\[
+  m(z+1) \;=\; c\,(z + a)\,m(z) \quad (z > 0),
+  \qquad m(z) \to 1 \ \ (z \downarrow 0).
+\]
+Then
+\[
+  m(z) \;=\; c^{\,z}\,\frac{\Gamma(a + z)}{\Gamma(a)} \qquad (z > 0).
+\]
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.eq\_gamma\_form\_of\_logConvex\_of\_recursion}. \texttt{\#print axioms} gives
+\textbf{Lean core alone} --- not even A17, since the statement names no kernel. That is the check
+that the ledger entry is discharged rather than relocated.
+\textbf{What this replaces.} \ref{thm:locality}'s order-2 case applied \ledger{A15}, the
+Krull--Webster uniqueness theorem, to exactly this recursion. With $Q$ linear the recursion has a
+single Gamma factor, and Krull--Webster is then the classical Bohr--Mollerup theorem, which
+Mathlib carries. \ref{prop:local-ladder} is a different matter: its order-$n$ ladder has $n-1$
+Gamma factors, log-convexity alone does not reduce to Bohr--Mollerup there, and \ledger{A15}
+remains.
+\textbf{The one point of technique.} Bohr--Mollerup pins a function on $(0,\infty)$ satisfying
+$f(y+1) = y f(y)$; ours carries the shift $a$. Substituting $f(y) = m(y-a)\cdots$ would need $m$
+below the interval it is given on, and extending it downward through the recursion is an
+induction on $\lceil a \rceil$ that also leaves the domain where log-convexity was established.
+Shifting the other way costs nothing, which is the proof below.
+\textbf{An honest note on the trade.} This is \emph{longer} than the citation it removes ---
+unlike the five substitutions recorded after \ref{prop:bernstein-toolbox}, where the elementary
+route was also the shorter one. What is bought is the trust base, not the exposition.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+Choose an integer $n \ge a$ and put $d := n - a \ge 0$. Define, for $y > 0$,
+\[
+  f(y) \;:=\; \frac{m(y + d)\; c^{-(y+d)}}{P(y)},
+  \qquad P(y) := \prod_{j=0}^{n-1}(y + j),
+\]
+which uses $m$ only on $(d, \infty) \subseteq (0,\infty)$. Two shifts cancel: the recursion gives
+$m(y + 1 + d) = c\,(y + n)\,m(y+d)$, since $d + a = n$, while $P(y+1)\,y = P(y)\,(y+n)$; together
+with $c^{-(y+1+d)} = c^{-(y+d)}c^{-1}$ this leaves
+\[
+  f(y+1) \;=\; y\,f(y) \qquad (y > 0).
+\]
+$f$ is positive, and $\log f(y) = \log m(y+d) - (y+d)\log c - \log P(y)$ is convex on $(0,\infty)$:
+the first term is \ref{lem:log-convexity} precomposed with a translation, the second is affine, and
+the third is convex because $-\log(y+j)$ is, $\log$ being concave. Bohr--Mollerup applied to
+$f/f(1)$ therefore gives $f = f(1)\,\Gamma$ on $(0,\infty)$.
+
+Write $C := f(1)$ and $G(z) := c^{\,z}\Gamma(z+a)$. Unwinding the definition of $f$ at
+$y = z - d$ and using $P(y)\,\Gamma(y) = \Gamma(y+n)$ with $y + n = z + a$ gives $m(z) = C\,G(z)$
+for every $z > d$. Both $m$ and $G$ satisfy the same recursion on $(0,\infty)$, so
+$m(z + k)\,G(z) = m(z)\,G(z+k)$ for every $k \in \mathbb{N}$; choosing $k$ with $z + k > d$ and
+cancelling $G(z+k) > 0$ extends $m = C\,G$ to all of $(0,\infty)$. Finally $z \downarrow 0$ gives
+$C\,\Gamma(a) = 1$, since $c^{\,z} \to 1$ and $\Gamma$ is continuous at $a > 0$.
 \end{proof}

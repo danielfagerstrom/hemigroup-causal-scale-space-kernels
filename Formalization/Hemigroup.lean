@@ -7,6 +7,7 @@ import Hemigroup.Covariance
 import Hemigroup.Examples
 import Hemigroup.ExponentDerivative
 import Hemigroup.Family
+import Hemigroup.GammaRecursion
 import Hemigroup.Gauge
 import Hemigroup.Injectivity
 import Hemigroup.Instance

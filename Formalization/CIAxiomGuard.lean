@@ -492,3 +492,13 @@ the argument, which is why the split-off node does not carry it.
 
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_negMoment_nhdsGT_zero
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_inversionSymbol_nhdsGT_zero
+
+/-! ### `lem:gamma-recursion-uniqueness` — ledger A15, order-two case, discharged
+
+Krull--Webster restricted to a linear `Q`, which is the only case `thm:locality` applies it to,
+proved from Mathlib's Bohr--Mollerup. The statement mentions nothing of this development, so this
+line should print **Lean core alone** — no A17, since no kernel appears in it. That is the check
+that the entry really is discharged rather than relocated.
+-/
+
+#print axioms Hemigroup.eq_gamma_form_of_logConvex_of_recursion

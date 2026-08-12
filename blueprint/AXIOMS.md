@@ -647,13 +647,21 @@ articles that have not yet pinned a ledger.
 - **Confidence.** ✅ well grounded.
 
 ## A15 — Krull–Webster: a log-convex solution of `f(x+1) = g(x) f(x)` is unique up to normalization
-**Blueprint:** `thm:locality`, `prop:local-ladder` · **Lean:** *(not stated yet)*
+**Blueprint:** `prop:local-ladder` · **Lean:** *(not stated yet)*
 **Cite:** @webster1997log — §3 "Uniqueness Results", Theorem 3.1, p. 609; corroborated by @marichal2022generalization — Theorem 1.5, p. 3, at `p = 1`
 
-- **Statement as used.** Draft Theorem 12.5: in the (⇒) direction, the moment recursion
-  `m(z+1) = Q(z) m(z)` together with log-convexity of `m` (Lemma 12.4) determines `m` uniquely
-  given its normalization, which is what pins the order-2 local case to the inverse-gamma
-  family. Also used by Proposition 12.6 for the general-order ladder.
+- **Statement as used.** The moment recursion `m(z+1) = Q(z) m(z)` together with log-convexity of
+  `m` (Lemma 12.4) determines `m` uniquely given its normalization. Proposition 12.6's ladder is
+  what needs it: there `Q(z) = c' ∏(z + a_i)` has `n-1` roots.
+- **⚠️ No longer used by `thm:locality`, and the reason is worth keeping.** Theorem 12.5 applies
+  the recursion only in the **order-2** case, where `Q` is linear and the solution has a *single*
+  Gamma factor. Krull–Webster restricted to that case **is Bohr–Mollerup**, which Mathlib carries
+  as `Real.eq_Gamma_of_log_convex`, so the step is proved in-repo as
+  `lem:gamma-recursion-uniqueness` / `Hemigroup.eq_gamma_form_of_logConvex_of_recursion` and
+  Theorem 12.5 no longer cites this entry. The general entry is still live at Proposition 12.6,
+  where `n-1 ≥ 2` Gamma factors put it out of Bohr–Mollerup's reach. Recorded 2026-08-12. The
+  discharge is *longer* than the citation, unlike the other five substitutions this project has
+  made — the gain is the trust base, not the exposition.
 - **Primary — Webster Theorem 3.1.** ✅ **p. 609**, opening §3 *Uniqueness Results*: let
   `g : ℝ₊ → ℝ₊` have the property that `g(x+w)/g(x) → 1` as `x → ∞` for each `w > 0`; let
   `f : ℝ₊ → ℝ₊` be **eventually log-convex**, satisfying `f(x+1) = g(x) f(x)` for `x > 0` with
