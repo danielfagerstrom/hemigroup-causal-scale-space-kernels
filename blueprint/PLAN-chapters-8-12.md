@@ -769,3 +769,44 @@ wrong about the obstruction, and only writing the statement separated the two.
 2. `lintegral_one_sub_exp_eq_tail` — the layer-cake identity, Tonelli on `ν ⊗ volume`.
 3. `tendsto_k_atTop_nhds_zero` — `k` is antitone, nonnegative, and `∫₁^∞ k(t)/t dt < ∞`, so its
    limit cannot be positive.
+
+---
+
+# Two of the three sub-lemmas were Mathlib's — 2026-08-11
+
+`lintegral_one_sub_exp_eq_tail` and `tendsto_k_atTop_nhds_zero` are proved and in
+`Hemigroup/Subordinator.lean`. **`exists_tailMeasure` is now the only thing open in the whole of
+chapter 9's `[T]` line.**
+
+## The layer cake was already there, under a name that does not say "Lévy"
+
+The identity `∫(1−e^{−su})dν = ∫₀^∞ s e^{−sr} ν(r,∞) dr` is Mathlib's
+`lintegral_comp_eq_lintegral_meas_lt_mul` — the layer-cake formula / Cavalieri's principle — at
+`f = id` and `g(r) = s e^{−sr}`, whose antiderivative on `[0,u]` is `1 − e^{−su}`. Four lines once
+found, plus a short `HasDerivAt` for the antiderivative.
+
+**And the σ-finiteness hypothesis the decomposition assumed was not needed.** The statement was
+written with `[SFinite ν]` because the plan was to prove it by Tonelli on `ν ⊗ volume`; the layer
+cake holds for arbitrary measures, so the hypothesis came off — and with it the `SFinite` clause
+`exists_tailMeasure` was being asked to supply. A hypothesis introduced by an anticipated *proof
+method* rather than by the statement, removed once the method changed. Worth watching for: it is
+the same failure mode as naming a tool instead of a property, one level down.
+
+## `k(∞) = 0` is forced, not assumed
+
+`k` is nonincreasing and nonnegative and `∫₁^∞ k(t)/t dt < ∞` (`integrableOn_k_div`), so a
+positive limit would make that integral dominate the harmonic one —
+`not_integrableOn_Ioi_inv` closes it. Route B needs this because the tail measure must be finite
+on `(r,∞)` for every `r > 0`, which is exactly `k(r) < ∞` together with `k(∞) = 0`. Another
+regularity fact that fell out of a statement rather than being planned for.
+
+## Next
+
+`exists_tailMeasure`, alone. Two routes, and the second still looks shorter:
+
+1. a countable sum of Stieltjes pieces over `[1/(n+1), 1/n]`;
+2. `ν := (volume.restrict (Ioi 0)).map hinv` with `hinv y = sSup {u > 0 : h u > y}`, which handles
+   the infinite mass at the origin natively. The sandwich `h(r+) ≤ ν(r,∞) ≤ h(r)` falls out of two
+   inclusions, and `h(r+) = h(r)` off a countable set because a monotone function has countably
+   many discontinuities — applied to `u ↦ h(e^u)`, which is antitone on *all* of `ℝ` and so
+   dodges the fact that `h` itself is only `AntitoneOn (Ioi 0)` and unbounded at the origin.

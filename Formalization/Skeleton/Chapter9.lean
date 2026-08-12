@@ -145,8 +145,11 @@ the trust boundary stays at two entries.
 /-! ### Route B, step 1, decomposed — 2026-08-11
 
 The symbol is a Lévy exponent with an exhibited triple: drift `b₀` and Lévy measure the tail
-measure of the nonincreasing dilate `h(u) = k(u/x)/x`. The assembly below is `sorry`-free and
-rests on three further named sub-lemmas, of which only the first is substantial.
+measure of the nonincreasing dilate `h(u) = k(u/x)/x`. The assembly below is `sorry`-free, and as
+of 2026-08-11 **`exists_tailMeasure` is the only thing left open in the whole of chapter 9's
+`[T]` line** — the layer-cake identity turned out to be Mathlib's
+`lintegral_comp_eq_lintegral_meas_lt_mul` at `f = id`, and `k(∞) = 0` is forced by
+`integrableOn_k_div`; both are now in `Hemigroup/Subordinator.lean`.
 
 **Two findings from writing it.**
 
@@ -176,17 +179,8 @@ measure need not be. The `a.e.` is not slack: a nonincreasing `h` and its right-
 modification differ on a countable set, and nothing downstream can tell them apart. -/
 theorem exists_tailMeasure {h : ℝ → ℝ} (hmono : AntitoneOn h (Ioi 0))
     (hnn : ∀ u ∈ Ioi (0 : ℝ), 0 ≤ h u) (htend : Tendsto h atTop (𝓝 0)) :
-    ∃ ν : Measure ℝ, IsCausal ν ∧ SFinite ν ∧
+    ∃ ν : Measure ℝ, IsCausal ν ∧
       ∀ᵐ r ∂(volume.restrict (Ioi (0 : ℝ))), ν (Ioi r) = ENNReal.ofReal (h r) := by
-  sorry
-
-theorem lintegral_one_sub_exp_eq_tail {ν : Measure ℝ} [SFinite ν] (hν : IsCausal ν) {s : ℝ}
-    (hs : 0 < s) :
-    ∫⁻ u, ENNReal.ofReal (1 - Real.exp (-(s * u))) ∂ν
-      = ∫⁻ r in Ioi (0 : ℝ), ENNReal.ofReal (s * Real.exp (-(s * r))) * ν (Ioi r) := by
-  sorry
-
-theorem tendsto_k_atTop_nhds_zero : Tendsto F.k atTop (𝓝 0) := by
   sorry
 
 theorem exists_levyTriple_symbol {x : ℝ} (hx : 0 < x) :
@@ -203,8 +197,8 @@ theorem exists_levyTriple_symbol {x : ℝ} (hx : 0 < x) :
   have htend : Tendsto (fun u => F.k (u / x) / x) atTop (𝓝 0) := by
     have h1 : Tendsto (fun u : ℝ => u / x) atTop atTop :=
       Filter.Tendsto.atTop_div_const hx tendsto_id
-    simpa using (((tendsto_k_atTop_nhds_zero F).comp h1).div_const x)
-  obtain ⟨ν, hνc, hνs, hνtail⟩ := exists_tailMeasure hmono hnn htend
+    simpa using ((F.tendsto_k_atTop_nhds_zero.comp h1).div_const x)
+  obtain ⟨ν, hνc, hνtail⟩ := exists_tailMeasure hmono hnn htend
   -- `φ_x(s) = b₀ s + s ∫₀^∞ e^{-su} h(u) du`, from the derivative formula and the substitution.
   have hsym : ∀ s : ℝ, 0 < s → F.symbol x s
       = F.b₀ * s + s * ∫ u in Ioi (0 : ℝ), Real.exp (-(s * u)) * (F.k (u / x) / x) := by

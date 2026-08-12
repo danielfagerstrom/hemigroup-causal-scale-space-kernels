@@ -4,9 +4,10 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.Sonine
+import Mathlib.MeasureTheory.Integral.Layercake
 
 /-!
-# The subordinator's laws as a measurable family
+# Machinery for the potential kernel (Route B)
 
 Blueprint: machinery for `lem:potential-kernel` (Lemma 9.4) by Route B, which builds the potential
 kernel as `U = ∫₀^∞ μ_t dt` rather than representing it through Bernstein–Widder. See
@@ -19,7 +20,7 @@ transform", as though forming `U` were bookkeeping. It is not. Ledger A17 suppli
 `t` **by choice, independently**, so nothing connects the choices across `t`; `∫₀^∞ μ_t dt` is not
 a measure at all, and `Measure.bind` does not typecheck without `Measurable (fun t => μ_t)`.
 
-The three lemmas here are what closes that gap, and the middle one is where Route B's
+The first three lemmas are what closes that gap, and the middle one is where Route B's
 *subordinator* stops being a name and does work:
 
 * `levyExponent_smul` — scaling a Lévy triple scales its exponent, so A17 applies at every `t`;
@@ -34,14 +35,19 @@ functions are measurable, and Dynkin lifts that from the generating π-system to
 So the increasing paths, which Route B's prose treats as intuition, are exactly what makes the
 potential measure *exist*.
 
+The file also carries the two smaller pieces Route B's step 1 turned out to need:
+`lintegral_one_sub_exp_eq_tail`, which is Mathlib's layer-cake formula specialised to the Lévy
+integrand, and `tendsto_k_atTop_nhds_zero`, which is what makes `-dk` a *finite* tail at every
+positive delay.
+
 Nothing here mentions complete monotonicity, which is the point of Route B: the trust boundary
 stays at two entries.
 -/
 
 namespace Hemigroup
 
-open MeasureTheory Set
-open scoped ENNReal
+open MeasureTheory Set Filter
+open scoped ENNReal Topology
 
 /-- Scaling a Lévy triple scales its exponent: `levyExponent (t b₀) (t ν) = t · levyExponent b₀ ν`.
 
@@ -98,6 +104,41 @@ theorem measurable_of_antitone_measure_Iic {μ : ℝ → Measure ℝ}
     simp only [measure_univ]
     exact measurable_const
 
+/-- **The layer-cake identity for the Lévy integrand.**
+
+`∫ (1 - e^{-su}) dν = ∫₀^∞ s e^{-sr} ν(r,∞) dr`, for any causal `ν`. This is Mathlib's
+`lintegral_comp_eq_lintegral_meas_lt_mul` at `f = id` and `g r = s e^{-sr}`, whose antiderivative
+on `[0,u]` is `1 - e^{-su}`. -/
+theorem lintegral_one_sub_exp_eq_tail {ν : Measure ℝ} (hν : IsCausal ν) {s : ℝ} (hs : 0 < s) :
+    ∫⁻ u, ENNReal.ofReal (1 - Real.exp (-(s * u))) ∂ν
+      = ∫⁻ r in Ioi (0 : ℝ), ENNReal.ofReal (s * Real.exp (-(s * r))) * ν (Ioi r) := by
+  have hanti : ∀ u : ℝ, (∫ r in (0 : ℝ)..u, s * Real.exp (-(s * r)))
+      = 1 - Real.exp (-(s * u)) := by
+    intro u
+    have hderiv : ∀ r : ℝ, HasDerivAt (fun r => -Real.exp (-(s * r)))
+        (s * Real.exp (-(s * r))) r := by
+      intro r
+      have h1 : HasDerivAt (fun r : ℝ => -(s * r)) (-s) r := by
+        simpa using (hasDerivAt_id r).const_mul (-s)
+      have h2 : HasDerivAt (fun r : ℝ => Real.exp (-(s * r)))
+          (Real.exp (-(s * r)) * (-s)) r := h1.exp
+      have h3 : HasDerivAt (fun r : ℝ => -Real.exp (-(s * r)))
+          (-(Real.exp (-(s * r)) * (-s))) r := h2.neg
+      convert h3 using 1
+      ring
+    rw [intervalIntegral.integral_eq_sub_of_hasDerivAt (fun r _ => hderiv r)
+      (by apply Continuous.intervalIntegrable; fun_prop)]
+    simp only [mul_zero, neg_zero, Real.exp_zero]
+    ring
+  have hkey := lintegral_comp_eq_lintegral_meas_lt_mul (f := fun u : ℝ => u)
+    (g := fun r => s * Real.exp (-(s * r))) ν hν.ae_nonneg aemeasurable_id
+    (fun t _ => by apply Continuous.intervalIntegrable; fun_prop)
+    (.of_forall fun r => by positivity)
+  simp only [hanti] at hkey
+  rw [hkey]
+  exact lintegral_congr fun r => mul_comm _ _
+
+
 /-- **A causal measure finite on every `[0,T]` is σ-finite**: the half-line is exhausted by the
 `[0,n]` and everything below the origin is null.
 
@@ -118,5 +159,43 @@ theorem sigmaFinite_of_isCausal_of_measure_Icc_ne_top {μ : Measure ℝ} (hμ : 
     · exact ⟨Iio 0, mem_insert _ _, hr⟩
     · obtain ⟨n, hn⟩ := exists_nat_ge r
       exact ⟨Icc 0 n, mem_insert_of_mem _ ⟨n, rfl⟩, ⟨hr, hn⟩⟩
+
+namespace SelfDecomposableExponent
+
+variable (F : SelfDecomposableExponent)
+
+/-- **`k` vanishes at infinity.**
+
+Forced, not assumed: `k` is nonincreasing and nonnegative, and `∫₁^∞ k(t)/t dt < ∞`, so a
+positive limit would make that integral diverge like the harmonic one. Route B needs it because
+the tail measure `-dk` must be *finite* on `(r,∞)` for every `r > 0`, which is exactly
+`k(r) < ∞` together with `k(∞) = 0`. -/
+theorem tendsto_k_atTop_nhds_zero : Tendsto F.k atTop (𝓝 0) := by
+  refine tendsto_order.mpr ⟨fun a ha => ?_, fun a ha => ?_⟩
+  · filter_upwards [eventually_gt_atTop (0 : ℝ)] with t ht
+    exact lt_of_lt_of_le ha (F.k_nonneg t (mem_Ioi.mpr ht))
+  · by_contra hcon
+    rw [Filter.not_eventually] at hcon
+    -- `k` never drops below `a`, by antitonicity and the frequent failures.
+    have hall : ∀ u : ℝ, 0 < u → a ≤ F.k u := by
+      intro u hu
+      obtain ⟨x, hxk, hxu⟩ := (hcon.and_eventually (eventually_ge_atTop u)).exists
+      exact le_trans (not_lt.mp hxk)
+        (F.k_antitone (mem_Ioi.mpr hu) (mem_Ioi.mpr (lt_of_lt_of_le hu hxu)) hxu)
+    -- then `k t / t` dominates `a / t`, which is not integrable at infinity.
+    refine not_integrableOn_Ioi_inv (a := 1) ?_
+    refine (F.integrableOn_k_div.const_mul a⁻¹).mono' (by fun_prop) ?_
+    filter_upwards [ae_restrict_mem measurableSet_Ioi] with t ht
+    have ht1 : (1 : ℝ) < t := mem_Ioi.mp ht
+    have ht0 : (0 : ℝ) < t := lt_trans zero_lt_one ht1
+    have hk : a ≤ F.k t := hall t ht0
+    rw [Real.norm_eq_abs, abs_of_nonneg (by positivity : (0 : ℝ) ≤ t⁻¹), inv_eq_one_div,
+      div_le_iff₀ ht0,
+      show a⁻¹ * (F.k t / t) * t = a⁻¹ * F.k t from by field_simp]
+    calc (1 : ℝ) = a⁻¹ * a := by field_simp
+      _ ≤ a⁻¹ * F.k t := mul_le_mul_of_nonneg_left hk (inv_pos.mpr ha).le
+
+
+end SelfDecomposableExponent
 
 end Hemigroup
