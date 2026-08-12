@@ -112,6 +112,25 @@ they are statements about $\CM$ and $\BF$ as classes of functions, and every ste
 them to $\Phi_{x,y}$ is \textbf{[T]}.)}
 \end{proposition}
 
+\emph{Which vocabulary does the work.} \ref{prop:bernstein-toolbox} is used as a bridge and not as
+a toolkit. The object the arguments manipulate is the \emph{representation}, part~(3) --- a drift
+and a Lévy measure --- and almost every proof in Chapters~4--11 works with it directly: the
+increments of \ref{thm:increments-bernstein} are produced as representations, not as pointwise
+limits of Bernstein functions; the potential kernel of \ref{lem:potential-kernel} is constructed as
+a subordinator's potential measure, not represented from complete monotonicity; the Mellin calculus
+of Chapter~11 mentions neither class. $\CM$ and the derivative-sign definition of $\BF$ are needed
+at exactly three places, and it is worth naming them: \ref{lem:selfdecomposable-derivative}, where
+$B(s) = sF'(s)$ has no meaning until the representation is in hand; \ref{prop:pair-regularity}(3),
+together with the draft's Thorin-subclass proposition (\S13, not transcribed here), where $\CM$ is
+the \emph{subject} rather than a tool; and
+\ref{prop:bernstein-toolbox} itself, which identifies the two vocabularies once so that no later
+proof has to. A reader who wants the shortest path to \ref{thm:main-characterization} or
+\ref{thm:signaling-form} may take (3) as the definition of admissibility and never invoke
+Bernstein--Widder. \emph{(This is also the development's design: it defines admissibility by the
+representation and has no $\CM$ at all --- see \texttt{DESIGN-formalization-strategy.md}. The
+paragraph records that the choice is available on paper too, and what it costs, which is nothing
+outside those three places.)}
+
 % draft: Lemma 2.4
 \begin{lemma}[vanishing lemma]\label{lem:vanishing}
 \uses{def:bernstein-function,prop:bernstein-toolbox}

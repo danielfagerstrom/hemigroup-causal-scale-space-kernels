@@ -201,12 +201,28 @@ With $B(s) := sF'(s) \in \BF \setminus \{0\}$ by \ref{lem:selfdecomposable-expon
 have $\varphi_x(s) = B(xs)/x \in \BF \setminus \{0\}$, and $\varphi_x > 0$ on $(0,\infty)$ by
 \ref{lem:vanishing}.
 
-The function $h(u) = 1/u$ is completely monotone on $(0,\infty)$, and the composition of a
-completely monotone function with a positive Bernstein function is completely monotone by
-\ref{prop:bernstein-toolbox}(2); hence $1/\varphi_x$ is completely monotone. By the general
-form of the Bernstein--Widder theorem, \ref{prop:bernstein-toolbox}(1), it is therefore the
-Laplace transform of a unique positive measure on $[0,\infty)$, locally finite because the
-transform is finite for every $s > 0$.
+For existence, \emph{construct} the measure rather than representing it. Since $\varphi_x$ is a
+Bernstein function without killing term it is the exponent of a subordinator: let
+$(\mu^{(x)}_\tau)_{\tau \ge 0}$ be its laws, $\widehat{\mu^{(x)}_\tau}(s) =
+e^{-\tau \varphi_x(s)}$, and set
+\[
+  \ell^{(x)} \;:=\; \int_0^\infty \mu^{(x)}_\tau \, d\tau,
+\]
+the subordinator's \emph{potential measure}. By Tonelli its transform is
+$\int_0^\infty e^{-\tau\varphi_x(s)}\,d\tau = 1/\varphi_x(s)$ for every $s > 0$, which is finite,
+so $\ell^{(x)}$ is locally finite; and uniqueness is uniqueness of the Laplace transform for
+locally finite measures whose transform converges somewhere (\ref{prop:laplace-uniqueness-sigma-finite}).
+
+Two remarks on this route. It uses no property of $\CM$: neither
+$\CM \circ \BF \subseteq \CM$ (\ref{prop:bernstein-toolbox}(2), \ledger{A2}) nor Bernstein--Widder
+in its general form (\ref{prop:bernstein-toolbox}(1), \ledger{A1}), both of which the older
+argument spent. What it does use is the existence of the subordinator, \ledger{A17}, which the
+main theorem has already spent --- so the exchange is two interfaces for none. And the integral
+$\int_0^\infty \mu^{(x)}_\tau\,d\tau$ is a measure only because $\tau \mapsto \mu^{(x)}_\tau$ is
+measurable, which is not automatic and is where the subordinator's increasing paths are actually
+used: $\mu^{(x)}_{\tau+\tau'} = \mu^{(x)}_\tau * \mu^{(x)}_{\tau'}$ with causality makes
+$\tau \mapsto \mu^{(x)}_\tau\bigl((-\infty, r]\bigr)$ nonincreasing, hence measurable, and a
+Dynkin argument on the generating $\pi$-system $\{(-\infty,r]\}$ extends this to every Borel set.
 
 The scaling law follows by comparing transforms:
 $\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$.

@@ -140,12 +140,15 @@ $k_s \le 1$ on $[0,1]$ for $s \le 1$ and $k_s \to \mathbf{1}_{\{1\}}$ pointwise 
 0$, so dominated convergence against the \emph{finite} $\rho$ reads
 $\rho(\{1\}) = \lim_{s \downarrow 0} g_{x,y}(s) = 0$ by \ref{lem:transform-continuity}.}
 
-\emph{One divergence from the proof below is worth recording, because it bears on the ledger.
-The text argues that $g_{x,y}$ is a pointwise limit of Bernstein functions and closes with
-\ref{prop:bernstein-toolbox}(4) --- \ledger{A4}. The Lean proof does not: it produces the
-representation directly from the weak limit, and so spends no interface at all. Its
-\texttt{\#print axioms} output is Lean core. \ledger{A4} is therefore not on this node's
-critical path, and is used only where the blueprint's own argument needs it.)}
+\emph{\textbf{The proof below no longer spends \ledger{A4}, and the change came from formalising
+it.} It used to close by observing that $g_{x,y}$ is a pointwise limit of Bernstein functions and
+invoking \ref{prop:bernstein-toolbox}(4). The Lean proof cannot take that route --- the
+development has no $\CM$ and hence no $\BFz$ to be closed --- so it extracts the representation
+directly from the weak limit, and thereby spends no interface at all: its
+\texttt{\#print axioms} output is Lean core. The extraction turned out to be no longer than the
+appeal it replaced, so the text now takes the same route. \ledger{A4} survives in the ledger for
+\ref{prop:bernstein-toolbox} itself and for \ref{lem:selfdecomposable-derivative}, and this
+theorem --- the key technical step of \S\S4--6 --- is now free of it.)}
 \end{theorem}
 
 \begin{proof}
@@ -175,8 +178,24 @@ On the other hand, with $\Pi_n := \sum_i \mu_i \in \Mplus([0,\infty))$, a finite
 which is a Bernstein function of $s$ vanishing at $\zp$ --- it is in Lévy--Khintchine form
 with finite Lévy measure $\Pi_n$ and no drift or killing term.
 
-Hence $g_{x,y}$ is a finite pointwise limit of elements of $\BFz$, so $g_{x,y} \in \BF$ by
-\ref{prop:bernstein-toolbox}(4), and $g_{x,y}(\zp) = 0$ by \ref{lem:transform-continuity}.
+It remains to pass to the limit, and the point is to extract the \emph{representation} rather
+than to invoke closure of $\BF$ under pointwise limits. The total masses $\Pi_n([0,\infty)) = n$
+diverge, because mass piles up at the origin --- and that pile \emph{is} the drift. So weight the
+measures by $1 - e^{-t}$, which vanishes at the origin at exactly the rate that compensates, and
+substitute $v = 1 - e^{-t}$, carrying $[0,\infty]$ onto the compact $[0,1]$ with
+$\infty \mapsto 1$. The weighted measures then have uniformly bounded mass and live on a fixed
+compact, so a subsequence converges weakly with no tightness argument needed. Integrating against
+\[
+  k_s(v) \;=\; \frac{1 - (1-v)^s}{v},
+\]
+which has a removable singularity at $v = 0$ with value $s$, gives
+\[
+  g_{x,y}(s) \;=\; b_0(x,y)\,s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu_{x,y}(dt),
+\]
+the mass the limit puts at $v = 0$ being the drift $b_0(x,y)$ --- that is what the value $s$ at
+the removable singularity records --- and the mass at $v = 1$, which would be a killing term,
+excluded by $g_{x,y}(\zp) = 0$ (\ref{lem:transform-continuity}). So $g_{x,y} \in \BFz$ by the
+representation itself, and \ref{prop:bernstein-toolbox}(4) is not needed.
 The case $x = y$ is $g_{x,x} = 0 \in \BFz$.
 \end{proof}
 

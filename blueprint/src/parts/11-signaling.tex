@@ -84,7 +84,11 @@ The second condition is equivalent to $\int_0^\infty e^{-F(s)}\,ds < \infty$. It
 $z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of
 \ref{prop:bessel-family}; for the Gamma family $z_* = \gamma$, so (H) requires $\gamma > 1$
 there. The construction extends below $z_* = 1$ by meromorphic continuation, which we do not
-pursue.
+pursue. The threshold $1$ is the one this chapter keeps meeting --- see
+\ref{lem:delayed-average-mellin}, \ref{lem:fractional-integral-derivative} and
+\ref{thm:signaling-form}(2), where it arises three separate times for three different reasons ---
+and by \ref{prop:extreme-rays} it is exactly the abscissa of the extreme rays of the admissible
+cone: (H) excludes the cone's extreme boundary and nothing else.
 
 % draft: Lemma 11.2
 % THE SPLIT (2026-08-11). The draft's Lemma 11.2 states four things at once: the identity, the
@@ -269,6 +273,7 @@ $\Xz$-derivative of \S10, i.e.\ $u(\cdot, x)$ is the primitive of $\Ex[f'(\cdot 
 $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the identity extends to the wider strip
 $0 < \operatorname{Re} z < z_*$, since $f \in \core$ is bounded ($f(0) = 0$ and $f' \in \Xz$ give
 $\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$ is then integrable at the origin on its own.
+Of the three conditions defining $\core$ the proofs use exactly three consequences and no others: boundedness, which is what widens the strip; that $f$ is the primitive of $f'$, which is what the derivative clause asserts; and $f \in \Xz$ itself, needed for the Laplace form of \ref{thm:signaling-form}(2) and \emph{not} implied by the other two, a primitive of an $L^1$ function lying in $L^1$ only when $\int_0^\infty f' = 0$. Density and invariance under $T_r$ and $\Phi_{x,y}$ --- the substance of \ref{lem:delay-core} --- are not used here.
 \statusT
 \end{lemma}
 
@@ -443,7 +448,13 @@ The time-domain equation in \ref{thm:signaling-form}(2) is stated at the level o
 transforms, and that is the honest general formulation: $B$ may have poles, at zeros of
 $\tilde H$, and polynomial growth along vertical lines, so $A u(t, \cdot)$ need not be given by
 an absolutely convergent integral for rough $f$. On the field the identity is nevertheless
-regular, the factor $\tilde H(z-1)$ cancelling every denominator.
+regular, the factor $\tilde H(z-1)$ cancelling every denominator. That last statement is about the
+product as a \emph{meromorphic function}; read pointwise it needs $\tilde H(z-1) \ne 0$, which
+holds off an isolated set by \ref{lem:inversion-symbol}, and \ref{thm:signaling-form}(2) is stated
+accordingly. The distinction recurs through this chapter --- it is the same one that makes
+\ref{lem:symbol-rigidity}'s conclusion an equality of meromorphic functions rather than of
+functions --- and is worth keeping in view: a cancellation performed on symbols has to be
+justified at each point where the identity is used.
 
 When the symbol $B$ is a \emph{polynomial}, $A$ is a local differential operator and the
 equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in Chapter~12,
