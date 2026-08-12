@@ -1262,6 +1262,51 @@ Running tally of what `f ∈ 𝒟` is actually for, now that the chapter is clos
 11.5's strip), being a primitive (gives the derivative clause its meaning), and integrability (the
 Laplace form). Density, `T_r`-invariance and `Φ`-invariance — the substance of `lem:delay-core`,
 which the draft's proof cites — are used nowhere.
+## The three "formalisation debts" are deliberate — a correction, 2026-08-12
+
+The previous section proposed discharging them as "the highest-leverage work left in the repo".
+That was wrong, and wrong in the way this chapter has now produced four times: **a tool's output
+was read as a work queue without checking what the nodes say about themselves.** `linkage check`
+even labels them *"a formalisation debt (permitted, ADR-0010 rule 2), not a defect"*.
+
+Each of the three is documented, in its own status annotation, as a decision already taken:
+
+* **`lem:selfdecomposable-derivative`** — *"Taken as `A18`, not proved — a review decision recorded
+  2026-08-10."* Both directions run through `prop:bernstein-toolbox`: A4 (closure of `BF` under
+  pointwise limits) and A3 (uniqueness of the Lévy–Khintchine triple). Neither is a statement about
+  the hemigroup family, and **neither can even be stated here**, since both quantify over `BF` and
+  the development has no `CM`. Formalising this node means formalising A3 and A4, which is exactly
+  what the trust boundary declines to do.
+* **`lem:selfdecomposable-exponents`** — a collation whose expensive half is the node above, hence
+  A18. *"This node is therefore not marked as proved in Lean."*
+* **`thm:main-characterization`** — a collation. All three halves *are* machine-checked; the node
+  carries no tag *"because it is a collation and an equivalence is established by its parts rather
+  than by a statement of its own"*, and the separation is what keeps `(⇐)` on A17 and `(⇒)` on A18
+  without either borrowing the other's.
+
+The third is the one where a choice exists, and it is the author's rather than mine: it *could* be
+given a bundling declaration, exactly as `thm:signaling-form` just was, since its three halves are
+proved. That would turn the article's other headline node green at the cost of a statement whose
+`(⇐)` half is a definition rather than a proposition — which is presumably why the note argues the
+other way. **Not taken unilaterally.**
+
+## What is actually open
+
+23 `[T]` nodes lack `\leanok`. Sorted by why:
+
+| why | nodes |
+|---|---|
+| deliberate (above) | `lem:selfdecomposable-derivative`, `lem:selfdecomposable-exponents`, `thm:main-characterization` |
+| no Lean counterpart by design (`CM`, `BF`, chapters 10/12 vocabulary) | `def:completely-monotone`, `def:bernstein-function`, `def:locality-pmp`, `def:phillips-generator` |
+| blocked upstream (C₀-semigroups, Bessel `K`, distributions) | `thm:scale-cauchy`, `lem:generator-properties`, `prop:scale-evolution`, `cor:exact-inversion`, `lem:transform-ode`, `lem:log-convexity`, `lem:local-polynomial-symbol` |
+| available, nothing depends on them | `lem:delay-core`, `cor:semigroup-case`, `prop:moments`, `prop:stable-moments`, `prop:gamma-kernels`, `prop:extreme-rays`, `prop:volterra`, `lem:potential-kernel-scaling` |
+
+`def:standing-hypothesis` was a **missing tag** rather than missing work — `StandingHypothesis` has
+existed in `MellinData.lean` since chapter 11 started and every theorem in the chapter takes it as
+a hypothesis. Now tagged. It is worth noting that the inventory above is the first time this repo
+has had one; the per-node annotations are excellent and the aggregate view was missing, which is
+precisely how "the three advisories are the work left" survived as a plan.
+
 ## Next
 
 Chapter 11 needs nothing further. What remains in the article:

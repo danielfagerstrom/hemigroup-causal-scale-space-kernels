@@ -66,13 +66,13 @@ The next work, in order. `blueprint/PLAN-chapters-8-12.md` carries the reasoning
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable:
 
-1. **Discharge the three formalisation debts.** `lem:selfdecomposable-derivative`,
-   `lem:selfdecomposable-exponents` and `thm:main-characterization` are proved on paper only, and
-   are now reached by most of the `\leanok` nodes; `linkage check` reports them as advisories.
-   This is the highest-leverage work left. **Chapter 11 is complete, Theorem 4$'$ included** —
-   all six conjuncts of `thm:signaling-form` are machine-checked and assembled into one
-   declaration, and none of the chapter spends ledger A12, although three of its nodes had been
-   recorded as waiting on it.
+1. **`lem:delay-core` (10.1), the one piece of new formalisation that is available.** The core
+   `𝒟`, its density, its invariance under the delay semigroup and under `Φ`, and the `L¹`
+   difference quotient — no C₀-semigroup theory and no closed operators. Nothing now depends on
+   it, so it discharges `\uses` edges rather than unblocking anything. **Chapter 11 is complete,
+   Theorem 4$'$ included** — all six conjuncts of `thm:signaling-form` are machine-checked and
+   assembled into one declaration, and none of the chapter spends ledger A12, although three of
+   its nodes had been recorded as waiting on it.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical

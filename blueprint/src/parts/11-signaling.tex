@@ -70,6 +70,7 @@ integral of complex order $z$, $\operatorname{Re} z > 0$ (\sscite{samko1993fract
 % draft: Definition 11.1
 \begin{definition}[the standing hypothesis (H)]\label{def:standing-hypothesis}
 \uses{lem:selfdecomposable-exponents,thm:main-characterization}
+\lean{Hemigroup.SelfDecomposableExponent.StandingHypothesis}\leanok
 An admissible exponent $F$ satisfies the \emph{standing hypothesis} (H) if
 $F(\infty) = \infty$ --- equivalently $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$,
 i.e.\ no atom of the kernels at zero delay --- and
