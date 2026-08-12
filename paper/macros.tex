@@ -1,0 +1,44 @@
+% Paper-side notation. Mirrors the notation half of blueprint/src/macros.tex (below its
+% rule) so that statements shared verbatim with the blueprint compile here unchanged.
+% Keep the two files in sync by hand; a drifted macro shows up as a compile error or a
+% visibly different rendering, never silently.
+%
+% \sscite is the blueprint's citation macro (framework-owned there); here it is plain \cite.
+
+\newcommand{\sscite}[1]{\cite{#1}}
+
+% -- Number systems -----------------------------------------------------------
+\newcommand{\RR}{\mathbb{R}}
+\newcommand{\CC}{\mathbb{C}}
+\newcommand{\NN}{\mathbb{N}}
+\newcommand{\ZZ}{\mathbb{Z}}
+
+% -- Function and measure spaces ----------------------------------------------
+\newcommand{\Lone}{L^1(\RR, dt)}          % the ambient space X
+\newcommand{\Mplus}{M_+}                  % finite positive Borel measures
+\newcommand{\supp}{\operatorname{supp}}
+
+% -- Classes of functions -----------------------------------------------------
+\newcommand{\CM}{\mathrm{CM}}
+\newcommand{\BF}{\mathrm{BF}}
+\newcommand{\BFz}{\mathrm{BF}_0}
+\newcommand{\LE}{\mathrm{LE}}
+\newcommand{\CBF}{\mathrm{CBF}}
+\newcommand{\HCM}{\mathrm{HCM}}
+\newcommand{\GGC}{\mathrm{GGC}}
+\newcommand{\SDclass}{\mathrm{SD}}        % NOT \SD -- amsmath uses that name
+
+% -- Operators and transforms -------------------------------------------------
+\newcommand{\dil}{D}
+\newcommand{\Sact}{S}
+\newcommand{\shift}{\tau}
+\newcommand{\Id}{\mathrm{Id}}
+\newcommand{\Lap}{\mathcal{L}}            % Laplace transform (\Lap^{-1} inverts)
+\newcommand{\Mel}{\mathcal{M}}            % Mellin transform in the scale variable
+\newcommand{\Distr}{\mathcal{D}'}         % distributions
+\newcommand{\core}{\mathcal{D}}           % the operator core (appendix / signaling)
+\newcommand{\Xz}{X_0}                     % L^1(\RR_+), the causal elements of X
+\newcommand{\Ex}{\mathbb{E}}
+
+% -- Convenience --------------------------------------------------------------
+\newcommand{\zp}{0{+}}

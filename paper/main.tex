@@ -1,17 +1,93 @@
-% The monograph. Its theorem statements are shared with the blueprint so they cannot drift —
-% see the framework's LINKAGE.md rule 4 for the sharing mechanism.
+% The article. Theorem statements are shared with the blueprint so they cannot drift —
+% see the framework's LINKAGE.md rule 4: a shared statement carries
+% `% shared with blueprint <label>` and its own \label equals the blueprint label.
 %
-% Nothing drafted yet: the working text is draft/hemigroup-causal-scale-space-kernels.md,
-% and the blueprint is written from it first (the blueprint is the text of record).
+% Structure (decided 2026-08-12, from draft/hemigroup-causal-scale-space-kernels.md and
+% blueprint/NOTES-exposition.md Part 4 — the restructuring happens HERE, not in the draft
+% or the blueprint, so blueprint numbering is not churned by an exposition decision):
+%   1  Introduction (positive-first; Lindeberg positioning ¶; roadmap)
+%      1.1 What is machine-checked (draft §1.5, essentially as-is)
+%   2  Temporal measurement (NEW prose: per-axiom motivation, 2005 §2 style; then the
+%      axiom system assembled — draft §3)
+%   3  Preliminaries (draft §2, + X₀, T_r, 𝒟 lifted in from draft §10)
+%   4  Convolution representation (draft §4)
+%   5  The cascade (draft §5)
+%   6  Scale covariance (draft §6)
+%   7  The characterization theorem (draft §7, + Lemma 9.1 lifted to its tail)
+%   8  Examples and moments (draft §8)
+%   9  The signaling form, Theorem 4' (draft §11)
+%   10 The locality theorem, Theorem 5' (draft §12)
+%   11 Implementation (draft §13)
+%   12 The temporal N-jet (draft §14)
+%   13 Concluding remarks (draft §15; Remark 15.1 slimmed, companion-note pointers)
+%   A  Memory kernels, Sonine conservation, and the scale-Cauchy problem, Theorem 3'
+%      (draft §§9–10, moved together — a leaf block: no main-line theorem depends on it)
+%
+% Editorial decisions of record (2026-08-12): embodiment story centers on the signaling
+% form with the N-jet as its consequence, Sonine conservation demoted to the appendix;
+% no Thorin/A9 re-centering (the SD characterization stays the headline; Prop 13.6 and
+% §11 carry the Thorin payoff as discovered structure); Remark 7.6 stays in this paper
+% (the companion note cites it as a stated result). Voice: neutral, per the 2005 IJCV
+% article and the draft — no hype, short computational proofs, hard analysis imported
+% as attributed citations.
+
 \documentclass[11pt]{article}
 
 \usepackage[a4paper,margin=1in]{geometry}
-\usepackage{amssymb, amsthm, amsmath}
+\usepackage{amsmath,amssymb,amsthm}
+\usepackage{graphicx}
+\usepackage{booktabs}
 \usepackage{hyperref}
 
-\title{Time-Causal Scale Space from Hemigroup Axioms:\\Characterization of the Kernels}
+\graphicspath{{../figures/}}
+
+\input{macros}
+
+\theoremstyle{plain}
+\newtheorem{theorem}{Theorem}[section]
+\newtheorem{proposition}[theorem]{Proposition}
+\newtheorem{lemma}[theorem]{Lemma}
+\newtheorem{corollary}[theorem]{Corollary}
+\theoremstyle{definition}
+\newtheorem{definition}[theorem]{Definition}
+\newtheorem{example}[theorem]{Example}
+\theoremstyle{remark}
+\newtheorem{remark}[theorem]{Remark}
+
+\title{Time-Causal Scale Space from Hemigroup Axioms:\\
+Characterization of the Kernels}
 \author{Daniel Fagerstr\"om}
+\date{\today}
 
 \begin{document}
 \maketitle
+
+\begin{abstract}
+% To be written with §1 (task: introduction). Positive-first: the hemigroup cascade,
+% the self-decomposable characterization, finite-moment members (the Gamma family),
+% the signaling form, the locality theorem; machine-checked core.
+\end{abstract}
+
+\input{01-introduction}
+\input{02-measurement}
+\input{03-preliminaries}
+\input{04-representation}
+\input{05-cascade}
+\input{06-covariance}
+\input{07-characterization}
+\input{08-examples}
+\input{09-signaling}
+\input{10-locality}
+\input{11-implementation}
+\input{12-jet}
+\input{13-discussion}
+
+\appendix
+\input{appendix-memory}
+
+\input{ai-statement}
+
+\bibliographystyle{plain}
+\bibliography{references}   % curated subset of the `library bib export` master bib
+
 \end{document}
