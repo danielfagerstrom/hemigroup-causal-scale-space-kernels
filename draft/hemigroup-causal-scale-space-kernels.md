@@ -492,17 +492,25 @@ $$B(-z) \;:=\; \frac{\tilde H(z+1)}{\tilde H(z)} \;=\; z\,\frac{\mathbb{E}\big[T
 
 meromorphic on the strip, with poles only at the (isolated) zeros of $\tilde H$.
 
-*Proof.* $\tilde H(z) = \int_0^\infty s^{z-1}\,\mathbb{E}[e^{-sT_1}]\,ds = \mathbb{E}\big[\int_0^\infty s^{z-1}e^{-sT_1}ds\big] = \mathbb{E}[T_1^{-z}]\,\Gamma(z)$ by Tonelli; finiteness on the strip is the definition of $z_*$ together with $|T_1^{-z}| = T_1^{-\operatorname{Re}z}$, which also gives the bound; $|\Gamma(c+i\tau)|$ decays super-polynomially in $\tau$. Analyticity is standard; $\tilde H \not\equiv 0$, so its zeros are isolated. ∎
+*Proof.* $\tilde H(z) = \int_0^\infty s^{z-1}\,\mathbb{E}[e^{-sT_1}]\,ds = \mathbb{E}\big[\int_0^\infty s^{z-1}e^{-sT_1}ds\big] = \mathbb{E}[T_1^{-z}]\,\Gamma(z)$ by Tonelli. The exchange is licensed by the strip condition and by nothing else: run on absolute values it reads $\int\!\!\int s^{c-1}e^{-ts}\,ds\,d\mu(t) = \Gamma(c)\,\mathbb{E}[T_1^{-c}]$ with $c = \operatorname{Re}z$, whose left side is the total mass of $|\cdot|$ for the product measure, so joint integrability holds *iff* the right side is finite, which is $c < z_*$. The same computation gives the bound, since $|T_1^{-z}| = T_1^{-c}$. (The first clause of (H) is used here, and only here: it gives $T_1 > 0$ a.s., without which the identity is false rather than merely unproved — at an atom $t = 0$ the inner integral $\int_0^\infty s^{c-1}ds$ diverges while $\mathbb{E}[T_1^{-c}]$, an integral over $(0,\infty)$, does not see the atom.)
+
+For integrability along a vertical line, note that *quadratic* decay of $|\Gamma|$ suffices, and quadratic decay is the functional equation twice: $|\Gamma(\sigma + i\tau)| \le \Gamma(\sigma)$ for $\sigma > 0$, the imaginary part only rotating Euler's integrand; and $\Gamma(z+2) = (z+1)z\Gamma(z)$ with $|z|, |z+1| \ge |\tau|$ — both have imaginary part $\tau$ — so $|\Gamma(c+i\tau)|\,\tau^2 \le \Gamma(c+2)$. Adding, $|\Gamma(c+i\tau)|(1+\tau^2) \le \Gamma(c) + \Gamma(c+2)$, and $(1+\tau^2)^{-1}$ is integrable. (The classical asymptotic $|\Gamma(c+i\tau)| \sim \sqrt{2\pi}|\tau|^{c-1/2}e^{-\pi|\tau|/2}$ is of course stronger, but it needs Stirling in the complex plane and nothing below uses it.)
+
+Analyticity is the identity read backwards rather than a separate argument: $m(z) := \mathbb{E}[T_1^{-z}] = \mathbb{E}[e^{-z\log T_1}]$ is the moment-generating function of $-\log T_1$, analytic on the interior of the set where the corresponding real exponential is integrable — which is $(0, z_*)$, the strip condition verbatim. So the strip of analyticity and the strip of the identity are the same strip for the same reason, and $\Gamma$ contributes the rest. Finally $\tilde H \not\equiv 0$, both factors being strictly positive at real points of the strip, so its zeros are isolated. ∎
 
 **Definition 11.3 (the inversion operator).** Fix $c \in (0, z_* - 1)$. For $g$ with $\tilde g$ defined on the line $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ absolutely integrable there, set
 
 $$\big(A g\big)(x) \;:=\; \frac{1}{x}\cdot \frac{1}{2\pi i}\int_{(c)} x^{-z}\, B(-z)\,\tilde g(z)\,dz \;=\; \Big(\frac{1}{x}\,B(\theta)\,g\Big)(x),$$
 
-the second expression being the functional-calculus reading (the Euler operator has Mellin symbol $-z$); absolute integrability on the line is exactly the hypothesis under which the inversion integral recovers $B(\theta)g$ [Widder, Ch. VI, §9, Thm. 9a]. Equivalently, at the transform level: $\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$. Note the covariant scaling: $A$ commutes with dilations up to the weight $x^{-1}$, i.e. it scales like $\partial_t$ under $(t, x) \mapsto (\sigma t, \sigma x)$, as (A8) requires of any inversion.
+the second expression being the functional-calculus reading (the Euler operator has Mellin symbol $-z$). The second equality is an assertion and not a rewriting, and it is worth being explicit about what it asserts: $B(\theta)$ is a functional calculus for a symbol with poles, so what the display says is that there *exists* a function $h$ on $(0,\infty)$ whose Mellin transform is $B(-z)\tilde g(z)$ on the line, and that the contour integral computes $h(x)/x$. Absolute integrability on the line is exactly the hypothesis under which the inversion integral recovers such an $h$ [Widder, Ch. VI, §9, Thm. 9a]. Given $h$, the rest is elementary: $Ag = h/x$ at every point of continuity of $h$, and hence, the weight $x^{-1}$ being a Mellin shift, $\widetilde{Ag}(z) = \tilde h(z-1)$ at every $z$ — which is the transform-level form $\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$ wherever the identity defining $h$ holds pointwise. Every application below *exhibits* its $h$ rather than inferring it (for the profiles $g = H(s\,\cdot)$ it is $h(x) = s\,x\,H(sx)$, Theorem 11.6(1)), so the cited inversion theorem is available but never spent. Note finally the covariant scaling: $A$ commutes with dilations up to the weight $x^{-1}$, i.e. it scales like $\partial_t$ under $(t, x) \mapsto (\sigma t, \sigma x)$, as (A8) requires of any inversion.
 
-**Lemma 11.4 (uniqueness of the symbol).** If two operators of the form $x^{-1}B_1(\theta)$, $x^{-1}B_2(\theta)$ both satisfy $A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is the unique inversion within the covariant Mellin class.
+**Lemma 11.4 (uniqueness of the symbol).** If two operators of the form $x^{-1}B_1(\theta)$, $x^{-1}B_2(\theta)$ both satisfy $A[H(s\,\cdot)] = s\,H(s\,\cdot)$ — for a single $s > 0$; see the proof — then $B_1 = B_2$ on the strip *as meromorphic functions*: they agree on a punctured neighbourhood of every point of it, hence pointwise at every point where both are continuous, in particular at any point that is a pole of neither. Hence $A$ is the unique inversion within the covariant Mellin class.
 
-*Proof.* Evaluating both on the profiles and Mellin-transforming gives $B_1(-z)\,s^{-z}\tilde H(z) = B_2(-z)\,s^{-z}\tilde H(z)$ on the line; $\tilde H \ne 0$ off an isolated set, so $B_1 = B_2$ a.e., hence everywhere by meromorphy. ∎
+*Proof.* "Of the form $x^{-1}B_i(\theta)$" is the hypothesis that each operator has a realising function in the sense of Definition 11.3, so let $h_i$ realise $B_i(\theta)H(s\,\cdot)$. Both operators send $H(s\,\cdot)$ to the same function, and $x^{-1}h_1 = x^{-1}h_2$ on $(0,\infty)$ is $h_1 = h_2$; so there is a single $\tilde h$, and
+
+$$B_1(-z)\,\tilde g(z) \;=\; \tilde h(z) \;=\; B_2(-z)\,\tilde g(z), \qquad \tilde g(z) = \widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z),$$
+
+at every point of the line where the realising identity holds. Cancelling the nonvanishing factor $s^{-z}$ leaves $B_1(-z)\tilde H(z) = B_2(-z)\tilde H(z)$ there; at a zero of $\tilde H$ both sides vanish, so this holds on the strip outright. The zeros of $\tilde H$ are isolated (Lemma 11.2), so $\tilde H$ may be cancelled on a punctured neighbourhood of *every* point of the strip, the zeros included, which is the conclusion. Two economies are worth recording, since both tools are natural to reach for and neither is needed: no injectivity of the inverse Mellin transform, the shared realising function carrying the information that injectivity would otherwise have to recover; and a single dilation, the dilate contributing only the factor $s^{-z}$, which never vanishes. ∎
 
 **Lemma 11.5 (the memory line stores fractional integrals).** Under (H), let $f \in X_0$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$ and $1 < \operatorname{Re} z < z_*$,
 
@@ -530,11 +538,19 @@ $$\widetilde{\partial_t u(t, \cdot)}(z) \;=\; B(1 - z)\;\widetilde{u(t, \cdot)}(
 
 3. *(Uniqueness.)* $A$ is the unique operator in the covariant Mellin class with property (1), hence with property (2).
 
-*Proof.* (1) $\widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so $B(-z)\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z+1)$, absolutely integrable on the line $(c)$ by Lemma 11.2 (no poles of $B$ intervene: the product contains no division). Then
+*Proof.* (1) The realising function is exhibited: put
 
-$$A\big[H(s\cdot)\big](x) = \frac{1}{x}\cdot\frac{1}{2\pi i}\int_{(c)} (xs)^{-z}\,\tilde H(z+1)\,dz = \frac{1}{x}\,(xs)\cdot\frac{1}{2\pi i}\int_{(c+1)} (xs)^{-w}\,\tilde H(w)\,dw = s\,H(sx),$$
+$$h(x) \;:=\; s\,x\,H(sx), \qquad \text{so that} \qquad \tilde h(z) \;=\; s^{-z}\,\tilde H(z+1),$$
 
-by the substitution $w = z + 1$ and Mellin inversion on the line $c + 1 \in (1, z_*)$, valid since $\tilde H$ is integrable there and $H$ is continuous.
+the weight $x$ shifting the Mellin argument by one and the two powers of $s$ combining as $s\cdot s^{-(z+1)}$. On the other side, $\tilde g(z) := \widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so
+
+$$B(-z)\,\tilde g(z) \;=\; \frac{\tilde H(z+1)}{\tilde H(z)}\cdot s^{-z}\tilde H(z) \;=\; s^{-z}\tilde H(z+1) \;=\; \tilde h(z)$$
+
+at every point of the line where $\tilde H(z) \ne 0$ — which is all but an isolated, hence null, set of it. (The cancellation is the whole content: it is Lemma 11.2's recursion with the denominator cleared. It should not be described as a product "containing no division"; the division is there, and clearing it is what costs the exceptional set. That set is null, which is all the inversion integral needs.) Both convergence hypotheses of Definition 11.3 hold for $h$ at height $c$, being Lemma 11.2 at height $c + 1 \in (1, z_*)$, and $h$ is continuous since $H$ is. So $h$ realises $B(\theta)H(s\,\cdot)$, and
+
+$$A\big[H(s\cdot)\big](x) \;=\; \frac{h(x)}{x} \;=\; s\,H(sx).$$
+
+Equivalently, and this is the same computation read as a contour integral: the weight $x^{-1}$ of Definition 11.3 is exactly what cancels the weight $x$ that shifted the transform, so the eigenfunction relation and the exhibition of $h$ are one statement rather than two.
 
 (2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form is Lemma 11.5 combined with Lemma 11.2:
 

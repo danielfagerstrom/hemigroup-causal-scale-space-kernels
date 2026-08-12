@@ -164,9 +164,18 @@ $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ is absolutely integrable there,
   \;=\; \Bigl(\frac{1}{x}\,B(\theta)\,g\Bigr)(x),
 \]
 the second expression being the functional-calculus reading, the Euler operator having Mellin
-symbol $-z$. Equivalently, at the transform level,
-$\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$. Note the covariant scaling: $A$ commutes with
-dilations up to the weight $x^{-1}$, i.e.\ it scales like $\partial_t$ under
+symbol $-z$. The second equality is an assertion and not a rewriting, and it is worth being
+explicit about what it asserts: $B(\theta)$ is a functional calculus for a symbol with poles, so
+what the display says is that there \emph{exists} a function $h$ on $(0,\infty)$ whose Mellin
+transform is $B(-z)\tilde g(z)$ on the line, and that the contour integral computes $h(x)/x$.
+Absolute integrability on the line is exactly the hypothesis under which the inversion integral
+recovers such an $h$. Given $h$, the rest is elementary and is
+\ref{lem:inversion-operator-action}; in particular the transform-level form is
+$\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$, wherever the identity defining $h$ holds
+pointwise. Every application below \emph{exhibits} its $h$ rather than inferring it --- for the
+profiles $g = H(s\,\cdot)$ it is $h(x) = s\,x\,H(sx)$, \ref{lem:profile-eigenfunction} --- so the
+cited inversion theorem is available but never spent. Note finally the covariant scaling: $A$
+commutes with dilations up to the weight $x^{-1}$, i.e.\ it scales like $\partial_t$ under
 $(t, x) \mapsto (\sigma t, \sigma x)$, as (A8) requires of any inversion.
 \statusA\quad\ledger{A12}\quad\emph{(Mellin inversion on a line of absolute convergence;
 \sscite{widder1941laplace}, Ch.~VI, \S9, Thm.~9a. Cited, not reproven here. The operator itself is
@@ -311,18 +320,27 @@ $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$, so no other shape of $g$ ever reaches 
 \end{theorem}
 
 \begin{proof}
-(1) $\widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so
-$B(-z)\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z+1)$, which is absolutely integrable on the
-line $(c)$ by \ref{lem:mellin-vertical}; no pole of $B$ intervenes, the product containing no
-division. Then
+(1) The realising function is exhibited: put $h(x) := s\,x\,H(sx)$, so that
+$\tilde h(z) = s^{-z}\tilde H(z+1)$, the weight $x$ shifting the Mellin argument by one and the two
+powers of $s$ combining as $s\cdot s^{-(z+1)}$. On the other side
+$\tilde g(z) := \widetilde{H(s\,\cdot)}(z) = s^{-z}\tilde H(z)$, so
 \[
-  A\bigl[H(s\cdot)\bigr](x)
-  = \frac{1}{x}\cdot\frac{1}{2\pi i}\int_{(c)} (xs)^{-z}\,\tilde H(z+1)\,dz
-  = \frac{1}{x}\,(xs)\cdot\frac{1}{2\pi i}\int_{(c+1)} (xs)^{-w}\,\tilde H(w)\,dw
-  = s\,H(sx),
+  B(-z)\,\tilde g(z)
+  = \frac{\tilde H(z+1)}{\tilde H(z)}\cdot s^{-z}\tilde H(z)
+  = s^{-z}\tilde H(z+1)
+  = \tilde h(z)
 \]
-by the substitution $w = z + 1$ and Mellin inversion on the line
-$c + 1 \in (1, z_*)$, valid since $\tilde H$ is integrable there and $H$ is continuous.
+at every point of the line where $\tilde H(z) \ne 0$, which is all but an isolated --- hence null
+--- set of it. The cancellation is the whole content, being \ref{lem:inversion-symbol}'s recursion
+with the denominator cleared; it should \emph{not} be described as a product containing no
+division, since the division is there and clearing it is what costs the exceptional set. Both
+convergence hypotheses of \ref{def:inversion-operator} hold for $h$ at height $c$, being
+\ref{lem:mellin-data} and \ref{lem:mellin-vertical} at height $c + 1 \in (1, z_*)$, and $h$ is
+continuous because $H$ is. So $h$ realises $B(\theta)H(s\,\cdot)$ and
+\ref{lem:inversion-operator-action} gives $A[H(s\cdot)](x) = h(x)/x = s\,H(sx)$: the weight
+$x^{-1}$ of \ref{def:inversion-operator} is exactly what cancels the weight $x$ that shifted the
+transform, so the exhibition of $h$ and the eigenfunction relation are one statement rather than
+two. This clause is \ref{lem:profile-eigenfunction}.
 
 (2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied
 to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form combines
