@@ -3,7 +3,7 @@ Copyright (c) 2026 Daniel Fagerström. All rights reserved.
 Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
-import Hemigroup.InversionSymbol
+import Hemigroup.InversionOperator
 
 /-!
 # Rigidity of the inversion symbol
@@ -11,21 +11,31 @@ import Hemigroup.InversionSymbol
 Blueprint: `lem:symbol-rigidity` (11.15), the transform-level core split out of
 `lem:symbol-uniqueness` (11.4) — the node that earns the definite article in *the* inversion.
 
-## What is here and what is not
+## Both steps of Lemma 11.4 are here
 
 The draft's Lemma 11.4 runs in two steps of very different cost:
 
 1. *Evaluate both operators on the profiles and take Mellin transforms*, turning the
    eigenfunction relation `A[H(s·)] = s H(s·)` into `B₁(-z) s^{-z} H̃(z) = B₂(-z) s^{-z} H̃(z)`.
-   This is `def:inversion-operator`'s transform-level identity, which is exactly what ledger
-   **A12** carries — that absolute integrability on the line suffices for the contour integral to
-   recover `B(θ)g`. It is not reachable while A12 is blocked upstream.
 2. *`H̃ ≠ 0` off an isolated set, so the two symbols agree.* This needs nothing but
    `eventually_mellin_profile_ne_zero`, and it is the step that does the mathematical work: it is
    why the eigenfunction relation pins the symbol rather than merely constraining it.
 
-Step 2 is this file. Step 1 keeps `lem:symbol-uniqueness`'s number and stays unproved, so that
-the graph shows the chapter waiting on A12 at the one place it actually does.
+Step 2 was proved first, as `lem:symbol-rigidity` (11.15), when step 1 was thought to be waiting
+on ledger A12. It was not: what A12 was left carrying is the *production* of `B(θ)g`, and an
+operator "of the form `x⁻¹B(θ)`" is one whose `B(θ)g` is given rather than produced. That is
+`RealisesAction`, and step 1 is `sameSymbolAction_of_realisesAction` below.
+
+**The route needs no injectivity of the inverse Mellin transform**, which is the obvious thing to
+reach for and would be a second citation. Two operators agreeing on `H(s·)` have the *same*
+realising function there — `x⁻¹h₁ = x⁻¹h₂` is `h₁ = h₂` on `(0,∞)` — so their transforms agree at
+every point, and the symbols can be read off directly. The realising function carries the
+information that injectivity would otherwise have to recover.
+
+**One dilation suffices.** The blueprint quantifies the eigenfunction relation over all `s > 0`;
+the proof uses a single `s`, because the dilate contributes only the factor `s^{-z}`, which never
+vanishes and cancels. So the hypothesis below fixes `s`, and the quantified form is strictly
+weaker information than it appears to be.
 
 ## "B₁ = B₂ on the strip" has to say which equality it means
 
@@ -107,6 +117,78 @@ theorem eqOn (h : F.SameSymbolAction B₁ B₂) (hH : F.StandingHypothesis)
   h.eq_of_continuousAt hH hz (h₁ z hz) (h₂ z hz)
 
 end SameSymbolAction
+
+/-! ## `lem:symbol-uniqueness`, step 1: from the operator relation to the transform relation -/
+
+/-- **`lem:symbol-uniqueness`, step 1.** If two symbols act on one dilate `H(s·)` through the
+*same* realising function — which is what it means for the two operators `x⁻¹B₁(θ)` and
+`x⁻¹B₂(θ)` to agree there, and in particular what the eigenfunction relation
+`A_i[H(s·)] = s H(s·)` says — then they act identically on the profile throughout the strip.
+
+Feeding `lem:symbol-rigidity` (`SameSymbolAction.eventuallyEq`) completes `lem:symbol-uniqueness`.
+
+Two things about the proof are worth naming. It uses no injectivity of the inverse Mellin
+transform: the shared realising function `h` has one transform, so `B₁ w · g̃(w) = h̃(w) =
+B₂ w · g̃(w)` at every point where the identity holds, and `g̃(w) = s^{-w}H̃(w)` cancels its
+nonvanishing factor. And the conclusion is pointwise on the whole strip, including the zeros of
+`H̃`, where both sides are `0` — which is why `RealisesAction.mellin_eq` is conditioned on
+`H̃ ≠ 0` rather than merely holding almost everywhere. An a.e. hypothesis would conclude nothing
+at any named point. -/
+theorem sameSymbolAction_of_realisesAction {s : ℝ} (hs : 0 < s) {B₁ B₂ : ℂ → ℂ}
+    (h₁ : ∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+      F.RealisesAction c B₁ (fun u : ℝ => (F.profile (s * u) : ℂ))
+        (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)))
+    (h₂ : ∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+      F.RealisesAction c B₂ (fun u : ℝ => (F.profile (s * u) : ℂ))
+        (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ))) :
+    F.SameSymbolAction B₁ B₂ := by
+  have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
+  intro w hw
+  by_cases hne : mellin (fun u => (F.profile u : ℂ)) w = 0
+  · rw [hne, mul_zero, mul_zero]
+  obtain ⟨hw0, hw1⟩ := hw
+  have hre : ((w.re : ℂ) + (w.im : ℝ) * Complex.I) = w := Complex.re_add_im w
+  have hgw : mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w
+      = (s : ℂ) ^ (-w) * mellin (fun u => (F.profile u : ℂ)) w :=
+    F.mellin_profile_comp_mul hs w
+  have key : ∀ B : ℂ → ℂ,
+      (∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+        F.RealisesAction c B (fun u : ℝ => (F.profile (s * u) : ℂ))
+          (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ))) →
+      mellin (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) w
+        = B w * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
+    intro B hB
+    have := (hB w.re hw0 (by linarith)).mellin_eq w.im (by rwa [hre])
+    rwa [hre] at this
+  have heq : B₁ w * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w
+      = B₂ w * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w :=
+    (key B₁ h₁).symm.trans (key B₂ h₂)
+  have hspow : (s : ℂ) ^ (-w) ≠ 0 := by
+    rw [Ne, Complex.cpow_eq_zero_iff]
+    rintro ⟨h0, -⟩
+    exact hs0 h0
+  refine mul_right_cancel₀ hspow ?_
+  rw [hgw] at heq
+  calc B₁ w * mellin (fun u => (F.profile u : ℂ)) w * (s : ℂ) ^ (-w)
+      = B₁ w * ((s : ℂ) ^ (-w) * mellin (fun u => (F.profile u : ℂ)) w) := by ring
+    _ = B₂ w * ((s : ℂ) ^ (-w) * mellin (fun u => (F.profile u : ℂ)) w) := heq
+    _ = B₂ w * mellin (fun u => (F.profile u : ℂ)) w * (s : ℂ) ^ (-w) := by ring
+
+/-- **`lem:symbol-uniqueness`.** `A` is the unique inversion within the covariant Mellin class:
+any symbol `B` whose operator satisfies the eigenfunction relation agrees with `F.inversionSymbol`
+on a punctured neighbourhood of every point of the strip — that is, as a meromorphic function.
+
+The article's own symbol qualifies, by `realisesSymbolAction_profile`; so the statement is not
+vacuous, and the definite article in "*the* inversion" is earned. -/
+theorem eventuallyEq_inversionSymbol_of_realisesAction (hH : F.StandingHypothesis) {s : ℝ}
+    (hs : 0 < s) {B : ℂ → ℂ}
+    (hB : ∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+      F.RealisesAction c B (fun u : ℝ => (F.profile (s * u) : ℂ))
+        (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)))
+    {z : ℂ} (hz : z ∈ verticalStrip 0 (F.zStar - 1)) :
+    F.inversionSymbol =ᶠ[𝓝[≠] z] B :=
+  (F.sameSymbolAction_of_realisesAction hs
+    (fun c hc hc' => F.realisesSymbolAction_profile hH hc hc' hs) hB).eventuallyEq hH hz
 
 end SelfDecomposableExponent
 

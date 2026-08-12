@@ -334,3 +334,19 @@ on the line, which needs its zeros to be null.
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_profile_comp_mul_weight
 #print axioms Hemigroup.SelfDecomposableExponent.realisesSymbolAction_profile
 #print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_profile
+
+/-! ### `lem:symbol-uniqueness` (11.4), both halves
+
+Recorded as waiting on ledger A12 and not waiting on it. Step 1 was read as needing
+`def:inversion-operator`'s transform identity, hence the *production* of `B(θ)g`; but an operator
+"of the form `x⁻¹B(θ)`" is one whose `B(θ)g` is **given**, and the class the statement quantifies
+over is exactly the class where the referent exists. So the citation was never in the way.
+
+Note what the route avoids: no injectivity of the inverse Mellin transform, which is the obvious
+tool and a second Widder citation (Thm. 6a, listed in the ledger against just this possibility).
+Two operators agreeing on `H(s·)` share a realising function there, so their transforms agree at
+every point and the symbols come off directly.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.sameSymbolAction_of_realisesAction
+#print axioms Hemigroup.SelfDecomposableExponent.eventuallyEq_inversionSymbol_of_realisesAction

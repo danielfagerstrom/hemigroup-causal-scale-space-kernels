@@ -33,20 +33,27 @@ Every use the article makes of `A` exhibits `h` explicitly; the eigenfunction re
 Theorem 4′ is the case `g = H(s·)`, `h = s x H(sx)`, where the identity `h̃(z) = s^{-z}H̃(z+1)` is
 the recursion `B(-z) = H̃(z+1)/H̃(z)` with the denominators cleared.
 
-## The identity on the line is almost-everywhere, and cannot be more
+## The identity on the line holds exactly off the zeros of `H̃`
 
 `B` is a quotient with poles at the zeros of `H̃`. Where `H̃` vanishes, Lean's `x / 0 = 0` makes
 `B(-z) g̃(z)` vanish too, while `h̃(z)` need not: at such a point the product identity fails for a
-reason about notation rather than about the operator. Those points are isolated
-(`eventually_mellin_profile_ne_zero`), so they meet the line in a null set and the inversion
-integral does not see them — but a pointwise reading of the blueprint's display would be false as
-stated, so `RealisesSymbolAction.mellin_eq` is an `∀ᵐ`.
+reason about notation rather than about the operator. So a pointwise reading of the blueprint's
+display, valid at every point of the line, would be false as stated.
 
-That is why `mellin_inversionOperator` concludes `Ãg(z) = h̃(z-1)` rather than the display
-`B(1-z)g̃(z-1)`: the two agree at every point where the product identity holds pointwise, which is
+There are two candidate weakenings, and they are not interchangeable. *Almost everywhere* is all
+`inversionOperator_eq` needs — the zeros are isolated, hence null on the line, and
+`integral_congr_ae` discards them. *Off the zeros of `H̃`* is what the profiles actually supply,
+and it is what `lem:symbol-uniqueness` consumes, since that theorem has to conclude an equality of
+symbols at named points and an a.e. hypothesis concludes nothing at any of them.
+`RealisesAction.mellin_eq` is therefore the second, with the first derived from it as
+`mellin_eq_ae`. Choosing the weaker one first and discovering the gap at the uniqueness theorem is
+what the statement-first order is for.
+
+That is also why `mellin_inversionOperator` concludes `Ãg(z) = h̃(z-1)` rather than the display
+`B(1-z)g̃(z-1)`: the two agree wherever the product identity holds, which is
 `mellin_inversionOperator_eq`. The same question — which equality does "equal on the strip" mean —
-was answered the same way in `SymbolUniqueness.lean`, and both times writing the statement is what
-raised it.
+was answered differently in `SymbolUniqueness.lean` (a punctured neighbourhood, the meromorphic
+reading), and each time writing the statement is what raised it.
 
 ## The shift costs nothing
 
@@ -81,21 +88,45 @@ that compute it. -/
 noncomputable def inversionOperator (c : ℝ) (g : ℝ → ℂ) (x : ℝ) : ℂ :=
   x⁻¹ * mellinInv c (fun z => F.inversionSymbol z * mellin g z) x
 
-/-- `h` **realises the symbol's action** on `g` at height `c`: it is the function that the
-functional-calculus reading of `def:inversion-operator` calls `B(θ)g`.
+/-- `h` **realises the action of the symbol `B`** on `g` at height `c`: it is the function that
+the functional-calculus reading of `def:inversion-operator` calls `B(θ)g`.
 
-The first field is almost-everywhere equality on the line, not pointwise — see the module
-docstring. The last two are verbatim the hypotheses of Mathlib's `mellinInv_mellin_eq`, and for
-the profiles the second of them is `lem:mellin-vertical`. -/
-structure RealisesSymbolAction (c : ℝ) (g h : ℝ → ℂ) : Prop where
-  /-- The transform of `h` is the product `B(-z) g̃(z)` almost everywhere on the line. -/
-  mellin_eq : ∀ᵐ y : ℝ, mellin h (c + y * Complex.I)
-    = F.inversionSymbol (c + y * Complex.I) * mellin g (c + y * Complex.I)
+The symbol is a parameter rather than `F.inversionSymbol`, because `lem:symbol-uniqueness`
+quantifies over candidate symbols; `RealisesSymbolAction` below is the case that matters.
+
+**The transform identity is asked for exactly off the zeros of `H̃`, and that set is not
+arbitrary.** It cannot be asked for everywhere: `F.inversionSymbol` is a quotient with denominator
+`H̃`, so where `H̃` vanishes the product vanishes for a reason about notation and `h̃` need not.
+It could be asked for only almost everywhere — which is all `inversionOperator_eq` uses, the zeros
+being null — but that is *weaker than what the profiles supply* and too weak for
+`lem:symbol-uniqueness`, which needs the symbols to agree at named points. Conditioning on
+`H̃(w) ≠ 0` is the unique choice that the instance proves and the uniqueness theorem consumes.
+
+The last two fields are verbatim the hypotheses of Mathlib's `mellinInv_mellin_eq`; for the
+profiles the second of them is `lem:mellin-vertical`. -/
+structure RealisesAction (c : ℝ) (B : ℂ → ℂ) (g h : ℝ → ℂ) : Prop where
+  /-- The transform of `h` is the product `B(-z) g̃(z)` at every point of the line where the
+  profile's own transform does not vanish. -/
+  mellin_eq : ∀ y : ℝ, mellin (fun u => (F.profile u : ℂ)) (c + y * Complex.I) ≠ 0 →
+    mellin h (c + y * Complex.I) = B (c + y * Complex.I) * mellin g (c + y * Complex.I)
   /-- The forward Mellin integral of `h` converges on the line. -/
   convergent : MellinConvergent h c
   /-- The inversion integral converges absolutely on the line — the hypothesis
   `def:inversion-operator` imposes, and the one `lem:mellin-vertical` supplies for profiles. -/
   verticalIntegrable : Complex.VerticalIntegrable (mellin h) c
+
+/-- `h` realises the action of *the* inversion symbol on `g` at height `c`. -/
+abbrev RealisesSymbolAction (c : ℝ) (g h : ℝ → ℂ) : Prop :=
+  F.RealisesAction c F.inversionSymbol g h
+
+/-- The almost-everywhere reading of the transform identity, which is what the inversion integral
+uses: the zeros of `H̃` on the line are null (`ae_mellin_profile_ne_zero`). -/
+theorem RealisesAction.mellin_eq_ae {F : SelfDecomposableExponent} (hH : F.StandingHypothesis)
+    {c : ℝ} (hc : 0 < c)
+    (hc' : c < F.zStar) {B : ℂ → ℂ} {g h : ℝ → ℂ} (hrep : F.RealisesAction c B g h) :
+    ∀ᵐ y : ℝ, mellin h ((c : ℂ) + y * Complex.I)
+      = B ((c : ℂ) + y * Complex.I) * mellin g ((c : ℂ) + y * Complex.I) := by
+  filter_upwards [F.ae_mellin_profile_ne_zero hH hc hc'] with y hy using hrep.mellin_eq y hy
 
 /-- **`def:inversion-operator`**, the functional-calculus reading: where the symbol's action on `g`
 is realised by `h`, the contour integral computes `x⁻¹ h x`.
@@ -104,7 +135,8 @@ This is the step ledger A12 carries, and it is Mathlib's `mellinInv_mellin_eq` o
 has been recognised as `mellin h`. Recognising it is the whole of the proof, and the null set
 where the recognition fails is discarded by `integral_congr_ae` — which is available precisely
 because `mellinInv` integrates over the line rather than evaluating on it. -/
-theorem inversionOperator_eq {c : ℝ} {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h) {x : ℝ}
+theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) (hc' : c < F.zStar)
+    {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h) {x : ℝ}
     (hx : 0 < x) (hcont : ContinuousAt h x) :
     F.inversionOperator c g x = x⁻¹ * h x := by
   have hint : mellinInv c (fun z => F.inversionSymbol z * mellin g z) x
@@ -112,7 +144,7 @@ theorem inversionOperator_eq {c : ℝ} {g h : ℝ → ℂ} (hrep : F.RealisesSym
     rw [mellinInv, mellinInv]
     congr 1
     refine integral_congr_ae ?_
-    filter_upwards [hrep.mellin_eq] with y hy
+    filter_upwards [hrep.mellin_eq_ae hH hc hc'] with y hy
     rw [hy]
   rw [inversionOperator, hint,
     mellinInv_mellin_eq c h hx hrep.convergent hrep.verticalIntegrable hcont]
@@ -122,13 +154,14 @@ theorem inversionOperator_eq {c : ℝ} {g h : ℝ → ℂ} (hrep : F.RealisesSym
 
 No strip condition. Once the pointwise formula is known on `(0,∞)`, the weight `x⁻¹` is
 `mellin_cpow_smul` at exponent `-1`, which shifts the argument and is available at every `z`. -/
-theorem mellin_inversionOperator {c : ℝ} {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
+theorem mellin_inversionOperator (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
     (hcont : ContinuousOn h (Ioi 0)) (z : ℂ) :
     mellin (F.inversionOperator c g) z = mellin h (z - 1) := by
   have hpt : ∀ t ∈ Ioi (0 : ℝ),
       F.inversionOperator c g t = (t : ℂ) ^ (-1 : ℂ) • h t := by
     intro t ht
-    rw [F.inversionOperator_eq hrep (mem_Ioi.mp ht)
+    rw [F.inversionOperator_eq hH hc hc' hrep (mem_Ioi.mp ht)
       (hcont.continuousAt (isOpen_Ioi.mem_nhds ht)), Complex.cpow_neg_one]
     simp
   calc mellin (F.inversionOperator c g) z
@@ -141,11 +174,12 @@ theorem mellin_inversionOperator {c : ℝ} {g h : ℝ → ℂ} (hrep : F.Realise
 /-- **`def:inversion-operator`**, the blueprint's display `Ãg(z) = B(1-z) g̃(z-1)`, at any point
 where the product identity holds pointwise — which, by `lem:inversion-symbol`, is every point of
 the strip off the isolated zeros of `H̃`. -/
-theorem mellin_inversionOperator_eq {c : ℝ} {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
+theorem mellin_inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
     (hcont : ContinuousOn h (Ioi 0)) {z : ℂ}
     (hz : mellin h (z - 1) = F.inversionSymbol (z - 1) * mellin g (z - 1)) :
     mellin (F.inversionOperator c g) z = F.inversionSymbol (z - 1) * mellin g (z - 1) := by
-  rw [F.mellin_inversionOperator hrep hcont z, hz]
+  rw [F.mellin_inversionOperator hH hc hc' hrep hcont z, hz]
 
 /-! ## The profile instance, and the eigenfunction relation
 
@@ -248,7 +282,7 @@ theorem realisesSymbolAction_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc
     F.RealisesSymbolAction c (fun x : ℝ => (F.profile (s * x) : ℂ))
       (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) where
   mellin_eq := by
-    filter_upwards [F.ae_mellin_profile_ne_zero hH hc (by linarith)] with y hy
+    intro y hy
     rw [F.mellin_profile_comp_mul_weight hs, F.mellin_profile_comp_mul hs, inversionSymbol]
     field_simp
   convergent := F.mellinConvergent_profile_comp_mul_weight hH hc hc' hs
@@ -272,7 +306,8 @@ theorem inversionOperator_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 
       (fun u : ℝ => (s : ℂ) * (u : ℂ) * (F.profile (s * u) : ℂ)) x := by
     exact ((continuousAt_const.mul (Complex.continuous_ofReal.continuousAt)).mul
       (hprof.comp (by fun_prop)))
-  rw [F.inversionOperator_eq (F.realisesSymbolAction_profile hH hc hc' hs) hx hcont]
+  rw [F.inversionOperator_eq hH hc (by linarith) (F.realisesSymbolAction_profile hH hc hc' hs)
+    hx hcont]
   have hx0 : (x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
   rw [show (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)
       = (x : ℂ) * ((s : ℂ) * (F.profile (s * x) : ℂ)) from by ring,

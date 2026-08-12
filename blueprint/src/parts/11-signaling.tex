@@ -197,30 +197,51 @@ states it with the absolute-convergence hypothesis that is exactly the one impos
 \end{definition}
 
 % draft: Lemma 11.4
-% THE SPLIT (2026-08-11). This node runs in two steps of very different cost. Step 1 turns the
-% operator relation into a relation between Mellin transforms, and that is
-% def:inversion-operator's transform-level identity, i.e. ledger A12 -- blocked upstream, see
-% lem:mellin-vertical. Step 2 is the rigidity argument, which needs only the isolated zeros of
-% H~ and is now proved. Step 2 is appended as 11.15; this node keeps its number and its
-% statement, so the graph shows the chapter waiting on A12 at the one place it actually does.
+% THE SPLIT (2026-08-11), BOTH HALVES NOW PROVED (2026-08-12). Step 1 turns the operator relation
+% into a relation between Mellin transforms; step 2 is the rigidity argument, appended as 11.15
+% when it was proved and step 1 was thought to be waiting on A12. It was not: an operator "of the
+% form x^{-1} B(theta)" is one whose B(theta)g is GIVEN, and given it, step 1 is elementary --
+% see the node's own remark on what the route does not need.
 \begin{lemma}[uniqueness of the symbol]\label{lem:symbol-uniqueness}
-\uses{lem:mellin-data,lem:inversion-symbol,lem:symbol-rigidity,def:inversion-operator}
+\uses{lem:mellin-data,lem:inversion-symbol,lem:symbol-rigidity,def:inversion-operator,lem:profile-eigenfunction}
+\lean{Hemigroup.SelfDecomposableExponent.eventuallyEq_inversionSymbol_of_realisesAction}\leanok
 If two operators of the form $x^{-1}B_1(\theta)$ and $x^{-1}B_2(\theta)$ both satisfy
 $A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is
 the unique inversion within the covariant Mellin class.
-\statusT\quad\emph{(the rigidity half is \textbf{machine-checked} as
-\ref{lem:symbol-rigidity}; what is left here is the reduction of the operator relation to the
-transform relation, which is \ref{def:inversion-operator}'s transform-level identity and so
-carries \ledger{A12}. That is the honest place for this node to be waiting, and the split is what
-makes it visible: the mathematical content --- that the eigenfunction relation \emph{pins} the
-symbol rather than merely constraining it --- is the rigidity step, and it is done.)}
+\statusT\quad\emph{(\textbf{Machine-checked}, both halves. Step~2 is
+\ref{lem:symbol-rigidity}; step~1 is
+\texttt{Hemigroup.SelfDecomposableExponent.sameSymbolAction\_of\_realisesAction}, and
+\texttt{eventuallyEq\_inversionSymbol\_of\_realisesAction} composes them against the article's own
+symbol, so the statement is not vacuous and the definite article in ``\emph{the} inversion'' is
+earned. \texttt{\#print axioms} gives \ledger{A17} and nothing else --- in particular step~1 does
+\emph{not} carry \ledger{A12}, which is what this node was recorded as waiting for.}
+
+\emph{\textbf{``Of the form $x^{-1}B(\theta)$'' is the hypothesis, and reading it that way is what
+unblocked the node.} It was recorded as waiting on \ledger{A12} because step~1 was read as needing
+\ref{def:inversion-operator}'s transform identity, hence the \emph{production} of $B(\theta)g$ from
+an integrability hypothesis. But an operator of that form is one whose $B(\theta)g$ is \emph{given};
+the class quantified over in the statement is exactly the class for which the referent exists. So
+the citation was never needed here.}
+
+\emph{\textbf{Two things the proof does not need.} It needs no injectivity of the inverse Mellin
+transform --- the obvious tool, and a second citation (\sscite{widder1941laplace}, Thm.~6a, listed
+in the ledger against just this possibility). Two operators agreeing on $H(s\,\cdot)$ have the
+\emph{same} realising function there, since $x^{-1}h_1 = x^{-1}h_2$ on $(0,\infty)$ is $h_1 = h_2$;
+so their transforms agree at every point and the symbols are read off directly. And it needs only
+\emph{one} dilation, not all $s > 0$: the dilate contributes the factor $s^{-z}$, which never
+vanishes and cancels. The quantifier over $s$ in the statement is weaker information than it
+looks.)}
 \end{lemma}
 
 \begin{proof}
-\uses{lem:symbol-rigidity}
-Evaluating both operators on the profiles and taking Mellin transforms gives
-$B_1(-z)\,s^{-z}\tilde H(z) = B_2(-z)\,s^{-z}\tilde H(z)$ on the line; cancelling the nonzero
-factor $s^{-z}$ leaves the hypothesis of \ref{lem:symbol-rigidity}, which concludes.
+\leanok
+\uses{lem:symbol-rigidity,lem:profile-eigenfunction}
+Both operators send $H(s\,\cdot)$ to $s\,H(s\,\cdot)$, so on $(0,\infty)$ their realising functions
+agree; call the common value $h$. Then $B_1(-z)\,\tilde g(z) = \tilde h(z) = B_2(-z)\,\tilde g(z)$ at
+every point of the line where the identity holds, and $\tilde g(z) = s^{-z}\tilde H(z)$, so cancelling
+the nonvanishing factor $s^{-z}$ leaves the hypothesis of \ref{lem:symbol-rigidity}, which
+concludes. At a zero of $\tilde H$ both sides of that hypothesis vanish, so it holds on the strip
+outright.
 \end{proof}
 
 % draft: Lemma 11.5

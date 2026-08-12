@@ -1033,15 +1033,39 @@ is what needs the zeros to be null. **The prose does algebra on symbols; the for
 on functions, and that is where the gap between them lives.** It is the same shape as the two
 "which equality on the strip" findings, and the third instance of it in this chapter.
 
+## `lem:symbol-uniqueness`, same round — it was outside the quantifier
+
+Both halves proved; A17 alone. The node had been recorded as waiting on A12 because step 1 was
+read as needing `def:inversion-operator`'s transform identity, hence the *production* of `B(θ)g`.
+That was a misreading of the node's own hypothesis: it quantifies over operators **of the form**
+`x⁻¹B(θ)`, and an operator of that form is one whose `B(θ)g` is *given*. The step A12 carries sits
+outside the quantifier.
+
+Which is the same lesson as chapter 11's other three, arriving from a new direction: the previous
+ones came from writing statements down, this one from reading a hypothesis that had been written
+down already. "Blocked on X" deserves the same scepticism whether X is upstream or internal.
+
+Two things the proof turned out not to need, both worth recording because both were anticipated:
+
+* **No Mellin injectivity.** A12's own entry had flagged that this node "may want Widder Thm 6a".
+  It does not: two operators agreeing on `H(s·)` share a realising function there, so their
+  transforms agree at every point and the symbols come off by cancelling `s^{-z}H̃(z)`. **One
+  anticipated citation retired without being spent.**
+* **One dilation suffices.** The statement quantifies over all `s > 0`; the proof uses one.
+
+**And it corrected a choice made one commit earlier.** `RealisesAction.mellin_eq` was first an
+`∀ᵐ` on the line — all `inversionOperator_eq` needs. Too weak here: a uniqueness theorem concludes
+an equality of symbols at *named* points, and an a.e. hypothesis concludes nothing at any of them.
+The right condition is the identity wherever `H̃` does not vanish, which is what the profile
+instance proves and which makes `SameSymbolAction` hold on the whole strip (at a zero both sides
+vanish). Weakest the consumer can use, strongest the producer can supply, and they coincide — but
+only writing the consumer showed it. The a.e. version survives as a derived lemma.
+
 ## Next
 
-1. `lem:symbol-uniqueness` (11.4) step 1 — the reduction of the operator relation to the transform
-   relation. With the operator now computed through its realising function, this is: two operators
-   agreeing on the profiles have `h₁ = h₂` on `(0,∞)`, hence `h̃₁ = h̃₂`, hence the hypothesis of
-   `lem:symbol-rigidity` (11.15), which is already proved. Note that this route needs no
-   injectivity of `mellinInv` — the realising function carries the information instead.
-2. `thm:signaling-form`(2)'s Mellin form — `lem:memory-fractional-integrals` (11.5) combined with
-   `lem:mellin-data`. Clause (1) is done.
-3. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
+1. `thm:signaling-form`(2)'s Mellin form — `lem:memory-fractional-integrals` (11.5) combined with
+   `lem:mellin-data`. Clauses (1) and (3) are done, so this is what is left of chapter 11. Note
+   that (2)'s causality and boundary clauses are (A3) and (A7), i.e. structure already in hand.
+2. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
    `prop:scale-evolution` and `cor:exact-inversion` (distributions).
-4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` left in the repo.
+3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` left in the repo.

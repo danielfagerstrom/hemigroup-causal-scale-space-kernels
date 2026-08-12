@@ -415,7 +415,10 @@ articles that have not yet pinned a ledger.
   **Separately, `lem:symbol-uniqueness` may want Mellin _uniqueness_** (Widder Thm 6a, p. 243 —
   already listed above as a neighbouring statement). Mathlib gives injectivity only as a
   corollary of `mellinInv_mellin_eq`, i.e. under the same absolute-convergence hypotheses, so
-  that node inherits the same question.
+  that node inherits the same question. *(Resolved 2026-08-12: it does not want it. Two operators
+  agreeing on `H(s·)` share a realising function there, so their transforms agree at every point
+  and the symbols come off by cancellation — no injectivity, and no second citation. See the
+  seventh reading.)*
 
 - **Third reading, 2026-08-11, from the Lean rather than from the library index — the obstacle is
   upstream.** `lem:mellin-data` is now proved
@@ -482,6 +485,7 @@ articles that have not yet pinned a ledger.
   | 4 | **the statement, by attempting it** | proved | — |
   | 5 | the **node**, by formalising it | narrowed to one step | (the narrowing *was* the finding) |
   | 6 | the article's **uses**, by proving them | the use is empty | — |
+  | 7 | the **consumer** node, by proving it | it was outside the quantifier | read the hypothesis, not the proof |
 
   A survey answers "is this theory present?". Only attempting the proof answers "is this theorem
   reachable?", and here the two answers differed by two orders of magnitude of work.
@@ -556,6 +560,38 @@ articles that have not yet pinned a ledger.
   the strip and `ℂ` is hereditarily Lindelöf, so the set is countable. The prose was doing algebra
   on symbols where the formalisation does it on functions, and that is where the gap between them
   sits.
+
+- **Seventh reading, 2026-08-12 — `lem:symbol-uniqueness` was never waiting on this either.**
+  Both halves of the node are now machine-checked
+  (`sameSymbolAction_of_realisesAction`, `eventuallyEq_inversionSymbol_of_realisesAction`), and
+  `#print axioms` gives A17 alone. The blueprint had recorded step 1 as carrying A12, on the
+  reading that turning the operator relation into a transform relation requires
+  `def:inversion-operator`'s identity and hence the *production* of `B(θ)g`.
+
+  That was a misreading of the node's own hypothesis. It quantifies over operators "of the form
+  `x⁻¹B(θ)`" — and an operator of that form is one whose `B(θ)g` is **given**. The class the
+  statement ranges over is exactly the class in which the referent exists, so the step A12 carries
+  is outside the quantifier, not inside it.
+
+  Two further things fell out, both about what the proof does *not* need:
+
+  - **No Mellin injectivity.** The bullet above anticipated wanting Widder Thm 6a here. It is not
+    wanted: two operators that agree on `H(s·)` have the *same* realising function there, because
+    `x⁻¹h₁ = x⁻¹h₂` on `(0,∞)` is `h₁ = h₂`; so their transforms agree at every point and the
+    symbols are read off by cancelling `s^{-z}H̃(z)`. The realising function carries the
+    information injectivity would have had to recover. One anticipated citation retired.
+  - **One dilation suffices.** The blueprint quantifies the eigenfunction relation over all
+    `s > 0`; the proof uses a single `s`, the dilate contributing only the nonvanishing factor
+    `s^{-z}`.
+
+  **And it corrected a design choice made one commit earlier.** `RealisesAction.mellin_eq` was
+  first written as an `∀ᵐ` on the line — all `inversionOperator_eq` needs, since the zeros of `H̃`
+  are null. That is too weak here: a uniqueness theorem must conclude an equality of symbols at
+  *named* points, and an a.e. hypothesis concludes nothing at any of them. The right condition is
+  the identity at every point of the line where `H̃` does not vanish — which is what the profile
+  instance actually proves, and which makes `SameSymbolAction` hold on the whole strip (at a zero
+  both sides vanish). Weakest hypothesis the consumer can use, strongest the producer can supply;
+  they meet exactly, and it took writing the consumer to see it.
 
 ## A13 — A Laplace transform with nonnegative integrand is singular at its abscissa of convergence
 **Blueprint:** `lem:moment-recursion` · **Lean:** *(not stated yet)*
