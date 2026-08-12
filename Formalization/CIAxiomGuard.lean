@@ -534,3 +534,13 @@ which quantifies over the construction's kernels; nothing else, and in particula
 
 #print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrder
 #print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrder_of_symbol_eq
+
+/-! ### Covariance of the inversion operator
+
+`A Δ_σ = σ⁻¹ Δ_σ A`, which the blueprint asserts in passing inside 12.2's proof and which is the
+load-bearing step of that lemma's (⇒) direction. A17 through `inversionOperator`; the two
+supporting identities about positive reals raised to a complex power are Lean core.
+-/
+
+#print axioms Hemigroup.inversionOperator_lineDilate
+#print axioms Hemigroup.mellinInv_cpow_mul

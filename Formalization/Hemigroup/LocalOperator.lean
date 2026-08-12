@@ -126,4 +126,88 @@ theorem isLocalOfOrder_of_symbol_eq {c : ℝ} (hc : 0 < c)
 
 end SelfDecomposableExponent
 
+/-! ## Covariance
+
+The blueprint's proof of `lem:local-polynomial-symbol` opens the (⇒) direction with "every
+operator of `def:inversion-operator` satisfies the covariance `A Δ_σ = σ^{-1} Δ_σ A`", asserted
+in passing. It is what turns "some continuous `c_j`" into `γ_j x^{j-1}`, so it is the load-bearing
+step of that direction and is proved here rather than asserted.
+
+The mechanism is entirely Mellin-side: dilation multiplies the transform by `σ^z`
+(`mellin_comp_mul_left`), and multiplying the symbol by `σ^z` translates the inverse transform's
+argument, because `x^{-(c+iy)} σ^{c+iy} = (x/σ)^{-(c+iy)}`. Everything reduces to that one
+identity between positive reals raised to a complex power, which is cleanest through `exp`. -/
+
+/-- Dilation on the memory line, `(Δ_σ g)(x) = g(x/σ)`. -/
+noncomputable def lineDilate (σ : ℝ) (g : ℝ → ℂ) : ℝ → ℂ := fun x => g (x / σ)
+
+/-- A positive real to a complex power, through `exp`: the form in which the two identities below
+are one line of `ring_nf`. -/
+theorem ofReal_cpow_eq_exp {a : ℝ} (ha : 0 < a) (w : ℂ) :
+    (a : ℂ) ^ w = Complex.exp ((Real.log a : ℂ) * w) := by
+  rw [Complex.cpow_def_of_ne_zero (by simpa using ne_of_gt ha), Complex.ofReal_log ha.le]
+
+theorem mellin_lineDilate {σ : ℝ} (hσ : 0 < σ) (g : ℝ → ℂ) (z : ℂ) :
+    mellin (lineDilate σ g) z = (σ : ℂ) ^ z * mellin g z := by
+  have h : lineDilate σ g = fun x : ℝ => g (σ⁻¹ * x) := by
+    funext x; simp [lineDilate, div_eq_inv_mul]
+  rw [h, mellin_comp_mul_left g z (by positivity : (0 : ℝ) < σ⁻¹), smul_eq_mul]
+  congr 1
+  rw [ofReal_cpow_eq_exp (by positivity : (0 : ℝ) < σ⁻¹), ofReal_cpow_eq_exp hσ,
+    Real.log_inv]
+  push_cast
+  ring_nf
+
+/-- Multiplying the symbol by `σ^z` dilates the argument of the inverse transform. -/
+theorem mellinInv_cpow_mul {σ : ℝ} (hσ : 0 < σ) (c : ℝ) (G : ℂ → ℂ) {x : ℝ} (hx : 0 < x) :
+    mellinInv c (fun z => (σ : ℂ) ^ z * G z) x = mellinInv c G (x / σ) := by
+  simp only [mellinInv]
+  congr 1
+  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
+  dsimp only
+  rw [smul_eq_mul, smul_eq_mul, ← mul_assoc]
+  congr 1
+  have hxσ : (0 : ℝ) < x / σ := div_pos hx hσ
+  rw [ofReal_cpow_eq_exp hx, ofReal_cpow_eq_exp hσ, ofReal_cpow_eq_exp hxσ,
+    Real.log_div (ne_of_gt hx) (ne_of_gt hσ), ← Complex.exp_add]
+  push_cast
+  ring_nf
+
+/-- **The covariance of the inversion operator**: `A Δ_σ = σ^{-1} Δ_σ A`. -/
+theorem inversionOperator_lineDilate (F : SelfDecomposableExponent) (c : ℝ) {σ : ℝ} (hσ : 0 < σ)
+    (g : ℝ → ℂ) {x : ℝ} (hx : 0 < x) :
+    F.inversionOperator c (lineDilate σ g) x
+      = (σ⁻¹ : ℝ) * F.inversionOperator c g (x / σ) := by
+  have hσne : (σ : ℂ) ≠ 0 := by simpa using ne_of_gt hσ
+  have hxne : (x : ℂ) ≠ 0 := by simpa using ne_of_gt hx
+  have hm : (fun z => F.inversionSymbol z * mellin (lineDilate σ g) z)
+      = fun z => (σ : ℂ) ^ z * (F.inversionSymbol z * mellin g z) := by
+    funext z
+    rw [mellin_lineDilate hσ]
+    ring
+  rw [SelfDecomposableExponent.inversionOperator, SelfDecomposableExponent.inversionOperator, hm,
+    mellinInv_cpow_mul hσ c _ hx]
+  push_cast
+  field_simp
+
+/-- Dilation preserves the test class, which is what lets the covariance be applied to it. -/
+theorem IsTestFunction.lineDilate {σ : ℝ} (hσ : 0 < σ) {g : ℝ → ℂ} (hg : IsTestFunction g) :
+    IsTestFunction (_root_.Hemigroup.lineDilate σ g) where
+  contDiff := by
+    have h : ContDiff ℝ (⊤ : ℕ∞) fun x : ℝ => x / σ := by fun_prop
+    exact hg.contDiff.comp h
+  hasCompactSupport := by
+    have himg : IsCompact ((fun x : ℝ => σ * x) '' tsupport g) :=
+      hg.hasCompactSupport.isCompact.image (by fun_prop)
+    refine HasCompactSupport.of_support_subset_isCompact himg fun x hx => ?_
+    refine ⟨x / σ, subset_tsupport _ hx, ?_⟩
+    field_simp
+  tsupport_subset := by
+    intro x hx
+    have hsub : tsupport (_root_.Hemigroup.lineDilate σ g) ⊆ (fun t : ℝ => σ * t) '' tsupport g := by
+      refine closure_minimal (fun y hy => ⟨y / σ, subset_tsupport _ hy, by field_simp⟩)
+        (((hg.hasCompactSupport.isCompact.image (by fun_prop : Continuous fun t : ℝ => σ * t))).isClosed)
+    obtain ⟨t, ht, rfl⟩ := hsub hx
+    exact mul_pos hσ (hg.tsupport_subset ht)
+
 end Hemigroup

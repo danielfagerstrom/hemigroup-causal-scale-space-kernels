@@ -123,7 +123,11 @@ $B$, expanded in falling factorials, gives $x^{-1}B(\theta) = \sum \gamma_j x^{j
 a differential expression of order $\deg B$.
 
 ($\Rightarrow$) Every operator of \ref{def:inversion-operator} satisfies the covariance
-$A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, where $(\Delta_\sigma g)(x) = g(x/\sigma)$.
+$A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, where $(\Delta_\sigma g)(x) = g(x/\sigma)$ ---
+machine-checked as \texttt{Hemigroup.inversionOperator\_lineDilate}, the mechanism being entirely
+Mellin-side: dilation multiplies the transform by $\sigma^{z}$, and multiplying the symbol by
+$\sigma^{z}$ translates the inverse transform's argument, both reducing to
+$x^{-(c+i\tau)}\sigma^{c+i\tau} = (x/\sigma)^{-(c+i\tau)}$.
 Imposing this on $\sum c_j(x)\partial_x^j$ and comparing coefficients of $g^{(j)}(x/\sigma)$
 gives $c_j(x)\sigma^{-j} = \sigma^{-1}c_j(x/\sigma)$, i.e.\ $c_j(x) = c_j(1)x^{j-1}$.
 Rewriting via falling factorials, $A$ agrees on $C_c^\infty$ with $x^{-1}P(\theta)$ for a
