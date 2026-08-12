@@ -256,6 +256,7 @@ outright.
 % draft: Lemma 11.5
 \begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
 \uses{def:standing-hypothesis,lem:mellin-data,thm:main-characterization,lem:delay-core,lem:delayed-average-mellin}
+\lean{Skeleton.riemannLiouville_integral}\notready
 Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
 and $1 < \operatorname{Re} z < z_*$,
 \[
@@ -286,10 +287,21 @@ $f(0) = 0$.
 
 \emph{\textbf{The first clause is machine-checked}, as \ref{lem:delayed-average-mellin}, which
 also carries the identification of $\Ex[f(t-xT_1)]$ with $\Phi_{0,x}f$ and so the canonical gauge
-at the level of measures. What is left here is the \emph{derivative} clause, $f \in \core$ and
-$I^zf' = I^{z-1}f$, which needs $\partial_t u$ and so \ref{lem:delay-core}. See that node's remark
-for why a representative of the field has to be named at all --- the quantifiers ``for each $x$,
-a.e.\ $t$'' do not commute, so this is not avoided by weakening the reading.}
+at the level of measures. See that node's remark for why a representative of the field has to be
+named at all --- the quantifiers ``for each $x$, a.e.\ $t$'' do not commute, so this is not avoided
+by weakening the reading.}
+
+\emph{\textbf{The derivative clause is stated and not proved}, as
+\texttt{Skeleton.riemannLiouville\_integral} with \texttt{Skeleton.hasDerivAt\_delayedField}; those
+two are what it decomposes into, and writing them down showed that \textbf{the node this proof
+cites is not the node it needs}. The derivation goes through $f \in \core$ and hence
+\ref{lem:delay-core} --- density of the core, invariance under the delay semigroup and under
+$\Phi$, the $L^1$ difference quotient --- and uses none of it. What it uses is differentiation
+under the integral sign (which needs $f$ to be an integral of an $L^1$ function, and nothing about
+$\Phi$) and the identity $I^zf' = I^{z-1}f$ (which mentions neither the field nor the core). $\core$
+enters only as a convenient source of those hypotheses. \emph{What a proof cites is an upper bound
+on what a statement needs}, and this is the third place in the chapter where the two have come
+apart.}
 
 \emph{\textbf{The wider strip is not decoration; \ref{thm:signaling-form}(2) needs it.} That node
 applies this lemma at $z-1$, and states the range $1 < \operatorname{Re} z < z_*$ --- which puts

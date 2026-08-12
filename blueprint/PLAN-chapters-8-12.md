@@ -1186,13 +1186,37 @@ assumed. `integrableOn_pastIntegrand` (from `Re z > 1` and `f ∈ L¹`) and
 hypothesis that the four downstream lemmas take as input, so the strip appears once, at the place
 that decides it.
 
+## The derivative clause, stated — and `lem:delay-core` is not what it needs either
+
+The previous section's "Next" said chapter 11 waits on `lem:delay-core` (10.1). Writing the
+derivative clause down shows that is wrong, and wrong in a way the chapter has now produced three
+times. The draft reaches the clause through `f ∈ 𝒟`, hence 10.1 — density of the core, invariance
+under the delay semigroup and under `Φ`, the `L¹` difference quotient — and **uses none of it**.
+What it uses is two facts, now stated in `Skeleton/Chapter11.lean`:
+
+* `hasDerivAt_delayedField` — differentiation under the integral sign for `∂_t E[f(t - xT₁)]`.
+  Needs `f` to be an integral of an `L¹` function; says nothing about `Φ` or the core.
+* `riemannLiouville_integral` — the identity `Iᶻf' = I^{z-1}f`. Mentions neither the field nor the
+  core. The draft derives it from the semigroup property `Iᶻ I¹ = I^{z+1}`; it is cheaper without
+  that property, by exchanging the order of integration over the triangle `0 < ρ ≤ r ≤ t`, which
+  leaves `∫_ρ^t (t-r)^{z-2}dr = (t-ρ)^{z-1}/(z-1)` — and `Re z > 1` is exactly what makes that
+  inner integral converge, the same endpoint as everywhere else in this chapter.
+
+`𝒟` enters only as a convenient source of those hypotheses (and, per the previous section, of
+boundedness). **What a proof cites is an upper bound on what a statement needs** — that is the
+pattern, and it has now cost three separate "blocked on X" entries in this chapter: A12 twice
+(once upstream, once on the wrong side of a quantifier) and 10.1 here. The reliable test is the
+same each time: write the statement and see what the *obligation* asks for, not what the argument
+happens to invoke.
+
 ## Next
 
-1. **`lem:delay-core`** (10.1), which is what stands between 11.19 and `thm:signaling-form`(2)
-   entire: 11.5's derivative clause needs `∂_t u`, and that needs the core `𝒟`, its density, its
-   invariance under the delay semigroup and under `Φ`, and the `L¹` difference quotient. **None of
-   this is blocked on Mathlib** — no C₀-semigroup theory, no closed operators — so the "chapter 10
-   is blocked" line was true of the chapter and wrong about this node.
-2. Still blocked upstream, unchanged: the rest of chapter 10 (C₀-semigroups), chapter 12
-   (Bessel `K`), `prop:scale-evolution` and `cor:exact-inversion` (distributions).
-3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` in the repo.
+1. `Skeleton.riemannLiouville_integral` — Fubini over the triangle plus `integral_cpow`, which
+   Mathlib has with the hypothesis `-1 < Re r`, matching `Re z > 1` on the nose.
+2. `Skeleton.hasDerivAt_delayedField` — differentiation under the integral sign; Mathlib's
+   `hasDerivAt_integral_of_dominated_loc_of_deriv_le` is the tool.
+3. Those two close `thm:signaling-form` and with it chapter 11 entire.
+4. Still blocked upstream, unchanged: chapter 10's C₀-semigroup content, chapter 12 (Bessel `K`),
+   `prop:scale-evolution` and `cor:exact-inversion` (distributions). Note that `lem:delay-core`
+   itself is *not* blocked — it is simply no longer on chapter 11's critical path.
+5. `prop:pair-regularity`(2) is `[A]` by design (ledger A9).

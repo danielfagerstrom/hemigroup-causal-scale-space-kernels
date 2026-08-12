@@ -70,19 +70,17 @@ schedulable:
    are machine-checked — `lem:profile-eigenfunction` and `lem:symbol-uniqueness` — and neither
    spends ledger A12, though the chapter had recorded both as waiting on it. Of (2), the
    Mellin form is proved as `lem:signaling-mellin-form`, field identification included. What
-   remains of the whole chapter is one thing: the derivative clause of
-   `lem:memory-fractional-integrals`, which needs `∂_t u` and hence `lem:delay-core`.
+   remains of the whole chapter is the derivative clause of `lem:memory-fractional-integrals`,
+   stated in `Skeleton/Chapter11.lean` as two facts: differentiation under the integral sign, and
+   the fractional-integral identity `Iᶻf' = I^{z-1}f`. Neither needs `lem:delay-core`, which the
+   draft's proof cites — what a proof cites is an upper bound on what a statement needs.
 2. **Chapter 9 is closed to what its ledger allows.** Route B is done: the potential kernel is
    *constructed* as the subordinator's potential measure rather than represented through
    Bernstein–Widder, so the trust boundary stays at two entries and A1 stays off the critical
    path — checked by `#print axioms`, not asserted. What is left in the chapter is `[A]`
    (`prop:pair-regularity` on A9, `prop:volterra-density` on A10) or distributional
    (`prop:scale-evolution`, `cor:exact-inversion`), which Mathlib cannot yet state.
-3. **`lem:delay-core` (10.1) is not blocked, and had been counted as though it were.** The core
-   `𝒟`, its density, its invariance under the delay semigroup and under `Φ`, and the `L¹`
-   difference quotient — no C₀-semigroup theory and no closed operators. It is what chapter 11
-   now waits on.
-4. **Blocked on upstream Mathlib, not queued.** The rest of chapter 10 needs C₀-semigroup and
+3. **Blocked on upstream Mathlib, not queued.** The rest of chapter 10 needs C₀-semigroup and
    closed-operator theory; chapter 12 needs Bessel `K`; `prop:scale-evolution` and `cor:exact-inversion` need a
    locally integrable function read as a distribution and a distribution convolved with a measure,
    neither of which `Analysis/Distribution/` yet has. None of the three is a scheduling decision,

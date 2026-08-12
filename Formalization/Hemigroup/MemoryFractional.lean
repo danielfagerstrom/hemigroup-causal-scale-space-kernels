@@ -118,9 +118,9 @@ on its own for every `c > 0`.
 
 **The gap this closes is in the draft.** `lem:memory-fractional-integrals` states the range
 `1 < Re z < z_*`, and `thm:signaling-form`(2) states the same range while applying that lemma at
-`z-1` — which its stated range does not cover. The repair is not a change of result: (2) hypothesises
-`f ∈ 𝒟`, which is bounded, so the lemma holds there for `0 < Re z < z_*` and the chain closes. It is
-a gap in what the lemma *says*, not in what is true, and chaining the two in Lean is what surfaced
+`z-1` — which its stated range does not cover. The repair is not a change of result: (2)
+hypothesises `f ∈ 𝒟`, which is bounded, so the lemma holds there for `0 < Re z < z_*` and the chain
+closes. It is a gap in what the lemma *says*, not in what is true, and chaining the two surfaced
 it. -/
 theorem integrableOn_pastIntegrand_of_bounded (hz : 0 < z.re) {C : ℝ} (hfm : Measurable f)
     (hbdd : ∀ y : ℝ, |f y| ≤ C) (hcausal : ∀ r : ℝ, r < 0 → f r = 0) (ht : 0 < t) :
