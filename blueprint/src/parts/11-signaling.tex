@@ -141,6 +141,7 @@ $|T_1^{-z}| = T_1^{-\operatorname{Re} z}$, the identity also gives the stated bo
 % draft: Definition 11.3
 \begin{definition}[the inversion operator]\label{def:inversion-operator}
 \uses{lem:mellin-data,lem:inversion-symbol,def:cascade-family}
+\lean{Skeleton.inversionOperator}\notready
 Fix $c \in (0, z_* - 1)$. For $g$ such that $\tilde g$ is defined on the line
 $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ is absolutely integrable there, set
 \[
@@ -163,6 +164,26 @@ is a computation. The ledger records a correction to the draft here: it cited
 \sscite{samko1993fractional} for this, which states Mellin inversion only as an unhypothesized
 display, equation~(1.113); Widder states it with the absolute-convergence hypothesis that is
 exactly the one imposed above.)}
+
+\emph{\textbf{Stated in Lean 2026-08-12}, as \texttt{Skeleton.inversionOperator} with
+\texttt{RealisesSymbolAction}, \texttt{inversionOperator\_eq} and
+\texttt{mellin\_inversionOperator}, and writing it down settled two questions the display above
+leaves open. The first is the one \ledger{A12}'s fourth reading named: ``$B(\theta)g$'' is a
+functional calculus for an operator with poles, so what makes this a \emph{definition} is the
+existence of the function it names, and the Lean statement therefore takes that function --- the
+$h$ with $\tilde h = B(-z)\tilde g$ on the line --- as given and concludes $Ag = x^{-1}h$. The
+hypothesis is thereby stronger than absolute integrability of the product; it is exactly what the
+article's own uses supply, since every one of them exhibits $h$ explicitly.}
+
+\emph{The second was not foreseen. \textbf{The realising identity can only be asked for almost
+everywhere on the line.} $B$ is a quotient with poles at the zeros of $\tilde H$, and where
+$\tilde H$ vanishes the product $B(-z)\tilde g(z)$ vanishes with it for a reason that is about
+notation rather than about the operator --- while $\tilde h$ need not. Those points are isolated
+by \ref{lem:inversion-symbol}, so they meet the line in a null set and the inversion integral does
+not see them; but a pointwise reading of the display would be false as stated. This is the second
+time in the chapter that ``equality on the strip'' has had to say which equality it means, the
+first being \ref{lem:symbol-rigidity}, and both times the answer came from writing the statement
+rather than from reading it.)}
 \end{definition}
 
 % draft: Lemma 11.4
