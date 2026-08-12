@@ -544,3 +544,14 @@ supporting identities about positive reals raised to a complex power are Lean co
 
 #print axioms Hemigroup.inversionOperator_lineDilate
 #print axioms Hemigroup.mellinInv_cpow_mul
+
+/-! ### Prescribed jets
+
+At every point of `(0,∞)` and every order `m`, a test function whose jet there is the `m`-th basis
+vector. This is what licenses comparing coefficients of a differential expression, and so what the
+(⇒) direction of `lem:local-polynomial-symbol` rests on. Lean core alone: nothing here mentions a
+kernel.
+-/
+
+#print axioms Hemigroup.exists_isTestFunction_jet
+#print axioms Hemigroup.iteratedDeriv_ofReal_sub_pow

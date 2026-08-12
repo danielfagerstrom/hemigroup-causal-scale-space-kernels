@@ -5,6 +5,8 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.InversionOperator
 import Hemigroup.MellinEuler
+import Mathlib.Analysis.Calculus.BumpFunction.InnerProduct
+import Mathlib.Analysis.Complex.RealDeriv
 
 /-!
 # Local inversion operators
@@ -209,5 +211,116 @@ theorem IsTestFunction.lineDilate {σ : ℝ} (hσ : 0 < σ) {g : ℝ → ℂ} (h
         (((hg.hasCompactSupport.isCompact.image (by fun_prop : Continuous fun t : ℝ => σ * t))).isClosed)
     obtain ⟨t, ht, rfl⟩ := hsub hx
     exact mul_pos hσ (hg.tsupport_subset ht)
+
+/-! ## Prescribed jets
+
+The (⇒) direction of `lem:local-polynomial-symbol` compares coefficients of `g^{(j)}(x/σ)`, which
+is licensed only because a differential expression is determined by its coefficients. In Lean that
+is this construction: at every point of `(0,∞)` and every order `m`, a test function whose jet
+there is the `m`-th basis vector. Cutting a monomial off with a bump function supported inside
+`(0,∞)` does it, and the bump is invisible to the jet because it is identically `1` near the
+point. -/
+
+/-- `t ↦ t - c` as a map `ℝ → ℂ` has derivative `1`. -/
+theorem hasDerivAt_ofReal_sub (c : ℂ) (x : ℝ) :
+    HasDerivAt (fun t : ℝ => (t : ℂ) - c) 1 x := by
+  have h : HasDerivAt (fun t : ℝ => (t : ℂ)) 1 x := by
+    simpa using (hasDerivAt_id x).ofReal_comp
+  simpa using h.sub_const c
+
+/-- The iterated derivative of `(t - c)^m`, with natural subtraction throughout: for `j > m` the
+descending factorial is `0`, which is what makes the formula uniform. -/
+theorem iteratedDeriv_ofReal_sub_pow (c : ℂ) (m : ℕ) :
+    ∀ (j : ℕ) (x : ℝ), iteratedDeriv j (fun t : ℝ => ((t : ℂ) - c) ^ m) x
+      = (m.descFactorial j : ℂ) * ((x : ℂ) - c) ^ (m - j) := by
+  intro j
+  induction j with
+  | zero => intro x; simp
+  | succ k ih =>
+      intro x
+      have hfun : iteratedDeriv k (fun t : ℝ => ((t : ℂ) - c) ^ m)
+          = fun y : ℝ => (m.descFactorial k : ℂ) * ((y : ℂ) - c) ^ (m - k) := funext ih
+      have hd : HasDerivAt (fun y : ℝ => (m.descFactorial k : ℂ) * ((y : ℂ) - c) ^ (m - k))
+          ((m.descFactorial k : ℂ) *
+            (((m - k : ℕ) : ℂ) * ((x : ℂ) - c) ^ (m - k - 1) * 1)) x :=
+        HasDerivAt.const_mul _ ((hasDerivAt_ofReal_sub c x).pow (m - k))
+      rw [iteratedDeriv_succ, hfun, hd.deriv, Nat.descFactorial_succ]
+      push_cast
+      rw [Nat.sub_sub]
+      ring
+
+/-- **A test function with a prescribed jet.** For every `x₀ > 0` and every order `m` there is a
+test function whose derivatives at `x₀` are `δ_{jm}`.
+
+This is what licenses comparing coefficients of a differential expression. The bump is chosen with
+outer radius `x₀/2`, so its support sits inside `(0,∞)` — the same constraint that
+`MellinEuler.lean` needs, arrived at from the other side. -/
+theorem exists_isTestFunction_jet {x₀ : ℝ} (hx₀ : 0 < x₀) (m : ℕ) :
+    ∃ g : ℝ → ℂ, IsTestFunction g ∧
+      ∀ j : ℕ, iteratedDeriv j g x₀ = if j = m then 1 else 0 := by
+  set φ : ContDiffBump x₀ := ⟨x₀ / 4, x₀ / 2, by positivity, by linarith⟩ with hφ
+  set p : ℝ → ℂ := fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) ^ m / (m.factorial : ℂ) with hp
+  refine ⟨fun t => (φ t : ℂ) * p t, ⟨?_, ?_, ?_⟩, ?_⟩
+  · -- smooth
+    have h1 : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => ((φ t : ℝ) : ℂ) :=
+      Complex.ofRealCLM.contDiff.comp φ.contDiff
+    have h2 : ContDiff ℝ (⊤ : ℕ∞) p := by
+      have : ContDiff ℝ (⊤ : ℕ∞) fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) :=
+        Complex.ofRealCLM.contDiff.sub contDiff_const
+      exact (this.pow m).div_const _
+    exact h1.mul h2
+  · -- compactly supported
+    refine HasCompactSupport.intro (K := Metric.closedBall x₀ φ.rOut) (isCompact_closedBall _ _)
+      fun t ht => ?_
+    have : φ t = 0 := by
+      refine image_eq_zero_of_notMem_tsupport ?_
+      rw [φ.tsupport_eq]
+      exact ht
+    rw [this]
+    simp
+  · -- supported inside `(0,∞)`
+    have hsub : tsupport (fun t : ℝ => ((φ t : ℝ) : ℂ) * p t)
+        ⊆ Metric.closedBall x₀ φ.rOut := by
+      refine closure_minimal (fun t ht => ?_) Metric.isClosed_closedBall
+      by_contra hmem
+      have hz : φ t = 0 := by
+        refine image_eq_zero_of_notMem_tsupport ?_
+        rw [φ.tsupport_eq]
+        exact hmem
+      exact ht (by simp [hz])
+    intro t ht
+    have h := Metric.mem_closedBall.mp (hsub ht)
+    have hr : φ.rOut = x₀ / 2 := rfl
+    rw [hr, Real.dist_eq] at h
+    have habs := abs_le.mp h
+    simp only [mem_Ioi]
+    linarith [habs.1]
+  · -- the jet
+    intro j
+    have hloc : (fun t : ℝ => ((φ t : ℝ) : ℂ) * p t) =ᶠ[𝓝 x₀] p := by
+      have hball : Metric.ball x₀ φ.rIn ∈ 𝓝 x₀ := Metric.ball_mem_nhds _ φ.rIn_pos
+      filter_upwards [hball] with t ht
+      rw [φ.one_of_mem_closedBall (Metric.ball_subset_closedBall ht)]
+      simp
+    have hcongr : iteratedDeriv j (fun t : ℝ => ((φ t : ℝ) : ℂ) * p t) x₀ = iteratedDeriv j p x₀ := by
+      rw [← iteratedDerivWithin_univ, ← iteratedDerivWithin_univ]
+      exact Filter.EventuallyEq.iteratedDerivWithin_eq
+        (by rwa [nhdsWithin_univ]) (by simpa using hloc.eq_of_nhds)
+    rw [hcongr, hp]
+    have hdiv : iteratedDeriv j (fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) ^ m / (m.factorial : ℂ)) x₀
+        = iteratedDeriv j (fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) ^ m) x₀ / (m.factorial : ℂ) := by
+      simpa [div_eq_mul_inv] using
+        iteratedDeriv_const_mul (𝕜 := ℝ) (c := ((m.factorial : ℂ))⁻¹) (n := j)
+          (f := fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) ^ m) x₀
+    rw [hdiv, iteratedDeriv_ofReal_sub_pow]
+    rcases lt_trichotomy j m with h | h | h
+    · rw [if_neg (by omega)]
+      have : m - j ≠ 0 := by omega
+      simp [sub_self, zero_pow this]
+    · subst h
+      rw [if_pos rfl, Nat.sub_self, Nat.descFactorial_self]
+      simp [Nat.factorial_ne_zero]
+    · rw [if_neg (by omega), Nat.descFactorial_eq_zero_iff_lt.mpr h]
+      simp
 
 end Hemigroup

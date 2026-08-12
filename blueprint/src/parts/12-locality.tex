@@ -110,11 +110,16 @@ $\mathbb{R}$.
 The factor is isolated as \texttt{mellinEulerFactor} rather than inlined, because the sign
 convention is where this chapter's bookkeeping errors would live: Lean's
 \texttt{inversionSymbol z} is this chapter's $B(-z)$.
-\textbf{The ($\Rightarrow$) direction needs one thing more}, and it is the harder half: that a
-differential expression is determined by its coefficients, so that comparing coefficients of
-$g^{(j)}(x/\sigma)$ is licensed. In Lean that is a prescribed-jet test-function construction, and
-it is the reason this node is the chapter's largest remaining item rather than its
-next one.)}
+\textbf{The ($\Rightarrow$) direction needs two things more, and both are now in hand.} Its
+opening step is the covariance $A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, proved as
+\texttt{Hemigroup.inversionOperator\_lineDilate}. Its second is what licenses comparing
+coefficients of $g^{(j)}(x/\sigma)$ at all: that a differential expression is determined by its
+coefficients. In Lean that is a prescribed-jet construction --- at every point of $(0,\infty)$ and
+every order $m$, a test function whose jet there is the $m$-th basis vector --- and it is
+\texttt{Hemigroup.exists\_isTestFunction\_jet}, a monomial cut off by a bump function whose outer
+radius is $x_0/2$, so that its support sits inside $(0,\infty)$: the same constraint the
+integrations by parts need, arrived at from the other side. What remains of this node is the
+assembly.)}
 \end{lemma}
 
 \begin{proof}
