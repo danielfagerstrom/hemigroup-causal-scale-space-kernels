@@ -512,3 +512,15 @@ development, so like `eq_gamma_form_of_logConvex_of_recursion` it should print *
 
 #print axioms Hemigroup.mellin_pow_mul_iteratedDeriv
 #print axioms Hemigroup.integral_cpow_mul_deriv
+
+/-! ### Inversion for test functions
+
+Everything `mellinInv_mellin_eq` asks for. The vertical-integrability clause is the only one with
+content, and it comes out of the engine above rather than from an estimate: at `j = 2` the identity
+reads `E2(z)*M[g](z) = M[x^2 g'']( z)`, whose right side is bounded on the line while
+`||E2(c+iy)|| >= y^2`. Quadratic decay, one power more than integrability needs, and no asymptotic
+analysis anywhere. Lean core alone.
+-/
+
+#print axioms Hemigroup.verticalIntegrable_mellin
+#print axioms Hemigroup.mellinInv_mellin_of_isTestFunction

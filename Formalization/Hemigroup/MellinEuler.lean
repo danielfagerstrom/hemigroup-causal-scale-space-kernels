@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Mathlib.Analysis.MellinTransform
+import Mathlib.Analysis.MellinInversion
 import Mathlib.MeasureTheory.Integral.IntegralEqImproper
 import Mathlib.Analysis.SpecialFunctions.Pow.Deriv
 import Mathlib.Analysis.Calculus.IteratedDeriv.Defs
@@ -232,5 +233,134 @@ theorem mellin_pow_mul_iteratedDeriv {g : ℝ → ℂ} (hg : IsTestFunction g) (
   congr 1
   rw [← hIoi g hg (z - 1)]
   exact (setIntegral_congr_fun measurableSet_Ioi fun x _ => by rw [smul_eq_mul]).symm
+
+/-! ## Inverting the transform of a test function
+
+`mellinInv_mellin_eq` asks for three things — convergence of the forward integral, vertical
+integrability of the transform, and continuity at the point. For a test function all three hold,
+and the second is the only one with content. It comes out of the engine above rather than from any
+estimate: the identity at `j = 2` says `E₂(z)·M[g](z) = M[x²g''](z)`, whose right side is bounded
+on the line by a constant, while `‖E₂(c+iy)‖ ≥ y²`. So `M[g]` decays quadratically, which is one
+power more than integrability needs, and no asymptotic analysis is involved. -/
+
+/-- `x ↦ xʲ g⁽ʲ⁾(x)` is again a test function. -/
+theorem IsTestFunction.pow_mul_iteratedDeriv {g : ℝ → ℂ} (hg : IsTestFunction g) (j : ℕ) :
+    IsTestFunction (fun x : ℝ => (x : ℂ) ^ j * _root_.iteratedDeriv j g x) where
+  contDiff := by
+    have h0 : ContDiff ℝ (⊤ : ℕ∞) fun x : ℝ => (x : ℂ) := Complex.ofRealCLM.contDiff
+    exact (h0.pow j).mul (hg.iteratedDeriv j).contDiff
+  hasCompactSupport := (hg.iteratedDeriv j).hasCompactSupport.mul_left
+  tsupport_subset :=
+    (tsupport_mul_subset_right).trans (hg.iteratedDeriv j).tsupport_subset
+
+/-- A test function's Mellin integral is a whole-line integral: the integrand vanishes off
+`(0,∞)`, so the restriction is cosmetic and the whole-line form is what the estimates want. -/
+theorem mellin_eq_integral {g : ℝ → ℂ} (hg : IsTestFunction g) (z : ℂ) :
+    mellin g z = ∫ x : ℝ, (x : ℂ) ^ (z - 1) * g x := by
+  have h : ∫ x in Ioi (0 : ℝ), (x : ℂ) ^ (z - 1) * g x = ∫ x : ℝ, (x : ℂ) ^ (z - 1) * g x :=
+    setIntegral_eq_integral_of_forall_compl_eq_zero fun x hx => by
+      rw [hg.eq_zero_of_nonpos (not_lt.mp hx), mul_zero]
+  rw [mellin, ← h]
+  exact setIntegral_congr_fun measurableSet_Ioi fun x _ => by rw [smul_eq_mul]
+
+theorem mellinConvergent_of_isTestFunction {g : ℝ → ℂ} (hg : IsTestFunction g) (z : ℂ) :
+    MellinConvergent g z := by
+  have h := (integrable_cpow_mul_of_isTestFunction hg (z - 1)).integrableOn (s := Ioi (0 : ℝ))
+  refine MeasureTheory.IntegrableOn.congr_fun h (fun x _ => ?_) measurableSet_Ioi
+  rw [smul_eq_mul]
+
+/-- The bound that makes everything below uniform in the height: on a vertical line the weight has
+constant modulus `x^{c-1}`. -/
+theorem norm_mellin_le_integral {g : ℝ → ℂ} (hg : IsTestFunction g) (c y : ℝ) :
+    ‖mellin g ((c : ℂ) + y * Complex.I)‖ ≤ ∫ x : ℝ, ‖(x : ℂ) ^ ((c : ℂ) - 1) * g x‖ := by
+  rw [mellin_eq_integral hg]
+  refine le_trans (norm_integral_le_integral_norm _) (le_of_eq ?_)
+  refine integral_congr_ae (Filter.Eventually.of_forall fun x => ?_)
+  dsimp only
+  rcases lt_or_ge (0 : ℝ) x with hx | hx
+  · rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx,
+      Complex.norm_cpow_eq_rpow_re_of_pos hx]
+    simp
+  · rw [hg.eq_zero_of_nonpos hx]
+    simp
+
+theorem continuous_mellin_vertical {g : ℝ → ℂ} (hg : IsTestFunction g) (c : ℝ) :
+    Continuous fun y : ℝ => mellin g ((c : ℂ) + y * Complex.I) := by
+  have hbound : Integrable fun x : ℝ => ‖(x : ℂ) ^ ((c : ℂ) - 1) * g x‖ :=
+    (integrable_cpow_mul_of_isTestFunction hg ((c : ℂ) - 1)).norm
+  have hrw : (fun y : ℝ => mellin g ((c : ℂ) + y * Complex.I))
+      = fun y : ℝ => ∫ x : ℝ, (x : ℂ) ^ (((c : ℂ) + y * Complex.I) - 1) * g x := by
+    funext y; exact mellin_eq_integral hg _
+  rw [hrw]
+  refine MeasureTheory.continuous_of_dominated
+    (fun y => (continuous_cpow_mul_of_isTestFunction hg _).aestronglyMeasurable)
+    (fun y => Filter.Eventually.of_forall fun x => ?_) hbound
+    (Filter.Eventually.of_forall fun x => ?_)
+  · rcases lt_or_ge (0 : ℝ) x with hx | hx
+    · rw [norm_mul, norm_mul, Complex.norm_cpow_eq_rpow_re_of_pos hx,
+        Complex.norm_cpow_eq_rpow_re_of_pos hx]
+      simp
+    · rw [hg.eq_zero_of_nonpos hx]; simp
+  · rcases lt_or_ge (0 : ℝ) x with hx | hx
+    · have hxne : (x : ℂ) ≠ 0 := by simpa using ne_of_gt hx
+      have harg : Continuous fun y : ℝ => ((c : ℂ) + y * Complex.I) - 1 := by fun_prop
+      exact (harg.const_cpow (Or.inl hxne)).mul continuous_const
+    · simp only [hg.eq_zero_of_nonpos hx, mul_zero]
+      exact continuous_const
+
+@[simp] theorem mellinEulerFactor_two (z : ℂ) : mellinEulerFactor 2 z = -z * (-z - 1) := by
+  simp [mellinEulerFactor, Finset.prod_range_succ]
+
+/-- **Quadratic decay of a test function's transform on a vertical line**, straight off the engine
+at `j = 2`. No asymptotics: the numerator is bounded by a constant and `‖E₂(c+iy)‖ ≥ y²`. -/
+theorem norm_mellin_mul_one_add_sq_le {g : ℝ → ℂ} (hg : IsTestFunction g) (c y : ℝ) :
+    (1 + y ^ 2) * ‖mellin g ((c : ℂ) + y * Complex.I)‖
+      ≤ (∫ x : ℝ, ‖(x : ℂ) ^ ((c : ℂ) - 1) * g x‖)
+        + ∫ x : ℝ, ‖(x : ℂ) ^ ((c : ℂ) - 1) * ((x : ℂ) ^ 2 * iteratedDeriv 2 g x)‖ := by
+  set z : ℂ := (c : ℂ) + y * Complex.I with hz
+  have hIm : z.im = y := by simp [hz]
+  have h₀ := norm_mellin_le_integral hg c y
+  have h₂ := norm_mellin_le_integral (hg.pow_mul_iteratedDeriv 2) c y
+  have hkey := mellin_pow_mul_iteratedDeriv hg 2 z
+  have hfac : ‖mellinEulerFactor 2 z‖ = ‖z‖ * ‖z + 1‖ := by
+    rw [mellinEulerFactor_two, norm_mul]
+    congr 1
+    · rw [norm_neg]
+    · rw [show -z - 1 = -(z + 1) by ring, norm_neg]
+  have hz1 : |y| ≤ ‖z‖ := by
+    rw [← hIm]; exact Complex.abs_im_le_norm z
+  have hz2 : |y| ≤ ‖z + 1‖ := by
+    have : (z + 1).im = y := by simp [hz]
+    rw [← this]; exact Complex.abs_im_le_norm (z + 1)
+  have hsq : y ^ 2 ≤ ‖mellinEulerFactor 2 z‖ := by
+    rw [hfac, show y ^ 2 = |y| * |y| by rw [← sq_abs y]; ring]
+    exact mul_le_mul hz1 hz2 (abs_nonneg y) (norm_nonneg z)
+  have hmul : y ^ 2 * ‖mellin g z‖
+      ≤ ∫ x : ℝ, ‖(x : ℂ) ^ ((c : ℂ) - 1) * ((x : ℂ) ^ 2 * iteratedDeriv 2 g x)‖ := by
+    calc y ^ 2 * ‖mellin g z‖
+        ≤ ‖mellinEulerFactor 2 z‖ * ‖mellin g z‖ := by
+          exact mul_le_mul_of_nonneg_right hsq (norm_nonneg _)
+      _ = ‖mellin (fun x => (x : ℂ) ^ 2 * iteratedDeriv 2 g x) z‖ := by
+          rw [← norm_mul, ← hkey]
+      _ ≤ _ := h₂
+  nlinarith [h₀, hmul, norm_nonneg (mellin g z)]
+
+theorem verticalIntegrable_mellin {g : ℝ → ℂ} (hg : IsTestFunction g) (c : ℝ) :
+    Complex.VerticalIntegrable (mellin g) c := by
+  set M : ℝ := (∫ x : ℝ, ‖(x : ℂ) ^ ((c : ℂ) - 1) * g x‖)
+    + ∫ x : ℝ, ‖(x : ℂ) ^ ((c : ℂ) - 1) * ((x : ℂ) ^ 2 * iteratedDeriv 2 g x)‖ with hM
+  refine (integrable_inv_one_add_sq.const_mul M).mono'
+    (continuous_mellin_vertical hg c).aestronglyMeasurable ?_
+  filter_upwards with y
+  have hpos : (0 : ℝ) < 1 + y ^ 2 := by positivity
+  have h := norm_mellin_mul_one_add_sq_le hg c y
+  rw [← div_eq_mul_inv, le_div_iff₀ hpos, mul_comm]
+  exact h
+
+/-- **Inversion for test functions.** All three hypotheses of `mellinInv_mellin_eq` are met. -/
+theorem mellinInv_mellin_of_isTestFunction {g : ℝ → ℂ} (hg : IsTestFunction g) (c : ℝ) {x : ℝ}
+    (hx : 0 < x) : mellinInv c (mellin g) x = g x :=
+  mellinInv_mellin_eq c g hx (mellinConvergent_of_isTestFunction hg _)
+    (verticalIntegrable_mellin hg c) hg.contDiff.continuous.continuousAt
 
 end Hemigroup
