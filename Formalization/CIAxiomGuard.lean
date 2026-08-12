@@ -292,3 +292,21 @@ Lean core; the profile's vertical integrability inherits A17 through `kernel`, a
 #print axioms Hemigroup.norm_Gamma_mul_sq_le
 #print axioms Hemigroup.integrable_norm_Gamma_vertical
 #print axioms Hemigroup.SelfDecomposableExponent.verticalIntegrable_mellin_profile
+
+/-! ### `def:inversion-operator` (11.3), ledger **A12**
+
+The operator, and the two theorems that compute it. What these lines check is narrower than the
+node and worth being exact about: the machine-checked statements take the realising function `h`
+as a **hypothesis** — `RealisesSymbolAction` — where the blueprint's definition asserts, on A12's
+authority, that absolute integrability of `B(-z)g̃(z)` produces it. So A12 is not retired by these
+lines. What they establish is that everything *after* the existence of `h` is interface-free: the
+functional-calculus reading, the transform-level identity, and the shift.
+
+Whether A12 retires is now a concrete question about this article rather than about Mathlib — does
+every use of `A` exhibit its `h`? — and the profile case is the one to settle it.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.inversionOperator
+#print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_eq
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator_eq

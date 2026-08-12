@@ -929,3 +929,84 @@ they are about this article.
 2. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
    `prop:scale-evolution` and `cor:exact-inversion` (distributions).
 3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9).
+
+---
+
+# `def:inversion-operator`, and what A12 is left carrying — 2026-08-12
+
+Proved. `Hemigroup/InversionOperator.lean`; A17 and nothing else; 35 nodes `\leanok`.
+`Skeleton/Chapter11.lean` holds no declarations again, and chapter 11's `sorry` count is zero.
+
+## Formalising a definition split it in two
+
+The blueprint sets `(Ag)(x)` to a contour integral and glosses it as `x^{-1}(B(θ)g)(x)`, the gloss
+being what A12 licenses. Writing it in Lean separates the two completely, and the separation is
+the finding:
+
+* **The operator needs no hypothesis at all.** `mellinInv` is an ordinary integral, so `A g` is
+  total in `g`. What the blueprint writes as a restriction on the *domain* of `A` belongs on the
+  theorems that compute it, not on the definition. The parametrisation `z = c + iy` turns the
+  blueprint's `dz/2πi` into Mathlib's `dy/2π` exactly, so the contour integral *is* `mellinInv`.
+* **The gloss needs a referent.** `B(θ)g` is a functional calculus for an operator with poles, so
+  the second display is not a rewriting of the first — it asserts that a function exists. That is
+  the same gap the fourth reading of A12 saw from the Mathlib side: `mellinInv_mellin_eq` recovers
+  a function from its *own* transform and says nothing about the integral of a product.
+
+So the Lean statement takes the referent as a hypothesis — `RealisesSymbolAction`, an `h` with
+`h̃ = B(-z)g̃(z)` on the line and the two convergence clauses — and proves everything downstream:
+`A g = x^{-1}h` at points of continuity, `Ãg(z) = h̃(z-1)` at *every* `z`. The proved content is the
+new node `lem:inversion-operator-action` (11.16), `[T]`; `def:inversion-operator` keeps its number,
+its statement and A12, now narrowed to the single step that produces `h`. Same discipline as the
+11.2 split, and the Lemma 7.1 precedent behind both.
+
+## The unforeseen finding is about the statement, not the proof
+
+**The realising identity can only be asked for almost everywhere on the line.** `B` is a quotient
+with poles at the zeros of `H̃`; where `H̃` vanishes the product `B(-z)g̃(z)` vanishes with it — in
+Lean because `x/0 = 0`, in the prose because a meromorphic function has no value at a pole — while
+`h̃(z)` need not. A pointwise reading of the hypothesis is therefore satisfied by *no* `g` at all.
+The zeros are isolated, so they meet the line in a null set and the inversion integral does not see
+them; `integral_congr_ae` discards them, and it is available precisely because `mellinInv`
+integrates over the line rather than evaluating on it.
+
+This is the second time in chapter 11 that "equality on the strip" has had to say which equality it
+means — `lem:symbol-rigidity` was the first — and both times it was writing the statement, not
+reading it, that raised the question. Worth noting that the two answers differ: rigidity wanted a
+*punctured neighbourhood* (the meromorphic reading), this wants *almost everywhere* (the measure
+reading). The prose says "on the strip" for both.
+
+## The consequence for A12, which is now a checkable question
+
+A12 carries one step: that absolute integrability of `B(-z)g̃(z)` on the line produces `h`.
+Everything ever assigned to it beyond that is proved.
+
+And it is now a question about **this article**. Every use of `A` applies it to a profile
+`H(s·)`, where the referent is explicit:
+
+```
+g(x) = H(sx),   h(x) = s x H(sx),   h̃(z) = s^{-z} H̃(z+1)
+```
+
+— the last being `lem:inversion-symbol`'s recursion `B(-z) = H̃(z+1)/H̃(z)` with the denominator
+cleared, so that `h̃(z) = B(-z) g̃(z)` holds wherever `H̃(z) ≠ 0`, i.e. off a null set of the line.
+Note that `Ag(x) = x^{-1}h(x) = s H(sx)`, which *is* the eigenfunction relation of Theorem 4′: the
+instance and the theorem are the same computation. If every use supplies its own `h`, A12 retires
+with no citation spent.
+
+The one thing that instance still needs, and it is not free: **the zeros of `H̃` on the line form a
+null set.** Isolated zeros give a set discrete in the strip, hence countable, hence null on the
+line — but "discrete implies countable" has to be found or proved in Mathlib, and that is the piece
+to scout before claiming the instance is routine. Recording it here rather than discovering it
+mid-proof is the whole point of this file.
+
+## Next
+
+1. **The profile instance** — `RealisesSymbolAction` for `g = H(s·)`, `h = s x H(sx)`. It settles
+   A12's fate and is simultaneously the eigenfunction clause of `thm:signaling-form`. Scout the
+   null-set-of-zeros step first.
+2. `lem:symbol-uniqueness` (11.4) step 1 — the reduction of the operator relation to the transform
+   relation, which is `lem:inversion-operator-action` applied twice; the rigidity half (11.15) is
+   already proved.
+3. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
+   `prop:scale-evolution` and `cor:exact-inversion` (distributions).
+4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the only `sorry` left in the repo.

@@ -62,12 +62,13 @@ the atom at all.
 ## The vertical-integrability clause is not here
 
 `Complex.VerticalIntegrable (mellin H) c` — the clause ledger A12's retirement turns on, because
-it is *verbatim* the hypothesis Mathlib's `mellinInv_mellin_eq` asks for — does not follow from
-the bound above inside Mathlib as it stands. The bound is `|H̃(c+iτ)| ≤ E[T₁^{-c}]|Γ(c+iτ)|`, and
-integrating it in `τ` needs the super-polynomial decay of `|Γ(c+iτ)|`. **Mathlib has no such
-estimate**: `Analysis/SpecialFunctions/Stirling.lean` is Stirling's formula for `n !` only, and
-there is no bound on `‖Complex.Gamma‖` along a vertical line anywhere in the library. The clause
-therefore stays stated-and-unproved in `Skeleton/Chapter11.lean`, where the gap is recorded.
+it is *verbatim* the hypothesis Mathlib's `mellinInv_mellin_eq` asks for — is `lem:mellin-vertical`
+and lives in `MellinVertical.lean`. It follows from the bound above and nothing else, but not from
+anything Mathlib carries about `Γ`: `Analysis/SpecialFunctions/Stirling.lean` is Stirling's formula
+for `n !` only, and there is no bound on `‖Complex.Gamma‖` along a vertical line anywhere in the
+library. That was recorded here twice as the reason the clause was blocked, and it was the wrong
+inference — integrability needs only quadratic decay, which is the functional equation twice. See
+that file.
 -/
 
 namespace Hemigroup

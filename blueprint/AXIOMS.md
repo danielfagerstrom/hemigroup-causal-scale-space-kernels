@@ -339,7 +339,7 @@ articles that have not yet pinned a ledger.
 - **Confidence.** ✅ well grounded, with the notation caveat recorded above.
 
 ## A12 — Mellin inversion on a vertical line of absolute convergence
-**Blueprint:** `lem:mellin-vertical`, `def:inversion-operator` · **Lean:** *(not stated yet)*
+**Blueprint:** `def:inversion-operator` · **Lean:** `Hemigroup.SelfDecomposableExponent.inversionOperator` (the operator; the entry carries only the production of `B(θ)g`)
 **Cite:** @widder1941laplace — Ch. VI, §9 "The Mellin Transform", Theorem 9a, pp. 246–247
 
 - **Statement as used.** Draft Lemma 11.2 and Definition 11.3: if the Mellin transform
@@ -483,6 +483,46 @@ articles that have not yet pinned a ledger.
 
   A survey answers "is this theory present?". Only attempting the proof answers "is this theorem
   reachable?", and here the two answers differed by two orders of magnitude of work.
+
+- **Fifth reading, 2026-08-12 — the entry is narrowed, not retired, and now names one step.**
+  `def:inversion-operator` is formalised: `Hemigroup.SelfDecomposableExponent.inversionOperator`
+  with `inversionOperator_eq`, `mellin_inversionOperator` and `mellin_inversionOperator_eq`. The
+  split those names record is the substance of this reading.
+
+  The blueprint's definition sets `(Ag)(x)` to a contour integral and glosses it as
+  `x^{-1}(B(θ)g)(x)`. Formalising it separates the two completely. **The operator needs no
+  hypothesis at all** — `mellinInv` is an ordinary integral, so `A g` is total in `g`, and the
+  parametrisation `z = c + iy` turns the blueprint's `dz/2πi` into Mathlib's `dy/2π` on the nose.
+  **The gloss needs a referent.** `B(θ)g` is a functional calculus for an operator with poles, so
+  the second display is not a rewriting of the first; it asserts that a certain function exists.
+  That is the same gap the fourth reading saw from the Mathlib side — `mellinInv_mellin_eq`
+  recovers a function from its *own* transform and says nothing about the integral of a product.
+
+  So the Lean statement takes the referent as a hypothesis (`RealisesSymbolAction`: an `h` whose
+  transform is `B(-z)g̃(z)` on the line, with the two convergence clauses) and proves everything
+  downstream of it — `A g = x^{-1}h` at points of continuity, and `Ãg(z) = h̃(z-1)` at every `z`,
+  with no strip condition, the weight `x^{-1}` being a Mellin shift. `#print axioms` on all four
+  gives A17 and nothing else. That content is now the blueprint node `lem:inversion-operator-action`
+  (11.16), `[T]` and `\leanok`; `def:inversion-operator` keeps its number and this entry.
+
+  **What A12 is left carrying is one step: that absolute integrability of `B(-z)g̃(z)` on the line
+  produces `h`.** Everything else that was ever assigned to it is proved.
+
+  **And that is now a question about this article, not about the literature.** Every use of `A`
+  applies it to a profile `H(s·)`, where `h(x) = s x H(sx)` is explicit and
+  `h̃(z) = s^{-z}H̃(z+1)` is `lem:inversion-symbol`'s recursion with the denominator cleared. If
+  each use supplies its own `h`, the entry retires with no citation spent. Checking that, node by
+  node, is what `lem:symbol-uniqueness` and `thm:signaling-form` now consist of.
+
+  **A finding that was not foreseen, and it is about the statement rather than the proof.** The
+  realising identity can only be asked for *almost everywhere* on the line. `B` is a quotient with
+  poles at the zeros of `H̃`; where `H̃` vanishes the product `B(-z)g̃(z)` vanishes with it — in
+  Lean because `x/0 = 0`, in the prose because a meromorphic function has no value at a pole —
+  while `h̃(z)` need not. A pointwise reading of the hypothesis would therefore be satisfied by no
+  `g` at all. The zeros are isolated, so they meet the line in a null set and the inversion
+  integral does not see them. This is the second time in chapter 11 that "equality on the strip"
+  has had to say which equality it means; `lem:symbol-rigidity` was the first, and both times it
+  was writing the statement, not reading it, that raised the question.
 
 ## A13 — A Laplace transform with nonnegative integrand is singular at its abscissa of convergence
 **Blueprint:** `lem:moment-recursion` · **Lean:** *(not stated yet)*

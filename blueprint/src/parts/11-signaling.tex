@@ -29,6 +29,14 @@
 % ledger's correction -- the draft cited Samko-Kilbas-Marichev here, which gives Mellin
 % inversion only as an unhypothesized display; the anchor is Widder Thm. 9a, and the draft has
 % been corrected to match.
+%
+% THE SPLIT OF 11.3 (2026-08-12). Formalising the definition separated two things the display
+% runs together: the operator (a contour integral, total, needing no hypothesis) from the gloss
+% that identifies it with x^{-1} B(theta) g. The gloss needs a REFERENT for B(theta)g, and given
+% one, everything after is [T]. So the proved part is appended as lem:inversion-operator-action
+% (11.16), a number the draft does not use, and 11.3 keeps its number, its statement and A12 --
+% now narrowed to the one step that produces the referent. Same discipline as the 11.2 split and
+% the Lemma 7.1 precedent behind it.
 
 Theorem~4 of \sscite{fagerstrom2005temporal} inverts the scale-Cauchy problem into an
 evolution \emph{in time} over the memory line: $\partial_t u = D^{1/\alpha}_{x,-} u$ with
@@ -141,7 +149,7 @@ $|T_1^{-z}| = T_1^{-\operatorname{Re} z}$, the identity also gives the stated bo
 % draft: Definition 11.3
 \begin{definition}[the inversion operator]\label{def:inversion-operator}
 \uses{lem:mellin-data,lem:inversion-symbol,def:cascade-family}
-\lean{Skeleton.inversionOperator}\notready
+\lean{Hemigroup.SelfDecomposableExponent.inversionOperator}\leanok
 Fix $c \in (0, z_* - 1)$. For $g$ such that $\tilde g$ is defined on the line
 $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ is absolutely integrable there, set
 \[
@@ -154,36 +162,31 @@ $\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$. Note the covariant scaling: $A
 dilations up to the weight $x^{-1}$, i.e.\ it scales like $\partial_t$ under
 $(t, x) \mapsto (\sigma t, \sigma x)$, as (A8) requires of any inversion.
 \statusA\quad\ledger{A12}\quad\emph{(Mellin inversion on a line of absolute convergence;
-\sscite{widder1941laplace}, Ch.~VI, \S9, Thm.~9a. Cited, not reproven here.
-\textbf{Assignment.} \ledger{A12} carries exactly the step that makes this a definition of an
-operator rather than of an integral: that absolute integrability on the line
-$\operatorname{Re} z = c$ is sufficient for the contour integral to recover $B(\theta)g$.
-Everything else is \textbf{[T]} --- the symbol $B$ and its strip come from
-\ref{lem:mellin-data}, the transform-level identity is a change of variable, and the covariance
-is a computation. The ledger records a correction to the draft here: it cited
-\sscite{samko1993fractional} for this, which states Mellin inversion only as an unhypothesized
-display, equation~(1.113); Widder states it with the absolute-convergence hypothesis that is
-exactly the one imposed above.)}
+\sscite{widder1941laplace}, Ch.~VI, \S9, Thm.~9a. Cited, not reproven here. The operator itself is
+\textbf{machine-checked}, as \texttt{Hemigroup.SelfDecomposableExponent.inversionOperator}: the
+contour integral is Mathlib's \texttt{mellinInv}, since parametrising the line by $z = c + iy$
+turns $dz$ into $i\,dy$ and cancels the $i$. It is defined for \emph{every} $g$, the hypotheses
+having moved onto the theorems that compute it.
+\textbf{Assignment.} Narrowed 2026-08-12, when the node was formalised. \ledger{A12} now
+carries one step and not three: that absolute integrability of $B(-z)\tilde g(z)$ on the line
+produces the function $B(\theta)g$. Everything after that function exists is \textbf{[T]} and is
+proved --- \ref{lem:inversion-operator-action}.}
 
-\emph{\textbf{Stated in Lean 2026-08-12}, as \texttt{Skeleton.inversionOperator} with
-\texttt{RealisesSymbolAction}, \texttt{inversionOperator\_eq} and
-\texttt{mellin\_inversionOperator}, and writing it down settled two questions the display above
-leaves open. The first is the one \ledger{A12}'s fourth reading named: ``$B(\theta)g$'' is a
-functional calculus for an operator with poles, so what makes this a \emph{definition} is the
-existence of the function it names, and the Lean statement therefore takes that function --- the
-$h$ with $\tilde h = B(-z)\tilde g$ on the line --- as given and concludes $Ag = x^{-1}h$. The
-hypothesis is thereby stronger than absolute integrability of the product; it is exactly what the
-article's own uses supply, since every one of them exhibits $h$ explicitly.}
+\emph{The narrowing came out of writing the definition
+down. ``$B(\theta)g$'' is a functional calculus for an operator with poles, so the second display
+is not a rewriting of the first but an assertion that a certain function \emph{exists}; Mathlib's
+inversion theorem recovers a function from its own transform and says nothing about the integral
+of a product, which is exactly the same gap seen from the other side. So the formal statement
+takes the referent as given --- the $h$ with $\tilde h = B(-z)\tilde g$ on the line --- and what
+is left over is its production, which is the cited theorem and nothing else. Whether \ledger{A12}
+retires is therefore now a question about \emph{this article}: does every use of $A$ exhibit its
+$h$? Each use here is $A$ applied to a profile $H(s\,\cdot)$, where $h(x) = s\,x\,H(sx)$ is
+explicit and $\tilde h(z) = s^{-z}\tilde H(z+1)$ is \ref{lem:inversion-symbol}'s recursion with
+the denominator cleared.}
 
-\emph{The second was not foreseen. \textbf{The realising identity can only be asked for almost
-everywhere on the line.} $B$ is a quotient with poles at the zeros of $\tilde H$, and where
-$\tilde H$ vanishes the product $B(-z)\tilde g(z)$ vanishes with it for a reason that is about
-notation rather than about the operator --- while $\tilde h$ need not. Those points are isolated
-by \ref{lem:inversion-symbol}, so they meet the line in a null set and the inversion integral does
-not see them; but a pointwise reading of the display would be false as stated. This is the second
-time in the chapter that ``equality on the strip'' has had to say which equality it means, the
-first being \ref{lem:symbol-rigidity}, and both times the answer came from writing the statement
-rather than from reading it.)}
+\emph{The ledger records a correction to the draft here: it cited \sscite{samko1993fractional} for
+this, which states Mellin inversion only as an unhypothesized display, equation~(1.113); Widder
+states it with the absolute-convergence hypothesis that is exactly the one imposed above.)}
 \end{definition}
 
 % draft: Lemma 11.4
@@ -552,4 +555,56 @@ isolated, so that cancellation is available on a punctured neighbourhood of \emp
 the strip, the zeros included; hence $B_1$ and $B_2$ agree near every point, the point itself
 excepted. If both are continuous at such a point, the punctured neighbourhood determines the
 value there and the agreement extends to it.
+\end{proof}
+
+% additive: not in the draft. The proved half of Definition 11.3, split off on 2026-08-12 when
+% formalising it separated the operator (total, hypothesis-free) from the gloss that names
+% B(theta)g. Numbered 11.16, a number the draft does not use.
+
+\begin{lemma}[the operator computes the realising function]\label{lem:inversion-operator-action}
+\uses{def:inversion-operator,lem:inversion-symbol}
+\lean{Hemigroup.SelfDecomposableExponent.inversionOperator_eq}\leanok
+Fix $c > 0$ and $g$, and let $h$ be a function on $(0,\infty)$ such that
+\[
+  \tilde h(z) = B(-z)\,\tilde g(z)
+\]
+for almost every $z$ on the line $\operatorname{Re} z = c$, with both $\tilde h$ and the inversion integral
+absolutely convergent there. Then
+\[
+  (A g)(x) = \frac{h(x)}{x} \quad\text{at every } x > 0 \text{ where } h \text{ is continuous},
+\qquad
+  \widetilde{A g}(z) = \tilde h(z-1) \quad\text{for every } z .
+\]
+In particular $\widetilde{A g}(z) = B(1-z)\,\tilde g(z-1)$ wherever the first display holds pointwise.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.inversionOperator\_eq} with
+\texttt{mellin\_inversionOperator} (the shift) and \texttt{mellin\_inversionOperator\_eq} (the display),
+the hypothesis on $h$ being the structure \texttt{RealisesSymbolAction};
+\texttt{\#print axioms} gives \ledger{A17} and nothing else --- in particular \emph{not} \ledger{A12},
+which is the point of the split. This is everything in \ref{def:inversion-operator} that follows
+once $B(\theta)g$ has a referent; producing that referent is what \ledger{A12} is left carrying.}
+
+\emph{\textbf{The identity on the line can only be asked for almost everywhere, and this was not
+foreseen.} $B$ is a quotient with poles at the zeros of $\tilde H$. Where $\tilde H$ vanishes the
+product $B(-z)\tilde g(z)$ vanishes with it --- in Lean because $x/0 = 0$, in the prose because a
+meromorphic function has no value at a pole --- while $\tilde h(z)$ need not. So a pointwise reading
+of the hypothesis would be satisfied by no $g$ at all. The zeros are isolated by
+\ref{lem:inversion-symbol}, hence meet the line in a null set, and the inversion integral does not
+see them: almost everywhere is both what is available and what is used. This is the second time in
+the chapter that ``equality on the strip'' has had to say which equality it means, the first being
+\ref{lem:symbol-rigidity}, and both times it was writing the statement that raised it.}
+
+\emph{\textbf{The shift is free.} $\widetilde{Ag}(z) = \tilde h(z-1)$ holds at every $z$, with no strip
+condition: once $Ag = x^{-1}h$ is known on $(0,\infty)$ the weight $x^{-1}$ is a Mellin shift. The
+strip enters only in the hypothesis relating $\tilde h$ to the product, which is where it belongs.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{def:inversion-operator}
+The integrand of the contour integral agrees almost everywhere on the line with $\tilde h$, so the
+integral is the inverse Mellin transform of $\tilde h$ at height $c$; under the two convergence
+hypotheses that recovers $h(x)$ at every point of continuity, which is the first display. The
+second is then the Mellin transform of $x^{-1}h(x)$, i.e.\ $\tilde h$ with its argument shifted by
+one.
 \end{proof}

@@ -10,6 +10,7 @@ import Hemigroup.Family
 import Hemigroup.Gauge
 import Hemigroup.Injectivity
 import Hemigroup.Instance
+import Hemigroup.InversionOperator
 import Hemigroup.InversionSymbol
 import Hemigroup.Interfaces
 import Hemigroup.L1Continuity
