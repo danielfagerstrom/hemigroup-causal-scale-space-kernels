@@ -1209,14 +1209,37 @@ pattern, and it has now cost three separate "blocked on X" entries in this chapt
 same each time: write the statement and see what the *obligation* asks for, not what the argument
 happens to invoke.
 
+## `Iᶻf' = I^{z-1}f`, proved — 2026-08-12
+
+`lem:fractional-integral-derivative` (11.20). Fubini over the triangle `0 < ρ ≤ r ≤ t`, inner
+integral `∫_ρ^t (t-r)^{z-2}dr = (t-ρ)^{z-1}/(z-1)`, then `Γ(z) = (z-1)Γ(z-1)`.
+
+Two things worth keeping.
+
+**Avoiding the semigroup property was the whole economy.** The draft derives this as
+`Iᶻf' = I^{z-1}I¹f' = I^{z-1}f`, i.e. from `I^{z-1}I¹ = Iᶻ` — a Beta-integral identity that Mathlib
+does not have and that would have to be proved in its own right, on top of `Iᶻ` itself being a
+local definition. Substituting `f(r) = ∫₀^r g` and exchanging the order of integration needs only
+`integral_cpow`, which Mathlib does have, with the hypothesis `-1 < Re r` matching `Re z > 1` on the
+nose. Same lesson as A12's fourth reading: the classical *derivation* asks for more than the
+*statement* does.
+
+**`Re z > 1` has now been arrived at three independent times** — the delayed average's inner
+integrability, the application of 11.5 at `z-1`, and this inner integral's convergence. Three
+different obligations, one endpoint, and it is the endpoint (H) asks for. That is not a
+coincidence worth leaving unremarked in the text: it is why `z_* > 1` is the right hypothesis and
+not an artefact.
+
+**And it reduces to Lean core alone** — not even A17. It is the first result in the development of
+which that is true and which is not a general-purpose lemma about `Γ`, because it is a statement
+about the Riemann–Liouville family that mentions no hemigroup object.
+
 ## Next
 
-1. `Skeleton.riemannLiouville_integral` — Fubini over the triangle plus `integral_cpow`, which
-   Mathlib has with the hypothesis `-1 < Re r`, matching `Re z > 1` on the nose.
-2. `Skeleton.hasDerivAt_delayedField` — differentiation under the integral sign; Mathlib's
-   `hasDerivAt_integral_of_dominated_loc_of_deriv_le` is the tool.
-3. Those two close `thm:signaling-form` and with it chapter 11 entire.
-4. Still blocked upstream, unchanged: chapter 10's C₀-semigroup content, chapter 12 (Bessel `K`),
-   `prop:scale-evolution` and `cor:exact-inversion` (distributions). Note that `lem:delay-core`
-   itself is *not* blocked — it is simply no longer on chapter 11's critical path.
-5. `prop:pair-regularity`(2) is `[A]` by design (ledger A9).
+1. `Skeleton.hasDerivAt_delayedField` — differentiation under the integral sign for
+   `∂_t E[f(t - xT₁)]`; Mathlib's `hasDerivAt_integral_of_dominated_loc_of_deriv_le` is the tool.
+   **This is the last piece of chapter 11**, and the only `sorry` in it.
+2. Still blocked upstream, unchanged: chapter 10's C₀-semigroup content, chapter 12 (Bessel `K`),
+   `prop:scale-evolution` and `cor:exact-inversion` (distributions). `lem:delay-core` is not
+   blocked and is not on the critical path.
+3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9).

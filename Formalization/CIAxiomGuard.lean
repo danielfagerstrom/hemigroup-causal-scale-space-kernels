@@ -401,3 +401,17 @@ the lemma says.
 
 #print axioms Hemigroup.integrableOn_pastIntegrand_of_bounded
 #print axioms Hemigroup.SelfDecomposableExponent.inversionSymbol_mul_mellin_delayedField
+
+/-! ### `lem:fractional-integral-derivative` (11.20) — `Iᶻf' = I^{z-1}f`
+
+The transform half of 11.5's derivative clause. Note what these lines show: the statement is about
+the Riemann–Liouville family and mentions no hemigroup object, so it reduces to **Lean core
+alone** — not even A17 enters. It is the first result in the development of which that is true and
+which is not a general-purpose lemma about `Γ`.
+
+The draft derives it from the semigroup property `I^{z-1}I¹ = Iᶻ`, a Beta-integral identity that
+would have to be proved in its own right. Fubini over the triangle avoids it entirely.
+-/
+
+#print axioms Hemigroup.integral_cpow_sub_left
+#print axioms Hemigroup.riemannLiouville_integral

@@ -256,7 +256,7 @@ outright.
 % draft: Lemma 11.5
 \begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
 \uses{def:standing-hypothesis,lem:mellin-data,thm:main-characterization,lem:delay-core,lem:delayed-average-mellin}
-\lean{Skeleton.riemannLiouville_integral}\notready
+\lean{Skeleton.hasDerivAt_delayedField}\notready
 Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
 and $1 < \operatorname{Re} z < z_*$,
 \[
@@ -291,10 +291,10 @@ at the level of measures. See that node's remark for why a representative of the
 named at all --- the quantifiers ``for each $x$, a.e.\ $t$'' do not commute, so this is not avoided
 by weakening the reading.}
 
-\emph{\textbf{The derivative clause is stated and not proved}, as
-\texttt{Skeleton.riemannLiouville\_integral} with \texttt{Skeleton.hasDerivAt\_delayedField}; those
-two are what it decomposes into, and writing them down showed that \textbf{the node this proof
-cites is not the node it needs}. The derivation goes through $f \in \core$ and hence
+\emph{\textbf{The derivative clause is half proved.} Its two pieces are
+\ref{lem:fractional-integral-derivative} (done) and
+\texttt{Skeleton.hasDerivAt\_delayedField} (stated), and writing them down showed that
+\textbf{the node this proof cites is not the node it needs}. The derivation goes through $f \in \core$ and hence
 \ref{lem:delay-core} --- density of the core, invariance under the delay semigroup and under
 $\Phi$, the $L^1$ difference quotient --- and uses none of it. What it uses is differentiation
 under the integral sign (which needs $f$ to be an integral of an $L^1$ function, and nothing about
@@ -852,4 +852,42 @@ $B(1-z) = \tilde H(z)/\tilde H(z-1)$ by \ref{lem:inversion-symbol}, and
 $\widetilde{u(t,\cdot)}(z-1) = \tilde H(z-1)(I^{z-1}f)(t)$ by \ref{lem:delayed-average-mellin} at
 $z-1$, whose strip condition $0 < \operatorname{Re}(z-1) < z_*$ is the hypothesis. Cancel
 $\tilde H(z-1)$.
+\end{proof}
+
+% additive: not in the draft as a separate item -- it is the transform half of Lemma 11.5's
+% derivative clause, split off on 2026-08-12 when it was proved and the field half was not.
+% Numbered 11.20.
+
+\begin{lemma}[the fractional integral absorbs a derivative]\label{lem:fractional-integral-derivative}
+\uses{lem:memory-fractional-integrals}
+\lean{Hemigroup.riemannLiouville_integral}\leanok
+Let $\operatorname{Re} z > 1$, let $g$ be integrable on $(0,t]$ and set
+$f(r) := \int_0^r g$ --- that is, $f$ absolutely continuous with $f(0) = 0$ and $f' = g$. Then
+\[
+  \bigl(I^{z} g\bigr)(t) \;=\; \bigl(I^{z-1} f\bigr)(t).
+\]
+\statusT\quad\emph{(\textbf{Machine-checked}, as \texttt{Hemigroup.riemannLiouville\_integral},
+with \texttt{integral\_cpow\_sub\_left} for the inner integral; \texttt{\#print axioms} reduces to
+Lean core alone --- this statement is about the Riemann--Liouville family and mentions no
+hemigroup object, so not even \ledger{A17} enters.}
+
+\emph{\textbf{The semigroup property is not needed, and not needing it is cheaper.} The draft
+derives this as $I^zf' = I^{z-1}I^1f' = I^{z-1}f$, i.e.\ from $I^{z-1}I^1 = I^z$ --- a Beta-integral
+identity that would have to be proved in its own right, Mathlib having no fractional integral at
+all. Substituting $f(r) = \int_0^r g$ and exchanging the order of integration over the triangle
+$0 < \rho \le r \le t$ instead leaves the inner integral
+$\int_\rho^t (t-r)^{z-2}dr = (t-\rho)^{z-1}/(z-1)$, after which $\Gamma(z) = (z-1)\Gamma(z-1)$
+finishes it. The condition $\operatorname{Re} z > 1$ is exactly what makes that inner integral
+converge --- the same endpoint that \ref{lem:delayed-average-mellin} and
+\ref{lem:signaling-mellin-form} turn on, arrived at for a third independent reason.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+Write $f(r) = \int_0^r g$ and exchange the order of integration in
+$\Gamma(z-1)(I^{z-1}f)(t) = \int_0^t (t-r)^{z-2}\int_0^r g(\rho)\,d\rho\,dr$ over the triangle
+$0 < \rho \le r \le t$, which is legitimate because the same computation on absolute values is
+bounded by $t^{z-1}\|g\|_1/(\operatorname{Re} z - 1)$. The inner integral is
+$\int_\rho^t (t-r)^{z-2}dr = (t-\rho)^{z-1}/(z-1)$, so the double integral is
+$(z-1)^{-1}\Gamma(z)(I^zg)(t)$; and $\Gamma(z) = (z-1)\Gamma(z-1)$.
 \end{proof}

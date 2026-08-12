@@ -82,7 +82,8 @@ facts, stated below, and `𝒟` enters only as a convenient source of their hypo
   integral of an `L¹` function and nothing about `Φ`;
 * `riemannLiouville_integral` — the fractional-integral identity `Iᶻf' = I^{z-1}f`, which is
   Fubini over a triangle plus `∫_ρ^t (t-r)^{z-2}dr = (t-ρ)^{z-1}/(z-1)`, and mentions neither the
-  field nor the core.
+  field nor the core. **Proved**, and moved into `Hemigroup/MemoryFractional.lean`; what is left
+  here is the field half alone.
 
 So the correction recorded one round ago — that `lem:delay-core` is what chapter 11 waits on — is
 itself wrong, and in the same way: a node was read as a prerequisite because the *proof* invokes
@@ -106,20 +107,6 @@ amounts to and is all the statement uses. Nothing here is about `Φ` or the core
 theorem hasDerivAt_delayedField {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
     (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) {x : ℝ} (hx : 0 < x) (t : ℝ) :
     HasDerivAt (fun τ : ℝ => F.delayedField f τ x) (F.delayedField g t x) t := by
-  sorry
-
-/-- **The transform half**: `Iᶻ f' = I^{z-1} f` when `f(0) = 0`, which is the step that turns
-`H̃(z)(Iᶻf')(t)` into the `H̃(z)(I^{z-1}f)(t)` that `lem:signaling-mellin-form` produces.
-
-The draft derives it as `Iᶻf' = I^{z-1}I^1f' = I^{z-1}f`, i.e. from the semigroup property of the
-Riemann–Liouville family. It is cheaper not to have that property: writing `f` as the integral of
-`g` and exchanging the order of integration over the triangle `0 < ρ ≤ r ≤ t` leaves the inner
-integral `∫_ρ^t (t-r)^{z-2}dr = (t-ρ)^{z-1}/(z-1)`, and `Γ(z) = (z-1)Γ(z-1)` finishes it. The
-strip condition `Re z > 1` is exactly what makes that inner integral converge. -/
-theorem riemannLiouville_integral {z : ℂ} (hz : 1 < z.re) {g : ℝ → ℝ} (hgm : Measurable g)
-    {t : ℝ} (hg : IntegrableOn g (Ioc 0 t)) (ht : 0 < t) :
-    riemannLiouville (z - 1) (fun r => ∫ ρ in Ioc (0 : ℝ) r, g ρ) t
-      = riemannLiouville z g t := by
   sorry
 
 end Skeleton

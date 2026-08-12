@@ -339,6 +339,156 @@ theorem mellin_delayed_average (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z
 
 end Core
 
+
+/-! ## The fractional-integral identity `Iᶻf' = I^{z-1}f`
+
+`lem:memory-fractional-integrals`' derivative clause, transform half. The draft derives it from
+the semigroup property `Iᶻ I¹ = I^{z+1}`; that property is not needed, and not having it is
+cheaper. Writing `f` as the integral of `g` and exchanging the order of integration over the
+triangle `0 < ρ ≤ r ≤ t` leaves an inner integral in `r` alone, which is elementary.
+-/
+
+/-- The inner integral of the exchange: `∫_ρ^t (t-r)^{z-2}dr = (t-ρ)^{z-1}/(z-1)`.
+
+`Re z > 1` is exactly the convergence condition — the same endpoint the rest of the chapter turns
+on — and it is Mathlib's `integral_cpow` hypothesis `-1 < Re r` after the substitution
+`w = t - r`. -/
+theorem integral_cpow_sub_left {z : ℂ} (hz : 1 < z.re) {ρ t : ℝ} (hρt : ρ ≤ t) :
+    (∫ r in Ioc ρ t, ((t - r : ℝ) : ℂ) ^ (z - 2)) = ((t - ρ : ℝ) : ℂ) ^ (z - 1) / (z - 1) := by
+  have hz1 : z - 1 ≠ 0 := fun h => by
+    rw [sub_eq_zero] at h; rw [h] at hz; simp at hz
+  have hre : -1 < (z - 2).re := by simp only [Complex.sub_re, Complex.re_ofNat]; linarith
+  rw [← intervalIntegral.integral_of_le hρt]
+  have hsub := intervalIntegral.integral_comp_sub_left
+    (a := ρ) (b := t) (fun w : ℝ => ((w : ℝ) : ℂ) ^ (z - 2)) t
+  simp only [sub_self] at hsub
+  rw [hsub, integral_cpow (Or.inl hre)]
+  have h0 : ((0 : ℝ) : ℂ) ^ (z - 2 + 1) = 0 := by
+    rw [Complex.ofReal_zero, Complex.zero_cpow (by rw [show z - 2 + 1 = z - 1 by ring]; exact hz1)]
+  rw [h0, sub_zero]
+  congr 2 <;> ring
+
+
+/-- **`Iᶻf' = I^{z-1}f`** when `f` is the integral of `g`, i.e. absolutely continuous with
+`f(0) = 0`.
+
+Fubini over the triangle `0 < ρ ≤ r ≤ t`: the inner integral in `r` is
+`integral_cpow_sub_left`, and `Γ(z) = (z-1)Γ(z-1)` absorbs the factor it produces. No semigroup
+property of the Riemann–Liouville family is needed, which is what the draft's derivation
+`Iᶻf' = I^{z-1}I¹f'` goes through. -/
+theorem riemannLiouville_integral {z : ℂ} (hz : 1 < z.re) {g : ℝ → ℝ} (hgm : Measurable g)
+    {t : ℝ} (hg : IntegrableOn g (Ioc 0 t)) (ht : 0 < t) :
+    riemannLiouville (z - 1) (fun r => ∫ ρ in Ioc (0 : ℝ) r, g ρ) t
+      = riemannLiouville z g t := by
+  have hz1 : z - 1 ≠ 0 := fun h => by rw [sub_eq_zero] at h; rw [h] at hz; simp at hz
+  have hre : -1 < (z - 2).re := by simp only [Complex.sub_re, Complex.re_ofNat]; linarith
+  have hw : ∀ ρ : ℝ, ρ ≤ t →
+      IntegrableOn (fun r : ℝ => ((t - r : ℝ) : ℂ) ^ (z - 2)) (Ioc ρ t) := by
+    intro ρ hρ
+    have h1 : IntervalIntegrable (fun w : ℝ => ((w : ℝ) : ℂ) ^ (z - 2)) volume 0 (t - ρ) :=
+      intervalIntegral.intervalIntegrable_cpow' hre
+    have h2 := (h1.comp_sub_left t).symm
+    simp only [sub_sub_cancel, sub_zero] at h2
+    exact (intervalIntegrable_iff_integrableOn_Ioc_of_le hρ).mp h2
+  set Ψ : ℝ → ℝ → ℂ := fun r ρ =>
+    Set.indicator (Iic r) (fun ρ => ((t - r : ℝ) : ℂ) ^ (z - 2) * (g ρ : ℂ)) ρ with hΨdef
+  have hcolfun : ∀ ρ r : ℝ, Ψ r ρ
+      = Set.indicator (Ici ρ) (fun r => ((t - r : ℝ) : ℂ) ^ (z - 2) * (g ρ : ℂ)) r := by
+    intro ρ r
+    by_cases h : ρ ≤ r
+    · simp only [hΨdef, Set.indicator_of_mem, mem_Iic.mpr h, mem_Ici.mpr h]
+    · rw [hΨdef]
+      simp only [Set.indicator_apply, mem_Iic, mem_Ici, if_neg h]
+  have hIcc : ∀ ρ : ℝ, 0 < ρ → Ioc (0 : ℝ) t ∩ Ici ρ = Icc ρ t := by
+    intro ρ hρ
+    ext u
+    simp only [mem_inter_iff, mem_Ioc, mem_Icc, mem_Ici]
+    exact ⟨fun h => ⟨h.2, h.1.2⟩, fun h => ⟨⟨lt_of_lt_of_le hρ h.1, h.2⟩, h.1⟩⟩
+  have hmeas : Measurable (Function.uncurry Ψ) := by
+    have hset : MeasurableSet {p : ℝ × ℝ | p.2 ≤ p.1} :=
+      measurableSet_le measurable_snd measurable_fst
+    have heq : Function.uncurry Ψ = fun p : ℝ × ℝ =>
+        Set.indicator {q : ℝ × ℝ | q.2 ≤ q.1}
+          (fun q => ((t - q.1 : ℝ) : ℂ) ^ (z - 2) * (g q.2 : ℂ)) p := by
+      funext p
+      by_cases h : p.2 ≤ p.1
+      · simp only [Function.uncurry, hΨdef, Set.indicator_of_mem, mem_Iic.mpr h,
+          Set.mem_setOf_eq, h]
+      · simp only [Function.uncurry, hΨdef, Set.indicator_apply, mem_Iic, Set.mem_setOf_eq,
+          if_neg h]
+    rw [heq]
+    exact (by fun_prop : Measurable fun q : ℝ × ℝ =>
+      ((t - q.1 : ℝ) : ℂ) ^ (z - 2) * (g q.2 : ℂ)).indicator hset
+  have hrow : ∀ r ∈ Ioc (0 : ℝ) t, (∫ ρ in Ioc (0 : ℝ) t, Ψ r ρ)
+      = ((t - r : ℝ) : ℂ) ^ (z - 2) * ((∫ ρ in Ioc (0 : ℝ) r, g ρ : ℝ) : ℂ) := by
+    intro r hr
+    have hsub : Ioc (0 : ℝ) t ∩ Iic r = Ioc (0 : ℝ) r := by
+      ext u
+      simp only [mem_inter_iff, mem_Ioc, mem_Iic]
+      exact ⟨fun h => ⟨h.1.1, h.2⟩, fun h => ⟨⟨h.1, h.2.trans hr.2⟩, h.2⟩⟩
+    rw [hΨdef, setIntegral_indicator measurableSet_Iic, hsub, integral_const_mul]
+    congr 1
+    exact integral_ofReal (𝕜 := ℂ)
+  have hcol : ∀ ρ ∈ Ioc (0 : ℝ) t, (∫ r in Ioc (0 : ℝ) t, Ψ r ρ)
+      = (g ρ : ℂ) * (((t - ρ : ℝ) : ℂ) ^ (z - 1) / (z - 1)) := by
+    intro ρ hρ
+    simp only [hcolfun ρ]
+    rw [setIntegral_indicator measurableSet_Ici, hIcc ρ hρ.1,
+      setIntegral_congr_set (Ioc_ae_eq_Icc (a := ρ) (b := t)).symm, integral_mul_const,
+      integral_cpow_sub_left hz hρ.2]
+    ring
+  have hint : Integrable (Function.uncurry Ψ)
+      ((volume.restrict (Ioc (0 : ℝ) t)).prod (volume.restrict (Ioc (0 : ℝ) t))) := by
+    refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm, lintegral_prod_symm _ hmeas.enorm.aemeasurable]
+    have hpt : ∀ ρ r : ℝ, ‖Function.uncurry Ψ (r, ρ)‖ₑ
+        ≤ ‖((t - r : ℝ) : ℂ) ^ (z - 2)‖ₑ * ‖(g ρ : ℂ)‖ₑ := by
+      intro ρ r
+      by_cases h : ρ ≤ r
+      · simp only [Function.uncurry, hΨdef, Set.indicator_of_mem, mem_Iic.mpr h]
+        rw [enorm_mul]
+      · simp only [Function.uncurry, hΨdef, Set.indicator_apply, mem_Iic, if_neg h]
+        simp
+    have hA : ∫⁻ r in Ioc (0 : ℝ) t, ‖((t - r : ℝ) : ℂ) ^ (z - 2)‖ₑ ≠ ⊤ :=
+      ((hw 0 ht.le).2).ne
+    have hB : ∫⁻ ρ in Ioc (0 : ℝ) t, ‖(g ρ : ℂ)‖ₑ ≠ ⊤ := by
+      have := hg.2
+      rw [hasFiniteIntegral_iff_enorm] at this
+      refine ne_of_lt (lt_of_le_of_lt (le_of_eq ?_) this)
+      refine lintegral_congr fun ρ => ?_
+      rw [← ofReal_norm, ← ofReal_norm, Complex.norm_real]
+    calc ∫⁻ ρ, ∫⁻ r, ‖Function.uncurry Ψ (r, ρ)‖ₑ ∂(volume.restrict (Ioc (0 : ℝ) t))
+            ∂(volume.restrict (Ioc (0 : ℝ) t))
+        ≤ ∫⁻ ρ in Ioc (0 : ℝ) t, ∫⁻ r in Ioc (0 : ℝ) t,
+            ‖((t - r : ℝ) : ℂ) ^ (z - 2)‖ₑ * ‖(g ρ : ℂ)‖ₑ :=
+          lintegral_mono fun ρ => lintegral_mono fun r => hpt ρ r
+      _ = (∫⁻ ρ in Ioc (0 : ℝ) t, ‖(g ρ : ℂ)‖ₑ)
+            * ∫⁻ r in Ioc (0 : ℝ) t, ‖((t - r : ℝ) : ℂ) ^ (z - 2)‖ₑ := by
+          rw [← lintegral_mul_const' _ _ hA]
+          refine lintegral_congr fun ρ => ?_
+          rw [lintegral_mul_const' _ _ (by simp), mul_comm]
+      _ < ⊤ := ENNReal.mul_lt_top (lt_top_iff_ne_top.mpr hB) (lt_top_iff_ne_top.mpr hA)
+  have hexp : z - 1 - 1 = z - 2 := by ring
+  calc riemannLiouville (z - 1) (fun r => ∫ ρ in Ioc (0 : ℝ) r, g ρ) t
+      = (Complex.Gamma (z - 1))⁻¹ * ∫ r in Ioc (0 : ℝ) t, ∫ ρ in Ioc (0 : ℝ) t, Ψ r ρ := by
+        rw [riemannLiouville, hexp]
+        congr 1
+        exact (setIntegral_congr_fun measurableSet_Ioc (fun r hr => hrow r hr)).symm
+    _ = (Complex.Gamma (z - 1))⁻¹ * ∫ ρ in Ioc (0 : ℝ) t, ∫ r in Ioc (0 : ℝ) t, Ψ r ρ := by
+        rw [integral_integral_swap hint]
+    _ = riemannLiouville z g t := by
+        rw [riemannLiouville, setIntegral_congr_fun measurableSet_Ioc hcol,
+          show (fun ρ : ℝ => (g ρ : ℂ) * (((t - ρ : ℝ) : ℂ) ^ (z - 1) / (z - 1)))
+            = fun ρ : ℝ => (z - 1)⁻¹ * (((t - ρ : ℝ) : ℂ) ^ (z - 1) * (g ρ : ℂ)) from by
+              funext ρ; field_simp,
+          integral_const_mul, ← mul_assoc]
+        congr 1
+        have hGam : Complex.Gamma z = (z - 1) * Complex.Gamma (z - 1) := by
+          have h := Complex.Gamma_add_one (z - 1) hz1
+          rwa [sub_add_cancel] at h
+        rw [hGam, mul_inv]
+        exact mul_comm _ _
+
 /-! ## The canonical gauge at the level of measures, and the field
 
 `lem:memory-fractional-integrals` is about the field `u(t,x) = (Φ_{0,x}f)(t)`, and `Φ` is
@@ -355,12 +505,11 @@ chapters 10–12.
 -/
 
 /-- Dilating a measure dilates the Laplace variable. -/
-theorem laplace_map_mul (μ : Measure ℝ) {x : ℝ} (hx : 0 ≤ x) (s : ℝ) :
+theorem laplace_map_mul (μ : Measure ℝ) (x s : ℝ) :
     laplace (μ.map (fun t : ℝ => x * t)) s = laplace μ (x * s) := by
   rw [laplace, laplace, integral_map (by fun_prop) (by fun_prop)]
   refine integral_congr_ae (.of_forall fun t => ?_)
-  congr 1
-  ring
+  ring_nf
 
 /-- A positive dilation preserves causality. -/
 theorem isCausal_map_mul {μ : Measure ℝ} (hμ : IsCausal μ) {x : ℝ} (hx : 0 < x) :
@@ -368,7 +517,7 @@ theorem isCausal_map_mul {μ : Measure ℝ} (hμ : IsCausal μ) {x : ℝ} (hx : 
   rw [IsCausal, Measure.map_apply (by fun_prop) measurableSet_Iio]
   have hpre : (fun t : ℝ => x * t) ⁻¹' Iio 0 = Iio 0 := by
     ext t
-    simp [mem_Iio, mul_neg_iff, hx, hx.le, not_lt.mpr hx.le, hx.ne']
+    simp [mem_Iio, hx]
   rw [hpre]
   exact hμ
 
@@ -387,7 +536,7 @@ theorem kernel_zero_eq_map_lawT₁ {x : ℝ} (hx : 0 < x) :
   haveI : IsProbabilityMeasure (F.lawT₁.map (fun t : ℝ => x * t)) :=
     Measure.isProbabilityMeasure_map (by fun_prop)
   refine (kernel_unique (isCausal_map_mul F.isCausal_lawT₁ hx) le_rfl hx.le fun s hs => ?_).symm
-  rw [laplace_map_mul _ hx.le, show laplace F.lawT₁ (x * s) = F.profile (x * s) from rfl,
+  rw [laplace_map_mul, show laplace F.lawT₁ (x * s) = F.profile (x * s) from rfl,
     F.profile_eq_exp_neg (mul_nonneg hx.le hs), increment_zero_left hx.le, toRealExponent]
 
 /-- **The field, as a genuine function of `(t,x)`**: `u(t,x) = E[f(t - x T₁)]`.
