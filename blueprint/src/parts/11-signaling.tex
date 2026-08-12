@@ -18,11 +18,11 @@
 % \ref{thm:signaling-form} carry the \uses edge, and an audit of Theorem 4' can now be done
 % from the graph alone.
 %
-% THE SPLIT OF 11.2 (2026-08-11). Its first two clauses are proved and its last two are not,
-% and the third is blocked on Mathlib rather than on this article -- see \ref{lem:mellin-vertical}.
-% The narrowed 11.2 keeps its number and its edges; the split-off clauses are appended as 11.13
-% and 11.14, and the \uses edges of 11.3, 11.4, 11.6, 11.8 and 11.9 were rewired onto whichever
-% of the three they actually consume.
+% THE SPLIT OF 11.2 (2026-08-11), and all three parts are now proved. The narrowed 11.2 keeps
+% its number and its edges; the split-off clauses are appended as 11.13 and 11.14, and the
+% \uses edges of 11.3, 11.4, 11.6, 11.8 and 11.9 were rewired onto whichever of the three they
+% actually consume. 11.13 was recorded twice as blocked on a missing Mathlib estimate and was
+% not -- see its own note. What is left of the chapter runs through def:inversion-operator.
 %
 % A12 sits on \ref{def:inversion-operator} rather than on the theorem: the definition is what
 % asserts that the contour integral recovers anything, and that is the cited fact. Note the
@@ -74,8 +74,9 @@ pursue.
 % THE SPLIT (2026-08-11). The draft's Lemma 11.2 states four things at once: the identity, the
 % bound, absolute integrability on vertical lines, and the definition and meromorphy of the
 % symbol B. They cost differently, and by a wide margin -- the first two are Tonelli plus a
-% Gamma integral and are now proved, the third needs a decay estimate for |Gamma(c+i tau)| that
-% MATHLIB DOES NOT HAVE, and the fourth is complex analysis on the strip. A node reporting the
+% Gamma integral, the third a decay estimate for |Gamma(c+i tau)|, the fourth complex analysis
+% on the strip. (All four are now proved; the third took longest to see, being twice
+% mis-diagnosed as needing Stirling.) A node reporting the
 % maximum cost of its clauses lies about its cheap ones -- the Lemma 7.1 precedent, applied here
 % for the third time -- so 11.2 is narrowed to the identity and the bound, and the other two
 % clauses are appended as 11.13 and 11.14, numbers the draft does not use.
@@ -397,34 +398,43 @@ problem, and is taken up with Theorem~5$'$.
 
 \begin{lemma}[the profile's transform is integrable on vertical lines]\label{lem:mellin-vertical}
 \uses{lem:mellin-data}
-\lean{Skeleton.verticalIntegrable_mellin_profile}\notready
+\lean{Hemigroup.SelfDecomposableExponent.verticalIntegrable_mellin_profile}\leanok
 Under (H), for every $c \in (0, z_*)$ the function $\tau \mapsto \tilde H(c + i\tau)$ is
 absolutely integrable on $\RR$.
-\statusT\quad\emph{(\textbf{Stated in Lean and not yet proved}, as
-\texttt{Skeleton.verticalIntegrable\_mellin\_profile}. This is the clause \ledger{A12}'s
-retirement turns on, and it is worth more than the two that were proved: the Lean statement is
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.verticalIntegrable\_mellin\_profile};
+\texttt{\#print axioms} gives \ledger{A17} and nothing else. The Lean statement is
 \texttt{Complex.VerticalIntegrable}, which is \emph{verbatim} the hypothesis Mathlib's
-\texttt{mellinInv\_mellin\_eq} asks for. Prove it and the inversion theorem this article cites
-becomes available as a theorem rather than an interface.}
+\texttt{mellinInv\_mellin\_eq} asks for, so this node is the bridge between the chapter and
+the inversion theorem it cites.}
 
-\emph{\textbf{Blocked upstream, and that is a third reading of the A12 question.} The bound of
-\ref{lem:mellin-data} reduces this to the super-polynomial decay of $|\Gamma(c+i\tau)|$, and
-\textbf{Mathlib has no such estimate}: its \texttt{Stirling.lean} is Stirling's formula for $n!$
-alone, and no bound on $\|\Gamma\|$ along a vertical line appears anywhere in the library. The
-ledger's correction of 2026-08-11 concluded that A12 is retirable ``at a formalisation cost, not
-a mathematical one'', the remaining pieces being the operator formulation and
-\texttt{ContinuousAt}. That is right about the \emph{article} and incomplete about \emph{Lean}:
-the vertical integrability the correction described as already supplied by \ref{lem:mellin-data}
-is supplied there by an estimate on $\Gamma$ that Mathlib does not carry. So the obstacle is a
-queue item for Mathlib, not a decision about this article --- a different kind of obstacle from
-either earlier reading, and the reason this clause is a node of its own.)}
+\emph{\textbf{It was recorded twice as blocked on Mathlib, and was not.} The bound of
+\ref{lem:mellin-data} reduces this to the decay of $|\Gamma(c+i\tau)|$, and Mathlib has no such
+estimate --- its Stirling file is Stirling's formula for $n!$ alone. That is true about Mathlib
+and false about the obligation. The classical asymptotic
+$|\Gamma(c+i\tau)| \sim \sqrt{2\pi}\,|\tau|^{c-1/2}e^{-\pi|\tau|/2}$ does need Stirling in the
+complex plane; \emph{integrability needs only quadratic decay}, and quadratic decay is the
+functional equation twice. That is the proof below, and it is elementary.}
+
+\emph{\textbf{So chapter 11 is no longer blocked upstream.} What \ref{def:inversion-operator}
+still needs from Mathlib's inversion theorem is the \emph{operator} formulation --- exhibiting
+the function whose Mellin transform is $B(-z)\tilde g(z)$ --- and a continuity hypothesis. Both
+are questions about this article, which is where \ledger{A12}'s correction said the cost would
+sit once the estimate was in hand. \texttt{blueprint/AXIOMS.md} now records four assessments of
+that entry and what each of the first three got wrong.)}
 \end{lemma}
 
 \begin{proof}
+\leanok
 $|\tilde H(c+i\tau)| \le \Ex[T_1^{-c}]\,|\Gamma(c+i\tau)|$ by \ref{lem:mellin-data}, the first
-factor being finite because $c < z_*$; and $|\Gamma(c+i\tau)|$ decays like
-$|\tau|^{c-1/2}e^{-\pi|\tau|/2}$ as $|\tau| \to \infty$, by Stirling's formula in the complex
-plane. The bound is therefore integrable in $\tau$.
+factor being finite because $c < z_*$. For the second, two elementary bounds. Euler's integral
+gives $|\Gamma(\sigma+i\tau)| \le \Gamma(\sigma)$ for $\sigma > 0$, the imaginary part only rotating
+the integrand; and $\Gamma(z+2) = (z+1)z\Gamma(z)$ with $|z|, |z+1| \ge |\tau|$ --- both have
+imaginary part $\tau$ --- gives $|\Gamma(c+i\tau)|\,\tau^2 \le \Gamma(c+2)$. Adding them,
+\[
+  |\Gamma(c+i\tau)|\,(1+\tau^2) \;\le\; \Gamma(c) + \Gamma(c+2),
+\]
+and $(1+\tau^2)^{-1}$ is integrable on the line.
 \end{proof}
 
 \begin{lemma}[the inversion symbol]\label{lem:inversion-symbol}

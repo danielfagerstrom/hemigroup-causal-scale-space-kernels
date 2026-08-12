@@ -451,6 +451,39 @@ articles that have not yet pinned a ledger.
   for granted. The reliable move is to *write the statement in Lean and try*, which is what
   located the Γ gap here in an afternoon.
 
+- **Fourth reading, 2026-08-11 — the estimate was not needed, and `lem:mellin-vertical` is
+  proved.** The third reading said A12 was blocked upstream on the vertical decay of
+  `|Γ(c+iτ)|`, which Mathlib does not carry. The first half of that is true; the second half was
+  a claim about the classical *proof*, not about the *obligation*. The asymptotic
+  `|Γ(c+iτ)| ∼ √(2π)|τ|^{c−1/2}e^{−π|τ|/2}` does need Stirling in the complex plane;
+  **integrability needs only quadratic decay**, and that is the functional equation twice:
+
+  - `|Γ(σ+iτ)| ≤ Γ(σ)` for `σ > 0`, since the imaginary part only rotates Euler's integrand;
+  - `Γ(z+2) = (z+1)zΓ(z)` with `|z|, |z+1| ≥ |τ|`, both having imaginary part `τ`, so
+    `|Γ(c+iτ)|τ² ≤ Γ(c+2)`.
+
+  Adding them gives `|Γ(c+iτ)|(1+τ²) ≤ Γ(c) + Γ(c+2)`, and `(1+τ²)⁻¹` is integrable.
+  `Hemigroup/MellinVertical.lean`; `lem:mellin-vertical` carries the tag and reduces to A17.
+
+  **What remains of A12 is the operator formulation.** `mellinInv_mellin_eq` recovers a *function*
+  from its own transform; `def:inversion-operator` needs the integral against `B(−z)g̃(z)` to agree
+  with the functional-calculus reading, so one must exhibit the `h` whose Mellin transform is that
+  product — plus `ContinuousAt`. Both are questions about this article, which is exactly where the
+  correction of the same day said the cost would sit once the estimate was in hand.
+
+- **Four assessments, and what each of the first three got wrong.** Worth keeping as a record of
+  how a ledger entry should and should not be assessed.
+
+  | | compared against | verdict | error |
+  |---|---|---|---|
+  | 1 | the **cited theorem** (Widder 9a) | not retirable; needs a new hypothesis | the article never uses Widder's generality |
+  | 2 | the article's **use** of it | retirable at formalisation cost | right about the article, silent about Lean |
+  | 3 | the **named lemma** the classical proof needs | blocked upstream on Γ decay | reasoned about the proof, not the obligation |
+  | 4 | **the statement, by attempting it** | proved | — |
+
+  A survey answers "is this theory present?". Only attempting the proof answers "is this theorem
+  reachable?", and here the two answers differed by two orders of magnitude of work.
+
 ## A13 — A Laplace transform with nonnegative integrand is singular at its abscissa of convergence
 **Blueprint:** `lem:moment-recursion` · **Lean:** *(not stated yet)*
 **Cite:** @widder1941laplace — Ch. II, §5, Theorem 5b, pp. 58–59

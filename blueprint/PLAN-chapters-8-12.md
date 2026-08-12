@@ -873,3 +873,59 @@ Chapter 9 is closed to what its ledger allows. What remains anywhere is `[A]` or
 3. `lem:mellin-vertical` — Γ's vertical decay, absent upstream; it is what would retire A12 and
    with it the rest of chapter 11.
 4. Chapters 10 and 12 — C₀-semigroup theory and Bessel `K`, both absent upstream.
+
+---
+
+# Gamma's vertical decay, and A12 unblocked — 2026-08-11
+
+`lem:mellin-vertical` is proved. `Hemigroup/MellinVertical.lean`; A17 and nothing else; 33 nodes
+`\leanok`. `Skeleton/Chapter11.lean` now holds no declarations at all.
+
+## The obstruction was a claim about the proof, not about the obligation
+
+Two earlier readings put this clause upstream: the bound of `lem:mellin-data` reduces vertical
+integrability to the decay of `|Γ(c+iτ)|`, and Mathlib has no such estimate — `Stirling.lean` is
+Stirling's formula for `n !` alone. Both halves of that were checked and the first is true. The
+second was wrong, and wrong in a way worth naming: **it was reasoning about what the classical
+proof of the classical fact needs.**
+
+The classical fact is `|Γ(c+iτ)| ∼ √(2π)|τ|^{c−1/2}e^{−π|τ|/2}`, and that does need Stirling in the
+complex plane. The obligation is *integrability*, which needs only quadratic decay:
+
+* `|Γ(σ+iτ)| ≤ Γ(σ)` for `σ > 0` — the imaginary part only rotates Euler's integrand;
+* `Γ(z+2) = (z+1)zΓ(z)`, and `|z|, |z+1| ≥ |τ|` because both have imaginary part `τ`, so
+  `|Γ(c+iτ)|τ² ≤ Γ(c+2)`.
+
+Adding them: `|Γ(c+iτ)|(1+τ²) ≤ Γ(c) + Γ(c+2)`. About forty lines, no Stirling, and the three
+`Gamma` lemmas are general enough to be worth upstreaming.
+
+## Four assessments of one ledger entry
+
+| | compared against | verdict | error |
+|---|---|---|---|
+| 1 | the **cited theorem** (Widder 9a) | not retirable; needs a new hypothesis | the article never uses Widder's generality |
+| 2 | the article's **use** of it | retirable at formalisation cost | right about the article, silent about Lean |
+| 3 | the **named lemma** the classical proof needs | blocked upstream on Γ decay | reasoned about the proof, not the obligation |
+| 4 | **the statement, by attempting it** | proved | — |
+
+Each reading was a refinement of the last and each was still an argument *about* the proof rather
+than an attempt at it. **A survey answers "is this theory present?"; only attempting the proof
+answers "is this theorem reachable?"** — and here the two answers differed by two orders of
+magnitude of work. That is the strongest form of the statement-first lesson this project has
+produced, because the three wrong answers were each carefully argued and recorded.
+
+## Where A12 stands
+
+Not retired, but the reason is now entirely internal. `mellinInv_mellin_eq` recovers a *function*
+from its own transform; `def:inversion-operator` needs the integral against `B(−z)g̃(z)` to agree
+with the functional-calculus reading, so one must exhibit the `h` whose Mellin transform is that
+product, plus `ContinuousAt`. Those are the two pieces the correction of the same day named, and
+they are about this article.
+
+## Next
+
+1. `def:inversion-operator` — the operator formulation. It is the gate on the rest of chapter 11
+   (11.4's step 1, 11.5, 11.6) and no longer waits on anything upstream.
+2. Still blocked upstream, unchanged: chapter 10 (C₀-semigroups), chapter 12 (Bessel `K`),
+   `prop:scale-evolution` and `cor:exact-inversion` (distributions).
+3. `prop:pair-regularity`(2) is `[A]` by design (ledger A9).

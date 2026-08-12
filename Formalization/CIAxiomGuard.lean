@@ -278,3 +278,17 @@ machine-checked rather than asserted, in the one place it was most at risk.
 #print axioms Hemigroup.SelfDecomposableExponent.exists_subordinatorFamily
 #print axioms Hemigroup.SelfDecomposableExponent.existsUnique_potentialKernel
 #print axioms Hemigroup.SelfDecomposableExponent.exists_sonine_pair
+
+/-! ### `lem:mellin-vertical` (11.13), and the Γ estimate under it
+
+The clause A12's retirement turns on. It was recorded twice as blocked on a missing Mathlib
+estimate — the vertical decay of `|Γ(c+iτ)|` — and is not: integrability needs only quadratic
+decay, which is the functional equation twice. The three `Gamma` lemmas are general and reduce to
+Lean core; the profile's vertical integrability inherits A17 through `kernel`, as everything about
+`T₁` does.
+-/
+
+#print axioms Hemigroup.norm_Gamma_le_of_re_pos
+#print axioms Hemigroup.norm_Gamma_mul_sq_le
+#print axioms Hemigroup.integrable_norm_Gamma_vertical
+#print axioms Hemigroup.SelfDecomposableExponent.verticalIntegrable_mellin_profile
