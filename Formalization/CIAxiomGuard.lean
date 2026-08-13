@@ -537,6 +537,24 @@ blueprint's `(0,∞)`: widening it is `z_* = ∞`, which is clause (2) and which
 #print axioms Hemigroup.SelfDecomposableExponent.exists_pos_symbolQuotient_of_symbol_eq
 #print axioms Hemigroup.SelfDecomposableExponent.exists_symbolQuotient_of_isLocalOfOrder
 
+/-! ### `lem:pmp-verification` — the (⇐) half of `thm:locality`'s maximum principle
+
+`thm:locality` uses the PMP twice and at opposite costs. Its (⇒) direction spends ledger **A14**
+(Courrège) on the order bound — that a local operator satisfying the PMP is a pure second-order
+diffusion — and that is cited, not proved. Its (⇐) direction has to check that the operators the
+theorem exhibits *do* satisfy the PMP, and that is elementary. These lines are what keeps the two
+apart: they print A17 through `inversionOperator` and **not A14**.
+
+`deriv_deriv_nonpos_of_isLocalMax` is the second-derivative half of Fermat's rule, which Mathlib
+does not carry — it has `IsLocalMax.deriv_eq_zero` and stops there — so it is written from
+scratch. It mentions nothing of this development and prints **Lean core alone**.
+-/
+
+#print axioms Hemigroup.deriv_deriv_nonpos_of_isLocalMax
+#print axioms Hemigroup.contDiff_of_isTestFunction_ofReal
+#print axioms Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_isLocalOfOrderCore
+#print axioms Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq
+
 /-! ### `lem:gamma-recursion-uniqueness` — ledger A15, order-two case, discharged
 
 Krull--Webster restricted to a linear `Q`, which is the only case `thm:locality` applies it to,

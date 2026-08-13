@@ -34,6 +34,7 @@ import Hemigroup.Nondegeneracy
 import Hemigroup.NullArray
 import Hemigroup.Operator
 import Hemigroup.OperatorL1
+import Hemigroup.PositiveMaximumPrinciple
 import Hemigroup.PotentialKernel
 import Hemigroup.ProfileDeriv
 import Hemigroup.ProfileEuler

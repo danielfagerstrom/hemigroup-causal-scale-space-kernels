@@ -401,8 +401,11 @@ factors and for which Bohr--Mollerup is not enough. The order-1 case never used 
 there $\log m$ is convex with constant unit increments, hence affine, which is elementary and
 given below. Everything in the ($\Leftarrow$) direction is \textbf{[T]}: admissibility of the
 Bessel family is \ref{prop:bessel-family}, locality is \ref{ex:bessel-quadratic}, and the PMP
-verification is two lines of calculus. The homogeneity claim is \textbf{[T]} through
-\ref{cor:semigroup-case}.)}
+verification is \ref{lem:pmp-verification}, \textbf{now machine-checked} --- split off for the
+same reason the other [T] parts of this chapter were, since \ledger{A14} sits on the
+\emph{opposite} use of the maximum principle and a node reporting both under one status would say
+the principle costs an interface when half of it costs nothing. The homogeneity claim is
+\textbf{[T]} through \ref{cor:semigroup-case}.)}
 \end{theorem}
 
 \begin{proof}
@@ -726,4 +729,73 @@ $B(-z) = z\,m(z+1)/m(z)$. Both $m(z)$ and $m(z+1)$ are finite and strictly posit
 because $z + 1 < z_*$, positive because $T_1$ charges only $(0,\infty)$ --- so $m(z) \ne 0$ and,
 cancelling the factor $z \ne 0$, $Q(z) = m(z+1)/m(z)$. That exhibits $Q(z)$ as a quotient of
 positive reals, which is both the recursion and the positivity.
+\end{proof}
+
+% additive: not in the draft. The (<=) half of Theorem 12.5's maximum-principle step, split off
+% because that theorem spends A14 on the (=>) half and the two are not the same statement.
+% Numbered 12.12, a number the draft does not use.
+\begin{lemma}[the maximum principle on a local operator of order at most two]
+\label{lem:pmp-verification}
+\uses{def:locality-pmp,lem:local-polynomial-symbol,lem:moment-recursion}
+\lean{Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq}\leanok
+Let $A$ agree on $C_c^\infty((0,\infty))$ with $\sum_{j=0}^{n} c_j(x)\partial_x^j$, where
+$n \le 2$. If $\operatorname{Re} c_0 \le 0$ and $\operatorname{Re} c_2 \ge 0$ on $(0,\infty)$,
+then $A$ satisfies the positive maximum principle. In particular, if the symbol is the polynomial
+$\sum_{j\le n}\gamma_j E_j$ with $n \le 2$, $\gamma_0 = 0$ and $\operatorname{Re}\gamma_2 \ge 0$,
+then the PMP holds --- which covers both cases of \ref{thm:locality}, the first-order one
+vacuously in the leading hypothesis and the second-order one with $\gamma_2 = 2$.
+\statusT\quad\emph{(\textbf{Machine-checked}, as \texttt{satisfiesPMP\_of\_symbol\_eq}, on A17 ---
+through \texttt{inversionOperator}, which quantifies over the construction's kernels --- and
+\textbf{not on \ledger{A14}}. Keeping that visible is the reason for the split.
+\textbf{\ref{thm:locality} uses the maximum principle twice, in opposite directions and at
+opposite costs}, and the ledger entry sits on one of them alone. The ($\Rightarrow$) use is the
+\emph{order bound}: that a local operator satisfying the PMP is a pure second-order diffusion with
+no jump part. That is Courrège's classification, \ledger{A14}, cited and staying cited. The
+($\Leftarrow$) use is the \emph{verification} above, and it is elementary. A node that reported
+both under one status would say the maximum principle costs an interface, when half of it costs
+nothing.
+\textbf{Mathlib has Fermat's rule and only its first half.} \texttt{IsLocalMax.deriv\_eq\_zero} is
+there; nothing says the second derivative is nonpositive at a local maximum, and there is no
+second-derivative test at an extremum anywhere in the library. So
+\texttt{deriv\_deriv\_nonpos\_of\_isLocalMax} is written from scratch, by the classical argument:
+were $f''(a)$ positive, the slope of $f'$ at $a$ would be eventually positive, hence $f' > 0$ just
+to the right of $a$, hence $f$ strictly increasing there --- and $a$ is a maximum. It mentions
+nothing of this development and reduces to Lean core.
+\textbf{The first-order coefficient is unconstrained}, and that is the whole content of the
+step: $g'(x_0) = 0$ at an interior maximum kills the $j = 1$ term whatever $c_1$ is, which is why
+\ref{thm:locality}'s case (1) needs no hypothesis beyond the absence of killing. And the absence of
+killing, $\gamma_0 = 0$, is not an extra assumption either --- it is
+\ref{lem:moment-recursion-quotient}, holding for every local operator of the class.
+\textbf{Where the real-valued reading is paid for.} \ref{def:locality-pmp} asserts
+$\operatorname{Re}(Ag)(x_0) \le 0$, $A$ being $\mathbb{C}$-valued, so the differential expression
+has to be pushed through $\operatorname{Re}$ and the derivatives of $x \mapsto (g(x):\mathbb{C})$
+identified with those of $g$. That identification is \texttt{iteratedDeriv\_ofReal\_comp}, proved
+for the profile in chapter 12's differentiation step and reused here on all of $\mathbb{R}$, where
+a test function is smooth. It is the one place this argument is longer than two lines.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{def:locality-pmp}
+Let $g \in C_c^\infty((0,\infty))$ be real-valued and attain a nonnegative maximum over
+$(0,\infty)$ at $x_0 > 0$. Since $(0,\infty)$ is open, $x_0$ is a local maximum of $g$ on
+$\mathbb{R}$, so $g'(x_0) = 0$ by Fermat's rule and $g''(x_0) \le 0$: were $g''(x_0) > 0$, the
+slope $\bigl(g'(y) - g'(x_0)\bigr)/(y - x_0) = g'(y)/(y-x_0)$ would be positive for all $y$ near
+$x_0$, so $g' > 0$ on an interval $(x_0, b)$, so $g$ would be strictly increasing on
+$[x_0, y_1]$ for $x_0 < y_1 < b$ and $g(y_1) > g(x_0)$, contradicting the maximum.
+
+Hence, taking real parts in $(Ag)(x_0) = \sum_{j \le n} c_j(x_0)g^{(j)}(x_0)$ and using that each
+$g^{(j)}(x_0)$ is real,
+\[
+  \operatorname{Re}(Ag)(x_0)
+    \;=\; \operatorname{Re}c_0(x_0)\,g(x_0)
+        \;+\; \operatorname{Re}c_1(x_0)\cdot 0
+        \;+\; \operatorname{Re}c_2(x_0)\,g''(x_0)
+  \;\le\; 0,
+\]
+the first term being a nonpositive number times a nonnegative one and the third a nonnegative
+times a nonpositive; terms with $j > n$ do not occur, as $n \le 2$. For the symbol form,
+\ref{lem:local-polynomial-symbol} gives $c_j(x) = \gamma_j x^{j-1}$, so
+$\operatorname{Re}c_0(x) = \operatorname{Re}(\gamma_0 x^{-1}) = 0$ and
+$\operatorname{Re}c_2(x) = x\operatorname{Re}\gamma_2 \ge 0$ for $x > 0$.
 \end{proof}
