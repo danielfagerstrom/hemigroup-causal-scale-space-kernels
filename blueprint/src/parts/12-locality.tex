@@ -122,11 +122,22 @@ outer radius $x_0/2$, so that its support sits inside $(0,\infty)$ --- the same 
 integrations by parts need, arrived at from the other side. Feeding one such jet into both
 readings of $A\Delta_\sigma g$ at the point $\sigma$ collapses both sums to a single term; and
 since $x = \sigma$ sends $x/\sigma$ to $1$, a single jet at $1$ settles every $\sigma$ at once.
-\textbf{What is left of this node is one clause}: that the symbol is then the corresponding
-polynomial. That needs \texttt{verticalIntegrable\_mellin} sharpened from quadratic decay to decay
-of every order --- which the engine already supplies at every $j$, so it is a generalisation and
-not a new idea --- together with injectivity of the inverse transform on vertically integrable
-symbols.)}
+\textbf{What is left of this node is one clause, and formalising showed that the proof above
+skips a step.} The clause is that the symbol is then the corresponding polynomial, which the proof
+gets by ``Mellin-transforming on a line and using injectivity''. What the argument actually
+delivers is that $B\tilde g$ and $P\tilde g$ have the same inverse transform for every
+\emph{test function} $g$. Two things separate that from $B = P$. The first is routine: concluding
+equality of the symbols needs the forward-after-inverse direction of Mellin inversion, which
+Mathlib lacks (it has the Fourier analogue, and the two are bridged by its own
+\texttt{mellin\_eq\_fourier}). The second is not routine. $P\tilde g$ is vertically integrable,
+since $E_j(z)\tilde g(z)$ is itself the transform of a test function; but $B\tilde g$ need not be,
+$B = \tilde H(z{+}1)/\tilde H(z)$ carrying no growth bound --- which is precisely why
+\ref{def:inversion-operator} carries integrability as a hypothesis rather than deriving it. So the
+comparison has to be routed through the class where $B$'s behaviour is known, namely the profiles
+$H(s\,\cdot)$ of \ref{lem:symbol-uniqueness}, and those are \emph{not} test functions: they are
+neither compactly supported nor supported away from the origin. Passing from one class to the
+other is an approximation argument, and it is not made above. Recording it is not a formalisation
+detail --- the printed proof needs it too.)}
 \end{lemma}
 
 \begin{proof}

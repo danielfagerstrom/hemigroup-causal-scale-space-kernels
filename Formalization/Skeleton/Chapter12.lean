@@ -33,13 +33,33 @@ is a basis vector. The sums collapse and `c_m(σ) σ^{-m} = σ^{-1} c_m(1)` fall
 `x = σ` is what makes one jet, at the single point `1`, settle every `σ` at once.
 
 The `sorry` is the third clause alone: that the symbol is then the corresponding polynomial,
-`B(z) = ∑ γ_j E_j(z)`. The route is to run `isLocalOfOrder_of_symbol_eq`'s computation backwards
---- both `B·ĝ` and `P·ĝ` have the same inverse transform on `(0,∞)` --- and conclude that the two
-symbols agree on the line. Two things it will need that do not exist yet: vertical integrability
-of `P·ĝ` for a *polynomial* `P`, which needs `verticalIntegrable_mellin` sharpened from the `j = 2`
-decay it currently uses to decay of every order (the engine gives it at every `j`, so this is a
-generalisation and not a new idea); and injectivity of `mellinInv` on vertically integrable
-symbols.
+`B(z) = ∑ γ_j E_j(z)`. **The blueprint disposes of it in half a sentence — "Mellin-transforming on
+a line and using injectivity gives `B = P`" — and that sentence hides a real step.**
+
+What the argument gives is that `B·ĝ` and `P·ĝ` have the same inverse transform on `(0,∞)`, for
+every *test function* `g`. Two obstacles stand between that and `B = P`, and only the first is a
+Lean matter.
+
+1. Concluding `B·ĝ = P·ĝ` on the line needs the forward-after-inverse direction of Mellin
+   inversion, and **Mathlib has only the inverse-after-forward direction**
+   (`mellinInv_mellin_eq`). It does have the missing direction for *Fourier*
+   (`Continuous.fourier_fourierInv_eq`), and `mellin_eq_fourier` / `mellinInv_eq_fourierInv` are
+   the bridge, so this is plumbing rather than mathematics — but it is plumbing Mathlib does not
+   carry.
+
+2. The deeper one. `P·ĝ` is vertically integrable, because `E_j(z)·ĝ(z)` is itself the transform
+   of a test function (`x^j g^{(j)}`) and so `verticalIntegrable_mellin` already covers it --- no
+   sharpening needed. But **`B·ĝ` need not be**: `B = H̃(z+1)/H̃(z)` carries no a priori growth
+   bound, which is exactly why chapter 11 carries integrability as a *field* of `RealisesAction`
+   rather than deriving it. So the two inverse transforms are not automatically comparable, and
+   the identity has to be routed through the class where `B`'s behaviour is known --- the profiles
+   `H(s·)`, which are **not test functions**, being neither compactly supported nor supported away
+   from the origin.
+
+So `lem:symbol-uniqueness` does not apply off the shelf: it asks for a symbol realising the action
+on profiles, and locality gives information only on test functions. Getting from one class to the
+other is an approximation argument that the paper does not make. That is a finding about the
+article rather than about the formalisation, and it is recorded in the node.
 -/
 
 namespace Hemigroup
