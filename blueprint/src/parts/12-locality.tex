@@ -110,14 +110,21 @@ covariance built into the Mellin class forces the coefficients
 \texttt{exists\_symbol\_eq\_of\_isLocalOfOrder} --- since the two directions need different
 things and only one of them needs covariance.
 \textbf{($\Leftarrow$) is machine-checked}, as
-\texttt{Hemigroup.SelfDecomposableExponent.isLocalOfOrder\_of\_symbol\_eq}, on A17 and nothing
-else. \textbf{And it does not use (H).} The chapter states everything under the standing
-hypothesis, and this direction turns out not to need it: the symbol identity is a hypothesis, and
-everything else --- the Euler factors, the vertical decay, the inversion --- is a fact about test
-functions that says nothing about $F$. (H) still does something here, but something different: it
-is what makes the statement non-vacuous, the strip $0 < c < z_* - 1$ being inhabited only when
-$z_* > 1$. Being used by a proof and being needed for a statement to have content are different
-roles, and this node now distinguishes them.
+\texttt{Hemigroup.SelfDecomposableExponent.isLocalOfOrderCore\_of\_symbol\_eq}, on A17 and nothing
+else. \textbf{Its symbol hypothesis is asked for off the zeros of $\tilde H$, and that is what
+made it take (H).} The two are one decision. $B = \tilde H(z{+}1)/\tilde H(z)$ is a quotient, so
+at a zero of the denominator no identity with a polynomial holds --- in Lean the value there is
+the junk $0$ --- and a hypothesis asserting one at \emph{every} point of the strip is one that
+($\Rightarrow$) cannot supply, so the two halves would not compose. Restricting it costs nothing
+analytically: $A$ is an inverse Mellin transform, an integral \emph{over} the line rather than an
+evaluation on it, so a null set is discarded (\texttt{mellinInv\_congr\_line\_ae}). What it costs
+is that the zeros are null only by \ref{lem:inversion-symbol}, which needs (H).
+This node previously recorded that ($\Leftarrow$) uses (H) nowhere in its argument, and that
+remains true --- the Euler factors, the vertical decay and the inversion are facts about test
+functions and say nothing about $F$. (H) enters as the price of a hypothesis the other direction
+can meet, not as a step of the proof; and it was in any case already making the statement
+non-vacuous, the strip $0 < c < z_* - 1$ being inhabited only when $z_* > 1$. Three roles a
+hypothesis can play, kept apart.
 \textbf{The ($\Leftarrow$) direction needed one analytic fact, and it is now proved}: the Mellin
 symbol of the Euler operator,
 $\mathcal{M}\bigl[x^{j} g^{(j)}\bigr](z) = \bigl(\prod_{i<j}(-z-i)\bigr)\,\tilde g(z)$ for test
@@ -194,14 +201,18 @@ laws that this article does not have. This is the third time the same question h
 in this development --- \ref{def:inversion-operator}'s realising identity and
 \ref{lem:symbol-rigidity}'s conclusion are the other two --- and each time it was writing the
 statement that raised it.
-\textbf{One consequence is flagged rather than fixed.} The ($\Leftarrow$) direction consumes the
-\emph{pointwise} symbol identity, which is more than ($\Rightarrow$) delivers at a zero of
-$\tilde H$, so the two halves do not compose into an ``if and only if'' as Lean statements.
-Weakening ($\Leftarrow$) would close the gap and costs nothing mathematically --- the inverse
-transform is an integral over the line and discards a null set --- but the zeros are null only by
-\ref{lem:inversion-symbol}, so that direction would then need (H), which it currently does not
-use and whose absence is recorded above as a finding. Which of the two to give up is a review
-decision, not a repair.)}
+\textbf{($\Leftarrow$) was weakened to match}, so that its symbol hypothesis is exactly what
+($\Rightarrow$) delivers; see above for what that cost.
+\textbf{One gap remains between the two halves, and it is a different one.} ($\Leftarrow$)
+produces the $C_c^\infty$ clause alone --- \texttt{IsLocalOfOrderCore} --- while ($\Rightarrow$)
+consumes the full \ref{def:locality-pmp}, profiles included. Closing it no longer wants the
+Fubini-and-Gamma computation, which is done: applying a polynomial symbol to $H(s\,\cdot)$ gives
+$h(x) = \sum_j \gamma_j x^j\partial_x^j H(sx)$ with $\tilde h(z) = P(z)s^{-z}\tilde H(z)$, and
+recovering $h$ from it by Mellin inversion needs that transform vertically integrable, i.e.
+$\int |\tau|^{n}\,|\Gamma(c+i\tau)|\,d\tau < \infty$ for $n = \deg P$. \ref{lem:mellin-vertical}
+proves the case $n = 0$, from the functional equation twice; arbitrary polynomial decay is the
+same induction continued, and is the only thing standing between these two statements and an
+``if and only if''.)}
 \end{lemma}
 
 \begin{proof}

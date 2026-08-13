@@ -34,6 +34,15 @@ by the Euler factors, `mellin_pow_mul_iteratedDeriv` turns each factor into `x^j
 carries the whole sum back. The weight `x^{-1}` in `def:inversion-operator` is what turns `x^j`
 into `x^{j-1}`, which is where the homogeneous form of the coefficients comes from: it is not
 imposed, it is what the Mellin class permits.
+
+The one thing it does need of `F` is that the zeros of `H̃` on the line are null, and that is not
+a repair of the argument but the price of a hypothesis the *other* direction can supply. `B` is a
+quotient with denominator `H̃`; where that vanishes, `B`'s value is Lean's `0` and no polynomial
+identity holds, so a symbol hypothesis asserting one at every point of the strip is one the (⇒)
+direction cannot deliver, and the two halves would not compose. Asking for it off the zeros costs
+nothing here --- `mellinInv` integrates over the line and `mellinInv_congr_line_ae` discards a
+null set --- and costs the standing hypothesis (H), which `ae_mellin_profile_ne_zero` needs and
+which nothing else in this direction uses.
 -/
 
 namespace Hemigroup
@@ -76,8 +85,16 @@ about the same objects, which they otherwise do not.
 The two clauses are separated because they cost differently. The test-function clause is what
 `isLocalOfOrderCore_of_symbol_eq` supplies from a polynomial symbol; the profile clause is true
 for the same reason but by a different computation --- `∂ₓ^j H(sx) = ∫ (-st)^j e^{-sxt} dμ(t)`,
-then the Gamma-integral hinge of `lem:mellin-data` --- which needs differentiation under the
-integral sign `j` times and is not yet formalised. -/
+then the Gamma-integral hinge of `lem:mellin-data` --- which is
+`mellin_pow_mul_iteratedDeriv_profile` and is now proved.
+
+**What is still missing is not that computation but an estimate**, and naming it is the point of
+keeping the clauses apart. To run (⇐) on the profiles as well, `mellinInv_mellin_eq` would be
+applied to `h(x) = ∑ γ_j x^j ∂ₓ^j H(sx)`, whose transform is `P(z)·s^{-z}H̃(z)`; vertical
+integrability of that needs `∫ |τ|^n ‖Γ(c+iτ)‖ dτ < ∞` for the degree `n` of `P`, where
+`MellinVertical.lean` proves the case `n = 0` from the functional equation twice. Arbitrary
+polynomial decay is the same induction continued, and until it is done (⇐) produces
+`IsLocalOfOrderCore` while (⇒) consumes `IsLocalOfOrder`. -/
 structure IsLocalOfOrder (c : ℝ) (n : ℕ) extends IsLocalOfOrderCore F c n where
   /-- Agreement with the differential expression on the profiles as well. -/
   eq_sum_iteratedDeriv_profile : ∀ {s : ℝ}, 0 < s → ∀ {x : ℝ}, 0 < x →
@@ -98,16 +115,26 @@ def SatisfiesPMP (c : ℝ) : Prop :=
 /-- **`lem:local-polynomial-symbol`, the (⇐) direction.** A polynomial symbol, expanded in Euler
 factors, gives a differential expression whose coefficients are `γ_j x^{j-1}`.
 
-**The standing hypothesis (H) is not among the hypotheses**, and its absence is not an oversight.
-The blueprint states the whole of chapter 12 under (H), and this direction turns out not to use
-it: the symbol identity is supplied by `hsymbol`, and everything else --- the Euler factors, the
-vertical decay, the inversion --- is a fact about test functions and needs nothing about `F`.
-Where (H) does enter is in making the statement non-vacuous, since `0 < c < z_* - 1` is inhabited
-only when `z_* > 1`. That is a different role from being used in the proof, and the two are worth
-keeping apart. -/
-theorem isLocalOfOrderCore_of_symbol_eq {c : ℝ} (hc : 0 < c)
+**The symbol identity is asked for off the zeros of `H̃`, which is what the (⇒) direction
+delivers.** `F.inversionSymbol` is the quotient `H̃(z+1)/H̃(z)`, so at a zero of the denominator
+its value is Lean's `0` and no identity with a polynomial can hold there; a hypothesis asserting
+one on the whole strip is unsatisfiable at exactly the points where the (⇒) direction has nothing
+to say, and the two halves would not compose. Restricting it costs nothing, because `mellinInv`
+integrates over the line and never evaluates on it: the zeros are null there
+(`ae_mellin_profile_ne_zero`) and `mellinInv_congr_line_ae` discards them.
+
+**What it does cost is the standing hypothesis (H)**, and the trade is worth recording rather than
+hiding. Nothing in the argument proper uses (H) --- the Euler factors, the vertical decay and the
+inversion are facts about test functions and say nothing about `F` --- and this direction was
+stated without it for that reason. But "the zeros are null" is `lem:inversion-symbol`, which needs
+`H̃` analytic and not identically zero on the strip, which needs (H). So (H) enters here as the
+price of a hypothesis the other direction can actually supply, not as a step of the proof. (H) was
+in any case already doing something for this statement: `0 < c < z_* - 1` is inhabited only when
+`z_* > 1`. -/
+theorem isLocalOfOrderCore_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
     (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
     (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+      mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
     Nonempty (F.IsLocalOfOrderCore c n) := by
   refine ⟨{ coeff := fun j x => γ j * (x : ℂ) ^ ((j : ℤ) - 1)
@@ -120,15 +147,16 @@ theorem isLocalOfOrderCore_of_symbol_eq {c : ℝ} (hc : 0 < c)
     · simpa using ne_of_gt (mem_Ioi.mp hx)
   · intro g hg x hx
     have hxne : (x : ℂ) ≠ 0 := by simpa using ne_of_gt hx
-    -- the symbol identity, transported to the transforms along the line
-    have hline : ∀ y : ℝ,
+    -- the symbol identity, transported to the transforms along the line --- almost everywhere,
+    -- the zeros of `H̃` on the line being null
+    have hline : ∀ᵐ y : ℝ,
         F.inversionSymbol ((c : ℂ) + y * Complex.I) * mellin g ((c : ℂ) + y * Complex.I)
           = ∑ j ∈ Finset.range (n + 1),
               γ j * mellin (fun t : ℝ => (t : ℂ) ^ j * iteratedDeriv j g t)
                 ((c : ℂ) + y * Complex.I) := by
-      intro y
+      filter_upwards [F.ae_mellin_profile_ne_zero hH hc (by linarith)] with y hy
       have hre : ((c : ℂ) + y * Complex.I).re = c := by simp
-      rw [hsymbol _ (by rw [hre]; exact hc) (by rw [hre]; exact hc'), Finset.sum_mul]
+      rw [hsymbol _ (by rw [hre]; exact hc) (by rw [hre]; exact hc') hy, Finset.sum_mul]
       refine Finset.sum_congr rfl fun j _ => ?_
       rw [mellin_pow_mul_iteratedDeriv hg j]
       ring
@@ -143,7 +171,7 @@ theorem isLocalOfOrderCore_of_symbol_eq {c : ℝ} (hc : 0 < c)
       rw [mellinInv_const_mul,
         mellinInv_mellin_of_isTestFunction (hg.pow_mul_iteratedDeriv j) c hx]
     rw [inversionOperator,
-      mellinInv_congr_line (G := fun z => F.inversionSymbol z * mellin g z)
+      mellinInv_congr_line_ae (G := fun z => F.inversionSymbol z * mellin g z)
         (G' := fun z => ∑ j ∈ Finset.range (n + 1),
           γ j * mellin (fun t : ℝ => (t : ℂ) ^ j * iteratedDeriv j g t) z) c x hline,
       mellinInv_finset_sum _ c _ hx hvi]

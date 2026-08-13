@@ -386,15 +386,26 @@ theorem integrable_mellinInv_integrand {G : ℂ → ℂ} {σ : ℝ}
   rw [norm_smul, Complex.norm_cpow_eq_rpow_re_of_pos hx]
   simp
 
-/-- Two symbols agreeing on the line have the same inverse transform there. -/
-theorem mellinInv_congr_line {G G' : ℂ → ℂ} (σ : ℝ) (x : ℝ)
-    (h : ∀ y : ℝ, G ((σ : ℂ) + y * Complex.I) = G' ((σ : ℂ) + y * Complex.I)) :
+/-- Two symbols agreeing **almost everywhere** on the line have the same inverse transform there.
+
+The a.e. hypothesis rather than the pointwise one, because `mellinInv` integrates over the line
+and never evaluates on it. That is not a convenience: the article's symbol `B` is a quotient whose
+denominator vanishes on an isolated set, so an identity between `B` and anything else is available
+off that set and nowhere else, and a pointwise hypothesis could not be supplied. -/
+theorem mellinInv_congr_line_ae {G G' : ℂ → ℂ} (σ : ℝ) (x : ℝ)
+    (h : ∀ᵐ y : ℝ, G ((σ : ℂ) + y * Complex.I) = G' ((σ : ℂ) + y * Complex.I)) :
     mellinInv σ G x = mellinInv σ G' x := by
   rw [mellinInv, mellinInv]
   congr 1
-  refine integral_congr_ae (Filter.Eventually.of_forall fun y => ?_)
-  dsimp only
-  rw [h y]
+  refine integral_congr_ae ?_
+  filter_upwards [h] with y hy
+  rw [hy]
+
+/-- Two symbols agreeing on the line have the same inverse transform there. -/
+theorem mellinInv_congr_line {G G' : ℂ → ℂ} (σ : ℝ) (x : ℝ)
+    (h : ∀ y : ℝ, G ((σ : ℂ) + y * Complex.I) = G' ((σ : ℂ) + y * Complex.I)) :
+    mellinInv σ G x = mellinInv σ G' x :=
+  mellinInv_congr_line_ae σ x (Filter.Eventually.of_forall h)
 
 /-- The inverse transform of a finite sum. -/
 theorem mellinInv_finset_sum {ι : Type*} (s : Finset ι) (σ : ℝ) (G : ι → ℂ → ℂ) {x : ℝ}

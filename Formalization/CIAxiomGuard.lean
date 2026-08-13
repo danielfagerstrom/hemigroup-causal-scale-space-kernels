@@ -530,8 +530,19 @@ analysis anywhere. Lean core alone.
 The polynomial symbol turned into a differential expression. A17 through `inversionOperator`,
 which quantifies over the construction's kernels; nothing else, and in particular none of chapter
 12's own cited interfaces.
+
+This direction was stated without the standing hypothesis (H), and that was recorded here as a
+finding: nothing in its argument used (H), only the statement's non-vacuity did. It now takes (H),
+and the reason is worth keeping visible because it is not a defect in the proof. Its symbol
+hypothesis is asked for **off the zeros of `H̃`**, which is what the (⇒) direction delivers and all
+it can deliver — `inversionSymbol` is a quotient by `H̃` — and "the zeros on the line are null" is
+`ae_mellin_profile_ne_zero`, which needs (H). So (H) is the price of the two halves composing,
+paid in the direction where it is cheap. What it buys costs nothing analytically:
+`mellinInv_congr_line_ae` discards the null set, `mellinInv` integrating over the line rather than
+evaluating on it.
 -/
 
+#print axioms Hemigroup.mellinInv_congr_line_ae
 #print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrderCore
 #print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrder
 #print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrderCore_of_symbol_eq
