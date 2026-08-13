@@ -566,3 +566,14 @@ and the step the blueprint takes by "comparing coefficients of g^(j)(x/σ)". A17
 
 #print axioms Hemigroup.SelfDecomposableExponent.coeff_eq_of_isLocalOfOrder
 #print axioms Hemigroup.iteratedDeriv_lineDilate
+
+/-! ### Derivatives of the profile
+
+`H^(j)(u) = (-1)^j E[T_1^j e^{-u T_1}]`, which the profile clause of `def:locality-pmp` needs and
+which chapter 11 never had occasion to establish. It is free: `H` is Mathlib's `mgf` at a negative
+argument, and `ProbabilityTheory.iteratedDeriv_mgf` does the differentiation under the integral.
+A17 through `lawT₁`.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.profile_eq_mgf
+#print axioms Hemigroup.SelfDecomposableExponent.iteratedDeriv_profile

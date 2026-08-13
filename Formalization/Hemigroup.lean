@@ -34,6 +34,7 @@ import Hemigroup.NullArray
 import Hemigroup.Operator
 import Hemigroup.OperatorL1
 import Hemigroup.PotentialKernel
+import Hemigroup.ProfileDeriv
 import Hemigroup.Representation
 import Hemigroup.SelfDecomposable
 import Hemigroup.Sonine

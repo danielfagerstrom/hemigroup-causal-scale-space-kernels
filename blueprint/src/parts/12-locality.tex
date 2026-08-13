@@ -69,9 +69,16 @@ propositional reading, and the one \ref{thm:locality} quantifies over.
 cheaply --- it is what \ref{lem:local-polynomial-symbol}'s ($\Leftarrow$) direction proves.
 \texttt{IsLocalOfOrder} extends it with the profile clause. That clause is true for the same
 reason, but by a different computation: $\partial_x^j H(sx) = \int (-st)^j e^{-sxt}\,\mu(dt)$,
-followed by the Gamma-integral hinge of \ref{lem:mellin-data}. It needs differentiation under the
-integral sign $j$ times, which chapter 11 never had occasion to set up, and is not yet
-formalised.
+followed by the Gamma-integral hinge of \ref{lem:mellin-data}.
+\textbf{The differentiation step is done}, as
+\texttt{Hemigroup.SelfDecomposableExponent.iteratedDeriv\_profile}, and it cost almost nothing:
+$H(u) = \Ex\,e^{-uT_1}$ \emph{is} Mathlib's moment generating function at a negative argument, and
+the library already carries every derivative of that on the interior of the set where the
+exponential moment converges --- which for a law on $[0,\infty)$ contains the whole negative
+axis. The dominated-convergence induction this looked like it needed was already in place. (The
+development had met the same coincidence once before, on the other transform: chapter 11
+identifies \texttt{negMomentC} with Mathlib's \texttt{complexMGF}.) What remains of the clause is
+the Fubini-and-Gamma computation, not the analysis.
 \textbf{$C_c^\infty((0,\infty))$ means support inside the open half-line}, not merely compact
 support in $\mathbb{R}$. The distinction is load-bearing rather than pedantic: it is exactly what
 kills the boundary term at the origin in the integrations by parts below, where the weight
