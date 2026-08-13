@@ -16,14 +16,14 @@ Blueprint: `def:locality-pmp` (12.1), and the (⇐) direction of `lem:local-poly
 
 ## The modelling choice
 
-`IsLocalOfOrder` is a **structure carrying the coefficients**, not a `Prop` asserting that some
+`IsLocalOfOrderCore` is a **structure carrying the coefficients**, not a `Prop` asserting that some
 differential expression exists. The reason is 12.2 itself, whose conclusion is a statement *about*
 the coefficients --- `c_j(x) = γ_j x^{j-1}`. Under the existential reading that conclusion cannot
 be stated: a caller would `obtain` coefficients and have no way to say they are the same ones it
 was given. As fields they are `hL.coeff j`, and the lemma says what the blueprint says.
 
 The cost is that locality is then data, so the direction proved here concludes
-`Nonempty (F.IsLocalOfOrder c n)` --- the propositional reading, and the one `thm:locality`
+`Nonempty (F.IsLocalOfOrderCore c n)` --- the propositional reading, and the one `thm:locality`
 quantifies over. A caller wanting the coefficients takes the structure instead.
 
 ## What the (⇐) direction actually is
@@ -45,8 +45,12 @@ namespace SelfDecomposableExponent
 
 variable (F : SelfDecomposableExponent)
 
-/-- **`def:locality-pmp`, the locality half.** `A` is *local of order `n`* at height `c`. -/
-structure IsLocalOfOrder (c : ℝ) (n : ℕ) where
+/-- **`def:locality-pmp`, the locality half, on test functions only.**
+
+The blueprint's Definition 12.1 tests agreement on `C_c^∞((0,∞))`, which is this. It is *not* the
+whole of the definition as chapter 12 now states it --- see `IsLocalOfOrder` below --- but it is
+what a polynomial symbol delivers cheaply, so it is worth having on its own. -/
+structure IsLocalOfOrderCore (c : ℝ) (n : ℕ) where
   /-- The coefficients `c_j` of the differential expression. -/
   coeff : ℕ → ℝ → ℂ
   /-- Each is continuous on the half-line. -/
@@ -56,6 +60,30 @@ structure IsLocalOfOrder (c : ℝ) (n : ℕ) where
   /-- Agreement with the differential expression, on the test class and on the half-line. -/
   eq_sum_iteratedDeriv : ∀ {g : ℝ → ℂ}, IsTestFunction g → ∀ {x : ℝ}, 0 < x →
     F.inversionOperator c g x = ∑ j ∈ Finset.range (n + 1), coeff j x * iteratedDeriv j g x
+
+/-- **`def:locality-pmp`, the locality half.** `A` is *local of order `n`* at height `c`: it agrees
+with the differential expression on the test functions **and on the profiles** `H(s·)`.
+
+**Why the profiles are in the test class.** Formalising the (⇒) direction showed that the
+blueprint's "Mellin-transforming on a line and using injectivity gives `B = P`" needs the two
+symbols compared where `B`'s behaviour is known, and the only such place is
+`lem:symbol-uniqueness`'s class --- the profiles. Locality tested on `C_c^∞((0,∞))` alone says
+nothing there, the profiles being neither compactly supported nor supported away from the origin,
+and passing from one class to the other is an approximation argument the article does not make.
+Widening the definition is the smaller change and makes 12.2 and `lem:symbol-uniqueness` speak
+about the same objects, which they otherwise do not.
+
+The two clauses are separated because they cost differently. The test-function clause is what
+`isLocalOfOrderCore_of_symbol_eq` supplies from a polynomial symbol; the profile clause is true
+for the same reason but by a different computation --- `∂ₓ^j H(sx) = ∫ (-st)^j e^{-sxt} dμ(t)`,
+then the Gamma-integral hinge of `lem:mellin-data` --- which needs differentiation under the
+integral sign `j` times and is not yet formalised. -/
+structure IsLocalOfOrder (c : ℝ) (n : ℕ) extends IsLocalOfOrderCore F c n where
+  /-- Agreement with the differential expression on the profiles as well. -/
+  eq_sum_iteratedDeriv_profile : ∀ {s : ℝ}, 0 < s → ∀ {x : ℝ}, 0 < x →
+    F.inversionOperator c (fun u : ℝ => (F.profile (s * u) : ℂ)) x
+      = ∑ j ∈ Finset.range (n + 1),
+          coeff j x * iteratedDeriv j (fun u : ℝ => (F.profile (s * u) : ℂ)) x
 
 /-- **`def:locality-pmp`, the maximum-principle half**, in its real-valued reading.
 
@@ -77,11 +105,11 @@ vertical decay, the inversion --- is a fact about test functions and needs nothi
 Where (H) does enter is in making the statement non-vacuous, since `0 < c < z_* - 1` is inhabited
 only when `z_* > 1`. That is a different role from being used in the proof, and the two are worth
 keeping apart. -/
-theorem isLocalOfOrder_of_symbol_eq {c : ℝ} (hc : 0 < c)
+theorem isLocalOfOrderCore_of_symbol_eq {c : ℝ} (hc : 0 < c)
     (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
     (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
-    Nonempty (F.IsLocalOfOrder c n) := by
+    Nonempty (F.IsLocalOfOrderCore c n) := by
   refine ⟨{ coeff := fun j x => γ j * (x : ℂ) ^ ((j : ℤ) - 1)
             continuousOn_coeff := ?_
             leading_ne_zero := ⟨1, one_pos, by simpa using hγ⟩
@@ -353,7 +381,7 @@ variable (F : SelfDecomposableExponent)
 
 This is what the blueprint's covariance argument delivers, and it is where the article's claim that
 the Mellin class *forces* the form `γ_j x^{j-1}` is discharged --- nothing is imposed. -/
-theorem coeff_eq_of_isLocalOfOrder {c : ℝ} {n : ℕ} (hL : F.IsLocalOfOrder c n) {m : ℕ}
+theorem coeff_eq_of_isLocalOfOrder {c : ℝ} {n : ℕ} (hL : F.IsLocalOfOrderCore c n) {m : ℕ}
     (hm : m ≤ n) {σ : ℝ} (hσ : 0 < σ) :
     hL.coeff m σ = hL.coeff m 1 * (σ : ℂ) ^ ((m : ℤ) - 1) := by
   obtain ⟨g, hg, hjet⟩ := exists_isTestFunction_jet (x₀ := (1 : ℝ)) one_pos m

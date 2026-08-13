@@ -532,8 +532,9 @@ which quantifies over the construction's kernels; nothing else, and in particula
 12's own cited interfaces.
 -/
 
+#print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrderCore
 #print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrder
-#print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrder_of_symbol_eq
+#print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrderCore_of_symbol_eq
 
 /-! ### Covariance of the inversion operator
 

@@ -40,11 +40,18 @@ canonical gauge, write $m(z) := \Ex[T_1^{-z}]$, and take $A$ and $B$ as in Chapt
 \begin{definition}[locality; positive maximum principle]\label{def:locality-pmp}
 \uses{def:inversion-operator}
 \lean{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder}\leanok
-The inversion operator $A$ is \emph{local of order $n$} if it agrees on
-$C_c^\infty((0,\infty))$ with a differential expression $\sum_{j=0}^{n} c_j(x)\,\partial_x^j$
-with $c_j \in C((0,\infty))$ and $c_n \not\equiv 0$. It satisfies the \emph{positive maximum
-principle} (PMP) if $(Ag)(x_0) \le 0$ whenever $g \in C_c^\infty((0,\infty))$ attains a
-nonnegative maximum at $x_0$.
+The inversion operator $A$ is \emph{local of order $n$} if it agrees with a differential
+expression $\sum_{j=0}^{n} c_j(x)\,\partial_x^j$, with $c_j \in C((0,\infty))$ and
+$c_n \not\equiv 0$, on $C_c^\infty((0,\infty))$ \emph{and on the profiles $H(s\,\cdot)$,
+$s > 0$}. It satisfies the \emph{positive maximum principle} (PMP) if $(Ag)(x_0) \le 0$ whenever
+$g \in C_c^\infty((0,\infty))$ attains a nonnegative maximum at $x_0$.
+
+\emph{The profiles were added to the test class after formalisation, and the reason is given in
+the proof of \ref{lem:local-polynomial-symbol}: without them that lemma's ($\Rightarrow$)
+direction cannot reach the symbol, because $C_c^\infty((0,\infty))$ is disjoint from the only
+class on which $B$'s behaviour is controlled. The maximum principle is left on
+$C_c^\infty((0,\infty))$, where it belongs --- a profile has no interior maximum and would say
+nothing.}
 \statusT\quad\emph{(\textbf{Formalised}, as
 \texttt{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder} and \texttt{SatisfiesPMP} in
 \texttt{LocalOperator.lean}. Three readings had to be fixed, and each is a choice rather
@@ -55,8 +62,16 @@ differential expression'' would make the coefficients inaccessible, and
 $c_j(x) = \gamma_j x^{j-1}$. As a structure with a \texttt{coeff} field the lemma says what it
 says here; as a \texttt{Prop} every use would re-obtain coefficients with no way to say they are
 the same ones. The price is that locality is then data, so the ($\Leftarrow$) direction of
-\ref{lem:local-polynomial-symbol} concludes \texttt{Nonempty (IsLocalOfOrder c n)} --- which is
-the propositional reading, and the one \ref{thm:locality} quantifies over.
+\ref{lem:local-polynomial-symbol} concludes \texttt{Nonempty (\ldots)} --- which is the
+propositional reading, and the one \ref{thm:locality} quantifies over.
+\textbf{The two clauses are separate structures, because they cost differently.}
+\texttt{IsLocalOfOrderCore} is the $C_c^\infty$ clause and is what a polynomial symbol supplies
+cheaply --- it is what \ref{lem:local-polynomial-symbol}'s ($\Leftarrow$) direction proves.
+\texttt{IsLocalOfOrder} extends it with the profile clause. That clause is true for the same
+reason, but by a different computation: $\partial_x^j H(sx) = \int (-st)^j e^{-sxt}\,\mu(dt)$,
+followed by the Gamma-integral hinge of \ref{lem:mellin-data}. It needs differentiation under the
+integral sign $j$ times, which chapter 11 never had occasion to set up, and is not yet
+formalised.
 \textbf{$C_c^\infty((0,\infty))$ means support inside the open half-line}, not merely compact
 support in $\mathbb{R}$. The distinction is load-bearing rather than pedantic: it is exactly what
 kills the boundary term at the origin in the integrations by parts below, where the weight
@@ -79,7 +94,7 @@ covariance built into the Mellin class forces the coefficients
   \;=\; \frac{1}{x}\,B(\theta).
 \]
 \statusT\quad\emph{(\textbf{One direction proved, one stated}, in two halves ---
-\texttt{isLocalOfOrder\_of\_symbol\_eq} and
+\texttt{isLocalOfOrderCore\_of\_symbol\_eq} and
 \texttt{exists\_symbol\_eq\_of\_isLocalOfOrder} --- since the two directions need different
 things and only one of them needs covariance.
 \textbf{($\Leftarrow$) is machine-checked}, as
