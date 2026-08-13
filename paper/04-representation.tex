@@ -1,6 +1,159 @@
-% §4 Convolution representation — draft §4 (lines 121–147), verbatim modulo LaTeX.
-% Blueprint part 04; shared labels: lem:convolution-representation, lem:transform-continuity.
+% §4 Convolution representation — statements and proofs verbatim from blueprint part 04
+% (the blueprint's Prokhorov-route proof of Lemma 4.1 supersedes the draft's weak-*
+% route; rem:wendel records both routes and is kept — it carries the forward pointer to
+% §9's Mellin construction). Lead sentence is new.
 
 \section{Convolution representation}\label{sec:representation}
 
-% [transcription pending]
+The first step of the derivation uses no covariance and no cascade: the axioms
+(A1)--(A5) alone force the measurement operators to be convolutions by probability
+measures on $[0,\infty)$ --- the apertures promised in \S\ref{sec:measurement}.
+
+% shared with blueprint lem:convolution-representation
+\begin{lemma}[representation]\label{lem:convolution-representation}
+Under (A1)--(A5), for each pair $0 \le x \le y$ there is a unique probability measure
+$\mu_{x,y}$ on $[0,\infty)$ with
+\[
+  \Phi_{x,y} f = \mu_{x,y} * f, \qquad f \in X,
+\]
+and conversely every such measure defines an operator satisfying (A1)--(A5).
+\end{lemma}
+
+\begin{proof}
+Fix $(x,y)$ with $0 \le x \le y$ and write $\Phi = \Phi_{x,y}$.
+
+\emph{Convolution as a vector-valued integral.} For $f \in L^1$ and $g \in X$,
+\[
+  f * g = \int_\RR f(r)\,\shift_r g\,dr
+\]
+as a Bochner integral \emph{in $X$}: the integrand is continuous in $r$, because translation
+acts continuously on $L^1$, and is dominated by $|f(r)|\,\|g\|_1$. An $X$-valued integral
+commutes with every bounded operator, so (A1) and (A2) give the interchange identity
+\[
+  \Phi(f * g) = f * \Phi g, \qquad f \in L^1,\ g \in X,
+\]
+which carries the whole proof. Everything below is a consequence of it; no other axiom enters
+except (A3)--(A5), each used once.
+
+\emph{The approximants.} Let $\rho_\varepsilon = \varepsilon^{-1} 1_{(0,\varepsilon)}$ and
+$h_\varepsilon := \Phi \rho_\varepsilon$. By (A4) and (A5), $h_\varepsilon \ge 0$ with
+$\int h_\varepsilon = 1$; by (A3) it vanishes a.e.\ on $(-\infty,0)$. So
+$\nu_\varepsilon := h_\varepsilon\,dt$ is a probability measure carried by $[0,\infty)$.
+
+\emph{Tightness.} By the interchange identity
+$\rho_1 * h_\varepsilon = \Phi(\rho_1 * \rho_\varepsilon)$, and
+$\rho_1 * \rho_\varepsilon \to \rho_1$ in $L^1$, so $\rho_1 * h_\varepsilon$ converges in $X$
+as $\varepsilon \downarrow 0$ --- and a convergent sequence in $L^1$ has uniformly small tails.
+Since $\rho_1 \ge 0$ is carried by $(0,1)$ and $h_\varepsilon \ge 0$, convolving can only move
+mass to the right:
+\[
+  \int_T^\infty h_\varepsilon \le \int_T^\infty \rho_1 * h_\varepsilon .
+\]
+Along $\varepsilon_n = 1/(n+1)$ the right tails of $\nu_{\varepsilon_n}$ are therefore small
+uniformly in $n$, and (A3) kills the left tail outright, so
+$\{\nu_{\varepsilon_n}\}$ is tight, with compacts $[0,T]$.
+
+\emph{The limit.} By Prokhorov's theorem some subsequence $\nu_{\varepsilon_{n_k}}$ converges
+weakly to a probability measure $\mu$; and $(-\infty,0)$ being open, the portmanteau theorem
+bounds $\mu((-\infty,0))$ by the lower limit of $\nu_{\varepsilon_{n_k}}((-\infty,0)) = 0$, so
+$\supp \mu \subseteq [0,\infty)$. Both the mass and the support clause are thus part of the
+extraction rather than separate arguments.
+
+\emph{Identification.} Let $\Psi \in X^*$ and $f \in X$. The map $r \mapsto \Psi(\shift_r f)$
+is continuous --- again because translation acts continuously on $L^1$ --- and bounded by
+$\|\Psi\|\,\|f\|_1$, so it is a legitimate test function for weak convergence. Reading
+$f * h_\varepsilon$ with $h_\varepsilon$ in the density slot and applying $\Psi$,
+\[
+  \Psi(f * h_\varepsilon) = \int_\RR \Psi(\shift_r f)\,\nu_\varepsilon(dr)
+  \xrightarrow{\ k \to \infty\ } \int_\RR \Psi(\shift_r f)\,\mu(dr) = \Psi(\mu * f),
+\]
+the last equality because $\mu * f = \int \shift_r f\,\mu(dr)$ is again an $X$-valued Bochner
+integral. On the other hand $f * h_\varepsilon = \Phi(f * \rho_\varepsilon) \to \Phi f$ in $X$,
+by the interchange identity and (A1). Hence $\Psi(\Phi f) = \Psi(\mu * f)$ for every
+$\Psi \in X^*$, and so $\Phi f = \mu * f$. Note that this holds for \emph{every} $f \in X$ at
+once: nothing in the display is pointwise, so no restriction to $C_c$ and no density step is
+needed.
+
+\emph{Uniqueness.} Take $f = 1_{(0,1)}$ and pair $\mu * f$ against
+$g_s(t) = e^{-s\max(t,0)}$, which is bounded on all of $\RR$ --- unlike $e^{-st}$ --- and
+agrees with $e^{-st}$ exactly where causal mass lives. For $r \ge 0$ one has
+$\langle g_s, f(\cdot - r)\rangle = e^{-sr}\langle g_s, f\rangle$, so Fubini collapses the
+pairing to
+\[
+  \langle g_s, \mu * f\rangle = \langle g_s, f\rangle\,\hat\mu(s),
+  \qquad \langle g_s, f\rangle \ge e^{-s} > 0 .
+\]
+So $\Phi$ determines $\hat\mu$ on $[0,\infty)$, and a finite measure on $[0,\infty)$ is
+determined by its Laplace transform (Proposition~\ref{prop:laplace-uniqueness}). One test
+function suffices; no separating family is needed.
+
+\emph{Converse.} A probability measure $\mu$ on $[0,\infty)$ makes $f \mapsto \mu * f$ bounded
+with norm $\le 1$ by Young's inequality (A1), translation-commuting because convolution is
+(A2), support-preserving on $[t_0,\infty)$ because $\supp\mu \subseteq [0,\infty)$ (A3),
+positive (A4), and mass-preserving by Tonelli (A5).
+\end{proof}
+
+% shared with blueprint lem:transform-continuity
+\begin{lemma}[continuity of transforms]\label{lem:transform-continuity}
+Under (A1)--(A5) and (A7), the function
+\[
+  g_{x,y}(s) := -\log \hat\mu_{x,y}(s) \in [0,\infty), \qquad s \ge 0,
+\]
+is well defined, and $(x,y) \mapsto g_{x,y}(s)$ is continuous on $\{0 \le x \le y\}$ for each
+$s \ge 0$; moreover $g_{x,y}(\zp) = 0$ and $s \mapsto g_{x,y}(s)$ is continuous on
+$[0,\infty)$.
+\end{lemma}
+
+\begin{proof}
+$\hat\mu(s) \in (0, 1]$ for a probability measure on $[0,\infty)$ and $s \ge 0$: positive
+because the integrand is, and at most $1$ because $e^{-st} \le 1$ where the mass sits. So $g$
+is well defined and nonnegative, and $g_{x,y}(0) = -\log 1 = 0$. Continuity of
+$s \mapsto \hat\mu(s)$ on $[0,\infty)$ is dominated convergence with the constant bound $1$ ---
+the same bound, and it is where causality is needed, since $e^{-st}$ is unbounded off
+$[0,\infty)$.
+
+For continuity in $(x,y)$, take $f = 1_{(0,1)}$ and pair against
+$g_s(t) = e^{-s\max(t,0)}$, the clamped exponential, which is bounded on all of $\RR$ --- so
+$g_s \in X^*$, which $e^{-st}$ is not --- and agrees with $e^{-st}$ where causal mass lives.
+The factorisation used for uniqueness in Lemma~\ref{lem:convolution-representation} reads
+\[
+  \langle g_s, \Phi_{x,y} f\rangle
+  = \langle g_s, \mu_{x,y} * f\rangle = \langle g_s, f\rangle\,\hat\mu_{x,y}(s),
+  \qquad \langle g_s, f\rangle \ge e^{-s} > 0 .
+\]
+The left side is a bounded functional applied to $\Phi_{x,y} f$, which is continuous in $(x,y)$
+on $\{0 \le x \le y\}$ by (A7); dividing by the constant $\langle g_s, f\rangle$ gives
+continuity of $\hat\mu_{x,y}(s)$, and composing with $-\log$, legitimate because the transform
+never vanishes, gives it for $g_{x,y}(s)$.
+\end{proof}
+
+% Verbatim from the blueprint's rem:wendel (remarks are not statement nodes); "Chapter 11"
+% adapted to the paper's section reference.
+\begin{remark}[what the representation is, and what it is not]\label{rem:wendel}
+Lemma~\ref{lem:convolution-representation} is the Wendel step
+(\sscite{wendel1952left}: the translation-invariant operators on $L^1$ of a group are exactly
+convolution by a measure), specialised to $\RR$ and sharpened by (A3)--(A5) to a probability
+measure carried by $[0,\infty)$. It is proved here rather than cited, so nothing in this
+section rests on the trust boundary.
+
+\emph{On the two routes.} The classical argument regards $h_\varepsilon\,dt$ as a bounded
+family in $M(\RR) = C_0(\RR)^*$ and extracts a weak-$*$ subnet by Banach--Alaoglu, recovering
+$\|\mu\| = 1$ from (A5) afterwards and reading the limit as a measure by Riesz--Markov. The
+proof given above instead makes the family \emph{tight} --- which costs one extra observation,
+that convolution with a density carried by $(0,1)$ only moves mass to the right --- and then
+Prokhorov returns a probability measure carried by $[0,\infty)$ outright. The mass and support
+clauses are then part of the extraction rather than separate arguments, no dual space appears,
+and the whole of §XIII's measure-representation apparatus is bypassed. The second route is
+what the formalisation follows; it is also, on paper, the shorter proof of the two.
+
+The identification step likewise has two forms. Testing against $C_0$ functions makes it
+pointwise, which forces the restriction to $f \in C_c$ and a density argument afterwards.
+Testing against $X^* = L^\infty$ makes it an identity in $X$, valid for every $f \in X$ at
+once, and the price is only that $f * g$ must be read as an $X$-valued Bochner integral --- which
+the proof needs anyway, for the interchange identity $\Phi(f * g) = f * \Phi g$.
+
+The multiplicative-group counterpart of this step, for the scale variable rather than time,
+is what \S\ref{sec:signaling} has to build by hand; there is no Wendel theorem to appeal to
+once the group is $(0,\infty)$ under multiplication and the operator is required only to be
+covariant.
+\end{remark}
