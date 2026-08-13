@@ -1,16 +1,571 @@
 % Appendix A — Memory kernels, Sonine conservation, and the scale-Cauchy problem
-% (Theorem 3'). Draft §§9–10 (lines 320–511) moved TOGETHER (NOTES-exposition Part 4:
-% a 21-node leaf block — no main-line theorem depends on it; §10 is built on §9, so
-% splitting them creates a cross-appendix reference for nothing). Lemma 9.1 is lifted
-% OUT (to §7's tail); X₀, T_r, 𝒟 are lifted out (to §3). Everything else stays, in
-% full, with proofs — this is the article's least-formalized region, so its proofs must
-% be printed (appendix yes, blueprint deferral no).
-% Contents: scale evolution in memory-kernel form (Prop 9.2), potential kernel, Sonine
-% conservation (Thm 9.5) and exact invertibility, pair regularity, the Volterra
-% derivation (Prop 9.8), literature (Rmk 9.11); then the delay core (Lemma 10.1), the
-% Phillips form, the scale-Cauchy problem (Thm 10.4 = Theorem 3'), fixed-scale
-% semigroups, the Gamma time-recursive form, and the recovery of 2005's Theorem 3.
+% (Theorem 3′). Draft §§9–10 moved together (NOTES-exposition Part 4); statements
+% verbatim from blueprint parts 09–10. Lifted OUT: lem:memory-kernel (→ §7's tail),
+% X₀/T_r/core (→ §3). Included splits: lem:memory-kernel-transform, lem:transform-ode,
+% lem:potential-kernel-scaling, prop:volterra-density. Skipped: prop:sonine-pair-exists
+% (a blueprint restatement node; its content is the three adjacent results).
+% Equation tags (9.1)/(9.2) are kept by hand for concordance with the blueprint and the
+% draft. Ledger references in proofs rendered as citations (A9 → SSV Thms 11.3/7.3/6.2,
+% A10 → Sato Thm 27.13, A11 → Phillips Thm 4.3 + Engel–Nagel Prop. II.1.7).
 
 \section{Memory kernels, Sonine conservation, and the scale-Cauchy problem}\label{sec:appendix-memory}
 
-% [transcription pending]
+The main line reads the representation (7.1) through its transforms; this appendix reads it
+through the memory kernel. Lemma~\ref{lem:memory-kernel} identified $F'$ as, up to the drift,
+the Laplace transform of the nonincreasing function $k$; here that identity becomes the
+evolution of the scale space across scale --- a general fractional relaxation equation whose
+kernel is $k$ itself, dilated to the current scale --- together with the Sonine conservation
+identity that makes each infinitesimal smoothing exactly invertible, a Volterra derivation of
+the kernels that requires no Laplace inversion, and finally the classical scale-Cauchy problem
+(Theorem~3$'$). Throughout we work in the canonical gauge, with the causal vocabulary of
+\S\ref{sec:preliminaries}.
+
+\subsection{Memory kernels, Sonine conservation, and a Volterra derivation}\label{sec:appendix-sonine}
+
+% shared with blueprint lem:memory-kernel-transform
+\begin{lemma}[the memory kernel's transform]\label{lem:memory-kernel-transform}
+For $x > 0$ define the locally finite measure
+\[
+  \kappa^{(x)}(dt) \;:=\; b_0\,\delta_0(dt) \;+\; \tfrac{1}{x}\,k\bigl(\tfrac{t}{x}\bigr)\,dt .
+\]
+Then $\partial_x F(xs) = s\,F'(xs) = s\,\widehat{\kappa^{(x)}}(s)$, so the symbol
+$\varphi_x(s) := s F'(xs)$ is $s$ times the transform of the memory kernel.
+\end{lemma}
+
+\begin{proof}
+The substitution $\tau = t/x$ in $F'(xs) = b_0 + \int_0^\infty e^{-xs\tau} k(\tau)\,d\tau$,
+which is Lemma~\ref{lem:memory-kernel} at $xs$, turns the integral into
+$\int_0^\infty e^{-st}\,\tfrac{1}{x}k(\tfrac{t}{x})\,dt$; the drift $b_0$ is the transform of
+$b_0\delta_0$, which is constant in $s$.
+\end{proof}
+
+% shared with blueprint lem:transform-ode
+\begin{lemma}[the transform equation]\label{lem:transform-ode}
+Let $(\Phi_{x,y})$ be as in Theorem~\ref{thm:main-characterization}, in the canonical gauge,
+let $f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f$. Then for each $s > 0$ the
+function $\hat u(s, x) = e^{-F(xs)}\hat f(s)$ is continuously differentiable in $x$, with
+\[
+  \partial_x \hat u(s, x) \;=\; -\,s\,F'(xs)\,\hat u(s, x).
+\]
+\end{lemma}
+
+\begin{proof}
+$F$ is smooth on $(0,\infty)$ by Proposition~\ref{prop:bernstein-toolbox}(3), so
+$x \mapsto e^{-F(xs)}$ is continuously differentiable there with derivative
+$-sF'(xs)e^{-F(xs)}$; multiply by the constant $\hat f(s)$.
+\end{proof}
+
+% shared with blueprint prop:scale-evolution
+\begin{proposition}[scale evolution in memory-kernel form]\label{prop:scale-evolution}
+Let $(\Phi_{x,y})$ be as in Theorem~\ref{thm:main-characterization}, in the canonical gauge,
+let $f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f = \mu_{0,x} * f$. Then, with the
+transform equation $\partial_x \hat u = -sF'(xs)\hat u$ of Lemma~\ref{lem:transform-ode} in
+hand: for each $x > 0$ the causal function $w(\cdot, x) := \kappa^{(x)} * u(\cdot, x)$ lies in
+$L^1_{\mathrm{loc}}$, and for all $0 \le a \le b$,
+\[
+  u(\cdot, b) - u(\cdot, a)
+  \;=\; -\,\partial_t \int_a^b \bigl(\kappa^{(x)} * u(\cdot, x)\bigr)\,dx
+  \qquad \text{in } \Distr(\RR).
+\]
+Differentiating in $x$, $u$ satisfies, in the distributional sense on
+$\RR_t \times (0,\infty)_x$ and with boundary value $u(\cdot, 0) = f$,
+\[
+  \partial_x u \;=\; -\,\partial_t\bigl(\kappa^{(x)} * u\bigr)
+  \;=\; -\,b_0\,\partial_t u
+  \;-\; \partial_t \int_0^t \tfrac{1}{x}\,k\bigl(\tfrac{t-r}{x}\bigr)\,u(r, x)\,dr .
+\]
+Since $u(\cdot, x)$ is causal, the outer $\partial_t$ may equivalently be moved onto $u$ inside
+the convolution: the Riemann--Liouville and Caputo forms of the operator coincide on this
+family.
+\end{proposition}
+
+\begin{proof}
+\emph{Local integrability.} For $T > 0$,
+\[
+  \int_0^T |w(t,x)|\,dt \le \kappa^{(x)}([0,T])\,\|u(\cdot,x)\|_1
+  \le \Bigl(b_0 + \int_0^{T/x} k\Bigr)\|f\|_1 < \infty,
+\]
+locally uniformly in $x > 0$; joint measurability follows from (A7). By Tonelli, for $s > 0$,
+$\hat w(s, x) = \widehat{\kappa^{(x)}}(s)\,\hat u(s, x) = F'(xs)\,\hat u(s, x)$.
+
+\emph{Integration in $x$.} Integrate Lemma~\ref{lem:transform-ode} over $x \in [a, b]$. The
+exchange of $\int_a^b dx$ with the Laplace integral is justified by Tonelli, since
+$\int_a^b s\,F'(xs)\,\|u(\cdot,x)\|_1\,dx \le \|f\|_1 \int_a^b s F'(xs)\,dx
+= \|f\|_1\bigl(F(bs) - F(as)\bigr) < \infty$, finite also for $a = 0$. This gives
+\[
+  \hat u(s, b) - \hat u(s, a) \;=\; -\,s \int_a^b \hat w(s, x)\,dx \;=\; -\,s\,\widehat{W}(s),
+  \qquad W := \int_a^b w(\cdot, x)\,dx,
+\]
+with $W \in L^1_{\mathrm{loc}}$ and causal.
+
+\emph{Inversion.} The causal, locally integrable function
+$V(t) := \int_0^t \bigl(u(r, b) - u(r, a)\bigr)\,dr + W(t)$ has Laplace transform
+$\bigl(\hat u(s,b) - \hat u(s,a)\bigr)/s + \widehat W(s) = 0$ for every $s > 0$, so $V = 0$
+a.e.\ by Proposition~\ref{prop:laplace-uniqueness}. That is the displayed identity. The final
+statement holds because $u(\cdot, x)$ vanishes on $(-\infty, 0)$, so no boundary term arises
+when moving $\partial_t$ through the convolution.
+\end{proof}
+
+% Verbatim from the blueprint's rem:general-fractional.
+\begin{remark}[reading: a general fractional relaxation equation]\label{rem:general-fractional}
+Proposition~\ref{prop:scale-evolution} is the memory-kernel form of the per-scale generator;
+Theorem~\ref{thm:scale-cauchy} below upgrades it to a classical scale-Cauchy problem
+$\partial_x u = -\varphi_x(\partial_t)u$ with $\varphi_x(s) = sF'(xs)$, on an explicit
+operator core. It identifies the scale evolution as a \emph{general fractional} relaxation
+equation in the sense of \sscite{kochubei2011general} and \sscite{luchko2021general}, with
+scale-dilated kernel; the case $k(t) = \alpha t^{-\alpha}/\Gamma(1-\alpha)$ recovers the
+fractional scale-Cauchy problem of \sscite{fagerstrom2005temporal}, Thm.~3.
+\end{remark}
+
+% shared with blueprint lem:potential-kernel
+\begin{lemma}[potential kernel]\label{lem:potential-kernel}
+For $x > 0$ set $\varphi_x(s) := s F'(xs)$. Then $\varphi_x$ is a nonzero Bernstein function,
+positive on $(0,\infty)$, and there is a unique positive, locally finite measure $\ell^{(x)}$
+on $[0,\infty)$ --- the \emph{potential kernel} --- with
+\[
+  \widehat{\ell^{(x)}}(s) \;=\; \frac{1}{\varphi_x(s)} \;=\; \frac{1}{s\,F'(xs)}, \qquad s > 0.
+\]
+\end{lemma}
+
+\begin{proof}
+With $B(s) := sF'(s) \in \BF \setminus \{0\}$ by
+Lemma~\ref{lem:selfdecomposable-exponents}(2), we have
+$\varphi_x(s) = B(xs)/x \in \BF \setminus \{0\}$, and $\varphi_x > 0$ on $(0,\infty)$ by
+Lemma~\ref{lem:vanishing}.
+
+For existence, \emph{construct} the measure rather than representing it. Since $\varphi_x$ is
+a Bernstein function without killing term it is the exponent of a subordinator: let
+$(\mu^{(x)}_\tau)_{\tau \ge 0}$ be its laws,
+$\widehat{\mu^{(x)}_\tau}(s) = e^{-\tau \varphi_x(s)}$, and set
+\[
+  \ell^{(x)} \;:=\; \int_0^\infty \mu^{(x)}_\tau \, d\tau,
+\]
+the subordinator's \emph{potential measure}. By Tonelli its transform is
+$\int_0^\infty e^{-\tau\varphi_x(s)}\,d\tau = 1/\varphi_x(s)$ for every $s > 0$, which is
+finite, so $\ell^{(x)}$ is locally finite; and uniqueness is uniqueness of the Laplace
+transform for locally finite measures whose transform converges somewhere
+(Proposition~\ref{prop:laplace-uniqueness}).
+
+Two remarks on this route. It uses no property of the $\CM$ class: neither
+$\CM \circ \BF \subseteq \CM$ nor Bernstein--Widder in its general form, both of which the
+obvious argument spends --- at the cost only of the existence of the subordinator, which
+Theorem~\ref{thm:main-characterization} has already used. And the integral
+$\int_0^\infty \mu^{(x)}_\tau\,d\tau$ is a measure only because
+$\tau \mapsto \mu^{(x)}_\tau$ is measurable, which is not automatic and is where the
+subordinator's increasing paths are actually used:
+$\mu^{(x)}_{\tau+\tau'} = \mu^{(x)}_\tau * \mu^{(x)}_{\tau'}$ with causality makes
+$\tau \mapsto \mu^{(x)}_\tau\bigl((-\infty, r]\bigr)$ nonincreasing, hence measurable, and a
+Dynkin argument on the generating $\pi$-system $\{(-\infty,r]\}$ extends this to every Borel
+set.
+\end{proof}
+
+% shared with blueprint lem:potential-kernel-scaling
+\begin{lemma}[the potential kernel scales]\label{lem:potential-kernel-scaling}
+For $x > 0$, $\ell^{(x)}$ is $x$ times the pushforward of $\ell^{(1)}$ under $t \mapsto xt$;
+in density form, $\ell^{(x)}(t) = \ell^{(1)}(t/x)$.
+\end{lemma}
+
+\begin{proof}
+Both measures are causal and locally finite, and their transforms agree on $(0,\infty)$:
+$\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$. Apply the uniqueness clause
+of Lemma~\ref{lem:potential-kernel}.
+\end{proof}
+
+% shared with blueprint thm:sonine-conservation
+\begin{theorem}[Sonine conservation]\label{thm:sonine-conservation}
+For every $x > 0$,
+\[
+  \kappa^{(x)} * \ell^{(x)} \;=\; \mathrm{Leb}_{[0,\infty)},
+  \qquad \text{i.e.} \qquad
+  \int_{[0,t]} \ell^{(x)}\bigl([0,\, t - r]\bigr)\,\kappa^{(x)}(dr) \;=\; t
+  \quad \text{for all } t \ge 0.
+\]
+\end{theorem}
+
+\begin{proof}
+Both sides are locally finite measures on $[0,\infty)$ with finite Laplace transforms, and
+those transforms agree:
+\[
+  \widehat{\kappa^{(x)}}(s)\,\widehat{\ell^{(x)}}(s)
+  = \frac{\varphi_x(s)}{s}\cdot\frac{1}{\varphi_x(s)} = \frac{1}{s}
+  = \widehat{\mathrm{Leb}}(s),
+\]
+using Lemma~\ref{lem:memory-kernel-transform} for the first factor and
+Lemma~\ref{lem:potential-kernel} for the second.
+Proposition~\ref{prop:laplace-uniqueness} concludes.
+\end{proof}
+
+Note the scaling structure: $\kappa^{(x)}$ dilates with $L^1$ normalization and $\ell^{(x)}$
+with sup normalization (Lemma~\ref{lem:potential-kernel-scaling}), and it is exactly this
+mismatch that renders the identity scale-invariant --- the pair $(\kappa^{(x)}, \ell^{(x)})$
+is itself scale-covariant.
+
+% shared with blueprint cor:exact-inversion
+\begin{corollary}[exact invertibility; conservation of information]\label{cor:exact-inversion}
+Define, on causal $v \in X$, the generalized derivative and integral
+\[
+  D^{(x)} v := \partial_t\bigl(\kappa^{(x)} * v\bigr), \qquad I^{(x)} v := \ell^{(x)} * v .
+\]
+Then $D^{(x)} I^{(x)} v = v$ in $\Distr$, hence a.e.
+\end{corollary}
+
+\begin{proof}
+By Theorem~\ref{thm:sonine-conservation} and associativity of convolution --- Tonelli on
+causal supports --- $\kappa^{(x)} * \ell^{(x)} * v = \mathrm{Leb} * v = \int_0^{\,\cdot} v(r)\,dr$,
+and $\partial_t \int_0^t v = v$.
+\end{proof}
+
+Corollary~\ref{cor:exact-inversion} is the conservation content of the axioms in Volterra
+form: the infinitesimal smoothing applied at each scale is exactly invertible, so no single
+step of the cascade destroys information --- it only redistributes it, consistently with
+(A5), which fixes the mass. Probabilistically, $\ell^{(x)}$ is the potential (renewal)
+measure of the subordinator with exponent $\varphi_x$, $\kappa^{(x)}$ is its
+drift-plus-Lévy-tail, and Theorem~\ref{thm:sonine-conservation} is the renewal identity
+balancing expected occupation against tail decay.
+
+% shared with blueprint prop:pair-regularity
+\begin{proposition}[regularity of the pair]\label{prop:pair-regularity}
+Modulo the drift atoms $b_0\delta_0$:
+\begin{enumerate}
+\item $\ell^{(x)}$ has the form $c\,\delta_0 + (\text{nonincreasing density})$, $c \ge 0$, if
+and only if $1/F'$ is a Bernstein function --- equivalently, $\varphi_x$ is a \emph{special}
+Bernstein function; by dilation invariance the condition does not depend on $x$.
+\item $\kappa^{(x)}$ has a completely monotone density iff $k$ is completely monotone, which
+holds iff $F'$ belongs to the Stieltjes class
+$\mathcal{S} := \bigl\{\,h(s) = \tfrac{a}{s} + b + \int_{(0,\infty)} \tfrac{\sigma(d\tau)}{s + \tau}\,\bigr\}$.
+In that case $\ell^{(x)}$ also has a drift-atom-plus-completely-monotone density, i.e.\
+$(\kappa^{(x)}, \ell^{(x)})$ is a classical Sonine pair of CM kernels; moreover $k$ completely
+monotone implies $F$ is a complete Bernstein function.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+(1) is the characterization of the potential measures of special subordinators
+(\sscite{schilling2012bernstein}, Thm.~11.3).
+
+(2) Dilation preserves complete monotonicity, so the first equivalence reduces to $k$. If $k$
+is completely monotone, $k(t) = \int e^{-\tau t}\,\sigma(d\tau)$ for a positive measure
+$\sigma$, and Lemma~\ref{lem:memory-kernel} gives
+$F'(s) = b_0 + \int \sigma(d\tau)/(s+\tau) \in \mathcal{S}$. Conversely, an
+$\mathcal{S}$-representation of $F'$ must have $a = 0$ --- an $a/s$ term corresponds to an
+additive constant in $k$, contradicting $\int_1^\infty k(t)t^{-1}dt < \infty$ --- and then
+$k(t) = \int e^{-\tau t}\sigma(d\tau)$ is completely monotone.
+
+For the second assertion, $1/h \in \CBF$ for $h \in \mathcal{S}\setminus\{0\}$
+(\sscite{schilling2012bernstein}, Thm.~7.3), so $g := 1/F'(x\,\cdot) \in \CBF$ and
+$\widehat{\ell^{(x)}}(s) = g(s)/s$. Writing the Lévy--Khintchine triple of $g$ as
+$(a_g, b_g, \nu_g)$, with completely monotone Lévy density because $g \in \CBF$
+(\sscite{schilling2012bernstein}, Thm.~6.2), gives
+$g(s)/s = \tfrac{a_g}{s} + b_g + \widehat{\bar\nu_g}(s)$, that is
+$\ell^{(x)} = b_g\,\delta_0 + \bigl(a_g + \bar\nu_g(t)\bigr)\,dt$; and
+$a_g + \bar\nu_g(t) = a_g + \int_t^\infty(\text{completely monotone})$ is completely
+monotone.
+
+Finally, $k$ completely monotone implies the Lévy density $k(t)/t$ of $F$ is completely
+monotone, being a product of completely monotone functions, hence $F \in \CBF$
+(\sscite{schilling2012bernstein}, Thm.~6.2).
+\end{proof}
+
+Part (2) delineates exactly where the classical Sonine calculus with completely monotone
+kernel pairs --- the standing hypothesis of most of the general-fractional-calculus
+literature --- applies: on the complete-Bernstein subfamily, which \S\ref{sec:locality}
+identifies with the locality corner of the memory-line realization. For general admissible
+$F$ the pair, and Theorem~\ref{thm:sonine-conservation}, live at the level of measures.
+
+% shared with blueprint prop:volterra
+\begin{proposition}[Volterra equation for the kernels]\label{prop:volterra}
+Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. Then, as measures on
+$[0,\infty)$,
+\[
+  t\,\mu_x(dt) \;=\; \bigl(\theta_x * \mu_x\bigr)(dt),
+  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt, \tag{9.1}
+\]
+and $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
+\end{proposition}
+
+\begin{proof}
+\emph{The identity (9.1).} Taking Laplace transforms,
+$\Lap[t\,\mu_x](s) = -\tfrac{d}{ds} e^{-F(xs)} = x F'(xs)\, e^{-F(xs)}$, while by
+Lemma~\ref{lem:memory-kernel} with the substitution $\tau = t/x$,
+$\widehat{\theta_x}(s) = b_0 x + \int_0^\infty e^{-st} k(t/x)\,dt = x F'(xs)$. So both sides
+of (9.1) have the finite transform $x F'(xs)e^{-F(xs)}$ and coincide by
+Proposition~\ref{prop:laplace-uniqueness}.
+
+\emph{Uniqueness.} If $\nu$ is a probability measure on $[0,\infty)$ with
+$t\,\nu(dt) = \theta_x * \nu$, then $\hat\nu$ is differentiable on $(0,\infty)$ with
+$-\hat\nu'(s) = \Lap[t\nu](s) = xF'(xs)\,\hat\nu(s)$. Solving this linear ODE with
+$\hat\nu(\zp) = 1$ gives $\hat\nu(s) = e^{-F(xs)}$, hence $\nu = \mu_x$.
+\end{proof}
+
+% shared with blueprint prop:volterra-density
+\begin{proposition}[the Volterra equation for the density]\label{prop:volterra-density}
+Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. If $k \not\equiv 0$ then
+$\mu_x$ is absolutely continuous, and its density $\phi_x$ solves the linear Volterra
+equation of the second kind
+\[
+  \bigl(t - b_0 x\bigr)\,\phi_x(t)
+  \;=\; \int_0^t k\bigl(\tfrac{u}{x}\bigr)\,\phi_x(t - u)\,du
+  \qquad \text{for a.e.\ } t > 0. \tag{9.2}
+\]
+\end{proposition}
+
+\begin{proof}
+When $k \not\equiv 0$, $\mu_x$ is a nondegenerate self-decomposable law by
+Remark~\ref{rem:sato-reading}, hence absolutely continuous (\sscite{sato1999levy},
+Thm.~27.13). Restricting the identity (9.1) of Proposition~\ref{prop:volterra} to densities
+yields (9.2).
+\end{proof}
+
+Equation (9.2) is the constructive counterpart of the inverse Laplace transform in
+Theorem~\ref{thm:main-characterization}: the kernels are \emph{derived} from the memory
+kernel $k$ by Volterra integration. Note the role of the axioms in closing the derivation.
+Equation (9.2) is linear and homogeneous, so it determines $\phi_x$ only up to a
+multiplicative constant --- it is the unit-area axiom (A5) that selects the solution.
+Positivity of that solution is manifest from Picard iteration, all of whose terms are
+nonnegative.
+
+% Verbatim from the blueprint's ex:gamma-volterra.
+\begin{example}[verification: the Gamma family]\label{ex:gamma-volterra}
+For $F(s) = \gamma\log(1+s)$ we have $b_0 = 0$, $k(u) = \gamma e^{-u}$, and
+$\phi_x(t) = t^{\gamma-1}e^{-t/x}/(\Gamma(\gamma)x^\gamma)$ by
+Proposition~\ref{prop:gamma-kernels}. Indeed, since $e^{-u/x}e^{-(t-u)/x} = e^{-t/x}$,
+\[
+  \int_0^t \gamma e^{-u/x}\,\frac{(t-u)^{\gamma-1} e^{-(t-u)/x}}{\Gamma(\gamma)\,x^{\gamma}}\,du
+  \;=\; \frac{\gamma\, e^{-t/x}}{\Gamma(\gamma)\,x^{\gamma}} \cdot \frac{t^{\gamma}}{\gamma}
+  \;=\; t\,\phi_x(t),
+\]
+which is (9.2) for this family, as required.
+\end{example}
+
+% Verbatim from the blueprint's rem:volterra-computation.
+\begin{remark}[computation; relation to the 2005 series]\label{rem:volterra-computation}
+For $F(s) = s^\alpha$, i.e.\ $k(u) = \alpha u^{-\alpha}/\Gamma(1-\alpha)$, Picard iteration of
+(9.2) regenerates term by term the series expansion following Theorem~2 of
+\sscite{fagerstrom2005temporal}; the Volterra route thus contains the original series as its
+homogeneous special case. Numerically, (9.2) is a weakly singular Volterra equation of the
+second kind, amenable to standard product-integration quadrature, and it provides an
+inversion-free forward scheme for the kernels for arbitrary admissible $k$.
+\end{remark}
+
+% Verbatim from the blueprint's rem:sonine-literature.
+\begin{remark}[literature]\label{rem:sonine-literature}
+Kernel pairs satisfying $\kappa * \ell \equiv 1$ go back to \sscite{sonine1884sur}; the
+operator calculus built on them is the general fractional calculus of
+\sscite{kochubei2011general} and \sscite{luchko2021general}, usually developed under
+completely monotone or Sonine-class kernel hypotheses, which by
+Proposition~\ref{prop:pair-regularity}(2) delineate the complete-Bernstein subfamily. In
+Volterra-equation theory the kernels $\kappa^{(x)}$ are the \emph{completely positive}
+kernels of \sscite{clement1981asymptotic}; the resolvent theory of
+\sscite{pruss1993evolutionary} then yields well-posedness and positivity of the evolution in
+Proposition~\ref{prop:scale-evolution} by purely deterministic arguments. The integral
+equation (9.1) is the classical characterization of infinitely divisible laws on the
+half-line of \sscite{steutel2004infinite}.
+\end{remark}
+
+\subsection{The scale-Cauchy problem: Theorem 3$'$}\label{sec:appendix-cauchy}
+
+This subsection upgrades Proposition~\ref{prop:scale-evolution} from a distributional
+identity to a classical Cauchy problem in the scale variable, on the explicit operator core
+$\core$ of \S\ref{sec:preliminaries}.
+
+% shared with blueprint lem:delay-core
+\begin{lemma}[delay derivative]\label{lem:delay-core}
+$\core$ is dense in $\Xz$ and invariant under every $T_r$ and every $\Phi_{x,y}$, and for
+$f \in \core$,
+\[
+  \lim_{h \downarrow 0} \tfrac{1}{h}\bigl(T_h f - f\bigr) = -\,f' \quad \text{in } \Xz,
+  \qquad
+  \bigl\|T_r f - f\bigr\|_1 \le \min\bigl(2\|f\|_1,\ r\,\|f'\|_1\bigr).
+\]
+\end{lemma}
+
+\begin{proof}
+Density is standard.
+
+\emph{Invariance under $T_r$.} $T_r f$ is absolutely continuous, vanishes on $[0, r]$, and
+$(T_r f)' = T_r f'$.
+
+\emph{Invariance under $\Phi_{x,y} = \mu_{x,y} * \cdot$.} From
+$f = \mathbf{1}_{[0,\infty)} * f'$ we get $\mu * f = \mathbf{1}_{[0,\infty)} * (\mu * f')$,
+so $\mu * f$ is absolutely continuous with derivative $\mu * f' \in \Xz$ and value $0$ at
+$0$.
+
+\emph{The limit.} On $[h, \infty)$,
+$\tfrac{1}{h}(f(t-h) - f(t)) + f'(t) = -\tfrac{1}{h}\int_{t-h}^{t}\bigl(f'(\rho) - f'(t)\bigr)d\rho$,
+whose $L^1$-norm tends to $0$ by continuity of translation in $L^1$; on $[0, h)$ the
+contribution is
+$\tfrac{1}{h}\int_0^h |f| + \int_0^h |f'| \le \sup_{[0,h]}|f| + o(1) \to |f(0)| = 0$.
+
+\emph{The estimate.} $T_r f - f = -\int_0^r T_\rho f'\,d\rho$ as a Bochner integral --- the
+integrated form of the limit --- together with $\|T_\rho f'\|_1 = \|f'\|_1$ and the trivial
+bound $\|T_rf - f\|_1 \le 2\|f\|_1$.
+\end{proof}
+
+% shared with blueprint def:phillips-generator
+\begin{definition}[per-scale generator; Phillips form]\label{def:phillips-generator}
+Let $\nu_1$ be the Lebesgue--Stieltjes measure $-dk$ on $(0,\infty)$, with $k$ taken
+right-continuous and $k(\infty) = 0$, so that $\nu_1\bigl((r,\infty)\bigr) = k(r)$; and for
+$x > 0$ put $\nu_x := x^{-1}$ times the pushforward of $\nu_1$ under $r \mapsto xr$, i.e.\
+$\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
+\[
+  \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - T_r f\bigr)\,\nu_x(dr)
+  \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - T_{xr} f\bigr)\,\nu_1(dr).
+\]
+\end{definition}
+
+% shared with blueprint lem:generator-properties
+\begin{lemma}[properties of the generator]\label{lem:generator-properties}
+For $f \in \core$ and $x > 0$:
+\begin{enumerate}
+\item The integral converges absolutely in $\Xz$, with
+$\|\varphi_x(\partial_t) f\|_1 \le b_0 \|f'\|_1 + \int_0^\infty \min\bigl(2\|f\|_1,\, xr\,\|f'\|_1\bigr)\,x^{-1}\nu_1(dr) < \infty$.
+\item $\Lap\bigl[\varphi_x(\partial_t) f\bigr](s) = \varphi_x(s)\,\hat f(s)$ for $s > 0$, where
+$\varphi_x(s) = s F'(xs)$.
+\item $\varphi_x(\partial_t)$ commutes with every $\Phi_{y,z}$ on $\core$.
+\item $x \mapsto \varphi_x(\partial_t) f$ is continuous from $(0,\infty)$ to $\Xz$.
+\item $\kappa^{(x)} * f$ is a.e.\ equal to an absolutely continuous function with
+$\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
+coincides on $\core$ with the memory-kernel operator of \S\ref{sec:appendix-sonine}.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) Combine Lemma~\ref{lem:delay-core} with $\int (1 \wedge r)\,\nu_x(dr) < \infty$, which
+follows from $\int_0^1 k < \infty$ and $k(1) < \infty$ by integration by parts.
+
+(2) Termwise: $\Lap[f'] = s\hat f$, using $f(0) = 0$, and
+$\Lap[f - T_rf] = (1 - e^{-sr})\hat f$. Fubini is justified by (1), and
+$b_0 s + \int(1 - e^{-sr})\nu_x(dr) = \varphi_x(s)$ by Lemma~\ref{lem:memory-kernel} --- the
+two Bernstein representations of $\varphi_x$ agree.
+
+(3) Convolutions commute; pull $\Phi_{y,z}$ through the Bochner integral.
+
+(4) In the dilated form of Definition~\ref{def:phillips-generator} the integrand
+$\tfrac1x(f - T_{xr}f)$ is, for $x$ in a compact subset of $(0,\infty)$, continuous in $x$
+for each $r$ by strong continuity of $T$, and dominated by $C\min(\|f\|_1,\, r\|f'\|_1)$,
+which is $\nu_1$-integrable. Apply dominated convergence; the drift term is trivial.
+
+(5) Both $\varphi_x(\partial_t)f \in L^1$ and $\kappa^{(x)} * f \in L^1_{\mathrm{loc}}$ are
+causal with finite Laplace transforms. By (2) and Lemma~\ref{lem:memory-kernel} the causal
+function
+$V(t) := \int_0^t \bigl(\varphi_x(\partial_t)f\bigr)(\rho)\,d\rho - (\kappa^{(x)} * f)(t)$
+has transform $\varphi_x(s)\hat f(s)/s - F'(xs)\hat f(s) = 0$ for all $s > 0$, so $V = 0$
+a.e.\ by Proposition~\ref{prop:laplace-uniqueness}. That is the claim; the value
+$(\kappa^{(x)}*f)(\zp) = 0$ follows from $\kappa^{(x)}([0,t]) \to b_0$ and
+$\sup_{[0,t]}|f| \to 0$.
+\end{proof}
+
+% shared with blueprint thm:scale-cauchy
+\begin{theorem}[Theorem 3$'$: the scale-Cauchy problem]\label{thm:scale-cauchy}
+Let $(\Phi_{x,y})$ be as in Theorem~\ref{thm:main-characterization}, in the canonical gauge,
+and let $f \in \core$. Set $u(\cdot, x) := \Phi_{0,x} f$. Then:
+\begin{enumerate}
+\item $u(\cdot, x) \in \core$ for every $x \ge 0$;
+\item $x \mapsto u(\cdot, x)$ belongs to
+$C\bigl([0,\infty); \Xz\bigr) \cap C^1\bigl((0,\infty); \Xz\bigr)$ and satisfies
+\[
+  \partial_x u(\cdot, x) \;=\; -\,\varphi_x(\partial_t)\,u(\cdot, x) \quad (x > 0),
+  \qquad u(\cdot, 0) = f,
+\]
+with $\partial_x$ a norm-derivative in $\Xz$;
+\item $u$ is the \emph{unique} solution in the class of
+$v \in C([0,\infty); \Xz) \cap C^1((0,\infty); \Xz)$ with $v(\cdot, x) \in \core$ for
+$x > 0$, satisfying the equation for $x > 0$ and $v(\cdot, 0) = f$.
+\end{enumerate}
+\end{theorem}
+
+\begin{proof}
+(1) is the $\Phi$-invariance of $\core$ (Lemma~\ref{lem:delay-core}), and continuity at every
+$x \ge 0$ is (A7).
+
+(2) Write $v(\cdot, x) := \varphi_x(\partial_t)\, u(\cdot, x)$. By
+Lemma~\ref{lem:generator-properties}(3), $v(\cdot, x) = \Phi_{0,x}\,\varphi_x(\partial_t) f$,
+so by Lemma~\ref{lem:generator-properties}(4), contractivity of $\Phi_{0,x}$, and (A7),
+\[
+  \|v(\cdot,x) - v(\cdot,x')\|_1
+  \;\le\; \bigl\|\varphi_x(\partial_t)f - \varphi_{x'}(\partial_t)f\bigr\|_1
+  + \bigl\|(\Phi_{0,x} - \Phi_{0,x'})\,\varphi_{x'}(\partial_t)f\bigr\|_1
+  \;\longrightarrow\; 0,
+\]
+so $x \mapsto v(\cdot, x)$ is continuous from $(0,\infty)$ to $\Xz$.
+
+By Lemma~\ref{lem:generator-properties}(5) applied to $u(\cdot,x) \in \core$, each
+$\kappa^{(x)} * u(\cdot, x)$ is absolutely continuous with derivative $v(\cdot, x)$,
+vanishing at $0$; hence for $0 < a \le b$, Fubini gives
+\[
+  \int_a^b \bigl(\kappa^{(x)} * u(\cdot, x)\bigr)(t)\,dx
+  \;=\; \int_0^t \int_a^b v(\rho, x)\,dx\,d\rho ,
+\]
+so the distributional $\partial_t$ in Proposition~\ref{prop:scale-evolution} evaluates to the
+Bochner integral $\int_a^b v(\cdot, x)\,dx$:
+\[
+  u(\cdot, b) - u(\cdot, a) \;=\; -\int_a^b v(\cdot, x)\,dx .
+\]
+Since the integrand is continuous in $x$, the fundamental theorem of calculus for Bochner
+integrals yields $u \in C^1((0,\infty); \Xz)$ with $\partial_x u = -v$, which is the
+equation.
+
+(3) Let $v$ be any solution in the stated class and fix $s > 0$. Then
+$\eta(x) := \hat v(s, x)$ is continuous on $[0,\infty)$ and $C^1$ on $(0,\infty)$, with
+\[
+  \eta'(x) = \Lap[\partial_x v](s) = -\Lap[\varphi_x(\partial_t) v](s) = -\varphi_x(s)\,\eta(x)
+\]
+by Lemma~\ref{lem:generator-properties}(2); differentiation and $\Lap$ exchange because
+$|\hat g(s)| \le \|g\|_1$. Solving this scalar linear ODE on $[\varepsilon, x]$ and letting
+$\varepsilon \downarrow 0$, using continuity at $0$, gives $\eta(x) = \hat f(s)\, e^{-F(xs)}$.
+Thus $\hat v(s, x) = \hat u(s, x)$ for all $s > 0$, and $v = u$ by
+Proposition~\ref{prop:laplace-uniqueness}.
+\end{proof}
+
+% shared with blueprint prop:fixed-scale-semigroup
+\begin{proposition}[fixed-scale semigroups; core property]\label{prop:fixed-scale-semigroup}
+For fixed $x > 0$, the operator $-\varphi_x(\partial_t)$ with domain $\core$ is closable, and
+its closure generates the strongly continuous contraction semigroup on $\Xz$ of convolutions
+by the probability measures with Laplace transforms $e^{-\tau \varphi_x(s)}$, $\tau \ge 0$
+--- the semigroup subordinate to the delay semigroup via $\varphi_x$. Moreover $\core$ is a
+core for that generator.
+\end{proposition}
+
+\begin{proof}
+$\varphi_x$ is a Bernstein function without killing term by
+Lemma~\ref{lem:potential-kernel}, so Phillips' subordination theorem
+(\sscite{phillips1952generation}, Thm.~4.3) applies to the delay semigroup, whose generator
+extends $f \mapsto -f'$ on $\core$ (Lemma~\ref{lem:delay-core}): the subordinate generator is
+the closure of the Phillips form on the generator's domain. That $\core$ is a core follows
+from the core criterion (\sscite{engel2000one}, Prop.~II.1.7), since $\core$ is dense and
+invariant under the subordinate semigroup, which consists of convolutions
+(Lemma~\ref{lem:delay-core}). Note that Theorem~\ref{thm:scale-cauchy} does \emph{not} use
+this proposition --- the Cauchy problem is solved by a scalar ODE, not by generation theory
+--- so this result adds a reading rather than a dependency.
+\end{proof}
+
+% shared with blueprint ex:gamma-recursive
+\begin{example}[the Gamma family: time-recursive form]\label{ex:gamma-recursive}
+For $F(s) = \gamma\log(1+s)$ we have $\nu_x(d\rho) = \gamma x^{-2} e^{-\rho/x}\,d\rho$, an
+exponential memory, and $\varphi_x(s) = \gamma s/(1 + xs)$, so
+\[
+  \varphi_x(\partial_t)\,u \;=\; \gamma\,\partial_t\bigl(1 + x\,\partial_t\bigr)^{-1} u
+  \;=\; \gamma\, w', \qquad \text{where } w \text{ solves } w + x\,w' = u,\ \ w(0) = 0 .
+\]
+The auxiliary variable $w$ is computed by one causal first-order ODE, so the scale step is
+realized by a single recursive low-pass filter --- the strongest possible form of the
+time-recursivity requirement of \sscite{fagerstrom2005temporal}, \S5: the observer embodies
+its past in one first-order state per scale.
+\end{example}
+
+% Verbatim from the blueprint's rem:recovering-thm3.
+\begin{remark}[recovering Theorem 3 of 2005]\label{rem:recovering-thm3}
+For $F(s) = s^\alpha$ with $0 < \alpha < 1$ we have
+$\nu_x\bigl((\rho,\infty)\bigr) = \alpha x^{\alpha-1}\rho^{-\alpha}/\Gamma(1-\alpha)$ and
+$b_0 = 0$, so $\varphi_x(\partial_t) = \alpha x^{\alpha - 1} D^{\alpha}_{t,+}$ with
+$D^{\alpha}_{t,+}$ the Riemann--Liouville/Marchaud derivative, and
+Theorem~\ref{thm:scale-cauchy} reads
+$\partial_x u = -\alpha x^{\alpha-1} D^{\alpha}_{t,+} u$. Under the reparametrization
+$\tau := x^{\alpha}$ this is exactly
+\[
+  \partial_\tau u \;=\; -\,D^{\alpha}_{t,+}\, u,
+\]
+Theorem~3 of \sscite{fagerstrom2005temporal} verbatim --- identifying the scale parameter
+$\tau$ of that paper as the $\alpha$-gauge of Remark~\ref{rem:gauge-freedom} applied to the
+canonical scale coordinate.
+\end{remark}
