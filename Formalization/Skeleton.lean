@@ -5,7 +5,6 @@ Authors: Daniel Fagerström
 -/
 import Skeleton.Chapter9
 import Skeleton.Chapter11
-import Skeleton.Chapter12
 
 /-!
 # The skeleton library
@@ -14,10 +13,12 @@ import Skeleton.Chapter12
 proof, so that the node can carry a `\lean{...}\notready` tag rather than no tag at all. See the
 comment in `lakefile.toml` for why they sit outside `Hemigroup` and what that buys.
 
-A declaration **moves** into `Hemigroup/` when it is proved, and its node goes `\leanok`. All
-three entries this library has carried left that way: `thm:increments-bernstein` to
+A declaration **moves** into `Hemigroup/` when it is proved, and its node goes `\leanok`. Every
+entry this library has carried has left that way: `thm:increments-bernstein` to
 `Hemigroup/LevyTriple.lean`, `lem:action-rigidity` and `prop:canonical-gauge` to
-`Hemigroup/Covariance.lean` and `Hemigroup/Gauge.lean`, and `thm:main-analysis` to
-`Hemigroup/MainAnalysis.lean` once ledger A18 was taken. The next `[T]` node attacked starts
+`Hemigroup/Covariance.lean` and `Hemigroup/Gauge.lean`, `thm:main-analysis` to
+`Hemigroup/MainAnalysis.lean` once ledger A18 was taken, and chapter 12's
+`lem:local-polynomial-symbol` to `Hemigroup/ProfileEuler.lean` --- which emptied
+`Skeleton/Chapter12.lean` entirely, so that file is gone. The next `[T]` node attacked starts
 here again.
 -/

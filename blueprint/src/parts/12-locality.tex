@@ -77,8 +77,13 @@ the library already carries every derivative of that on the interior of the set 
 exponential moment converges --- which for a law on $[0,\infty)$ contains the whole negative
 axis. The dominated-convergence induction this looked like it needed was already in place. (The
 development had met the same coincidence once before, on the other transform: chapter 11
-identifies \texttt{negMomentC} with Mathlib's \texttt{complexMGF}.) What remains of the clause is
-the Fubini-and-Gamma computation, not the analysis.
+identifies \texttt{negMomentC} with Mathlib's \texttt{complexMGF}.) \textbf{And the
+Fubini-and-Gamma computation that remained is now done too}, as
+\texttt{mellin\_pow\_mul\_iteratedDeriv\_profile}: it cost no new analysis either, because
+$x \mapsto \int t^j e^{-xt}\mu(dt)$ is the Laplace transform of $t^j\mu(dt)$ and
+\ref{lem:mellin-data} --- restated for a measure carried by $(0,\infty)$, which is all its proofs
+used --- applies to it unchanged. Both clauses of this definition are therefore now backed by
+proved computations rather than by expectation.
 \textbf{$C_c^\infty((0,\infty))$ means support inside the open half-line}, not merely compact
 support in $\mathbb{R}$. The distinction is load-bearing rather than pedantic: it is exactly what
 kills the boundary term at the origin in the integrations by parts below, where the weight
@@ -92,7 +97,7 @@ proving that $A$ preserves realness, and therefore the safer of the two.)}
 % draft: Lemma 12.2
 \begin{lemma}[covariant local = polynomial symbol]\label{lem:local-polynomial-symbol}
 \uses{def:locality-pmp,def:inversion-operator,lem:mellin-data}
-\lean{Hemigroup.SelfDecomposableExponent.exists_symbol_eq_of_isLocalOfOrder}\notready
+\lean{Hemigroup.SelfDecomposableExponent.exists_symbol_eq_of_isLocalOfOrder}\leanok
 $A$ is local of order $n$ if and only if $B$ is a polynomial of degree $n$; in that case the
 covariance built into the Mellin class forces the coefficients
 \[
@@ -144,11 +149,11 @@ outer radius $x_0/2$, so that its support sits inside $(0,\infty)$ --- the same 
 integrations by parts need, arrived at from the other side. Feeding one such jet into both
 readings of $A\Delta_\sigma g$ at the point $\sigma$ collapses both sums to a single term; and
 since $x = \sigma$ sends $x/\sigma$ to $1$, a single jet at $1$ settles every $\sigma$ at once.
-\textbf{What is left of this node is one clause, and formalising showed that the proof above
-skips a step.} The clause is that the symbol is then the corresponding polynomial, which the proof
-gets by ``Mellin-transforming on a line and using injectivity''. What the argument actually
+\textbf{The remaining clause is now machine-checked, and formalising it showed that the proof
+above skips a step.} The clause is that the symbol is then the corresponding polynomial, which
+the proof gets by ``Mellin-transforming on a line and using injectivity''. What that argument
 delivers is that $B\tilde g$ and $P\tilde g$ have the same inverse transform for every
-\emph{test function} $g$. Two things separate that from $B = P$. The first is routine: concluding
+\emph{test function} $g$. Two things separate it from $B = P$. The first is routine: concluding
 equality of the symbols needs the forward-after-inverse direction of Mellin inversion, which
 Mathlib lacks (it has the Fourier analogue, and the two are bridged by its own
 \texttt{mellin\_eq\_fourier}). The second is not routine. $P\tilde g$ is vertically integrable,
@@ -158,8 +163,45 @@ $B = \tilde H(z{+}1)/\tilde H(z)$ carrying no growth bound --- which is precisel
 comparison has to be routed through the class where $B$'s behaviour is known, namely the profiles
 $H(s\,\cdot)$ of \ref{lem:symbol-uniqueness}, and those are \emph{not} test functions: they are
 neither compactly supported nor supported away from the origin. Passing from one class to the
-other is an approximation argument, and it is not made above. Recording it is not a formalisation
-detail --- the printed proof needs it too.)}
+other is an approximation argument, and it is not made above. That is why \ref{def:locality-pmp}
+now tests locality on the profiles as well, and the correction is not a formalisation detail ---
+the printed proof needs it too, and the proof below is written the corrected way.
+\textbf{The route on the profiles needs no integration by parts.} The engine above,
+$\mathcal{M}[x^j g^{(j)}](w) = E_j(w)\tilde g(w)$, was proved for test functions by $j$
+integrations by parts; on the profiles the boundary terms would have to be argued, and they do
+not have to be, because $\partial_x^j H(sx) = (-s)^j\int t^j e^{-sxt}\,\mu(dt)$ turns the
+derivative into an integral before the transform is taken. What is then left is three moves and
+no estimate: the weight $x^j$ is a Mellin shift, so it never enters a Fubini; the dilation is a
+factor; and $x \mapsto \int t^j e^{-xt}\,\mu(dt)$ is the Laplace transform of the \emph{weighted}
+measure $t^j\mu(dt)$, so \ref{lem:mellin-data} applies to it verbatim. Nothing in that lemma had
+to be restated for a weight --- its three steps are now stated for a measure carried by
+$(0,\infty)$ with a finite negative moment, which is all their proofs ever used. The bookkeeping
+$E_j(w) = (-1)^j\Gamma(w+j)/\Gamma(w)$ is the functional equation $j$ times.
+\textbf{``$B = P$ on the strip'' has to say which equality it means, and the answer is not the
+pointwise one.} What the argument delivers at every point of the strip, with no side condition, is
+the \emph{recursion} $\tilde H(z+1) = P(z)\tilde H(z)$; $B$ is that identity divided by
+$\tilde H(z)$. Where $\tilde H$ vanishes the division is not available, and in Lean the quotient
+$\tilde H(z+1)/0$ takes the junk value $0$ while $P(z)$ is a polynomial value --- so the
+unconditional pointwise reading is false as stated. Three statements are therefore proved, and
+they are genuinely different: the recursion, unconditionally (which is what
+\ref{lem:moment-recursion} consumes, its clause (2) arguing from the identity between analytic
+functions and never from a value of $B$); $B = P$ as meromorphic functions, unconditionally,
+which is \ref{lem:symbol-rigidity}'s \texttt{EventuallyEq}; and $B(z) = P(z)$ as values, exactly
+off the zeros of $\tilde H$. Nothing available rules those zeros out: $\tilde H = \Gamma\cdot m$
+is known nonzero only at the \emph{real} points of the strip (\ref{lem:inversion-symbol}), which
+is all chapter~11 needed, and excluding complex zeros would be a theorem about self-decomposable
+laws that this article does not have. This is the third time the same question has been answered
+in this development --- \ref{def:inversion-operator}'s realising identity and
+\ref{lem:symbol-rigidity}'s conclusion are the other two --- and each time it was writing the
+statement that raised it.
+\textbf{One consequence is flagged rather than fixed.} The ($\Leftarrow$) direction consumes the
+\emph{pointwise} symbol identity, which is more than ($\Rightarrow$) delivers at a zero of
+$\tilde H$, so the two halves do not compose into an ``if and only if'' as Lean statements.
+Weakening ($\Leftarrow$) would close the gap and costs nothing mathematically --- the inverse
+transform is an integral over the line and discards a null set --- but the zeros are null only by
+\ref{lem:inversion-symbol}, so that direction would then need (H), which it currently does not
+use and whose absence is recorded above as a finding. Which of the two to give up is a review
+decision, not a repair.)}
 \end{lemma}
 
 \begin{proof}
@@ -175,8 +217,32 @@ $\sigma^{z}$ translates the inverse transform's argument, both reducing to
 $x^{-(c+i\tau)}\sigma^{c+i\tau} = (x/\sigma)^{-(c+i\tau)}$.
 Imposing this on $\sum c_j(x)\partial_x^j$ and comparing coefficients of $g^{(j)}(x/\sigma)$
 gives $c_j(x)\sigma^{-j} = \sigma^{-1}c_j(x/\sigma)$, i.e.\ $c_j(x) = c_j(1)x^{j-1}$.
-Rewriting via falling factorials, $A$ agrees on $C_c^\infty$ with $x^{-1}P(\theta)$ for a
-polynomial $P$; Mellin-transforming on a line and using injectivity gives $B = P$.
+Rewriting via falling factorials, $A$ agrees with $x^{-1}P(\theta)$ for the polynomial
+$P(w) = \sum_j \gamma_j E_j(w)$, where $E_j(w) = \prod_{i<j}(-w-i)$.
+
+It remains to identify $P$ with $B$, and the comparison is made on the profiles rather than on
+$C_c^\infty((0,\infty))$ --- the class \ref{def:locality-pmp} was widened to include, and the only
+one on which $B$'s behaviour is known. Fix $s > 0$ and put $g = H(s\,\cdot)$. Locality gives
+$(Ag)(x) = \sum_j \gamma_j x^{j-1}\partial_x^j H(sx)$, while \ref{lem:symbol-uniqueness}'s
+eigenfunction relation gives $(Ag)(x) = sH(sx)$; equating them and clearing the weight,
+\[
+  s\,x\,H(sx) \;=\; \sum_{j=0}^{n} \gamma_j\, x^{j}\,\partial_x^{j} H(sx),
+  \qquad x > 0 .
+\]
+The left side is the realising function $h$ of \ref{def:inversion-operator} for $g$, with
+$\tilde h(w) = s^{-w}\tilde H(w+1)$. On the right, $\partial_x^j H(sx) = (-s)^j\int t^j
+e^{-sxt}\mu(dt)$, so $x \mapsto x^j\partial_x^j H(sx)$ has, by the Mellin shift $x^j$, the
+dilation factor, and \ref{lem:mellin-data} applied to the measure $t^j\mu(dt)$, the transform
+$E_j(w)\tilde g(w)$ throughout $0 < \operatorname{Re} w < z_*$. Each term converges there, so the
+sum may be transformed term by term, giving $\tilde h(w) = P(w)\tilde g(w)$ --- which is exactly
+the hypothesis of \ref{lem:symbol-uniqueness} with $P$ in the place of a candidate symbol. Hence
+$B$ and $P$ agree as meromorphic functions on $0 < \operatorname{Re} z < z_*-1$; equivalently,
+since $\tilde g(w) = s^{-w}\tilde H(w)$ never loses its nonvanishing factor,
+\[
+  \tilde H(z+1) \;=\; P(z)\,\tilde H(z)
+\]
+at every point of the strip, and $B(z) = P(z)$ at every point where $\tilde H(z) \ne 0$.
+No injectivity of the inverse Mellin transform is used, and none is available.
 \end{proof}
 
 % draft: Lemma 12.3

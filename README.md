@@ -20,7 +20,8 @@ positioning and literature work live in the wiki hub's outline page.
 
 ## Status
 
-**Written through §12; formalised through §9 and chapter 11's entry point, plus all three halves of the main theorem.**
+**Written through §12; formalised through §9, chapter 11 entire, and chapter 12's classification
+step, plus all three halves of the main theorem.**
 
 The blueprint carries all of §§2–12 — 69 statement nodes — and `AXIOMS.md` has 18 ledger
 entries, each with a page anchor. The Lean development is ~8,500 lines, `sorry`-free, and rests
@@ -39,7 +40,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Forty-two nodes carry `\lean{...}\leanok`:
+Forty-nine nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -52,6 +53,7 @@ Forty-two nodes carry `\lean{...}\leanok`:
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
 | 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals`, `thm:signaling-form` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
+| 12 Locality | `lem:log-convexity`, `def:locality-pmp`, `lem:local-polynomial-symbol`, `lem:symbol-vanishes-at-origin`, `lem:gamma-recursion-uniqueness` — the chapter's classification step, both directions: a polynomial symbol gives a differential expression, and locality forces the symbol to be that polynomial. Ledger **A15** (Krull–Webster) is discharged in the order-two case it is applied to, from Mathlib's Bohr–Mollerup |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the

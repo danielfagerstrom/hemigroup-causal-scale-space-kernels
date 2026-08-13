@@ -39,7 +39,8 @@ blueprint.
 
 ## Status
 
-Blueprint written through §12; Lean through §9 and §11 entire, including both headline theorems
+Blueprint written through §12; Lean through §9, §11 entire, and §12's classification step
+`lem:local-polynomial-symbol` (both directions), including both headline theorems
 (2′ `thm:main-characterization`, 4′ `thm:signaling-form`). See `README.md` for the node-level
 state and `blueprint/PLAN-chapters-8-12.md` for the inventory of what is open and *why* — sorted
 into deliberate, blocked upstream, absent by design, and available. The working text is

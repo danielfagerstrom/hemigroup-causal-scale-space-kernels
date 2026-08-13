@@ -1301,6 +1301,19 @@ other way. **Not taken unilaterally.**
 | blocked upstream (C₀-semigroups, Bessel `K`, distributions) | `thm:scale-cauchy`, `lem:generator-properties`, `prop:scale-evolution`, `cor:exact-inversion`, `lem:transform-ode`, `lem:log-convexity`, `lem:local-polynomial-symbol` |
 | available, nothing depends on them | `lem:delay-core`, `cor:semigroup-case`, `prop:moments`, `prop:stable-moments`, `prop:gamma-kernels`, `prop:extreme-rays`, `prop:volterra`, `lem:potential-kernel-scaling` |
 
+**Superseded in part, 2026-08-13.** Three of the rows above have moved, and the row that moved
+furthest is worth naming because the reason it was written was wrong. `lem:log-convexity`,
+`def:locality-pmp` and `lem:local-polynomial-symbol` are now `\leanok`. Chapter 12 was filed as
+*blocked upstream (Bessel `K`)* and as *no Lean counterpart by design*, and neither applied to
+these nodes: Bessel `K` is needed by the chapter's **ladder**, not by its classification step, and
+`def:locality-pmp` needs no `CM` vocabulary at all — it is a statement about a differential
+expression and the inversion operator. What the classification step did need was two computations
+Mathlib does not carry, the Mellin symbol of the Euler operator (test functions, by parts) and the
+same identity on the profiles (no parts, the derivative being already an integral); both are now
+proved. The lesson is the one this document already makes about `lem:mellin-vertical`: *"blocked on
+Mathlib" is a claim about a specific missing lemma and has to name it*, and a chapter-level reason
+never survives contact with a node.
+
 `def:standing-hypothesis` was a **missing tag** rather than missing work — `StandingHypothesis` has
 existed in `MellinData.lean` since chapter 11 started and every theorem in the chapter takes it as
 a hypothesis. Now tagged. It is worth noting that the inventory above is the first time this repo

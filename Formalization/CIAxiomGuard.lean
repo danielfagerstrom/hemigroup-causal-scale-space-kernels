@@ -580,3 +580,53 @@ A17 through `lawT₁`.
 
 #print axioms Hemigroup.iteratedDeriv_ofReal_comp
 #print axioms Hemigroup.SelfDecomposableExponent.iteratedDeriv_profileC_comp_mul
+
+/-! ### `lem:mellin-data`, restated for a measure
+
+The three steps of chapter 11's Gamma-integral hinge, freed of `T₁`. They are what chapter 12
+spends on the weighted law `tʲ μ(dt)`, and they should print **Lean core alone** — no A17, since
+no kernel appears in them. That is the check that the generalisation really did detach the
+computation from the construction rather than carrying it along.
+-/
+
+#print axioms Hemigroup.lintegral_lintegral_gamma_of_ae_mem_Ioi
+#print axioms Hemigroup.integrable_mellin_laplace_of_ae_mem_Ioi
+#print axioms Hemigroup.mellin_laplace_of_ae_mem_Ioi
+#print axioms Hemigroup.mellinConvergent_laplace_of_ae_mem_Ioi
+
+/-! ### The engine of `lem:local-polynomial-symbol` on the profile class
+
+`M[x ↦ xʲ ∂ₓʲ H(sx)](w) = E_j(w)·M[H(s·)](w)`, with no integration by parts: the derivative is
+already an integral (`ProfileDeriv.lean`), the weight `xʲ` is a Mellin shift, the dilation is a
+factor, and what is left is `lem:mellin-data` on the weighted law. A17 through `lawT₁`; the two
+`Γ`/Euler-factor identities and `mellin_finset_sum` mention nothing of this development and print
+Lean core alone.
+-/
+
+#print axioms Hemigroup.Gamma_add_natCast
+#print axioms Hemigroup.mellinEulerFactor_eq_neg_one_pow_mul_prod
+#print axioms Hemigroup.mellin_finset_sum
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_weightedProfile
+#print axioms Hemigroup.SelfDecomposableExponent.mellinConvergent_weightedProfile
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_pow_mul_iteratedDeriv_profile
+
+/-! ### `lem:local-polynomial-symbol`, the (⇒) direction — the node closed
+
+The clause the skeleton carried, and the two forms it takes. A17 through `inversionOperator` and
+`lawT₁`; none of chapter 12's own cited interfaces (A13 Widder, A14 Courrège, A15 Krull--Webster)
+is touched, and neither is A12 — the route runs through `lem:symbol-uniqueness`, whose realising
+function is exhibited rather than produced.
+
+**Three statements rather than one, because they are not the same statement.** The recursion
+`H̃(z+1) = P(z)H̃(z)` holds at every point of the strip with no side condition, and is what
+`lem:moment-recursion` consumes. `B = P` as an equality of meromorphic functions is the
+`EventuallyEq`, also unconditional. `B(z) = P(z)` as an equality of *values* holds exactly off
+the zeros of `H̃`, because at a zero `inversionSymbol z` is `H̃(z+1)/0`, whose value is Lean's `0`.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.mul_profile_eq_sum_of_isLocalOfOrder
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_profile_weight_eq_of_isLocalOfOrder
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_profile_shift_eq_of_isLocalOfOrder
+#print axioms Hemigroup.SelfDecomposableExponent.realisesAction_sum_mellinEulerFactor
+#print axioms Hemigroup.SelfDecomposableExponent.eventuallyEq_inversionSymbol_of_isLocalOfOrder
+#print axioms Hemigroup.SelfDecomposableExponent.exists_symbol_eq_of_isLocalOfOrder
