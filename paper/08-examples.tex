@@ -1,8 +1,204 @@
-% §8 Examples and moments — draft §8 (lines 294–318): stable, Gamma, Bessel-K families;
-% moments and the influence curve; Remark 8.5 (heavy tails are the price of the semigroup
-% axiom). Blueprint part 08; shared labels: prop:stable-family, prop:gamma-family,
-% prop:bessel-family, prop:mean-delay, prop:moment-criterion.
+% §8 Examples and moments — statements verbatim from blueprint part 08, which promotes
+% the draft's Examples 8.1–8.3 to propositions (they are load-bearing: the locality
+% theorem classifies the Bessel family, the ladder builds on the Gamma family) and
+% splits the per-family clauses by cost. The paper keeps every node but REORDERS for
+% reading: the admissibility criterion pair first (the one obligation every example
+% shares, discharged once), then the moment formulas, then the three families with
+% their split halves adjacent, then the heavy-tails remark. Adapted refs, flagged
+% inline: prop:bessel-family's closing cross-reference (draft theorem numbers → the
+% paper's sections), prop:gamma-kernels' proof (causal uniqueness → Prop. laplace-uniqueness).
 
 \section{Examples and moments}\label{sec:examples}
 
-% [transcription pending]
+Throughout this section we work in the canonical gauge, so that
+$\phi_x = \Lap^{-1}[e^{-F(x s)}]$, and $T_x$ denotes a random variable with density $\phi_x$.
+Each family below is admissible by one criterion, stated once; its converse makes the two
+integrability conditions characteristic of the class rather than an artifact of the estimate.
+
+% shared with blueprint prop:admissibility-criterion
+\begin{proposition}[admissibility criterion for a memory kernel]\label{prop:admissibility-criterion}
+Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing with
+\[
+  \int_0^1 k(t)\,dt < \infty
+  \qquad\text{and}\qquad
+  \int_1^\infty \frac{k(t)}{t}\,dt < \infty .
+\]
+Then $F(s) = b_0 s + \int_0^\infty (1 - e^{-st})\,k(t)\,\frac{dt}{t}$ is finite for every
+$s \ge 0$.
+
+Consequently $F$ is of the form (7.1) and Theorem~\ref{thm:main-characterization} applies to
+it.
+\end{proposition}
+
+\begin{proof}
+Split the integral at $t = 1$. On $(0,1]$ use $1 - e^{-st} \le st$, which is $1 + x \le e^x$ at
+$x = -st$; the integrand is then at most $s\,k(t)$, integrable by the first hypothesis. On
+$(1,\infty)$ use $1 - e^{-st} \le 1$; the integrand is at most $k(t)/t$, integrable by the
+second. The drift term is finite for every real $s$.
+\end{proof}
+
+% shared with blueprint lem:criterion-converse
+\begin{lemma}[the criterion is characteristic]\label{lem:criterion-converse}
+Conversely, if $F$ is of the form (7.1) with $F(1) < \infty$, then $\int_0^1 k(t)\,dt < \infty$
+and $\int_1^\infty k(t)t^{-1}dt < \infty$.
+\end{lemma}
+
+\begin{proof}
+Take $s = 1$ in (7.1), so that $\int_0^\infty (1 - e^{-t})k(t)t^{-1}dt < \infty$. For $t > 0$,
+$1 - e^{-t} \ge t/(1+t)$, so the integrand is at least $k(t)/(1+t)$. On $(0,1]$ that is at least
+$k(t)/2$, and on $(1,\infty)$ it is at least $k(t)/(2t)$; both claims follow.
+\end{proof}
+
+In particular every admissible $F$ carries both integrability facts already, so nothing below
+assumes regularity of $k$ beyond the definition; this is also what justified differentiating
+under the integral sign in Lemma~\ref{lem:memory-kernel}.
+
+% shared with blueprint prop:moments
+\begin{proposition}[the mean delay and the influence curve]\label{prop:moments}
+$\Ex\,T_x = x\,F'(\zp) = x\bigl(b_0 + \int_0^\infty k(t)\,dt\bigr)$, finite if and only if $k$
+is integrable at infinity. When the mean is finite, the influence curve of
+\sscite{fagerstrom2005temporal}, \S7, may be defined by the mean delay, and it is exactly
+linear in the canonical gauge:
+\[
+  t_0 - t_m = F'(\zp)\; x .
+\]
+\end{proposition}
+
+\begin{proof}
+Differentiating the transform at the origin,
+$\Ex\,T_x = -\partial_s e^{-F(xs)}\big|_{s=\zp} = x F'(\zp)$, and monotone convergence in
+(7.1) gives $F'(\zp) = b_0 + \int_0^\infty k(t)\,dt$, finite exactly when $k$ is integrable at
+infinity. The influence curve is then linear in $x$ because $\Ex\,T_x$ is.
+\end{proof}
+
+The higher moments run through one cited equivalence, the moment criterion for infinitely
+divisible laws.
+
+% shared with blueprint prop:moment-criterion
+\begin{proposition}[the moment criterion]\label{prop:moment-criterion}
+$\Ex\,T_x^{\,n} < \infty$ if and only if $\int_1^\infty t^{\,n-1} k(t)\,dt < \infty$.
+\end{proposition}
+
+\begin{proof}
+The Lévy measure of $T_x$ is $\nu(dt) = k(t)t^{-1}dt$ up to the scaling by $x$, so
+$\int_{t>1} t^n\,\nu(dt) = \int_1^\infty t^{\,n-1}k(t)\,dt$; the moment criterion for
+infinitely divisible laws (\sscite{sato1999levy}, Thm.~25.3) equates finiteness of that
+integral with finiteness of $\Ex\,T_x^n$.
+\end{proof}
+
+% shared with blueprint prop:stable-family
+\begin{proposition}[the extremal stable family: the exponent]\label{prop:stable-family}
+For $0 < \alpha < 1$ the exponent $F(s) = s^\alpha$ is of the form (7.1), with Lévy density
+factor
+\[
+  k(t) = \frac{\alpha}{\Gamma(1-\alpha)}\, t^{-\alpha},
+\]
+which is nonincreasing.
+\end{proposition}
+
+\begin{proof}
+$s^\alpha = \frac{\alpha}{\Gamma(1-\alpha)}\int_0^\infty (1 - e^{-st})\,t^{-\alpha-1}\,dt$ is
+the standard integral representation, which is (7.1) with $b_0 = 0$ and
+$k(t)/t = \alpha t^{-\alpha-1}/\Gamma(1-\alpha)$; $k$ is a negative power, hence
+nonincreasing.
+\end{proof}
+
+% shared with blueprint prop:stable-moments
+\begin{proposition}[the extremal stable family: moments and the mode]\label{prop:stable-moments}
+With $F$ as in Proposition~\ref{prop:stable-family}, every moment of $T_x$ is infinite, so the
+delay cannot be measured by the mean; measured by the mode it scales as $x^{1/\alpha}$.
+\end{proposition}
+
+\begin{proof}
+Since $\int_1^\infty t^{n-1}k(t)\,dt = \infty$ already for $n = 1$, all moments are infinite by
+Proposition~\ref{prop:moment-criterion}. The mode scaling is the self-similarity
+$T_x \stackrel{d}{=} x^{1/\alpha} T_1$ of the $\alpha$-stable subordinator, which is the case
+$\chi(x) = x^{1/\alpha}$ of Corollary~\ref{cor:semigroup-case}.
+\end{proof}
+
+% shared with blueprint prop:gamma-family
+\begin{proposition}[the Gamma family: the exponent]\label{prop:gamma-family}
+For $\gamma > 0$ the exponent $F(s) = \gamma\,\log(1 + s)$ is of the form (7.1) with
+$k(t) = \gamma\, e^{-t}$, which is nonincreasing.
+\end{proposition}
+
+\begin{proof}
+The Frullani integral gives
+$\log(1+s) = \int_0^\infty (1 - e^{-st})\,e^{-t}\,t^{-1}\,dt$, so $F$ has the form (7.1) with
+$b_0 = 0$ and $k(t) = \gamma e^{-t}$, nonincreasing; hence $F$ is admissible by
+Lemma~\ref{lem:selfdecomposable-exponents}.
+\end{proof}
+
+% shared with blueprint prop:gamma-kernels
+\begin{proposition}[the Gamma family: kernels, moments, and the Sato reading]\label{prop:gamma-kernels}
+With $F$ as in Proposition~\ref{prop:gamma-family}, the kernels are
+\[
+  e^{-F(xs)} = (1 + x s)^{-\gamma}, \qquad
+  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
+\]
+the Gamma density of fixed shape $\gamma$ and scale $x$. All moments are finite, with
+$\Ex\,T_x = \gamma x$ and $\operatorname{Var} T_x = \gamma x^2$. The increment measures
+$\mu_{a,b}$ have Laplace transform $\bigl(\tfrac{1 + as}{1 + bs}\bigr)^{\gamma}$ and are the
+increments of the Gamma-type Sato subordinator.
+\end{proposition}
+
+\begin{proof}
+$e^{-F(xs)} = (1+xs)^{-\gamma}$ by Proposition~\ref{prop:gamma-family}, and this is the Laplace
+transform of the stated Gamma density, so Proposition~\ref{prop:laplace-uniqueness} identifies
+$\phi_x$. The moments are those of a Gamma law, and all are finite because
+$\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$
+(Proposition~\ref{prop:moment-criterion}). The increment transform is the ratio
+$e^{-F(bs)}/e^{-F(as)}$, and Remark~\ref{rem:sato-reading} identifies the family as the
+marginals of a Sato subordinator.
+\end{proof}
+
+% shared with blueprint prop:bessel-family — closing cross-reference adapted from the
+% draft's theorem numbers (10.4, 11.6, 12.5) to the paper's placement.
+\begin{proposition}[the Bessel-K family; preview of the memory line]\label{prop:bessel-family}
+For $a > 0$ let $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ be the scaled inverse-gamma law, where
+$\gamma_a$ has the Gamma density of shape $a$, and let $F$ be its Laplace exponent. Then
+\[
+  e^{-F(s)} = \frac{2^{1-a}}{\Gamma(a)}\,\bigl(\sqrt{2s}\bigr)^{a} K_a\bigl(\sqrt{2s}\bigr),
+\]
+and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is admissible. In
+the parabolic gauge $\tilde x = x^2/2$ these are the boundary-hitting kernels of the
+Bessel-type media $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with $a = \tfrac12 -
+\beta$, and the moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$. This family is
+the subject of the memory-line development
+(Theorems \ref{thm:signaling-form} and \ref{thm:locality}, and
+Appendix~\ref{sec:appendix-memory}).
+\end{proposition}
+
+\begin{proof}
+Write $\gamma_a$ for a Gamma$(a,1)$ variable and $T_1 = 1/(2\gamma_a)$. Substituting
+$u = 1/(2t)$ in the Gamma density gives the density of $T_1$,
+\[
+  \phi_1(t) = \frac{t^{-a-1}\,e^{-1/(2t)}}{2^{a}\,\Gamma(a)}, \qquad t > 0 .
+\]
+The classical integral representation
+$\int_0^\infty t^{\nu-1}\exp(-A/t - Bt)\,dt = 2\,(A/B)^{\nu/2}K_\nu\bigl(2\sqrt{AB}\bigr)$,
+taken at $\nu = -a$, $A = \tfrac12$, $B = s$, together with $K_{-a} = K_a$, gives
+\[
+  \Ex\,e^{-sT_1}
+  = \frac{1}{2^{a}\Gamma(a)}\int_0^\infty t^{-a-1}e^{-st - 1/(2t)}\,dt
+  = \frac{2\,(2s)^{a/2}\,K_a\bigl(\sqrt{2s}\bigr)}{2^{a}\Gamma(a)}
+  = \frac{2^{1-a}}{\Gamma(a)}\bigl(\sqrt{2s}\bigr)^{a}K_a\bigl(\sqrt{2s}\bigr).
+\]
+Self-decomposability of $T_1$ is a theorem of Halgreen (\sscite{halgreen1979self}, for the
+generalized inverse Gaussian laws, of which this is a limiting case); by
+Lemma~\ref{lem:selfdecomposable-exponents} its exponent is therefore of the form (7.1), and
+Theorem~\ref{thm:main-characterization} makes the family admissible. Finally, the Lévy density
+factor of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$ at infinity,
+so $\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$;
+Proposition~\ref{prop:moment-criterion} converts that into $\Ex\,T_x^n < \infty$ iff $a > n$.
+\end{proof}
+
+% Verbatim from the blueprint's rem:heavy-tails.
+\begin{remark}[heavy tails are the semigroup's doing]\label{rem:heavy-tails}
+The heavy tails of the 2005 kernels are an artifact of the semigroup axiom, not of causality
+together with covariance. Within Theorem~\ref{thm:main-characterization} the semigroup sub-case
+(Corollary~\ref{cor:semigroup-case}) is precisely the subset with $k$ a pure power --- the only
+$k$ compatible with homogeneity --- and every non-power nonincreasing $k$, for instance
+$k(t) = \gamma e^{-t}$, yields a causal, continuously scale-covariant family with finite
+moments of all orders.
+\end{remark}
