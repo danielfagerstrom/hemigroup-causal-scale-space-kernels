@@ -1,13 +1,121 @@
-% §13 Concluding remarks — draft §15 (lines 848–876), with:
-%   - the methodological remark (formalization shortened five proofs) kept;
-%   - the four open problems kept, problem 2 and 4 pointing at the companion note;
-%   - Remark 15.1 SLIMMED (decision 2026-08-12): keep the three-level stratification,
-%     the Poisson/limit-kernel placements, and the unique-extension fact; point to the
-%     companion note for the annulus structure theorem, the q-Poisson construction
-%     detail, and the intrinsic selection question — the companion holds full proofs.
-% Per the constellation convention: never refer to the sibling deliverable by section
-% number.
+% §13 Concluding remarks — transcribed from draft §15 (lines 848–876), with the decided
+% edits: the summary paragraph reads the Sonine structure as appendix content; Remark
+% 15.1 is SLIMMED (decision 2026-08-13) — the stratification, the Poisson/limit-kernel
+% placements and the unique-extension fact stay; the q-Poisson construction detail and
+% the intrinsic selection question point to the companion note, which holds full
+% proofs. Per the constellation convention the companion is named as "a companion
+% note", never by section number.
 
 \section{Concluding remarks}\label{sec:conclusions}
 
-% [transcription pending]
+One axiom of \sscite{fagerstrom2005temporal} was weakened --- the one-parameter semigroup
+cascade to the two-parameter hemigroup, i.e.\ the assumption that measurement stages are
+interchangeable --- and the entire derivation was rerun in the same order with the same tools.
+The kernel characterization (Theorem~\ref{thm:main-characterization}) enlarges the extremal
+stable class to the self-decomposable (Sato) class; the Mellin signaling form
+(Theorem~\ref{thm:signaling-form}) and the locality theorem (Theorem~\ref{thm:locality}) are
+the analogues of Theorems~4 and~5, with the isolated heat case unfolding into the Bessel
+family and with the heavy tails of the stable kernels exposed as the price of the semigroup
+axiom rather than of causality or covariance;
+Appendix~\ref{sec:appendix-memory} carries the analogue of Theorem~3 --- the scale-Cauchy
+problem --- together with the memory-kernel and Sonine structure, which identifies the
+self-decomposability function $k$ as the physical memory kernel and losslessness as an exact
+conservation identity.
+
+One methodological remark, since the formalization changed the paper rather than merely
+certifying it. Five of the proofs printed above are not the ones first written. In each case
+the original argument invoked a named theorem about a \emph{class} of functions ---
+Bernstein--Widder, closure of $\BF$ under pointwise limits, the semigroup property of the
+Riemann--Liouville family, the asymptotics of $\Gamma$ on vertical lines, uniqueness of the
+Mellin transform --- where an elementary argument about the \emph{object} suffices, and is no
+longer. The formal development, which has no notion of complete monotonicity at all, could
+not take the classical route and so found the elementary one; having found it, there was no
+reason to keep the classical route on paper. The net effect is that the results here rest on
+two cited facts rather than the six or seven a reader would expect, and that the one
+irreducible appeal to the derivative-sign definition ---
+Lemma~\ref{lem:selfdecomposable-exponents}, where $sF'(s)$ is the object of study --- is now
+visible as the single place where that vocabulary is doing work rather than providing
+convenience. We record this because the direction of influence is the opposite of the usual
+expectation: verification is generally described as a check on a finished argument, and here
+it shortened the argument.
+
+Four problems remain open. First, the memory-line inverse problem: which admissible exponents
+$F$ are realized by genuine Markov media (Remark~\ref{rem:markov-media}), i.e.\ a
+correspondence of Krein type (\sscite{kotani1982krein}; \sscite{dym1976gaussian}) admitting
+jumps, together with the question of what surface data determine the medium; this is the
+subject of a separate article. Second, the complex-root cases of
+Proposition~\ref{prop:local-ladder} --- largely resolved in a companion note, where
+spectrally leading pairs are excluded and order three is settled, with the subordinate-pair
+configuration remaining. Third, the relaxation of hypothesis (H) by meromorphic continuation,
+which would admit the slowly growing exponents --- for instance the Gamma family with
+$\gamma \le 1$ --- into \S\S\ref{sec:signaling}--\ref{sec:locality}. Fourth, the
+discrete-covariance branch, whose place in the axiom system is identified in
+Remark~\ref{rem:strata} below; its structure theorem, together with the canonical-selection
+question for the time-causal limit kernel, is the subject of the same companion note.
+
+\begin{remark}[the discrete-covariance stratum and the previous literature]\label{rem:strata}
+Weaken (A8) to the subgroup $\sigma \in q^{\ZZ}$, $q > 1$. Most of \S\ref{sec:covariance}
+survives verbatim: uniqueness of $\Sact_q$, the group law along the subgroup, and the absence
+of interior fixed points, the orbit argument needing only the powers $q^{\pm n}$. The
+similarity solution generalizes: in the variables $(\log(xs),\, \log(x/s))$ the covariance
+relation $G(qx, s) = G(x, qs)$ says precisely that
+\[
+  G(x, s) \;=\; \mathfrak{F}\bigl(x s;\ \log(x/s)\bigr),
+  \qquad \mathfrak{F}(\,\cdot\,;\ v + 2\log q) = \mathfrak{F}(\,\cdot\,;\ v),
+\]
+a log-periodic modulation of the continuous case's $F(xs)$ in the chirp variable
+$\log(x/s)$. The probabilistic identification is exact: applying covariance once, the
+marginal exponents satisfy
+\[
+  \Psi_x(qs) - \Psi_x(s) \;=\; g_{x,\,qx}(s) \;\in\; \BFz,
+\]
+which is the definition of a \emph{semi-selfdecomposable} law of span $q$
+(\sscite{maejima1998semi}), and the two-parameter families are the \emph{semi-selfsimilar
+additive} subordinators of \sscite{maejima1999semi}. The axiom system thus carries a
+three-level stratification, and the earlier time-causal constructions occupy its strata
+rather than lying outside it:
+
+\begin{enumerate}
+\item \emph{(A1)--(A7) alone: Bernstein hemigroups.} This stratum contains the Poisson scale
+space of \sscite{lindeberg1996scale}, which belongs to no higher stratum: with exponent
+$\lambda(1 - e^{-\delta s})$ the $q$-step increment $\lambda(e^{-\delta s} - e^{-q\delta s})$
+has a sign-changing derivative for every $q > 1$, so the fixed jump size $\delta$ is
+incompatible with covariance under any dilation subgroup.
+\item \emph{(A8) for $q^{\ZZ}$: semi-Sato families.} This stratum contains the time-causal
+limit kernel of \sscite{lindeberg2016time}: its exponent
+$F(s) = \sum_{i \ge 1} \log(1 + c\,q^{-i}s)$ telescopes under one covariance step,
+\[
+  F(qs) - F(s) \;=\; \log(1 + c\,s) \;\in\; \BFz,
+\]
+one $q$-step of scale per pole section. But more is true: the Lévy tail of $F$ is
+$k(t) = \sum_{i \ge 1} e^{-t q^{i}/c}$, a sum of decreasing exponentials --- nonincreasing,
+indeed completely monotone --- so $F$ is itself \emph{self-decomposable}, and the similarity
+family $\{F(x s)\}_{x > 0}$ is a fully covariant member of
+Theorem~\ref{thm:main-characterization}: the Thorin member of
+Proposition~\ref{prop:thorin-subclass} whose measure is the geometric atom train
+$\sum_i \delta_{q^i/c}$ in place of the Gamma family's single atom. The limit kernel is thus,
+in retrospect, the first-discovered member of the class characterized in this paper, and the
+Sonine-pair structure of Appendix~\ref{sec:appendix-memory}, the cascade implementation of
+\S\ref{sec:implementation}, and the jets of \S\ref{sec:jet} apply to it verbatim. What is
+intrinsically discrete about it is the cascade construction --- the finite truncations are
+hypoexponential and not dilation-closed (Remark~\ref{rem:covariance-practice}) --- and the
+role of $q$ as the log-spacing of its Thorin atoms. Strict members of the middle stratum,
+semi-selfdecomposable but not self-decomposable, exist and are natural --- geometric jump
+ladders refining the Poisson scale space; the companion note constructs them and proves the
+stratum's structure theorem.
+\item \emph{(A8) in full: the Sato class of the present paper.}
+\end{enumerate}
+
+For the limit kernel the extension question has a clean answer: among all
+$q^{\ZZ}$-covariant families with its $q$-step increments $g_{x,qx}(s) = \log(1 + c x s)$,
+\emph{exactly one} extends to full continuous covariance --- full covariance forces the
+similarity form $\Psi_x = F(x\,\cdot)$, the $q$-difference equation
+$F(qs) - F(s) = \log(1+cs)$ determines $F$ up to a log-periodic summand, and a continuous
+log-periodic function with limit $0$ at the origin vanishes --- namely the limit-kernel
+family itself. Whether the limit kernel is distinguished \emph{within} its modulation orbit
+by an extremality principle that does not invoke the continuum extension is the selection
+question taken up in the companion note. The comparison with the previous literature is
+thereby one of containment rather than difference: the Poisson scale space lies strictly in
+the first stratum, the limit kernel in the third, and the strict middle stratum is populated
+by their common refinement.
+\end{remark}
