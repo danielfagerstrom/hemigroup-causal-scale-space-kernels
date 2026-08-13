@@ -1,5 +1,459 @@
-% Curated subset of the `library bib export` master bib — to be produced by the
-% librarian (task: bibliography). The draft's hand-written reference list
-% (draft/hemigroup-causal-scale-space-kernels.md, lines 878–915) is the source of
-% truth for WHICH ~35 entries belong here; AXIOMS.md carries page anchors for the 18
-% cited interfaces.
+% references.bib -- curated subset of the library master bib (library bib export,
+% 2026-08-13), prepared by the librarian for plain.bst.
+%
+% Provenance: every entry except where commented is the library record for the
+% pinned citekey, with non-bibliographic fields stripped (acquisition notes,
+% abstracts, keywords, urldate -- plain.bst would PRINT the note field), article
+% titles normalized to sentence case with brace-protected proper nouns, and
+% non-ASCII characters transliterated to TeX accents (the raw Unicode Gamma in
+% the webster1997log title does not compile under pdflatex).
+%
+% CITEKEY MAPPING (tex not edited -- fix at the call sites):
+%   paper cites  lindeberg1996scale  ->  library pinned key is  lindeberg1996scalespace
+%     (the entry below carries the library key; a cite of lindeberg1996scale is
+%      currently undefined).
+%   lindeberg2011generalized -- repinned in Zotero on 2026-08-13 (was the Connector
+%     key lindebergGeneralizedGaussianScaleSpace2010); now matches the paper.
+%   florack1997image -- already pinned in the library; cite it as-is.
+%
+% Page anchors for the 18 interface citations live in blueprint/AXIOMS.md; the
+% publication data below was cross-checked against it and against the draft
+% reference list (draft/hemigroup-causal-scale-space-kernels.md, lines 878-915).
+
+@book{bondesson1992generalized,
+  address   = {New York, NY},
+  series    = {Lecture Notes in Statistics},
+  title     = {Generalized Gamma Convolutions and Related Classes of Distributions and Densities},
+  volume    = {76},
+  doi       = {10.1007/978-1-4612-2948-3},
+  publisher = {Springer},
+  author    = {Bondesson, Lennart},
+  year      = {1992},
+}
+
+@article{caravenna2019dickman,
+  title   = {The {Dickman} subordinator, renewal theorems, and disordered systems},
+  volume  = {24},
+  doi     = {10.1214/19-ejp353},
+  number  = {101},
+  journal = {Electronic Journal of Probability},
+  author  = {Caravenna, Francesco and Sun, Rongfeng and Zygouras, Nikos},
+  year    = {2019},
+  pages   = {1--40},
+}
+
+@article{clement1981asymptotic,
+  title   = {Asymptotic behavior of solutions of nonlinear {Volterra} equations with completely positive kernels},
+  volume  = {12},
+  doi     = {10.1137/0512045},
+  number  = {3},
+  journal = {SIAM Journal on Mathematical Analysis},
+  author  = {Cl{\'e}ment, Ph. and Nohel, J. A.},
+  year    = {1981},
+  pages   = {514--535},
+}
+
+% courrege1966sur: title restored to proper math mode (the Zotero record stores it
+% as escaped literals). The expose carries its own 2-NN pagination (AXIOMS.md A14
+% anchors cite it, e.g. Cor. 2, p. 2-10); plain.bst mangles hyphenated page
+% numbers, so the pages field uses the plain 1--38 count.
+@incollection{courrege1966sur,
+  title     = {Sur la forme int{\'e}gro-diff{\'e}rentielle des op{\'e}rateurs de {$C_k^\infty$} dans {$C$} satisfaisant au principe du maximum},
+  url       = {http://www.numdam.org/item/SBCD_1965-1966__10_1_A2_0/},
+  booktitle = {S{\'e}minaire Brelot--Choquet--Deny (Th{\'e}orie du potentiel), tome 10, no.~1 (1965--1966), exp.~no.~2},
+  author    = {Courr{\`e}ge, Philippe},
+  year      = {1966},
+  pages     = {1--38},
+}
+
+@article{devries1992gamma,
+  title   = {The gamma model---{A} new neural model for temporal processing},
+  volume  = {5},
+  doi     = {10.1016/s0893-6080(05)80035-8},
+  number  = {4},
+  journal = {Neural Networks},
+  author  = {Vries, Bert de and Principe, Jose C.},
+  year    = {1992},
+  pages   = {565--576},
+}
+
+@book{dym1976gaussian,
+  address   = {New York},
+  series    = {Probability and Mathematical Statistics},
+  title     = {Gaussian Processes, Function Theory, and the Inverse Spectral Problem},
+  number    = {31},
+  publisher = {Academic Press},
+  author    = {Dym, Harry and McKean, Henry P.},
+  year      = {1976},
+}
+
+@book{engel2000one,
+  address   = {New York},
+  series    = {Graduate Texts in Mathematics},
+  title     = {One-Parameter Semigroups for Linear Evolution Equations},
+  volume    = {194},
+  doi       = {10.1007/b97696},
+  publisher = {Springer-Verlag},
+  author    = {Engel, Klaus-Jochen and Nagel, Rainer},
+  year      = {2000},
+}
+
+@article{fagerstrom2005temporal,
+  title   = {Temporal scale spaces},
+  volume  = {64},
+  doi     = {10.1007/s11263-005-1837-8},
+  number  = {2-3},
+  journal = {International Journal of Computer Vision},
+  author  = {Fagerstr{\"o}m, Daniel},
+  year    = {2005},
+  pages   = {97--106},
+}
+
+% fagerstrom2011spatiotemporal: doctoral thesis, recorded as a book entry in the library
+% (KTH report series TRITA-CSC-A 2011:11).
+@book{fagerstrom2011spatiotemporal,
+  address   = {Stockholm},
+  series    = {TRITA-CSC-A},
+  title     = {Spatio-Temporal Scale-Space Theory},
+  isbn      = {978-91-7501-024-3},
+  number    = {2011:11},
+  publisher = {Computer Science and Communication, KTH Royal Institute of Technology},
+  author    = {Fagerstr{\"o}m, Daniel},
+  year      = {2011},
+}
+
+% feller2009introduction: the citekey year is deliberate library policy (the key is
+% an opaque identifier, kept stable); the item and all page anchors are the 2nd
+% edition, Wiley 1971 -- verified against the held scan (AXIOMS.md A1/A5/A6).
+@book{feller2009introduction,
+  address   = {New York},
+  edition   = {2nd},
+  title     = {An Introduction to Probability Theory and Its Applications, Volume {II}},
+  publisher = {John Wiley \& Sons},
+  author    = {Feller, William},
+  year      = {1971},
+}
+
+% florack1997image: publisher and address supplied from the raw citation held in
+% the library record (Kluwer, Dordrecht); the Zotero item is a metadata stub.
+@book{florack1997image,
+  address   = {Dordrecht},
+  title     = {Image Structure},
+  doi       = {10.1007/978-94-015-8845-4},
+  publisher = {Kluwer Academic Publishers},
+  author    = {Florack, L. M. J.},
+  year      = {1997},
+}
+
+@article{halgreen1979self,
+  title   = {Self-decomposability of the generalized inverse {Gaussian} and hyperbolic distributions},
+  volume  = {47},
+  doi     = {10.1007/BF00533246},
+  number  = {1},
+  journal = {Zeitschrift f{\"u}r Wahrscheinlichkeitstheorie und Verwandte Gebiete},
+  author  = {Halgreen, C.},
+  year    = {1979},
+  pages   = {13--17},
+}
+
+% iijima1962basic: metadata from the standard secondary citation (Weickert 1997);
+% the 1962 Bulletin is unobtainable -- cite by metadata only, no page anchors.
+@article{iijima1962basic,
+  title   = {Basic theory on normalization of pattern (in case of typical one-dimensional pattern)},
+  volume  = {26},
+  journal = {Bulletin of the Electrotechnical Laboratory},
+  author  = {Iijima, Taizo},
+  year    = {1962},
+  note    = {In Japanese},
+  pages   = {368--388},
+}
+
+@article{ismail1979special,
+  title   = {Special functions, {Stieltjes} transforms and infinite divisibility},
+  volume  = {10},
+  doi     = {10.1137/0510083},
+  number  = {5},
+  journal = {SIAM Journal on Mathematical Analysis},
+  author  = {Ismail, Mourad E. H. and Kelker, Douglas H.},
+  year    = {1979},
+  pages   = {884--901},
+}
+
+@article{kochubei2011general,
+  title   = {General fractional calculus, evolution equations, and renewal processes},
+  volume  = {71},
+  doi     = {10.1007/s00020-011-1918-8},
+  number  = {4},
+  journal = {Integral Equations and Operator Theory},
+  author  = {Kochubei, Anatoly N.},
+  year    = {2011},
+  pages   = {583--600},
+}
+
+@article{koenderink1988scale,
+  title   = {Scale-time},
+  volume  = {58},
+  doi     = {10.1007/BF00364135},
+  number  = {3},
+  journal = {Biological Cybernetics},
+  author  = {Koenderink, Jan J.},
+  year    = {1988},
+  pages   = {159--162},
+}
+
+% kotani1982krein: chapter authors supplied by hand (draft reference list) -- the
+% library record carries only the volume editor, which plain.bst would have used
+% as the alphabetization head.
+@incollection{kotani1982krein,
+  address   = {Berlin},
+  series    = {Lecture Notes in Mathematics},
+  title     = {Krein's spectral theory of strings and generalized diffusion processes},
+  volume    = {923},
+  doi       = {10.1007/bfb0093046},
+  booktitle = {Functional Analysis in Markov Processes},
+  publisher = {Springer},
+  author    = {Kotani, S. and Watanabe, S.},
+  editor    = {Fukushima, Masatoshi},
+  year      = {1982},
+  pages     = {235--259},
+}
+
+@article{lamperti1972semi,
+  title   = {Semi-stable {Markov} processes. {I}},
+  volume  = {22},
+  doi     = {10.1007/bf00536091},
+  journal = {Zeitschrift f{\"u}r Wahrscheinlichkeitstheorie und Verwandte Gebiete},
+  author  = {Lamperti, John},
+  year    = {1972},
+  pages   = {205--225},
+}
+
+% lindeberg1996scalespace: the library pinned key (the paper tex currently
+% cites lindeberg1996scale -- see header). LNCS series/volume from the draft
+% reference list.
+@inproceedings{lindeberg1996scalespace,
+  address   = {Berlin, Heidelberg},
+  series    = {Lecture Notes in Computer Science},
+  volume    = {1064},
+  title     = {Scale-space with causal time direction},
+  doi       = {10.1007/BFb0015539},
+  booktitle = {Computer Vision --- {ECCV} '96},
+  publisher = {Springer},
+  author    = {Lindeberg, Tony and Fagerstr{\"o}m, Daniel},
+  editor    = {Buxton, Bernard and Cipolla, Roberto},
+  year      = {1996},
+  pages     = {229--240},
+}
+
+@article{lindeberg2011generalized,
+  title   = {Generalized {Gaussian} scale-space axiomatics comprising linear scale-space, affine scale-space and spatio-temporal scale-space},
+  volume  = {40},
+  doi     = {10.1007/s10851-010-0242-2},
+  number  = {1},
+  journal = {Journal of Mathematical Imaging and Vision},
+  author  = {Lindeberg, Tony},
+  year    = {2011},
+  pages   = {36--81},
+}
+
+@article{lindeberg2016time,
+  title   = {Time-causal and time-recursive spatio-temporal receptive fields},
+  volume  = {55},
+  doi     = {10.1007/s10851-015-0613-9},
+  journal = {Journal of Mathematical Imaging and Vision},
+  author  = {Lindeberg, Tony},
+  year    = {2016},
+  pages   = {50--88},
+}
+
+@article{luchko2021general,
+  title   = {General fractional integrals and derivatives with the {Sonine} kernels},
+  volume  = {9},
+  doi     = {10.3390/math9060594},
+  number  = {6},
+  journal = {Mathematics},
+  author  = {Luchko, Yuri},
+  year    = {2021},
+  pages   = {594},
+}
+
+@article{maejima1998semi,
+  title   = {Semi-selfdecomposable distributions and a new class of limit theorems},
+  volume  = {112},
+  doi     = {10.1007/s004400050181},
+  number  = {1},
+  journal = {Probability Theory and Related Fields},
+  author  = {Maejima, Makoto and Naito, Yoshihiro},
+  year    = {1998},
+  pages   = {13--31},
+}
+
+@article{maejima1999semi,
+  title   = {Semi-selfsimilar processes},
+  volume  = {12},
+  doi     = {10.1023/a:1021621926463},
+  number  = {2},
+  journal = {Journal of Theoretical Probability},
+  author  = {Maejima, Makoto and Sato, Ken-iti},
+  year    = {1999},
+  pages   = {347--373},
+}
+
+@article{phillips1952generation,
+  title   = {On the generation of semigroups of linear operators},
+  volume  = {2},
+  doi     = {10.2140/pjm.1952.2.343},
+  number  = {3},
+  journal = {Pacific Journal of Mathematics},
+  author  = {Phillips, R. S.},
+  year    = {1952},
+  pages   = {343--369},
+}
+
+@book{pruss1993evolutionary,
+  address   = {Basel},
+  series    = {Monographs in Mathematics},
+  title     = {Evolutionary Integral Equations and Applications},
+  isbn      = {9780817628765},
+  number    = {87},
+  publisher = {Birkh{\"a}user Verlag},
+  author    = {Pr{\"u}ss, Jan},
+  year      = {1993},
+}
+
+% samko1993fractional: subtitle and publisher per the draft reference list
+% (Gordon and Breach, corroborated by the record ISBN prefix 2-88124, a Gordon
+% and Breach prefix; the Zotero record says Taylor and Francis, the later rights
+% holder).
+@book{samko1993fractional,
+  title     = {Fractional Integrals and Derivatives: Theory and Applications},
+  isbn      = {978-2-88124-864-1},
+  publisher = {Gordon and Breach},
+  author    = {Samko, Stefan G. and Kilbas, Anatoly A. and Marichev, Oleg I.},
+  year      = {1993},
+}
+
+@book{sato1999levy,
+  address   = {Cambridge},
+  series    = {Cambridge Studies in Advanced Mathematics},
+  title     = {L{\'e}vy Processes and Infinitely Divisible Distributions},
+  isbn      = {978-0-521-55302-5},
+  number    = {68},
+  publisher = {Cambridge University Press},
+  author    = {Sato, Ken-iti},
+  year      = {1999},
+}
+
+% schilling2012bernstein: title cleaned (the record title carried the series
+% number as a suffix); edition field added -- all page/theorem anchors in the paper
+% and AXIOMS.md are 2nd-edition; author diacritics restored.
+@book{schilling2012bernstein,
+  address   = {Berlin},
+  edition   = {2nd},
+  title     = {Bernstein Functions: Theory and Applications},
+  isbn      = {978-3-11-025229-3},
+  publisher = {De Gruyter},
+  author    = {Schilling, Ren{\'e} L. and Song, Renming and Vondra{\v c}ek, Zoran},
+  year      = {2012},
+}
+
+@article{sonine1884sur,
+  title   = {Sur la g{\'e}n{\'e}ralisation d'une formule d'{Abel}},
+  volume  = {4},
+  doi     = {10.1007/bf02418416},
+  journal = {Acta Mathematica},
+  author  = {Sonine, N.},
+  year    = {1884},
+  pages   = {171--176},
+}
+
+@article{springer1970distribution,
+  title   = {The distribution of products of beta, gamma and {Gaussian} random variables},
+  volume  = {18},
+  doi     = {10.1137/0118065},
+  number  = {4},
+  journal = {SIAM Journal on Applied Mathematics},
+  author  = {Springer, M. D. and Thompson, W. E.},
+  year    = {1970},
+  pages   = {721--737},
+}
+
+@book{steutel2004infinite,
+  address   = {New York},
+  series    = {Monographs and Textbooks in Pure and Applied Mathematics},
+  title     = {Infinite Divisibility of Probability Distributions on the Real Line},
+  isbn      = {9780824707248},
+  number    = {259},
+  publisher = {Marcel Dekker},
+  author    = {Steutel, Fred W. and Harn, Klaas van},
+  year      = {2004},
+}
+
+@article{thorin1977lognormal,
+  title   = {On the infinite divisibility of the lognormal distribution},
+  volume  = {1977},
+  doi     = {10.1080/03461238.1977.10405635},
+  number  = {3},
+  journal = {Scandinavian Actuarial Journal},
+  author  = {Thorin, Olof},
+  year    = {1977},
+  pages   = {121--148},
+}
+
+@article{thorin1977pareto,
+  title   = {On the infinite divisibility of the {Pareto} distribution},
+  volume  = {1977},
+  doi     = {10.1080/03461238.1977.10405623},
+  number  = {1},
+  journal = {Scandinavian Actuarial Journal},
+  author  = {Thorin, Olof},
+  year    = {1977},
+  pages   = {31--40},
+}
+
+% webster1997log: title rewritten in math mode -- the Zotero record carries a raw
+% Unicode Gamma, which pdflatex cannot typeset; form follows the draft list.
+@article{webster1997log,
+  title   = {Log-convex solutions to the functional equation {$f(x+1) = g(x)f(x)$}: {$\Gamma$}-type functions},
+  volume  = {209},
+  doi     = {10.1006/jmaa.1997.5343},
+  number  = {2},
+  journal = {Journal of Mathematical Analysis and Applications},
+  author  = {Webster, Roger},
+  year    = {1997},
+  pages   = {605--623},
+}
+
+@article{wendel1952left,
+  title   = {Left centralizers and isomorphisms of group algebras},
+  volume  = {2},
+  doi     = {10.2140/pjm.1952.2.251},
+  number  = {2},
+  journal = {Pacific Journal of Mathematics},
+  author  = {Wendel, James G.},
+  year    = {1952},
+  pages   = {251--261},
+}
+
+% widder1941laplace: held copy is the 1946 reprint, pagination identical to 1941 --
+% the 1941 page anchors (AXIOMS.md A12/A13) are valid.
+@book{widder1941laplace,
+  address   = {Princeton, NJ},
+  series    = {Princeton Mathematical Series},
+  title     = {The Laplace Transform},
+  number    = {6},
+  publisher = {Princeton University Press},
+  author    = {Widder, David Vernon},
+  year      = {1941},
+}
+
+@article{yamazato1978unimodality,
+  title   = {Unimodality of infinitely divisible distribution functions of class {$L$}},
+  volume  = {6},
+  doi     = {10.1214/aop/1176995474},
+  number  = {4},
+  journal = {The Annals of Probability},
+  author  = {Yamazato, Makoto},
+  year    = {1978},
+  pages   = {523--531},
+}
