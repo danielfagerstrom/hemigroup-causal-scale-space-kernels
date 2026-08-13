@@ -110,16 +110,23 @@ $\mathbb{R}$.
 The factor is isolated as \texttt{mellinEulerFactor} rather than inlined, because the sign
 convention is where this chapter's bookkeeping errors would live: Lean's
 \texttt{inversionSymbol z} is this chapter's $B(-z)$.
-\textbf{The ($\Rightarrow$) direction needs two things more, and both are now in hand.} Its
-opening step is the covariance $A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, proved as
-\texttt{Hemigroup.inversionOperator\_lineDilate}. Its second is what licenses comparing
-coefficients of $g^{(j)}(x/\sigma)$ at all: that a differential expression is determined by its
-coefficients. In Lean that is a prescribed-jet construction --- at every point of $(0,\infty)$ and
-every order $m$, a test function whose jet there is the $m$-th basis vector --- and it is
-\texttt{Hemigroup.exists\_isTestFunction\_jet}, a monomial cut off by a bump function whose outer
-radius is $x_0/2$, so that its support sits inside $(0,\infty)$: the same constraint the
-integrations by parts need, arrived at from the other side. What remains of this node is the
-assembly.)}
+\textbf{Of the ($\Rightarrow$) direction, the coefficient half is machine-checked} as
+\texttt{coeff\_eq\_of\_isLocalOfOrder}: covariance forces $c_m(\sigma) = c_m(1)\sigma^{m-1}$, so
+the homogeneous form the statement above asserts is not imposed but derived. It rests on two
+things, both proved here. The covariance $A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$ itself is
+\texttt{inversionOperator\_lineDilate}. What licenses ``comparing coefficients'' at all --- that a
+differential expression is determined by its coefficients --- is
+\texttt{exists\_isTestFunction\_jet}: at every point of $(0,\infty)$ and every order $m$, a test
+function whose jet there is the $m$-th basis vector, built as a monomial cut off by a bump of
+outer radius $x_0/2$, so that its support sits inside $(0,\infty)$ --- the same constraint the
+integrations by parts need, arrived at from the other side. Feeding one such jet into both
+readings of $A\Delta_\sigma g$ at the point $\sigma$ collapses both sums to a single term; and
+since $x = \sigma$ sends $x/\sigma$ to $1$, a single jet at $1$ settles every $\sigma$ at once.
+\textbf{What is left of this node is one clause}: that the symbol is then the corresponding
+polynomial. That needs \texttt{verticalIntegrable\_mellin} sharpened from quadratic decay to decay
+of every order --- which the engine already supplies at every $j$, so it is a generalisation and
+not a new idea --- together with injectivity of the inverse transform on vertically integrable
+symbols.)}
 \end{lemma}
 
 \begin{proof}

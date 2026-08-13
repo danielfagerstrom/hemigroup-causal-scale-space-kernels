@@ -212,6 +212,17 @@ theorem IsTestFunction.lineDilate {σ : ℝ} (hσ : 0 < σ) {g : ℝ → ℂ} (h
     obtain ⟨t, ht, rfl⟩ := hsub hx
     exact mul_pos hσ (hg.tsupport_subset ht)
 
+/-- Dilation scales the iterated derivatives: `(Δ_σ g)^{(j)}(x) = σ^{-j} g^{(j)}(x/σ)`. -/
+theorem iteratedDeriv_lineDilate {σ : ℝ} (hσ : 0 < σ) {g : ℝ → ℂ} (hg : IsTestFunction g)
+    (j : ℕ) (x : ℝ) :
+    iteratedDeriv j (lineDilate σ g) x = ((σ⁻¹ : ℝ) ^ j) • iteratedDeriv j g (x / σ) := by
+  have hfun : lineDilate σ g = fun t : ℝ => g (σ⁻¹ * t) := by
+    funext t; simp [lineDilate, div_eq_inv_mul]
+  have hcd : ContDiff ℝ (j : ℕ∞) g := hg.contDiff.of_le (by exact_mod_cast le_top)
+  rw [hfun, iteratedDeriv_comp_const_smul hcd σ⁻¹]
+  congr 2
+  rw [div_eq_inv_mul]
+
 /-! ## Prescribed jets
 
 The (⇒) direction of `lem:local-polynomial-symbol` compares coefficients of `g^{(j)}(x/σ)`, which
@@ -322,5 +333,68 @@ theorem exists_isTestFunction_jet {x₀ : ℝ} (hx₀ : 0 < x₀) (m : ℕ) :
       simp [Nat.factorial_ne_zero]
     · rw [if_neg (by omega), Nat.descFactorial_eq_zero_iff_lt.mpr h]
       simp
+
+/-! ## Covariance forces the coefficients homogeneous
+
+The first half of `lem:local-polynomial-symbol`'s (⇒) direction, and the half the blueprint gets by
+"comparing coefficients of `g^{(j)}(x/σ)`". With the two ingredients above that comparison is a
+computation: apply locality to `Δ_σ g` at the point `σ`, apply covariance to the same thing, and
+feed both a test function whose jet at `1` is a basis vector. The sums collapse to a single term
+and the identity `c_m(σ) σ^{-m} = σ^{-1} c_m(1)` falls out.
+
+Only one point is needed, not a family: evaluating at `x = σ` sends `x/σ` to `1`, so a single jet
+at `1` settles every `σ` at once. -/
+
+namespace SelfDecomposableExponent
+
+variable (F : SelfDecomposableExponent)
+
+/-- **The coefficients of a local inversion operator are homogeneous**: `c_m(σ) = c_m(1) σ^{m-1}`.
+
+This is what the blueprint's covariance argument delivers, and it is where the article's claim that
+the Mellin class *forces* the form `γ_j x^{j-1}` is discharged --- nothing is imposed. -/
+theorem coeff_eq_of_isLocalOfOrder {c : ℝ} {n : ℕ} (hL : F.IsLocalOfOrder c n) {m : ℕ}
+    (hm : m ≤ n) {σ : ℝ} (hσ : 0 < σ) :
+    hL.coeff m σ = hL.coeff m 1 * (σ : ℂ) ^ ((m : ℤ) - 1) := by
+  obtain ⟨g, hg, hjet⟩ := exists_isTestFunction_jet (x₀ := (1 : ℝ)) one_pos m
+  have hσne : σ ≠ 0 := ne_of_gt hσ
+  have hσne' : (σ : ℂ) ≠ 0 := by simpa using hσne
+  have hdiv : σ / σ = 1 := div_self hσne
+  -- the two readings of `A (Δ_σ g) (σ)`
+  have hloc := hL.eq_sum_iteratedDeriv (IsTestFunction.lineDilate hσ hg) hσ
+  have hcov := inversionOperator_lineDilate F c hσ g hσ
+  have hbase := hL.eq_sum_iteratedDeriv hg one_pos
+  -- both sums collapse against the jet
+  have hcollapse : ∀ a : ℕ → ℂ,
+      ∑ j ∈ Finset.range (n + 1), a j * (if j = m then 1 else 0) = a m := by
+    intro a
+    rw [Finset.sum_eq_single m (fun b _ hb => by simp [hb]) fun hmem => ?_]
+    · simp
+    · exact absurd (Finset.mem_range.mpr (by omega)) hmem
+  have hleft : F.inversionOperator c (lineDilate σ g) σ
+      = hL.coeff m σ * ((σ : ℂ) ^ m)⁻¹ := by
+    rw [hloc]
+    have : ∀ j : ℕ, hL.coeff j σ * iteratedDeriv j (lineDilate σ g) σ
+        = (fun j => hL.coeff j σ * ((σ : ℂ) ^ j)⁻¹) j * (if j = m then 1 else 0) := by
+      intro j
+      rw [iteratedDeriv_lineDilate hσ hg, hdiv, hjet j, Complex.real_smul]
+      push_cast
+      rw [inv_pow]
+      by_cases h : j = m <;> simp [h]
+    rw [Finset.sum_congr rfl fun j _ => this j, hcollapse]
+  have hright : F.inversionOperator c g 1 = hL.coeff m 1 := by
+    rw [hbase]
+    have : ∀ j : ℕ, hL.coeff j 1 * iteratedDeriv j g 1
+        = hL.coeff j 1 * (if j = m then 1 else 0) := fun j => by rw [hjet j]
+    rw [Finset.sum_congr rfl fun j _ => this j, hcollapse]
+  rw [hdiv, hright] at hcov
+  rw [hleft] at hcov
+  -- `c_m(σ) σ^{-m} = σ^{-1} c_m(1)`
+  push_cast at hcov
+  rw [zpow_sub₀ hσne', zpow_natCast, zpow_one]
+  field_simp at hcov ⊢
+  linear_combination hcov
+
+end SelfDecomposableExponent
 
 end Hemigroup

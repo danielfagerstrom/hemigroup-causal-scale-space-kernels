@@ -23,18 +23,23 @@ import Hemigroup.LocalOperator
 
 Everything that was stated here has moved except one thing.
 
-## What is left: the (⇒) direction
+## What is left: one clause of the (⇒) direction
 
-`exists_symbol_eq_of_isLocalOfOrder` is the half that needs covariance. The blueprint gets the
-homogeneous form of the coefficients by imposing `A Δ_σ = σ^{-1} Δ_σ A` on `∑ c_j(x) ∂_x^j` and
-**comparing coefficients of `g^{(j)}(x/σ)`**. That comparison is the obligation: it says a
-differential expression is determined by its coefficients, which in Lean means exhibiting, at each
-point of `(0,∞)` and each order `j ≤ n`, a test function whose jet there is a prescribed vector.
-Mathlib's bump functions give the ingredients; the construction is the work.
+`exists_symbol_eq_of_isLocalOfOrder` has three conclusions and **two of them are proved**. That
+`γ n ≠ 0` and that `c_j(x) = γ_j x^{j-1}` both come from `coeff_eq_of_isLocalOfOrder`, which is the
+blueprint's covariance argument: apply locality to `Δ_σ g` at the point `σ`, apply
+`inversionOperator_lineDilate` to the same thing, and feed both a test function whose jet at `1`
+is a basis vector. The sums collapse and `c_m(σ) σ^{-m} = σ^{-1} c_m(1)` falls out. Evaluating at
+`x = σ` is what makes one jet, at the single point `1`, settle every `σ` at once.
 
-Nothing analytic remains beyond that. Once the coefficients are known to be `γ_j x^{j-1}`, the
-symbol identity follows by running `isLocalOfOrder_of_symbol_eq`'s computation backwards through
-`mellin_inversionOperator_eq` and injectivity of the Mellin transform on the line.
+The `sorry` is the third clause alone: that the symbol is then the corresponding polynomial,
+`B(z) = ∑ γ_j E_j(z)`. The route is to run `isLocalOfOrder_of_symbol_eq`'s computation backwards
+--- both `B·ĝ` and `P·ĝ` have the same inverse transform on `(0,∞)` --- and conclude that the two
+symbols agree on the line. Two things it will need that do not exist yet: vertical integrability
+of `P·ĝ` for a *polynomial* `P`, which needs `verticalIntegrable_mellin` sharpened from the `j = 2`
+decay it currently uses to decay of every order (the engine gives it at every `j`, so this is a
+generalisation and not a new idea); and injectivity of `mellinInv` on vertically integrable
+symbols.
 -/
 
 namespace Hemigroup
@@ -58,7 +63,17 @@ theorem exists_symbol_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
         hL.coeff j x = γ j * (x : ℂ) ^ ((j : ℤ) - 1)) ∧
       (∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
         F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) := by
-  sorry
+  refine ⟨fun j => hL.coeff j 1, ?_, ?_, ?_⟩
+  · -- the leading coefficient is nonzero at `1` because it is nonzero somewhere
+    obtain ⟨x₀, hx₀, hne⟩ := hL.leading_ne_zero
+    intro h
+    refine hne ?_
+    rw [F.coeff_eq_of_isLocalOfOrder hL le_rfl hx₀, show hL.coeff n 1 = 0 from h, zero_mul]
+  · -- covariance, which is `coeff_eq_of_isLocalOfOrder`
+    intro j hj x hx
+    exact F.coeff_eq_of_isLocalOfOrder hL (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)) hx
+  · -- the symbol identity: all that is left
+    sorry
 
 end SelfDecomposableExponent
 

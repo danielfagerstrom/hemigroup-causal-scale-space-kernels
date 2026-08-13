@@ -555,3 +555,13 @@ kernel.
 
 #print axioms Hemigroup.exists_isTestFunction_jet
 #print axioms Hemigroup.iteratedDeriv_ofReal_sub_pow
+
+/-! ### Covariance forces the coefficients homogeneous
+
+`c_m(σ) = c_m(1) σ^{m-1}` — the first half of the (⇒) direction of `lem:local-polynomial-symbol`,
+and the step the blueprint takes by "comparing coefficients of g^(j)(x/σ)". A17 through
+`inversionOperator`.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.coeff_eq_of_isLocalOfOrder
+#print axioms Hemigroup.iteratedDeriv_lineDilate
