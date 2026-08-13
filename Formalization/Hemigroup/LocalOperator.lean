@@ -82,19 +82,16 @@ and passing from one class to the other is an approximation argument the article
 Widening the definition is the smaller change and makes 12.2 and `lem:symbol-uniqueness` speak
 about the same objects, which they otherwise do not.
 
-The two clauses are separated because they cost differently. The test-function clause is what
-`isLocalOfOrderCore_of_symbol_eq` supplies from a polynomial symbol; the profile clause is true
-for the same reason but by a different computation --- `∂ₓ^j H(sx) = ∫ (-st)^j e^{-sxt} dμ(t)`,
-then the Gamma-integral hinge of `lem:mellin-data` --- which is
-`mellin_pow_mul_iteratedDeriv_profile` and is now proved.
-
-**What is still missing is not that computation but an estimate**, and naming it is the point of
-keeping the clauses apart. To run (⇐) on the profiles as well, `mellinInv_mellin_eq` would be
-applied to `h(x) = ∑ γ_j x^j ∂ₓ^j H(sx)`, whose transform is `P(z)·s^{-z}H̃(z)`; vertical
-integrability of that needs `∫ |τ|^n ‖Γ(c+iτ)‖ dτ < ∞` for the degree `n` of `P`, where
-`MellinVertical.lean` proves the case `n = 0` from the functional equation twice. Arbitrary
-polynomial decay is the same induction continued, and until it is done (⇐) produces
-`IsLocalOfOrderCore` while (⇒) consumes `IsLocalOfOrder`. -/
+The two clauses are separated because they cost differently, and the difference is worth keeping
+visible now that both are proved. The test-function clause is `isLocalOfOrderCore_of_symbol_eq`,
+here. The profile clause is true for the same reason but by two different ingredients, and lives
+in `ProfileEuler.lean` where they are: the engine `M[xʲ∂ₓʲH(s·)](w) = E_j(w)M[H(s·)](w)`, which
+needs no integration by parts because `∂ₓ^j H(sx) = ∫ (-st)^j e^{-sxt} dμ(t)` is already an
+integral; and vertical integrability of `P(z)·s^{-z}H̃(z)`, which needs
+`∫ |τ|ⁿ‖Γ(c+iτ)‖ dτ < ∞` where `lem:mellin-vertical` needed only the case `n = 0`. The second was
+the whole of what was missing, and it is the same induction: `Γ(z+k)/Γ(z)` is `k` factors of
+imaginary part `τ`. See `isLocalOfOrder_of_symbol_eq` and
+`nonempty_isLocalOfOrder_iff_symbol_eq`, which is the equivalence the blueprint states. -/
 structure IsLocalOfOrder (c : ℝ) (n : ℕ) extends IsLocalOfOrderCore F c n where
   /-- Agreement with the differential expression on the profiles as well. -/
   eq_sum_iteratedDeriv_profile : ∀ {s : ℝ}, 0 < s → ∀ {x : ℝ}, 0 < x →
@@ -130,22 +127,26 @@ stated without it for that reason. But "the zeros are null" is `lem:inversion-sy
 `H̃` analytic and not identically zero on the strip, which needs (H). So (H) enters here as the
 price of a hypothesis the other direction can actually supply, not as a step of the proof. (H) was
 in any case already doing something for this statement: `0 < c < z_* - 1` is inhabited only when
-`z_* > 1`. -/
-theorem isLocalOfOrderCore_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+`z_* > 1`.
+
+Locality is data, so the content of this direction is the *structure*, with its coefficients
+displayed: that is `isLocalOfOrderCoreOfSymbolEq`, and a caller that has to say which coefficients
+it got --- as the profile clause below does --- takes it rather than the `Nonempty` reading. -/
+noncomputable def isLocalOfOrderCoreOfSymbolEq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
     (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
     (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
-    Nonempty (F.IsLocalOfOrderCore c n) := by
-  refine ⟨{ coeff := fun j x => γ j * (x : ℂ) ^ ((j : ℤ) - 1)
-            continuousOn_coeff := ?_
-            leading_ne_zero := ⟨1, one_pos, by simpa using hγ⟩
-            eq_sum_iteratedDeriv := ?_ }⟩
-  · intro j
+    F.IsLocalOfOrderCore c n where
+  coeff := fun j x => γ j * (x : ℂ) ^ ((j : ℤ) - 1)
+  continuousOn_coeff := by
+    intro j
     refine continuousOn_const.mul (ContinuousOn.zpow₀ ?_ _ fun x hx => Or.inl ?_)
     · exact Complex.continuous_ofReal.continuousOn
     · simpa using ne_of_gt (mem_Ioi.mp hx)
-  · intro g hg x hx
+  leading_ne_zero := ⟨1, one_pos, by simpa using hγ⟩
+  eq_sum_iteratedDeriv := by
+    intro g hg x hx
     have hxne : (x : ℂ) ≠ 0 := by simpa using ne_of_gt hx
     -- the symbol identity, transported to the transforms along the line --- almost everywhere,
     -- the zeros of `H̃` on the line being null
@@ -181,6 +182,25 @@ theorem isLocalOfOrderCore_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (h
     rw [zpow_sub₀ hxne, zpow_natCast, zpow_one]
     push_cast
     field_simp
+
+/-- **`lem:local-polynomial-symbol`, the (⇐) direction**, in its propositional reading --- the one
+`thm:locality` quantifies over. -/
+theorem isLocalOfOrderCore_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+      mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
+      F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
+    Nonempty (F.IsLocalOfOrderCore c n) :=
+  ⟨F.isLocalOfOrderCoreOfSymbolEq hH hc hc' γ hγ hsymbol⟩
+
+@[simp] theorem coeff_isLocalOfOrderCoreOfSymbolEq (hH : F.StandingHypothesis) {c : ℝ}
+    (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+      mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
+      F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) (j : ℕ)
+    (x : ℝ) :
+    (F.isLocalOfOrderCoreOfSymbolEq hH hc hc' γ hγ hsymbol).coeff j x
+      = γ j * (x : ℂ) ^ ((j : ℤ) - 1) := rfl
 
 end SelfDecomposableExponent
 

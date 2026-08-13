@@ -8,9 +8,11 @@ import Hemigroup.ProfileDeriv
 import Hemigroup.SymbolUniqueness
 
 /-!
-# The Euler engine on the profile class, and the (⇒) direction of `lem:local-polynomial-symbol`
+# The Euler engine on the profile class, and `lem:local-polynomial-symbol` closed
 
-Blueprint: the second half of `lem:local-polynomial-symbol` (12.2).
+Blueprint: `lem:local-polynomial-symbol` (12.2) --- the (⇒) direction entire, and the profile
+clause of (⇐), which together with `LocalOperator.lean`'s test-function clause makes the node an
+equivalence (`nonempty_isLocalOfOrder_iff_symbol_eq`).
 
 `MellinEuler.lean` proves `M[xʲ g⁽ʲ⁾](w) = E_j(w)·M[g](w)` for *test functions*, by `j`
 integrations by parts. The profiles `H(s·)` are not test functions, and the same identity on them
@@ -60,6 +62,17 @@ excluding it here would be a theorem about self-decomposable laws that the artic
 The recursion is in any case the form the chapter consumes --- `lem:moment-recursion`(2) argues
 from `H̃(z+1) = B(-z)H̃(z)` *as an identity between analytic functions*, not from a pointwise
 value of `B`.
+
+## Why the two directions now meet
+
+`def:locality-pmp` tests locality on two classes, so (⇐) has to be run twice, and the profile run
+needed one thing the test-function run had for free. On a test function `g`, `P·g̃` is vertically
+integrable because `E_j(z)g̃(z)` is itself the transform of a test function
+(`verticalIntegrable_mellin`). On a profile it is not free: `M[E](c+iτ) = P(c+iτ)s^{-(c+iτ)}
+H̃(c+iτ)`, and `H̃`'s decay is `Γ`'s, so the estimate wanted is `∫ |τ|ⁿ‖Γ(c+iτ)‖ dτ < ∞`. That is
+`lem:mellin-vertical`'s own estimate with `n` in place of `0` --- `Γ(z+k)/Γ(z)` is `k` factors
+each of imaginary part `τ` --- and it is proved in `MellinVertical.lean` beside the `n = 0` case.
+It was the only thing standing between the halves.
 -/
 
 namespace Hemigroup
@@ -67,27 +80,11 @@ namespace Hemigroup
 open MeasureTheory Set Filter
 open scoped ENNReal NNReal Topology
 
-/-! ## Two identities about `Γ` and the Euler factor
+/-! ## The Euler factor: its sign, its size, and the sum rule
 
-`E_j(z) = (-1)ʲ Γ(z+j)/Γ(z)` is the whole of the bookkeeping, and it is cleanest as two
-statements that never divide. -/
-
-/-- `Γ(z+j) = (z)(z+1)⋯(z+j-1)·Γ(z)`: the functional equation `j` times. The hypothesis
-`0 < Re z` is what keeps every intermediate argument away from the pole. -/
-theorem Gamma_add_natCast {z : ℂ} (hz : 0 < z.re) (j : ℕ) :
-    Complex.Gamma (z + j) = (∏ i ∈ Finset.range j, (z + (i : ℂ))) * Complex.Gamma z := by
-  induction j with
-  | zero => simp
-  | succ k ih =>
-      have hne : z + (k : ℂ) ≠ 0 := by
-        intro h
-        have hre : (z + (k : ℂ)).re = 0 := by rw [h]; simp
-        rw [Complex.add_re, Complex.natCast_re] at hre
-        have := Nat.cast_nonneg (α := ℝ) k
-        linarith
-      rw [show z + ((k + 1 : ℕ) : ℂ) = (z + (k : ℂ)) + 1 by push_cast; ring,
-        Complex.Gamma_add_one _ hne, ih, Finset.prod_range_succ]
-      ring
+`E_j(z) = (-1)ʲ Γ(z+j)/Γ(z)` is the whole of the bookkeeping, and `Gamma_add_natCast` --- the
+functional equation `j` times, in `MellinVertical.lean` where the `Γ` estimates live --- is the
+half of it that never divides. -/
 
 /-- The Euler factor with its sign pulled out: `E_j(z) = (-1)ʲ (z)(z+1)⋯(z+j-1)`. -/
 theorem mellinEulerFactor_eq_neg_one_pow_mul_prod (j : ℕ) (z : ℂ) :
@@ -95,6 +92,36 @@ theorem mellinEulerFactor_eq_neg_one_pow_mul_prod (j : ℕ) (z : ℂ) :
   have h : ∀ i ∈ Finset.range j, -z - (i : ℂ) = (-1) * (z + (i : ℂ)) := fun i _ => by ring
   rw [mellinEulerFactor, Finset.prod_congr rfl h, Finset.prod_mul_distrib, Finset.prod_const,
     Finset.card_range]
+
+/-- **The Euler factor is a polynomial in the height, and this is the bound that says so.**
+
+On the line `Re z = c`, `‖E_j(c+iτ)‖ ≤ (M + |τ|)ⁿ` for `j ≤ n` and `M = c + n + 1`. The shape
+`(M + |τ|)ⁿ` rather than an expanded polynomial is chosen so that a product of `j` linear factors
+is dominated in one step, and so that `Γ` beating it is the binomial theorem plus
+`integrable_norm_Gamma_mul_pow_vertical`. -/
+theorem norm_mellinEulerFactor_le {c : ℝ} (hc : 0 < c) {n j : ℕ} (hj : j ≤ n) (τ : ℝ) :
+    ‖mellinEulerFactor j ((c : ℂ) + τ * Complex.I)‖ ≤ (c + n + 1 + |τ|) ^ n := by
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hτ : (0 : ℝ) ≤ |τ| := abs_nonneg τ
+  have hM1 : (1 : ℝ) ≤ c + n + 1 + |τ| := by linarith
+  have hfac : ∀ i ∈ Finset.range j,
+      ‖-((c : ℂ) + τ * Complex.I) - (i : ℂ)‖ ≤ c + n + 1 + |τ| := by
+    intro i hi
+    have hin : (i : ℝ) ≤ n := by
+      have := Finset.mem_range.mp hi
+      exact_mod_cast le_trans (Nat.le_of_lt_succ (by omega)) le_rfl
+    refine le_trans (Complex.norm_le_abs_re_add_abs_im _) ?_
+    have hre : (-((c : ℂ) + τ * Complex.I) - (i : ℂ)).re = -(c + i) := by simp; ring
+    have him : (-((c : ℂ) + τ * Complex.I) - (i : ℂ)).im = -τ := by simp
+    rw [hre, him, abs_neg, abs_neg, abs_of_nonneg (by positivity : (0 : ℝ) ≤ c + (i : ℝ))]
+    linarith
+  calc ‖mellinEulerFactor j ((c : ℂ) + τ * Complex.I)‖
+      = ∏ i ∈ Finset.range j, ‖-((c : ℂ) + τ * Complex.I) - (i : ℂ)‖ := by
+        rw [mellinEulerFactor, norm_prod]
+    _ ≤ ∏ _i ∈ Finset.range j, (c + n + 1 + |τ|) :=
+        Finset.prod_le_prod (fun _ _ => norm_nonneg _) hfac
+    _ = (c + n + 1 + |τ|) ^ j := by rw [Finset.prod_const, Finset.card_range]
+    _ ≤ (c + n + 1 + |τ|) ^ n := pow_le_pow_right₀ hM1 hj
 
 /-- The Mellin transform of a finite sum, given that each summand converges. -/
 theorem mellin_finset_sum {ι : Type*} (s : Finset ι) (f : ι → ℝ → ℂ) (z : ℂ)
@@ -105,6 +132,16 @@ theorem mellin_finset_sum {ι : Type*} (s : Finset ι) (f : ι → ℝ → ℂ) 
   refine setIntegral_congr_fun measurableSet_Ioi fun x _ => ?_
   simp only [smul_eq_mul]
   exact Finset.mul_sum _ _ _
+
+/-- A finite sum of Mellin-convergent functions converges. -/
+theorem mellinConvergent_finset_sum {ι : Type*} (s : Finset ι) (f : ι → ℝ → ℂ) (z : ℂ)
+    (hf : ∀ i ∈ s, MellinConvergent (f i) z) :
+    MellinConvergent (fun x => ∑ i ∈ s, f i x) z := by
+  refine (integrable_finsetSum (μ := volume.restrict (Ioi (0 : ℝ))) s
+    (f := fun i x => (x : ℂ) ^ (z - 1) • f i x) fun i hi => hf i hi).congr
+    (.of_forall fun x => ?_)
+  simp only [smul_eq_mul]
+  exact (Finset.mul_sum _ _ _).symm
 
 theorem measurable_toNNReal_pow (j : ℕ) : Measurable fun t : ℝ => Real.toNNReal (t ^ j) :=
   Measurable.real_toNNReal (by fun_prop)
@@ -278,6 +315,120 @@ theorem mellinConvergent_pow_mul_iteratedDeriv_profile (hH : F.StandingHypothesi
   rw [F.iteratedDeriv_profileC_eq_weightedProfile hs j (mem_Ioi.mp hx)]
   simp only [smul_eq_mul, Complex.cpow_natCast]
 
+/-! ## The differential expression a polynomial symbol defines
+
+`∑_{j≤n} γ_j xʲ ∂ₓʲ H(sx)` is read in both directions of `lem:local-polynomial-symbol`: (⇒)
+proves that `s·x·H(sx)` equals it, and (⇐) has to produce it from the symbol. It is worth a name,
+because the three things asked of it below --- convergence, vertical integrability, continuity ---
+are exactly the hypotheses of Mathlib's `mellinInv_mellin_eq`, and the middle one is where the
+degree of the polynomial is paid for. -/
+
+/-- `∑_{j≤n} γ_j xʲ ∂ₓʲ H(sx)`, a polynomial symbol's differential expression on a profile
+dilate. -/
+noncomputable def eulerExpression (γ : ℕ → ℂ) (n : ℕ) (s : ℝ) (x : ℝ) : ℂ :=
+  ∑ j ∈ Finset.range (n + 1), γ j *
+    ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x)
+
+theorem eulerExpression_eq (γ : ℕ → ℂ) (n : ℕ) (s : ℝ) :
+    F.eulerExpression γ n s = fun x : ℝ => ∑ j ∈ Finset.range (n + 1), γ j *
+      ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) := rfl
+
+theorem mellinConvergent_eulerExpression (hH : F.StandingHypothesis) {s : ℝ} (hs : 0 < s)
+    (γ : ℕ → ℂ) (n : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
+    MellinConvergent (F.eulerExpression γ n s) w := by
+  rw [eulerExpression_eq]
+  refine mellinConvergent_finset_sum _ _ _ fun j _ => ?_
+  simpa only [smul_eq_mul] using
+    (F.mellinConvergent_pow_mul_iteratedDeriv_profile hH hs j hw hw').const_smul (γ j)
+
+/-- **The engine, summed**: `M[E](w) = P(w)·M[H(s·)](w)`, with `mellin_finset_sum` splitting the
+sum --- licensed by the convergence of each term and not by any estimate on the whole. -/
+theorem mellin_eulerExpression (hH : F.StandingHypothesis) {s : ℝ} (hs : 0 < s) (γ : ℕ → ℂ)
+    (n : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
+    mellin (F.eulerExpression γ n s) w
+      = (∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j w) *
+        mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
+  have hconv : ∀ j ∈ Finset.range (n + 1), MellinConvergent (fun x : ℝ => γ j *
+      ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x)) w := by
+    intro j _
+    simpa only [smul_eq_mul] using
+      (F.mellinConvergent_pow_mul_iteratedDeriv_profile hH hs j hw hw').const_smul (γ j)
+  rw [eulerExpression_eq, mellin_finset_sum _ _ _ hconv, Finset.sum_mul]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  have hterm : mellin (fun x : ℝ => γ j *
+      ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x)) w
+      = γ j * mellin (fun x : ℝ => (x : ℂ) ^ j *
+          iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) w := by
+    simpa only [smul_eq_mul] using
+      mellin_const_smul (fun x : ℝ => (x : ℂ) ^ j *
+        iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) w (γ j)
+  rw [hterm, F.mellin_pow_mul_iteratedDeriv_profile hH hs j hw hw']
+  ring
+
+/-- **Vertical integrability of the Euler expression's transform** --- the one estimate that was
+missing, and the only one.
+
+`M[E](c+iτ) = P(c+iτ)·s^{-(c+iτ)}·H̃(c+iτ)`, and `‖H̃(c+iτ)‖ ≤ m(c)·‖Γ(c+iτ)‖` by
+`lem:mellin-data`'s bound. `P` grows polynomially in the height, `Γ` decays faster than every
+power, and `integrable_norm_Gamma_mul_add_abs_pow_vertical` is that. This is `lem:mellin-vertical`
+with `n` in place of `0`, by the same induction. -/
+theorem verticalIntegrable_mellin_eulerExpression (hH : F.StandingHypothesis) {s : ℝ} (hs : 0 < s)
+    (γ : ℕ → ℂ) (n : ℕ) {c : ℝ} (hc : 0 < c) (hc' : c < F.zStar) :
+    Complex.VerticalIntegrable (mellin (F.eulerExpression γ n s)) c := by
+  have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
+  have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
+  have hpt : ∀ τ : ℝ, mellin (F.eulerExpression γ n s) ((c : ℂ) + τ * Complex.I)
+      = (∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j ((c : ℂ) + τ * Complex.I)) *
+        ((s : ℂ) ^ (-((c : ℂ) + τ * Complex.I)) *
+          mellin (fun u : ℝ => (F.profile u : ℂ)) ((c : ℂ) + τ * Complex.I)) := by
+    intro τ
+    have hre : ((c : ℂ) + τ * Complex.I).re = c := by simp
+    rw [F.mellin_eulerExpression hH hs γ n (by rw [hre]; exact hc) (by rw [hre]; exact hc'),
+      F.mellin_profile_comp_mul hs]
+  have hcont : Continuous fun τ : ℝ =>
+      mellin (F.eulerExpression γ n s) ((c : ℂ) + τ * Complex.I) := by
+    have h1 : Continuous fun τ : ℝ =>
+        ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j ((c : ℂ) + τ * Complex.I) := by
+      refine continuous_finsetSum _ fun j _ => continuous_const.mul ?_
+      simp only [mellinEulerFactor]
+      exact continuous_finsetProd _ fun i _ => by fun_prop
+    have h2 : Continuous fun τ : ℝ => (s : ℂ) ^ (-((c : ℂ) + τ * Complex.I)) :=
+      (by fun_prop : Continuous fun τ : ℝ => -((c : ℂ) + τ * Complex.I)).const_cpow (Or.inl hs0)
+    simp only [hpt]
+    exact h1.mul (h2.mul (F.continuous_mellin_profile_vertical hH hc hc'))
+  refine ((integrable_norm_Gamma_mul_add_abs_pow_vertical hc (c + n + 1) n).const_mul
+    ((∑ j ∈ Finset.range (n + 1), ‖γ j‖) * (s ^ (-c) * (F.negMoment c).toReal))).mono'
+    hcont.aestronglyMeasurable ?_
+  filter_upwards with τ
+  have hMnn : (0 : ℝ) ≤ c + n + 1 + |τ| := by have := abs_nonneg τ; linarith
+  have hP : ‖∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j ((c : ℂ) + τ * Complex.I)‖
+      ≤ (∑ j ∈ Finset.range (n + 1), ‖γ j‖) * (c + n + 1 + |τ|) ^ n := by
+    calc ‖∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j ((c : ℂ) + τ * Complex.I)‖
+        ≤ ∑ j ∈ Finset.range (n + 1), ‖γ j * mellinEulerFactor j ((c : ℂ) + τ * Complex.I)‖ :=
+          norm_sum_le _ _
+      _ ≤ ∑ j ∈ Finset.range (n + 1), ‖γ j‖ * (c + n + 1 + |τ|) ^ n := by
+          refine Finset.sum_le_sum fun j hj => ?_
+          rw [norm_mul]
+          exact mul_le_mul_of_nonneg_left
+            (norm_mellinEulerFactor_le hc (Nat.lt_succ_iff.mp (Finset.mem_range.mp hj)) τ)
+            (norm_nonneg _)
+      _ = _ := by rw [Finset.sum_mul]
+  have hsnorm : ‖(s : ℂ) ^ (-((c : ℂ) + τ * Complex.I))‖ = s ^ (-c) := by
+    rw [Complex.norm_cpow_eq_rpow_re_of_pos hs]
+    simp
+  rw [hpt τ, norm_mul, norm_mul, hsnorm]
+  calc ‖∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j ((c : ℂ) + τ * Complex.I)‖ *
+        (s ^ (-c) * ‖mellin (fun u : ℝ => (F.profile u : ℂ)) ((c : ℂ) + τ * Complex.I)‖)
+      ≤ ((∑ j ∈ Finset.range (n + 1), ‖γ j‖) * (c + n + 1 + |τ|) ^ n) *
+        (s ^ (-c) * ((F.negMoment c).toReal *
+          ‖Complex.Gamma ((c : ℂ) + τ * Complex.I)‖)) := by
+        refine mul_le_mul hP
+          (mul_le_mul_of_nonneg_left (F.norm_mellin_profile_le hH hc hc' τ)
+            (Real.rpow_nonneg hs.le _))
+          (mul_nonneg (Real.rpow_nonneg hs.le _) (norm_nonneg _))
+          (mul_nonneg (Finset.sum_nonneg fun _ _ => norm_nonneg _) (pow_nonneg hMnn n))
+    _ = _ := by ring
+
 /-! ## From locality to the symbol
 
 The profile clause of `def:locality-pmp` gives one reading of `A[H(s·)]` and
@@ -316,8 +467,7 @@ theorem mul_profile_eq_sum_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : �
 /-- **The transform-level identity.** `h̃(w) = P(w)·g̃(w)` on the strip, for the profile dilate
 `g = H(s·)` and its realising function `h(x) = s x H(sx)`.
 
-The engine term by term, with `mellin_finset_sum` splitting the sum --- which is licensed by the
-convergence of each term and not by any estimate on the whole. -/
+The pointwise identity says `h` *is* the Euler expression, so this is `mellin_eulerExpression`. -/
 theorem mellin_profile_weight_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
     (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s)
     {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
@@ -325,28 +475,12 @@ theorem mellin_profile_weight_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {
       = (∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j w) *
         mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
   have hcongr : mellin (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) w
-      = mellin (fun x : ℝ => ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 *
-          ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x)) w := by
+      = mellin (F.eulerExpression (fun j => hL.coeff j 1) n s) w := by
     rw [mellin, mellin]
     exact setIntegral_congr_fun measurableSet_Ioi fun x hx => by
       rw [F.mul_profile_eq_sum_of_isLocalOfOrder hH hc hc' hL hs (mem_Ioi.mp hx)]
-  have hconv : ∀ j ∈ Finset.range (n + 1), MellinConvergent (fun x : ℝ => hL.coeff j 1 *
-      ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x)) w := by
-    intro j _
-    simpa only [smul_eq_mul] using
-      (F.mellinConvergent_pow_mul_iteratedDeriv_profile hH hs j hw hw').const_smul
-        (hL.coeff j 1)
-  rw [hcongr, mellin_finset_sum _ _ _ hconv, Finset.sum_mul]
-  refine Finset.sum_congr rfl fun j _ => ?_
-  have hterm : mellin (fun x : ℝ => hL.coeff j 1 *
-      ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x)) w
-      = hL.coeff j 1 * mellin (fun x : ℝ => (x : ℂ) ^ j *
-          iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) w := by
-    simpa only [smul_eq_mul] using
-      mellin_const_smul (fun x : ℝ => (x : ℂ) ^ j *
-        iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) w (hL.coeff j 1)
-  rw [hterm, F.mellin_pow_mul_iteratedDeriv_profile hH hs j hw hw']
-  ring
+      rfl
+  rw [hcongr, F.mellin_eulerExpression hH hs _ n hw hw']
 
 /-- **The recursion `H̃(z+1) = P(z)·H̃(z)`, at every point of the strip and with no side
 condition.**
@@ -439,6 +573,108 @@ theorem exists_symbol_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
   · -- the symbol identity, off the zeros of `H̃`
     intro z hz hz' hne
     exact (F.sameSymbolAction_of_isLocalOfOrder hH hc hc' hL).eqOn_of_ne_zero ⟨⟨hz, hz'⟩, hne⟩
+
+/-! ## The (⇐) direction on the profiles, and the equivalence
+
+`isLocalOfOrderCore_of_symbol_eq` gets the test-function clause of `def:locality-pmp` from a
+polynomial symbol. The profile clause is the same argument with the profiles in place of the test
+functions, and it needed two things the test-function case had for free: the engine
+(`mellin_pow_mul_iteratedDeriv_profile`, no integration by parts) and vertical integrability of
+`P·g̃`, which for a test function is `verticalIntegrable_mellin` and here is the polynomial decay
+of `Γ`. With both, the two directions meet. -/
+
+/-- The complex iterated derivatives of the profile are continuous on `(0,∞)`: they are the real
+ones under `ofReal`, and those are differentiable. This is `mellinInv_mellin_eq`'s third
+hypothesis. -/
+theorem continuousAt_iteratedDeriv_profileC_comp_mul {s : ℝ} (hs : 0 < s) (j : ℕ) {x : ℝ}
+    (hx : 0 < x) : ContinuousAt (iteratedDeriv j fun v : ℝ => (F.profile (s * v) : ℂ)) x := by
+  have heq : (iteratedDeriv j fun v : ℝ => (F.profile (s * v) : ℂ))
+      =ᶠ[𝓝 x] fun v : ℝ => ((iteratedDeriv j (fun u : ℝ => F.profile (s * u)) v : ℝ) : ℂ) := by
+    filter_upwards [isOpen_Ioi.mem_nhds (mem_Ioi.mpr hx)] with v hv
+    exact iteratedDeriv_ofReal_comp (f := fun u : ℝ => F.profile (s * u)) isOpen_Ioi
+      (fun k y hy => F.differentiableAt_iteratedDeriv_profile_comp_mul hs k hy) j hv
+  refine ContinuousAt.congr ?_ heq.symm
+  exact Complex.continuous_ofReal.continuousAt.comp
+    (F.differentiableAt_iteratedDeriv_profile_comp_mul hs j hx).continuousAt
+
+theorem continuousAt_eulerExpression {s : ℝ} (hs : 0 < s) (γ : ℕ → ℂ) (n : ℕ) {x : ℝ}
+    (hx : 0 < x) : ContinuousAt (F.eulerExpression γ n s) x := by
+  rw [eulerExpression_eq]
+  refine tendsto_finsetSum _ fun j _ => ?_
+  exact continuousAt_const.mul ((Complex.continuous_ofReal.continuousAt.pow j).mul
+    (F.continuousAt_iteratedDeriv_profileC_comp_mul hs j hx))
+
+/-- **The profile clause of the (⇐) direction.** A polynomial symbol acts on a profile dilate by
+the differential expression, exactly as it does on a test function.
+
+The route is the same as there and the two hypotheses that were harder are now available: the
+symbol identity moves to the transforms *almost everywhere on the line*, and
+`mellinInv_mellin_eq` recovers the Euler expression from its transform. -/
+theorem inversionOperator_profile_eq_eulerExpression (hH : F.StandingHypothesis) {c : ℝ}
+    (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+      mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
+      F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z)
+    {s : ℝ} (hs : 0 < s) {x : ℝ} (hx : 0 < x) :
+    F.inversionOperator c (fun u : ℝ => (F.profile (s * u) : ℂ)) x
+      = ((x⁻¹ : ℝ) : ℂ) * F.eulerExpression γ n s x := by
+  have hre : ∀ y : ℝ, ((c : ℂ) + y * Complex.I).re = c := fun y => by simp
+  have hline : ∀ᵐ y : ℝ,
+      F.inversionSymbol ((c : ℂ) + y * Complex.I) *
+          mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) ((c : ℂ) + y * Complex.I)
+        = mellin (F.eulerExpression γ n s) ((c : ℂ) + y * Complex.I) := by
+    filter_upwards [F.ae_mellin_profile_ne_zero hH hc (by linarith)] with y hy
+    rw [hsymbol _ (by rw [hre]; exact hc) (by rw [hre]; exact hc') hy,
+      F.mellin_eulerExpression hH hs γ n (by rw [hre]; exact hc) (by rw [hre]; linarith)]
+  rw [inversionOperator,
+    mellinInv_congr_line_ae
+      (G := fun z => F.inversionSymbol z * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) z)
+      (G' := mellin (F.eulerExpression γ n s)) c x hline,
+    mellinInv_mellin_eq c (F.eulerExpression γ n s) hx
+      (F.mellinConvergent_eulerExpression hH hs γ n
+        (by simp only [Complex.ofReal_re]; exact hc)
+        (by simp only [Complex.ofReal_re]; linarith))
+      (F.verticalIntegrable_mellin_eulerExpression hH hs γ n hc (by linarith))
+      (F.continuousAt_eulerExpression hs γ n hx)]
+
+/-- **`lem:local-polynomial-symbol`, the (⇐) direction, entire**: a polynomial symbol makes `A`
+local of order `n` in the full sense of `def:locality-pmp`, profiles included. -/
+theorem isLocalOfOrder_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+      mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
+      F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
+    Nonempty (F.IsLocalOfOrder c n) := by
+  refine ⟨{ toIsLocalOfOrderCore := F.isLocalOfOrderCoreOfSymbolEq hH hc hc' γ hγ hsymbol
+            eq_sum_iteratedDeriv_profile := ?_ }⟩
+  intro s hs x hx
+  have hxne : (x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
+  rw [F.inversionOperator_profile_eq_eulerExpression hH hc hc' γ hsymbol hs hx,
+    eulerExpression, Finset.mul_sum]
+  refine Finset.sum_congr rfl fun j _ => ?_
+  rw [coeff_isLocalOfOrderCoreOfSymbolEq, zpow_sub₀ hxne, zpow_natCast, zpow_one,
+    Complex.ofReal_inv]
+  field_simp
+
+/-- **`lem:local-polynomial-symbol`.** `A` is local of order `n` at height `c` if and only if its
+symbol is the polynomial `∑_{j≤n} γ_j E_j` with `γ_n ≠ 0` --- the symbol identity read, as it must
+be, off the zeros of `H̃`.
+
+The bundle, in the sense `thm:main-characterization` and `thm:signaling-form` are bundles: the
+halves are what carry the content, and `exists_symbol_eq_of_isLocalOfOrder` additionally carries
+the coefficient form `c_j(x) = γ_j x^{j-1}`, which an equivalence of this shape cannot state. -/
+theorem nonempty_isLocalOfOrder_iff_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : c < F.zStar - 1) (n : ℕ) :
+    Nonempty (F.IsLocalOfOrder c n) ↔
+      ∃ γ : ℕ → ℂ, γ n ≠ 0 ∧ ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+        mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
+        F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z := by
+  constructor
+  · rintro ⟨hL⟩
+    obtain ⟨γ, hγ, -, hsym⟩ := F.exists_symbol_eq_of_isLocalOfOrder hH hc hc' hL
+    exact ⟨γ, hγ, hsym⟩
+  · rintro ⟨γ, hγ, hsym⟩
+    exact F.isLocalOfOrder_of_symbol_eq hH hc hc' γ hγ hsym
 
 end SelfDecomposableExponent
 

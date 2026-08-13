@@ -293,6 +293,24 @@ Lean core; the profile's vertical integrability inherits A17 through `kernel`, a
 #print axioms Hemigroup.integrable_norm_Gamma_vertical
 #print axioms Hemigroup.SelfDecomposableExponent.verticalIntegrable_mellin_profile
 
+/-! ### The same estimate against an arbitrary polynomial
+
+Chapter 12 inverts `P(z)·H̃(z)` with `P` of degree `n`, and needs `∫ |τ|ⁿ‖Γ(c+iτ)‖ dτ < ∞`. It is
+the lemma above with the functional equation peeled `n` times instead of twice — each factor of
+`Γ(z+k)/Γ(z)` has imaginary part `τ`, so it contributes a `|τ|` — and the binomial theorem to turn
+`(M+|τ|)ⁿ` into a finite sum of those. No asymptotics, and Lean core alone: nothing here mentions
+a kernel.
+
+This is what was standing between the two directions of `lem:local-polynomial-symbol`. Recording
+it separately is the point: the missing piece was never the Fubini-and-Gamma computation, which is
+below, but one estimate, and naming it is what let it be done.
+-/
+
+#print axioms Hemigroup.Gamma_add_natCast
+#print axioms Hemigroup.norm_Gamma_mul_pow_le
+#print axioms Hemigroup.integrable_norm_Gamma_mul_pow_vertical
+#print axioms Hemigroup.integrable_norm_Gamma_mul_add_abs_pow_vertical
+
 /-! ### `def:inversion-operator` (11.3), ledger **A12**
 
 The operator, and the two theorems that compute it. What these lines check is narrower than the
@@ -545,6 +563,7 @@ evaluating on it.
 #print axioms Hemigroup.mellinInv_congr_line_ae
 #print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrderCore
 #print axioms Hemigroup.SelfDecomposableExponent.IsLocalOfOrder
+#print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrderCoreOfSymbolEq
 #print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrderCore_of_symbol_eq
 
 /-! ### Covariance of the inversion operator
@@ -614,8 +633,8 @@ factor, and what is left is `lem:mellin-data` on the weighted law. A17 through `
 Lean core alone.
 -/
 
-#print axioms Hemigroup.Gamma_add_natCast
 #print axioms Hemigroup.mellinEulerFactor_eq_neg_one_pow_mul_prod
+#print axioms Hemigroup.norm_mellinEulerFactor_le
 #print axioms Hemigroup.mellin_finset_sum
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_weightedProfile
 #print axioms Hemigroup.SelfDecomposableExponent.mellinConvergent_weightedProfile
@@ -641,3 +660,24 @@ the zeros of `H̃`, because at a zero `inversionSymbol z` is `H̃(z+1)/0`, whose
 #print axioms Hemigroup.SelfDecomposableExponent.realisesAction_sum_mellinEulerFactor
 #print axioms Hemigroup.SelfDecomposableExponent.eventuallyEq_inversionSymbol_of_isLocalOfOrder
 #print axioms Hemigroup.SelfDecomposableExponent.exists_symbol_eq_of_isLocalOfOrder
+
+/-! ### `lem:local-polynomial-symbol` — the equivalence
+
+The (⇐) direction on the profiles, and the bundle. `def:locality-pmp` tests locality on two
+classes, so this direction had to be run twice; on the test functions it is
+`isLocalOfOrderCore_of_symbol_eq`, and on the profiles it needed the engine (no integration by
+parts) together with vertical integrability of `P·g̃`, which is the polynomial `Γ` decay above.
+
+`nonempty_isLocalOfOrder_iff_symbol_eq` is a **bundle**, in the sense `thm:main-characterization`
+and `thm:signaling-form` are: it necessarily depends on everything both halves do, so the per-half
+lines remain the load-bearing ones. It also asserts *less* than the halves — the coefficient form
+`c_j(x) = γ_j x^{j-1}` cannot be stated in an equivalence of this shape, and lives in
+`exists_symbol_eq_of_isLocalOfOrder`. A17 throughout, through `inversionOperator` and `lawT₁`.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.eulerExpression
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_eulerExpression
+#print axioms Hemigroup.SelfDecomposableExponent.verticalIntegrable_mellin_eulerExpression
+#print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_profile_eq_eulerExpression
+#print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrder_of_symbol_eq
+#print axioms Hemigroup.SelfDecomposableExponent.nonempty_isLocalOfOrder_iff_symbol_eq

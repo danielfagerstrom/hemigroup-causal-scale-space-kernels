@@ -82,8 +82,10 @@ Fubini-and-Gamma computation that remained is now done too}, as
 \texttt{mellin\_pow\_mul\_iteratedDeriv\_profile}: it cost no new analysis either, because
 $x \mapsto \int t^j e^{-xt}\mu(dt)$ is the Laplace transform of $t^j\mu(dt)$ and
 \ref{lem:mellin-data} --- restated for a measure carried by $(0,\infty)$, which is all its proofs
-used --- applies to it unchanged. Both clauses of this definition are therefore now backed by
-proved computations rather than by expectation.
+used --- applies to it unchanged. \textbf{Both clauses are now proved in both directions}, so the
+separation has served its purpose and is kept for what it records: the profile clause cost the
+engine and one estimate (the polynomial decay of $\Gamma$) that the $C_c^\infty$ clause got for
+free, and a structure that hid the difference would have hidden where the work was.
 \textbf{$C_c^\infty((0,\infty))$ means support inside the open half-line}, not merely compact
 support in $\mathbb{R}$. The distinction is load-bearing rather than pedantic: it is exactly what
 kills the boundary term at the origin in the integrations by parts below, where the weight
@@ -97,7 +99,7 @@ proving that $A$ preserves realness, and therefore the safer of the two.)}
 % draft: Lemma 12.2
 \begin{lemma}[covariant local = polynomial symbol]\label{lem:local-polynomial-symbol}
 \uses{def:locality-pmp,def:inversion-operator,lem:mellin-data}
-\lean{Hemigroup.SelfDecomposableExponent.exists_symbol_eq_of_isLocalOfOrder}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.nonempty_isLocalOfOrder_iff_symbol_eq}\leanok
 $A$ is local of order $n$ if and only if $B$ is a polynomial of degree $n$; in that case the
 covariance built into the Mellin class forces the coefficients
 \[
@@ -105,10 +107,14 @@ covariance built into the Mellin class forces the coefficients
   A \;=\; \frac{1}{x}\sum_{j=0}^n \gamma_j\,\theta(\theta-1)\cdots(\theta-j+1)
   \;=\; \frac{1}{x}\,B(\theta).
 \]
-\statusT\quad\emph{(\textbf{One direction proved, one stated}, in two halves ---
-\texttt{isLocalOfOrderCore\_of\_symbol\_eq} and
-\texttt{exists\_symbol\_eq\_of\_isLocalOfOrder} --- since the two directions need different
-things and only one of them needs covariance.
+\statusT\quad\emph{(\textbf{Machine-checked as an equivalence}, and carried by three
+declarations rather than one, since the two directions need different things and only one of them
+needs covariance. \texttt{nonempty\_isLocalOfOrder\_iff\_symbol\_eq} is the equivalence, and is a
+\emph{bundle} in the sense \ref{thm:main-characterization} and \ref{thm:signaling-form} are: it
+necessarily depends on everything both halves do, so the per-half lines of
+\texttt{CIAxiomGuard.lean} remain the load-bearing ones. It also says \emph{less} than its halves
+--- the coefficient form $c_j(x) = \gamma_j x^{j-1}$ displayed above cannot be stated in an
+equivalence of this shape, and lives in \texttt{exists\_symbol\_eq\_of\_isLocalOfOrder}.
 \textbf{($\Leftarrow$) is machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.isLocalOfOrderCore\_of\_symbol\_eq}, on A17 and nothing
 else. \textbf{Its symbol hypothesis is asked for off the zeros of $\tilde H$, and that is what
@@ -203,22 +209,31 @@ in this development --- \ref{def:inversion-operator}'s realising identity and
 statement that raised it.
 \textbf{($\Leftarrow$) was weakened to match}, so that its symbol hypothesis is exactly what
 ($\Rightarrow$) delivers; see above for what that cost.
-\textbf{One gap remains between the two halves, and it is a different one.} ($\Leftarrow$)
-produces the $C_c^\infty$ clause alone --- \texttt{IsLocalOfOrderCore} --- while ($\Rightarrow$)
-consumes the full \ref{def:locality-pmp}, profiles included. Closing it no longer wants the
-Fubini-and-Gamma computation, which is done: applying a polynomial symbol to $H(s\,\cdot)$ gives
-$h(x) = \sum_j \gamma_j x^j\partial_x^j H(sx)$ with $\tilde h(z) = P(z)s^{-z}\tilde H(z)$, and
-recovering $h$ from it by Mellin inversion needs that transform vertically integrable, i.e.
-$\int |\tau|^{n}\,|\Gamma(c+i\tau)|\,d\tau < \infty$ for $n = \deg P$. \ref{lem:mellin-vertical}
-proves the case $n = 0$, from the functional equation twice; arbitrary polynomial decay is the
-same induction continued, and is the only thing standing between these two statements and an
-``if and only if''.)}
+\textbf{($\Leftarrow$) also has to be run twice, because \ref{def:locality-pmp} tests two
+classes}, and the profile run is where this node's last piece of analysis was. Applying a
+polynomial symbol to $H(s\,\cdot)$ gives $h(x) = \sum_j \gamma_j x^j\partial_x^j H(sx)$ with
+$\tilde h(z) = P(z)s^{-z}\tilde H(z)$, and recovering $h$ from it by Mellin inversion needs that
+transform vertically integrable. On a test function that is free --- $E_j(z)\tilde g(z)$ is itself
+the transform of a test function. On a profile it is the estimate
+$\int |\tau|^{n}\,|\Gamma(c+i\tau)|\,d\tau < \infty$ for $n = \deg P$, of which
+\ref{lem:mellin-vertical} needed only the case $n = 0$; and it is the same two lines, since
+$\Gamma(z+k)/\Gamma(z)$ is a product of $k$ factors each of imaginary part $\tau$, giving
+$|\Gamma(c+i\tau)|\,|\tau|^k \le \Gamma(c+k)$, with the binomial theorem reducing a polynomial in
+$|\tau|$ to a finite sum of those. No asymptotics --- which is the same lesson \ledger{A12}
+taught, now at a fifth reading of it.
+\textbf{So nothing is left between the halves, and the node is an equivalence.})}
 \end{lemma}
 
 \begin{proof}
 ($\Leftarrow$) $x^{j}\partial_x^{j} = \theta(\theta-1)\cdots(\theta - j + 1)$, so a polynomial
 $B$, expanded in falling factorials, gives $x^{-1}B(\theta) = \sum \gamma_j x^{j-1}\partial_x^j$,
-a differential expression of order $\deg B$.
+a differential expression of order $\deg B$. This has to be checked on both classes of
+\ref{def:locality-pmp}. On $C_c^\infty((0,\infty))$ it is the Euler-factor identity and the
+linearity of $\mathcal{M}^{-1}$ along the line. On a profile $H(s\,\cdot)$ the same argument
+applies to $h(x) = \sum_j\gamma_j x^j\partial_x^j H(sx)$, whose transform is $P(z)s^{-z}\tilde
+H(z)$ by the identity used in ($\Rightarrow$) below; that transform is absolutely integrable on
+the line because $|\Gamma(c+i\tau)|$ decays faster than every power of $\tau$, so
+$\mathcal{M}^{-1}\mathcal{M}h = h$ and $x^{-1}h$ is $(A\,H(s\,\cdot))$.
 
 ($\Rightarrow$) Every operator of \ref{def:inversion-operator} satisfies the covariance
 $A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, where $(\Delta_\sigma g)(x) = g(x/\sigma)$ ---
