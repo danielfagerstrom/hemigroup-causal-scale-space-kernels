@@ -1,15 +1,318 @@
-% §7 The characterization theorem — draft §7 (lines 232–292), PLUS Lemma 9.1 lifted to
-% its tail (draft lines 326–338; NOTES-exposition Part 4 repair 2: "k is the memory
-% kernel" belongs where the reader meets k, and §8's Gamma/stable examples use it).
-% Add the forward reference from Remark 7.6 to hypothesis (H) — NOTES Part 1 item 7:
-% the extreme boundary of the cone IS the boundary of (H); §9 meets the endpoint three
-% independent times.
-% Blueprint part 07; shared labels: lem:selfdecomposable-increment (and -derivative),
-% thm:main-characterization (with thm:main-construction / thm:main-analysis /
-% prop:main-uniqueness as its halves), cor:semigroup-case, rem:drift-boundary,
-% rem:cone-geometry (check exact label), lem:memory-kernel.
-% NOTE (CLAUDE.md): a statement concluding in BF₀ carries the LE reading alongside.
+% §7 The characterization theorem — statements verbatim from blueprint part 07. The
+% blueprint splits Lemma 7.1 and Theorem 7.3 into halves so the dependency graph can
+% show their different formalisation states; the paper presents both WHOLE, with proofs
+% merged back from the halves' proofs:
+%   - Lemma 7.1's proof is the cycle (1)⇒(2), (2)⇔(3), (3)⇒(1), the last leg being the
+%     machine-checked dilation computation (lem:selfdecomposable-increment), not the
+%     draft's mixture argument — so the asymmetry paragraph after it has its anchor.
+%   - Theorem 7.3's proof carries (⇒) from thm:main-analysis, (⇐) from
+%     thm:main-construction (refs adapted to the paper's [A] propositions: Feller's
+%     continuity/uniqueness theorems instead of the blueprint's [T] refinements), and
+%     the uniqueness argument from prop:main-uniqueness.
+% New prose: the asymmetry paragraph (NOTES-exposition Part 2: why the constructive
+% direction is cheap and the analytic one is not). rem:extreme-rays adapted: "memory
+% chapter" → Appendix A, "Chapter 11" → §9. Lemma 9.1 (lem:memory-kernel) lifted to the
+% section tail per NOTES Part 4 repair 2.
 
 \section{Self-decomposability and the characterization theorem}\label{sec:characterization}
 
-% [transcription pending]
+By Proposition~\ref{prop:canonical-gauge} the exponent of every kernel is an increment
+$F(bs) - F(as)$ with $0 \le a \le b$, and by Theorem~\ref{thm:increments-bernstein} every such
+increment must lie in $\BFz$. That pins down $F$.
+
+% shared with blueprint lem:selfdecomposable-exponents
+\begin{lemma}[self-decomposable exponents]\label{lem:selfdecomposable-exponents}
+For $F \in \BFz$ the following are equivalent:
+\begin{enumerate}
+\item $F(b\,\cdot) - F(a\,\cdot) \in \BFz$ for all $0 < a \le b$;
+\item $B(s) := s\,F'(s)$ is a Bernstein function;
+\item $F$ has the representation
+\[
+  F(s) = b_0\, s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\, \frac{k(t)}{t}\,dt,
+  \qquad b_0 \ge 0, \tag{7.1}
+\]
+with $k : (0,\infty) \to [0,\infty)$ nonincreasing, $\int_0^1 k < \infty$ and
+$\int_1^\infty k(t)/t\,dt < \infty$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+\emph{(1) $\Rightarrow$ (2).} For $h > 0$ the difference quotient
+$s \mapsto \bigl(F(e^h s) - F(s)\bigr)/h$ lies in $\BF$, being a positive multiple of an
+element of $\BFz$. As $h \downarrow 0$ it converges pointwise to $sF'(s)$, since $F$ is smooth
+on $(0,\infty)$; the limit is therefore Bernstein by
+Proposition~\ref{prop:bernstein-toolbox}(4).
+
+\emph{(2) $\Leftrightarrow$ (3).} Write $F(s) = b_0 s + \int (1 - e^{-st})\,\nu(dt)$, with no
+killing term because $F(\zp) = 0$ (Proposition~\ref{prop:bernstein-toolbox}(3)), so that
+\[
+  B(s) = s F'(s) = b_0 s + \int_0^\infty s\,t\, e^{-st}\, \nu(dt).
+\]
+Note $B(\zp) = 0$, since $0 \le sF'(s) \le F(s)$ by concavity.
+
+Suppose $\nu(dt) = k(t)\,t^{-1}dt$ with $k$ nonincreasing. Write
+$k(t) = \rho\bigl((t,\infty)\bigr)$ for the positive measure $\rho = -dk$; right-continuity of
+$k$ may be assumed, and $k(\infty) = 0$ is forced by $\int^\infty k(t)t^{-1}dt < \infty$.
+Tonelli then gives
+\[
+  \int_0^\infty s\, e^{-st}\, k(t)\, dt
+  = \int_0^\infty \rho(du) \int_0^u s\,e^{-st}\,dt
+  = \int_0^\infty \bigl(1 - e^{-su}\bigr)\,\rho(du),
+\]
+so $B(s) = b_0 s + \int (1 - e^{-su})\rho(du) \in \BFz$.
+
+Conversely, if $B \in \BF$ then $B \in \BFz$ by the remark above, so
+$B(s) = \beta s + \int (1 - e^{-su})\rho(du)$. Running the same computation backwards and
+invoking uniqueness of the Lévy--Khintchine triple
+(Proposition~\ref{prop:bernstein-toolbox}(3)) identifies $\beta = b_0$ and
+$\nu(dt) = k(t)t^{-1}dt$ with $k(t) = \rho((t,\infty))$ nonincreasing.
+
+\emph{(3) $\Rightarrow$ (1).} Write
+$F(cs) = b_0 c s + \int_0^\infty \bigl(1 - e^{-cst}\bigr)\,k(t)\,\frac{dt}{t}$ for $c > 0$ and
+substitute $u = ct$. The measure $dt/t$ is invariant under dilations, so
+\[
+  F(cs) = b_0 c\, s + \int_0^\infty \bigl(1 - e^{-su}\bigr)\, k(u/c)\,\frac{du}{u} ,
+\]
+i.e.\ dilating the argument by $c$ dilates the density and rescales the drift, and does
+nothing else. Subtracting the identity at $c = a$ from the one at $c = b$,
+\[
+  F(bs) - F(as) = b_0 (b-a)\, s
+    + \int_0^\infty \bigl(1 - e^{-su}\bigr)\,\bigl(k(u/b) - k(u/a)\bigr)\,\frac{du}{u},
+\]
+which lies in $\BFz$: the drift $b_0(b-a)$ is nonnegative since $a \le b$, the density is
+nonnegative since $u/b \le u/a$ for $u > 0$ and $k$ is nonincreasing, and both integrals are
+finite, each being bounded by $F(bs) < \infty$. Vanishing at $\zp$ is monotone convergence.
+\end{proof}
+
+The three conditions are not equally deep, and the asymmetry organizes what follows. The
+implication (3)~$\Rightarrow$~(1) is elementary --- a change of variables in the
+representation, using no property of the $\CM$ class --- and it is all that the constructive
+direction of Theorem~\ref{thm:main-characterization} consumes. The legs
+(1)~$\Rightarrow$~(2)~$\Rightarrow$~(3) are different in kind: $B(s) = sF'(s)$ has no meaning
+in the representation vocabulary until the representation is in hand, and both legs spend the
+classical theory --- closure of $\BF$ under pointwise limits, and uniqueness of the
+Lévy--Khintchine triple. This is why the constructive direction of the main theorem is cheap
+and the analytic one is not; \S\ref{sec:machine-checked} reports the separation as
+machine-checked rather than claimed.
+
+% Verbatim from the blueprint's rem:sato-reading.
+\begin{remark}[the probabilistic reading]\label{rem:sato-reading}
+Condition (3) is the classical characterization of the Laplace exponents of
+\emph{self-decomposable} laws on $[0,\infty)$, the laws of $L$-class; see
+\sscite{sato1999levy}, Ch.~3. Probabilistically, (7.1) together with the similarity structure
+below says that the kernels are the marginal laws of a \emph{self-similar additive process},
+a Sato subordinator: an increasing process $(T_{\tilde x})_{\tilde x \ge 0}$ with independent
+--- but not stationary --- increments, satisfying
+$T_{\sigma \tilde x} \stackrel{d}{=} \sigma\, T_{\tilde x}$.
+\end{remark}
+
+% shared with blueprint thm:main-characterization
+\begin{theorem}[Main theorem]\label{thm:main-characterization}
+A family $(\Phi_{x,y})_{0 \le x \le y}$ satisfies (A1)--(A8) and (ND) \textbf{iff} there exist
+an increasing bijection $\chi$ of $[0,\infty)$ --- the gauge --- and a function $F$ of the
+form (7.1) with $F \not\equiv 0$ such that
+\[
+  \Phi_{x,y} f = \mu_{x,y} * f, \qquad
+  \hat\mu_{x,y}(s) = \exp\Bigl[-\bigl(F(\chi(y)\,s) - F(\chi(x)\,s)\bigr)\Bigr].
+\]
+In particular, in the canonical gauge the scale-space kernels are
+\[
+  \phi_{x}(t) \;=\; \Lap^{-1}\Bigl[\, e^{-F(x\,s)} \,\Bigr](t),
+  \qquad F \text{ as in } (7.1),
+\]
+and the pair $(\chi, F)$ is unique up to the normalization $\chi(1) = 1$.
+\end{theorem}
+
+\begin{proof}
+$(\Rightarrow)$ Lemmas \ref{lem:convolution-representation}, \ref{lem:transform-continuity}
+and \ref{lem:additivity}, Theorem~\ref{thm:increments-bernstein},
+Corollary~\ref{cor:strict-monotonicity}, Lemmas \ref{lem:covariance-laplace} and
+\ref{lem:action-rigidity}, and Proposition~\ref{prop:canonical-gauge} together give the
+representation with $F = G(1,\cdot) \in \BFz$ and $F \not\equiv 0$. Every increment
+$F(\chi(y)s) - F(\chi(x)s)$ lies in $\BFz$ by Theorem~\ref{thm:increments-bernstein}, and
+$\chi$ is onto $(0,\infty)$ by Proposition~\ref{prop:canonical-gauge}, so condition~(1) of
+Lemma~\ref{lem:selfdecomposable-exponents} holds for every pair $0 < a \le b$, and the lemma
+yields (7.1).
+
+$(\Leftarrow)$ Let $F$ be of the form (7.1) with $F \not\equiv 0$; work in the canonical
+gauge. For $0 \le a \le b$ the function $g_{a,b}(s) := F(bs) - F(as)$ lies in $\BFz$ by
+Lemma~\ref{lem:selfdecomposable-exponents}, (3)~$\Rightarrow$~(1), so $e^{-g_{a,b}}$ is
+completely monotone with value $1$ at $\zp$ (Proposition~\ref{prop:bernstein-toolbox}(2)), and
+by the Bernstein--Widder criterion (Proposition~\ref{prop:bernstein-toolbox}(1)) it is the
+Laplace transform of a unique probability measure $\mu_{a,b}$ on $[0,\infty)$. Define
+$\Phi_{a,b} f := \mu_{a,b} * f$. Then:
+(A1)--(A5) hold by the converse direction of Lemma~\ref{lem:convolution-representation};
+(A6) holds because exponents add, $g_{a,b} + g_{b,c} = g_{a,c}$, and Laplace transforms
+determine measures (Proposition~\ref{prop:laplace-uniqueness});
+(A8) holds with $\Sact_\sigma x = \sigma x$, since
+$\hat\mu_{\sigma a, \sigma b}(s) = \hat\mu_{a,b}(\sigma s)$;
+and (ND) holds because $F$ is strictly increasing, by Lemma~\ref{lem:vanishing} applied to the
+increments of $F$ as in Corollary~\ref{cor:strict-monotonicity}.
+
+For (A7): if $(a_n, b_n) \to (a,b)$ then $\hat\mu_{a_n,b_n} \to \hat\mu_{a,b}$ pointwise, by
+continuity of $F$, so $\mu_{a_n,b_n} \to \mu_{a,b}$ weakly by the continuity theorem
+(Proposition~\ref{prop:laplace-continuity}). Weak convergence of probability measures implies
+$\mu_{a_n,b_n} * f \to \mu_{a,b} * f$ in $\Lone$ for every $f \in X$: writing
+$\mu * f = \int \shift_r f\, \mu(dr)$ as an $X$-valued Bochner integral, the map
+$r \mapsto \shift_r f$ is bounded and continuous, and an $\varepsilon/3$ argument on a compact
+carrying mass $1 - \varepsilon$ concludes, first for compactly supported continuous $f$ and
+then for all of $X$ by density, the error not growing because each $\Phi_{a,b}$ is a
+contraction.
+
+\emph{Uniqueness.} The exponents $g_{0,x}$ are determined by the family
+(Proposition~\ref{prop:laplace-uniqueness}, with $\exp$ injective), and $\chi(1) = 1$ recovers
+$F = g_{0,1}$. For each $x$, $\chi(x)$ is then the unique $c$ with $g_{0,x} = F(c\,\cdot)$:
+such a $c$ exists by the representation, and if $F(cs) = F(c's)$ for all $s$ with
+$\rho := c/c' \ne 1$, then iterating $F(s) = F(\rho^{\pm n} s)$ towards the origin and using
+$F(\zp) = 0$ gives $F \equiv 0$, a contradiction.
+\end{proof}
+
+% shared with blueprint cor:semigroup-case
+\begin{corollary}[recovering the semigroup case]\label{cor:semigroup-case}
+Assume in addition that the family is one-parameter: $\Phi_{x,y}$ depends only on $y - x$.
+Then, after the normalization $g_{0,1}(1) = 1$,
+\[
+  F(s) = s^{\alpha} \quad \text{for some } 0 < \alpha \le 1,
+\]
+i.e.\ the kernels are exactly the extremal stable densities of
+\sscite{fagerstrom2005temporal}, Thm.~2, together with the boundary case $\alpha = 1$ --- the
+pure delay $\mu_{0,x} = \delta_x$.
+\end{corollary}
+
+\begin{proof}
+Homogeneity gives $g_{x,y} = (y - x)\,g$ with $g := g_{0,1}$, and (6.1) becomes
+$(\Sact_\sigma y - \Sact_\sigma x)\, g(s) = (y - x)\, g(\sigma s)$. Hence $\Sact_\sigma$ is
+affine, and fixing $0$ it is linear: $\Sact_\sigma x = c(\sigma) x$ with
+$c(\sigma) g(s) = g(\sigma s)$.
+
+Then $c$ is a continuous multiplicative homomorphism of $(0,\infty)$, so $c(\sigma) =
+\sigma^\alpha$ by Cauchy's functional equation, as in \sscite{fagerstrom2005temporal},
+Lemma~2. Now $g(\sigma s) = \sigma^\alpha g(s)$ forces $g(s) = g(1) s^\alpha$, and the
+normalization makes $g(1) = 1$. Membership of $\BFz$ restricts $\alpha$ to $(0,1]$. The value
+$\alpha = 1$ gives $sF'(s) = s \in \BF$, so Lemma~\ref{lem:selfdecomposable-exponents} admits
+it and it is not excluded by the present axioms.
+\end{proof}
+
+% Verbatim from the blueprint's rem:drift-boundary.
+\begin{remark}[the boundary case $\alpha = 1$ and the drift term]\label{rem:drift-boundary}
+\sscite{fagerstrom2005temporal} excluded $\alpha = 1$ through the pointwise-continuity
+requirement on the kernel functions, which the deterministic delay $\delta(t - x)$ violates.
+Under Definition~\ref{def:cascade-family} the delay family --- and more generally the drift
+term $b_0 s$ in (7.1), which shifts every kernel by $b_0 x$ --- is admissible.
+
+If that is undesired it is removed by one additional axiom: absolute continuity of the kernels
+for $x > 0$, or the requirement $\lim_{s\to\infty} F(s)/s = 0$, which says there is no
+deterministic front.
+\end{remark}
+
+% shared with blueprint prop:extreme-rays
+\begin{proposition}[Choquet structure of the admissible cone]\label{prop:extreme-rays}
+The admissible exponents of Theorem~\ref{thm:main-characterization} form a convex cone, and
+the map
+\[
+  (b_0, \rho) \;\mapsto\; F, \qquad
+  F(s) = b_0\,s + \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
+  \qquad \mathrm{Ein}(z) := \int_0^z \frac{1 - e^{-u}}{u}\,du,
+\]
+is a linear bijection from
+$\bigl\{(b_0, \rho) : b_0 \ge 0,\ \rho \in \Mplus(0,\infty),\
+\int \bigl[\tau \wedge (1 + \log_+ \tau)\bigr]\,\rho(d\tau) < \infty \bigr\}$
+onto that cone, with inverse $\rho = -dk$, $k(t) = \rho\bigl((t,\infty)\bigr)$. Consequently the
+extreme rays of the cone are the pure delay $s \mapsto s$ together with the one-parameter family
+$\mathrm{Ein}(\tau\,\cdot)$, $\tau > 0$ --- the Laplace exponents, with L\'evy density
+$t^{-1}\mathbf{1}_{(0,\tau)}(t)$, of the \emph{dilated Dickman subordinators}
+(\sscite{caravenna2019dickman}, (1.1)--(1.2), p.~1) --- and every admissible family is a unique
+superposition of Dickman rays and drift.
+\end{proposition}
+
+\begin{proof}
+By Theorem~\ref{thm:main-characterization} an admissible $F$ is exactly one of the form (7.1)
+with $b_0 \ge 0$ and $k$ nonincreasing, and $k$ may be taken right-continuous with
+$k(\infty) = 0$, the latter forced by $\int^\infty k(t)\,t^{-1}dt < \infty$. So $\rho := -dk$
+is a positive measure on $(0,\infty)$ with $k(t) = \rho((t,\infty))$, and Tonelli gives
+\[
+  \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\frac{k(t)}{t}\,dt
+  = \int_{(0,\infty)} \rho(d\tau) \int_0^\tau \bigl(1 - e^{-st}\bigr)\,\frac{dt}{t}
+  = \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
+\]
+which is the displayed representation. Since $\mathrm{Ein}(z) \le z$ and
+$\mathrm{Ein}(z) = \log z + \gamma_E + o(1)$ as $z \to \infty$, the integral is finite for one
+$s > 0$ iff it is finite for all, iff $\int [\tau \wedge (1 + \log_+\tau)]\,\rho(d\tau) <
+\infty$; so the stated domain is exactly the set of pairs the representation accepts. The map
+is linear in $(b_0, \rho)$ by construction and surjective by the above. It is injective because
+the L\'evy--Khintchine triple of $F$ is unique (Proposition~\ref{prop:bernstein-toolbox}(3)):
+the triple determines $b_0$ and the L\'evy measure $k(t)t^{-1}dt$, hence $k$ up to a null set,
+hence $\rho = -dk$.
+
+A linear bijection carries extreme rays to extreme rays, so it suffices to identify them in the
+domain, which is the product of the ray $[0,\infty)$ with a cone of positive measures. Its
+extreme rays are $(1, 0)$ and $(0, \delta_\tau)$, $\tau > 0$: any $(b_0, \rho)$ decomposes
+uniquely as $b_0\,(1,0) + \int (0,\delta_\tau)\,\rho(d\tau)$, and a pair is extreme only if it
+admits no nontrivial such splitting, which forces $\rho = 0$ or $\rho$ a single atom with
+$b_0 = 0$. Under the map, $(1,0) \mapsto s$, the pure delay; and $(0, \delta_\tau) \mapsto
+\mathrm{Ein}(\tau s)$, whose $k(t) = \delta_\tau((t,\infty)) = \mathbf{1}_{(0,\tau)}(t)$ gives
+the L\'evy density $t^{-1}\mathbf{1}_{(0,\tau)}(t)$.
+\end{proof}
+
+% Verbatim from the blueprint's rem:extreme-rays, with the appendix and section
+% references adapted ("the memory chapter" → Appendix A; "Chapter 11" → §9).
+\begin{remark}[the three corners are slices, not extremes]\label{rem:extreme-rays}
+None of the distinguished families of this paper is extreme; each is a slice cut by a different
+principle --- the stable family by dilation symmetry (Corollary~\ref{cor:semigroup-case},
+Proposition~\ref{prop:stable-family}), the Gamma family as the atoms of the Thorin
+representation (Proposition~\ref{prop:gamma-family}), the Bessel family by locality
+(Proposition~\ref{prop:bessel-family}, Theorem~\ref{thm:locality}). Since all
+three have completely monotone $k$, the closed convex cone the three corners generate together
+is exactly the Thorin subclass --- strictly smaller than the whole class, the difference being
+the non-completely-monotone monotone memory kernels (plateaus, kinks, hard cutoffs). The
+Dickman rays are the paradigm of that difference: their kernels solve the delay equation
+obtained from the Volterra identity of Appendix~\ref{sec:appendix-memory} with the step kernel
+$k = \mathbf{1}_{[0,\tau)}$, and carry derivative singularities at the delays
+$\tau, 2\tau, \dots$ --- echo signatures unattainable within the Thorin subclass.
+
+Two universal bounds nevertheless hold across the entire cone: every kernel is absolutely
+continuous (\sscite{sato1999levy}, Thm.~27.13), and every kernel is \emph{unimodal}, by
+Yamazato's theorem on class $L$ laws (\sscite{yamazato1978unimodality}, Thm.~1, p.~523). The
+axioms never produce multimodal kernels.
+
+Finally, every extreme ray has $F(s) \sim \log s$ and hence $z_* = 1$: the extreme boundary of
+the cone lies exactly on the boundary of hypothesis (H) of
+Definition~\ref{def:standing-hypothesis}. That coincidence is not decorative. (H) asks for
+$z_* > 1$, and \S\ref{sec:signaling} needs the strict inequality at three independent points
+--- the convergence of the Mellin integral of the delayed field
+(Lemma~\ref{lem:memory-fractional-integrals}), the application of that lemma at $z-1$ in
+Theorem~\ref{thm:signaling-form}(2), and the convergence of $\int_\rho^t (t-r)^{z-2}dr$ in the
+same proof. Three different obligations, one endpoint; so the boundary of (H) is
+characteristic of the theory rather than an artefact of one argument, and it is the extreme
+boundary of the cone.
+\end{remark}
+
+The representation (7.1) attaches to every admissible family a nonincreasing function $k$,
+and one identity fixes its analytic role. It is recorded here because the moment formulas of
+\S\ref{sec:examples} already use it; the reading it opens --- $k$ as the memory kernel of the
+evolution across scale --- is developed in Appendix~\ref{sec:appendix-memory}.
+
+% shared with blueprint lem:memory-kernel  (draft Lemma 9.1, lifted here)
+\begin{lemma}[the kernel behind $F'$]\label{lem:memory-kernel}
+Let $F$ be as in (7.1). Then
+\[
+  F'(s) \;=\; b_0 \;+\; \int_0^\infty e^{-st}\, k(t)\,dt, \qquad s > 0.
+\]
+\end{lemma}
+
+\begin{proof}
+Differentiating the integrand of (7.1) in $s$ gives $e^{-st}k(t)$, which for $s \ge s_0 > 0$ is
+dominated by $e^{-s_0 t} k(t)$. That dominating function is integrable near $0$ because
+$\int_0^1 k < \infty$, and at infinity because $k$ is bounded there, being nonincreasing; so
+differentiation under the integral sign is justified.
+\end{proof}
+
+Thus $F'$ is, up to the drift, the Laplace transform of $k$. Appendix~\ref{sec:appendix-memory}
+reads this as the statement that $k$ --- in $L^1$-normalized dilation to the current scale,
+$\kappa^{(x)}(dt) := b_0\,\delta_0(dt) + \tfrac1x\,k(\tfrac tx)\,dt$ --- is the memory kernel
+of the evolution across scale; the monotonicity of $k$, which entered abstractly as
+condition~(3) of Lemma~\ref{lem:selfdecomposable-exponents}, is precisely the admissibility of
+$\kappa^{(x)}$ as a Lévy tail. In the extremal stable case
+$k(t) = \alpha t^{-\alpha}/\Gamma(1-\alpha)$, and the operator
+$\partial_t(\kappa^{(x)} * \cdot)$ is the Riemann--Liouville derivative $D^{\alpha}_{t,+}$ of
+\sscite{fagerstrom2005temporal}; in the Gamma family $k(t) = \gamma e^{-t}$, a bounded kernel.
