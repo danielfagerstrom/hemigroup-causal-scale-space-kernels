@@ -26,10 +26,14 @@ these axioms the admissible kernel families are completely characterized
 \]
 the Laplace exponents of the \emph{self-decomposable} laws --- equivalently, the kernels are
 the marginal densities of self-similar additive (Sato) subordinators. The class contains
-members with all moments finite. The flagship is the Gamma family
-$\phi_x(t) = t^{\gamma-1}e^{-t/x}/(\Gamma(\gamma)x^\gamma)$: mean delay $\gamma x$,
-exponential tails, exact continuous scale covariance, and a recursive implementation by
-first-order filter sections.
+members with all moments finite. The simplest of these, and the one the implementation half
+of the paper builds on, is the Gamma family
+\[
+  \phi_x(t) \;=\; \frac{t^{\gamma-1}\,e^{-t/x}}{\Gamma(\gamma)\,x^{\gamma}},
+\]
+attractive on every practical axis at once: its mean delay is finite, $\gamma x$; its tails
+are exponential; its scale covariance is exact and continuous; and it is computed by a
+cascade of first-order recursive filters.
 
 The classical constructions are recovered inside this class, and their limitations are
 located by it. The Gaussian scale space that answers the corresponding spatial question
@@ -40,10 +44,11 @@ known time-causal constructions each concede one desideratum. The scale-time of
 achieving causality but not time-recursivity. The Poisson scale space of
 \sscite{lindeberg1996scalespace} is causal and time-recursive but carries no dilation covariance
 of any span: its fixed elementary delay is a preferred time unit. The axiomatization of
-\sscite{fagerstrom2005temporal} imposes full continuous covariance together with the
-semigroup cascade and obtains a complete answer --- the kernels are exactly the extremal
-stable densities $\Lap^{-1}[e^{-\tau s^\alpha}]$, $0 < \alpha < 1$ --- but every member has
-infinite mean delay. The time-causal limit kernel of \sscite{lindeberg2016time} restores
+\sscite{fagerstrom2005temporal} --- hereafter \emph{the semigroup theory} --- imposes full
+continuous covariance together with the semigroup cascade and obtains a complete answer,
+the kernels being exactly the extremal stable densities $\Lap^{-1}[e^{-\tau s^\alpha}]$,
+$0 < \alpha < 1$; but every member has infinite mean delay. The time-causal limit kernel of
+\sscite{lindeberg2016time} restores
 finite moments through a recursive cascade of first-order integrators, with covariance
 established there under the discrete subgroup of rescalings $\sigma \in q^{\ZZ}$.
 
@@ -53,42 +58,53 @@ assumption: that the composite depends only on the total \emph{amount} of scale 
 measurement stages are interchangeable (\S\ref{sec:measurement-cascade}). The hemigroup form
 keeps the first assumption and drops the second; every other axiom --- causality, linearity,
 positivity, unit area, continuity, translation covariance, and \emph{full continuous} scale
-covariance --- is retained verbatim, and the 2005 derivation is rerun in the same order with
-the same tools: Laplace transforms, two functional equations, and the Bernstein-function
-calculus. The extremal stable family is precisely the sub-case recovered when
+covariance --- is retained verbatim, and the derivation of the semigroup theory is rerun in
+the same order with the same tools: Laplace transforms, two functional equations, and the
+Bernstein-function calculus. The analogues of its Theorems~3--5 are numbered $3'$--$5'$
+below. The extremal stable family is precisely the sub-case recovered when
 stage-interchangeability is reimposed (Corollary~\ref{cor:semigroup-case}), and the heavy
 tails are thereby exposed as the price of that tacit assumption, not of causality and
 covariance (Remark~\ref{rem:heavy-tails}).
 
 The second half of the paper develops the theory over the memory line, and the embodiment
-principle of \sscite{fagerstrom2005temporal}, \S5 --- the observer cannot revisit its past,
-so whatever of the signal's history is to influence the present output must be carried in
-the observer's own state --- appears as theorem content. The signaling form
-(Theorem~\ref{thm:signaling-form}) inverts the evolution across scale into an evolution
-\emph{in time} over the memory half-line, $\partial_t u = A u$, by a covariant \emph{Mellin}
-operator --- multiplicative harmonic analysis mirroring, on the scale axis, the Wendel step
-that opens the derivation on the time axis --- and comes with the identity
-$\Mel_x[u(t,\cdot)](z) = \tilde H(z)\,(I^z f)(t)$: at each instant, the memory line stores
-precisely the analytic family of Riemann--Liouville integrals of the past signal. Its
-consequence is the temporal $N$-jet (\S\ref{sec:jet}), the causal analogue of the
-derivative-of-Gaussian receptive fields: $\partial_t^n u = A^n u$, so differentiation is a
-re-indexing of the embodied record --- for the Gamma family a binomial subtraction of
-coexisting filter states --- and no second memory is needed to differentiate. The locality
-theorem (Theorem~\ref{thm:locality}) then classifies the media: locality of the memory-line
-operator alone admits a ladder of every differential order, and the positive maximum
-principle closes the ladder at order two, unfolding the isolated heat case
-$\alpha = \tfrac12$ of \sscite{fagerstrom2005temporal}, Thm.~5, into the one-parameter
-Bessel family $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$, whose drift weight
-$\beta$ buys any prescribed finite number of kernel moments. On the implementation side
+principle of the semigroup theory, \S5 --- the observer cannot revisit its past, so whatever
+of the signal's history is to influence the present output must be carried in the observer's
+own state --- appears as theorem content. The signaling form, Theorem~$4'$
+(Theorem~\ref{thm:signaling-form}), inverts the evolution across scale into an evolution in
+present time over the memory half-line,
+\[
+  \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t),
+\]
+with the signal entering as boundary data at zero scale. The operator $A$ is constructed in
+\S\ref{sec:signaling} by harmonic analysis in the scale variable, and it is the unique
+operator of its kind; the construction comes with an exact account of what the memory holds.
+At each instant, the memory line stores the analytic family of Riemann--Liouville integrals
+of the past signal: the observer's embodiment of its past is fractional integration.
+
+Two things follow. The temporal $N$-jet (\S\ref{sec:jet}), the causal analogue of the
+derivative-of-Gaussian receptive fields, is an instantaneous readout of that same state,
+\[
+  \partial_t^n u \;=\; A^n u :
+\]
+differentiation is a re-indexing of the embodied record --- for the Gamma family, a binomial
+subtraction of coexisting filter states --- and no second memory is needed to differentiate.
+And the locality theorem, Theorem~$5'$ (Theorem~\ref{thm:locality}), classifies the
+memory-line media: locality of the operator alone admits a ladder of every differential
+order, and the positive maximum principle closes the ladder at order two, where it leaves
+the one-parameter Bessel family
+\[
+  A \;=\; \tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x ,
+\]
+unfolding the isolated heat case of the semigroup theory's Theorem~5, with the drift weight
+$\beta$ buying any prescribed finite number of kernel moments. On the implementation side
 (\S\ref{sec:implementation}) the hemigroup itself is the algorithm: the discrete cascade
-over any set of scale knots reproduces the continuum family exactly at the knots, the Gamma
-increments are identical first-order pole--zero sections, and finite Gamma cascades
-approximate the entire completely-monotone-kernel subclass from inside the axiom class.
-Appendix~\ref{sec:appendix-memory} carries the third of the primed theorems --- the
-scale-Cauchy problem (Theorem~\ref{thm:scale-cauchy}), a general fractional relaxation
-equation whose memory kernel is the self-decomposability function $k$ itself --- together
-with the Sonine conservation identity $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}$, by which
-the infinitesimal smoothing applied at each scale is exactly invertible.
+over any set of scale knots reproduces the continuum family exactly at the knots, and finite
+Gamma cascades approximate the entire completely-monotone-kernel subclass from inside the
+axiom class. Appendix~\ref{sec:appendix-memory} carries Theorem~$3'$, the scale-Cauchy
+problem (Theorem~\ref{thm:scale-cauchy}) --- a fractional relaxation equation across scale
+whose memory kernel is the function $k$ of the representation itself --- together with the
+Sonine conservation identity, by which the infinitesimal smoothing applied at each scale is
+exactly invertible: no step of the cascade destroys information.
 
 One paragraph on the relation to the existing time-causal scale-space theory, since a
 complete time-causal, time-recursive construction already exists in the literature
