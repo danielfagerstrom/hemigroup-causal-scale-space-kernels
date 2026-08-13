@@ -55,8 +55,29 @@ out. Evaluating at `x = σ` is what makes one jet, at the single point `1`, sett
 The `sorry` is the third clause, and it is now unblocked rather than merely deferred: with the
 profile clause in hand, `A(H(s·))` has two readings --- `lem:symbol-uniqueness`'s eigenfunction
 relation and the differential expression --- and equating them puts `P` in the position
-`eventuallyEq_inversionSymbol_of_realisesAction` requires. What it still needs is the transform
-identity for profiles, i.e. the engine of `MellinEuler.lean` on the profile class.
+`eventuallyEq_inversionSymbol_of_realisesAction` requires.
+
+### The one remaining obligation, and its route
+
+`MellinEuler.lean`'s engine on the profile class:
+`M[x ↦ xʲ ∂ₓʲ H(sx)](w) = E_j(w) · M[H(s·)](w)`. It does **not** need the integration by parts
+that the test-function case used --- the profiles are not compactly supported and the boundary
+terms would have to be argued --- because `ProfileDeriv.lean` has already turned the derivative
+into an integral. What is left is a computation in three moves.
+
+1. **The weight is a Mellin shift.** `mellin_cpow_smul` gives
+   `M[x ↦ xʲ f(x)](w) = M[f](w + j)`, so the `xʲ` disappears into the argument and never has to
+   be carried through a Fubini.
+2. **The dilation is a factor.** `mellin_comp_mul_left`, already used in chapter 11 as
+   `mellin_profile_comp_mul`.
+3. **What is left is chapter 11's own hinge with one extra factor.** After 1 and 2 the target is
+   `M[x ↦ ∫ tʲ e^{-xt} dμ(t)](z) = Γ(z) ∫ t^{j-z} dμ(t)`, which is `mellin_profile` with `μ`
+   replaced by `tʲ μ(dt)`. The pointwise inner computation is `lintegral_ofReal_rpow_mul_exp`,
+   which is *already stated for arbitrary `t > 0`* and needs no change; only the outer step of
+   `lintegral_lintegral_gamma`, and the Bochner-side integrability of `mellin_profile`, are
+   specific to `lawT₁` and have to be generalised to a weighted measure.
+
+Then `E_j(w) = (-1)^j Γ(w+j)/Γ(w)` matches `mellinEulerFactor` by `Gamma_add_one` `j` times.
 -/
 
 namespace Hemigroup
