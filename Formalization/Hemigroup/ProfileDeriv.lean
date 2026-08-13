@@ -105,6 +105,68 @@ theorem iteratedDeriv_profile (j : ℕ) {u : ℝ} (hu : 0 < u) :
   refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
   simp [neg_mul]
 
+/-- Each derivative of the profile is again differentiable on `(0,∞)`, since each is a sign times
+a derivative of the `mgf` and Mathlib knows those are analytic on the interior. -/
+theorem differentiableAt_iteratedDeriv_profile (j : ℕ) {u : ℝ} (hu : 0 < u) :
+    DifferentiableAt ℝ (iteratedDeriv j F.profile) u := by
+  have heq : iteratedDeriv j F.profile
+      =ᶠ[𝓝 u] fun v : ℝ => (-1) ^ j * iteratedDeriv j (mgf id F.lawT₁) (-v) := by
+    filter_upwards [isOpen_Ioi.mem_nhds hu] with v hv
+    exact F.iteratedDeriv_profile_eq_mgf j hv
+  refine DifferentiableAt.congr_of_eventuallyEq ?_ heq
+  have hinner : DifferentiableAt ℝ (fun v : ℝ => iteratedDeriv j (mgf id F.lawT₁) (-v)) u :=
+    (differentiableAt_iteratedDeriv_mgf (F.neg_mem_interior_integrableExpSet hu) j).comp u
+      (differentiable_neg u)
+  exact hinner.const_mul _
+
+end SelfDecomposableExponent
+
+/-! ## Iterated derivatives and the real-to-complex coercion
+
+`def:locality-pmp`'s profile clause differentiates `u ↦ (H(su) : ℂ)`, while everything proved
+above is about the real `H`. The two agree, and the proof is an induction that needs only an open
+set on which every derivative is again differentiable --- so it is stated that way rather than
+through `ContinuousLinearMap.iteratedFDerivWithin_comp_left`, which would require converting
+between `iteratedFDeriv` and `iteratedDeriv` at each step. -/
+
+/-- On an open set where every iterated derivative is differentiable, `iteratedDeriv` commutes
+with `ofReal`. -/
+theorem iteratedDeriv_ofReal_comp {f : ℝ → ℝ} {s : Set ℝ} (hs : IsOpen s)
+    (hf : ∀ j : ℕ, ∀ x ∈ s, DifferentiableAt ℝ (iteratedDeriv j f) x) :
+    ∀ (j : ℕ) {x : ℝ}, x ∈ s →
+      iteratedDeriv j (fun u : ℝ => (f u : ℂ)) x = ((iteratedDeriv j f x : ℝ) : ℂ) := by
+  intro j
+  induction j with
+  | zero => intro x _; simp
+  | succ k ih =>
+      intro x hx
+      have heq : iteratedDeriv k (fun u : ℝ => (f u : ℂ))
+          =ᶠ[𝓝 x] fun v : ℝ => ((iteratedDeriv k f v : ℝ) : ℂ) := by
+        filter_upwards [hs.mem_nhds hx] with v hv
+        exact ih hv
+      have hd : HasDerivAt (fun v : ℝ => ((iteratedDeriv k f v : ℝ) : ℂ))
+          ((iteratedDeriv (k + 1) f x : ℝ) : ℂ) x := by
+        have hbase : HasDerivAt (iteratedDeriv k f) (iteratedDeriv (k + 1) f x) x := by
+          rw [iteratedDeriv_succ]
+          exact (hf k x hx).hasDerivAt
+        exact hbase.ofReal_comp
+      rw [iteratedDeriv_succ, heq.deriv_eq, hd.deriv]
+
+namespace SelfDecomposableExponent
+
+variable (F : SelfDecomposableExponent)
+
+/-- **The profile clause's derivative side, as an explicit integral.**
+
+`∂ᵥ^j (H(v) : ℂ) = (-1)^j E[T₁^j e^{-vT₁}]` on `(0,∞)`, in the complex form
+`def:locality-pmp` states the clause in. -/
+theorem iteratedDeriv_profileC (j : ℕ) {u : ℝ} (hu : 0 < u) :
+    iteratedDeriv j (fun v : ℝ => (F.profile v : ℂ)) u
+      = (((-1) ^ j * ∫ t, t ^ j * Real.exp (-(u * t)) ∂F.lawT₁ : ℝ) : ℂ) := by
+  rw [iteratedDeriv_ofReal_comp isOpen_Ioi
+    (fun k x hx => F.differentiableAt_iteratedDeriv_profile k hx) j (mem_Ioi.mpr hu),
+    F.iteratedDeriv_profile j hu]
+
 end SelfDecomposableExponent
 
 end Hemigroup

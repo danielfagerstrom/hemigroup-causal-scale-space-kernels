@@ -577,3 +577,6 @@ A17 through `lawT₁`.
 
 #print axioms Hemigroup.SelfDecomposableExponent.profile_eq_mgf
 #print axioms Hemigroup.SelfDecomposableExponent.iteratedDeriv_profile
+
+#print axioms Hemigroup.iteratedDeriv_ofReal_comp
+#print axioms Hemigroup.SelfDecomposableExponent.iteratedDeriv_profileC
