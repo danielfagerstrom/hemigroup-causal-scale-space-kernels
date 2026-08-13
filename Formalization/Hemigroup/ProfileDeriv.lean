@@ -29,12 +29,16 @@ thing that has to be checked (`profile_eq_mgf`). It is worth noticing that the d
 used the complex counterpart --- `InversionSymbol.lean` identifies `negMomentC` with
 `complexMGF` --- so the two vocabularies had met once before, on the other transform.
 
-## The composition with the sign
+## The sign and the dilation, in one induction
 
-`iteratedDerivWithin_comp_const_smul` does not apply: it asks the dilation to map the set to
-itself, and `u ↦ -u` maps `(0,∞)` to `(-∞,0)`. So the sign is carried through by a direct
-induction, which needs only that `(0,∞)` is open (so that the inductive hypothesis is an
-`EventuallyEq` and `deriv` respects it) and Mathlib's `hasDerivAt_iteratedDeriv_mgf`.
+What the clause actually needs is `∂ᵥ^j H(sv)`, so both a sign and a dilation stand between the
+profile and the `mgf`. Neither is composed on afterwards: `iteratedDerivWithin_comp_const_smul`
+asks the dilation to map the set to *itself*, and `v ↦ (-s)v` maps `(0,∞)` to `(-∞,0)`, so it does
+not apply --- and reaching for it would in any case require `ContDiffOn` of the profile, hence the
+analyticity of `mgf` transported across the sign, to reprove what one induction gives directly.
+
+The induction needs only that `(0,∞)` is open --- so the inductive hypothesis is an `EventuallyEq`
+and `deriv` respects it --- together with Mathlib's `hasDerivAt_iteratedDeriv_mgf`.
 -/
 
 namespace Hemigroup
@@ -68,55 +72,71 @@ theorem neg_mem_interior_integrableExpSet {u : ℝ} (hu : 0 < u) :
     interior_maximal (Iio_subset_Iic_self.trans F.Iic_subset_integrableExpSet) isOpen_Iio
   exact hsub (mem_Iio.mpr (neg_lt_zero.mpr hu))
 
-/-- **The derivatives of the profile**, with the sign carried through by induction: on `(0,∞)`,
-`H^{(j)}(u) = (-1)^j · (d/dt)^j mgf(t)|_{t = -u}`. -/
-theorem iteratedDeriv_profile_eq_mgf (j : ℕ) {u : ℝ} (hu : 0 < u) :
-    iteratedDeriv j F.profile u = (-1) ^ j * iteratedDeriv j (mgf id F.lawT₁) (-u) := by
-  have hprof : F.profile = fun v : ℝ => mgf id F.lawT₁ (-v) := funext F.profile_eq_mgf
+/-- **The derivatives of the dilated profile**, sign and dilation carried through together by one
+induction: on `(0,∞)`, `∂ᵥ^j H(sv)|_{v=u} = (-s)^j · (d/dt)^j mgf(t)|_{t = -su}`.
+
+The dilation is built in rather than composed afterwards. Composing would need
+`iteratedDerivWithin_comp_const_smul`, hence `ContDiffOn` of the profile, hence the analyticity of
+`mgf` transported across the sign --- all to reprove what the same induction gives directly. -/
+theorem iteratedDeriv_profile_comp_mul_eq_mgf {s : ℝ} (hs : 0 < s) (j : ℕ) {u : ℝ} (hu : 0 < u) :
+    iteratedDeriv j (fun v : ℝ => F.profile (s * v)) u
+      = (-s) ^ j * iteratedDeriv j (mgf id F.lawT₁) ((-s) * u) := by
+  have hprof : (fun v : ℝ => F.profile (s * v)) = fun v : ℝ => mgf id F.lawT₁ ((-s) * v) := by
+    funext v
+    rw [F.profile_eq_mgf]
+    ring_nf
+  have hmem : ∀ {v : ℝ}, 0 < v → (-s) * v ∈ interior (integrableExpSet id F.lawT₁) := by
+    intro v hv
+    have := F.neg_mem_interior_integrableExpSet (mul_pos hs hv)
+    simpa [neg_mul] using this
   induction j generalizing u with
   | zero => simp [hprof]
   | succ k ih =>
-      have hopen : Ioi (0 : ℝ) ∈ 𝓝 u := isOpen_Ioi.mem_nhds hu
-      have heq : iteratedDeriv k F.profile
-          =ᶠ[𝓝 u] fun v : ℝ => (-1) ^ k * iteratedDeriv k (mgf id F.lawT₁) (-v) := by
-        filter_upwards [hopen] with v hv
+      have heq : iteratedDeriv k (fun v : ℝ => F.profile (s * v))
+          =ᶠ[𝓝 u] fun v : ℝ => (-s) ^ k * iteratedDeriv k (mgf id F.lawT₁) ((-s) * v) := by
+        filter_upwards [isOpen_Ioi.mem_nhds hu] with v hv
         exact ih hv
-      have hderiv : HasDerivAt (fun v : ℝ => (-1) ^ k * iteratedDeriv k (mgf id F.lawT₁) (-v))
-          ((-1) ^ k * (-(iteratedDeriv (k + 1) (mgf id F.lawT₁) (-u)))) u := by
-        have hbase := hasDerivAt_iteratedDeriv_mgf (F.neg_mem_interior_integrableExpSet hu) k
-        have hval : iteratedDeriv (k + 1) (mgf id F.lawT₁) (-u)
-            = F.lawT₁[fun ω => id ω ^ (k + 1) * Real.exp (-u * id ω)] :=
-          iteratedDeriv_mgf (F.neg_mem_interior_integrableExpSet hu) (k + 1)
+      have hderiv : HasDerivAt
+          (fun v : ℝ => (-s) ^ k * iteratedDeriv k (mgf id F.lawT₁) ((-s) * v))
+          ((-s) ^ k * (iteratedDeriv (k + 1) (mgf id F.lawT₁) ((-s) * u) * (-s))) u := by
+        have hbase := hasDerivAt_iteratedDeriv_mgf (hmem hu) k
+        have hval : iteratedDeriv (k + 1) (mgf id F.lawT₁) ((-s) * u)
+            = F.lawT₁[fun ω => id ω ^ (k + 1) * Real.exp ((-s) * u * id ω)] :=
+          iteratedDeriv_mgf (hmem hu) (k + 1)
         rw [hval]
-        have hneg : HasDerivAt (fun v : ℝ => -v) (-1 : ℝ) u := hasDerivAt_neg u
-        have := (hbase.comp u hneg)
-        simpa using this.const_mul ((-1 : ℝ) ^ k)
+        have hinner : HasDerivAt (fun v : ℝ => (-s) * v) (-s) u := by
+          simpa using (hasDerivAt_id u).const_mul (-s)
+        exact (hbase.comp u hinner).const_mul ((-s) ^ k)
       rw [iteratedDeriv_succ, heq.deriv_eq, hderiv.deriv, iteratedDeriv_succ]
       ring
 
-/-- **`H^{(j)}(u) = (-1)^j E[T₁^j e^{-uT₁}]`**, the form the profile clause of
+/-- **`∂ᵥ^j H(sv)|_{v=u} = (-s)^j E[T₁^j e^{-suT₁}]`**, the form the profile clause of
 `def:locality-pmp` needs. -/
-theorem iteratedDeriv_profile (j : ℕ) {u : ℝ} (hu : 0 < u) :
-    iteratedDeriv j F.profile u
-      = (-1) ^ j * ∫ t, t ^ j * Real.exp (-(u * t)) ∂F.lawT₁ := by
-  rw [F.iteratedDeriv_profile_eq_mgf j hu,
-    iteratedDeriv_mgf (F.neg_mem_interior_integrableExpSet hu) j]
+theorem iteratedDeriv_profile_comp_mul {s : ℝ} (hs : 0 < s) (j : ℕ) {u : ℝ} (hu : 0 < u) :
+    iteratedDeriv j (fun v : ℝ => F.profile (s * v)) u
+      = (-s) ^ j * ∫ t, t ^ j * Real.exp (-(s * u * t)) ∂F.lawT₁ := by
+  have hmem : (-s) * u ∈ interior (integrableExpSet id F.lawT₁) := by
+    have := F.neg_mem_interior_integrableExpSet (mul_pos hs hu)
+    simpa [neg_mul] using this
+  rw [F.iteratedDeriv_profile_comp_mul_eq_mgf hs j hu, iteratedDeriv_mgf hmem j]
   congr 1
   refine integral_congr_ae (Filter.Eventually.of_forall fun t => ?_)
   simp [neg_mul]
 
 /-- Each derivative of the profile is again differentiable on `(0,∞)`, since each is a sign times
 a derivative of the `mgf` and Mathlib knows those are analytic on the interior. -/
-theorem differentiableAt_iteratedDeriv_profile (j : ℕ) {u : ℝ} (hu : 0 < u) :
-    DifferentiableAt ℝ (iteratedDeriv j F.profile) u := by
-  have heq : iteratedDeriv j F.profile
-      =ᶠ[𝓝 u] fun v : ℝ => (-1) ^ j * iteratedDeriv j (mgf id F.lawT₁) (-v) := by
+theorem differentiableAt_iteratedDeriv_profile_comp_mul {s : ℝ} (hs : 0 < s) (j : ℕ) {u : ℝ}
+    (hu : 0 < u) : DifferentiableAt ℝ (iteratedDeriv j fun v : ℝ => F.profile (s * v)) u := by
+  have hmem : (-s) * u ∈ interior (integrableExpSet id F.lawT₁) := by
+    have := F.neg_mem_interior_integrableExpSet (mul_pos hs hu)
+    simpa [neg_mul] using this
+  have heq : (iteratedDeriv j fun v : ℝ => F.profile (s * v))
+      =ᶠ[𝓝 u] fun v : ℝ => (-s) ^ j * iteratedDeriv j (mgf id F.lawT₁) ((-s) * v) := by
     filter_upwards [isOpen_Ioi.mem_nhds hu] with v hv
-    exact F.iteratedDeriv_profile_eq_mgf j hv
+    exact F.iteratedDeriv_profile_comp_mul_eq_mgf hs j hv
   refine DifferentiableAt.congr_of_eventuallyEq ?_ heq
-  have hinner : DifferentiableAt ℝ (fun v : ℝ => iteratedDeriv j (mgf id F.lawT₁) (-v)) u :=
-    (differentiableAt_iteratedDeriv_mgf (F.neg_mem_interior_integrableExpSet hu) j).comp u
-      (differentiable_neg u)
+  have hinner : DifferentiableAt ℝ (fun v : ℝ => iteratedDeriv j (mgf id F.lawT₁) ((-s) * v)) u :=
+    (differentiableAt_iteratedDeriv_mgf hmem j).comp u ((differentiable_id.const_mul (-s)) u)
   exact hinner.const_mul _
 
 end SelfDecomposableExponent
@@ -158,14 +178,14 @@ variable (F : SelfDecomposableExponent)
 
 /-- **The profile clause's derivative side, as an explicit integral.**
 
-`∂ᵥ^j (H(v) : ℂ) = (-1)^j E[T₁^j e^{-vT₁}]` on `(0,∞)`, in the complex form
-`def:locality-pmp` states the clause in. -/
-theorem iteratedDeriv_profileC (j : ℕ) {u : ℝ} (hu : 0 < u) :
-    iteratedDeriv j (fun v : ℝ => (F.profile v : ℂ)) u
-      = (((-1) ^ j * ∫ t, t ^ j * Real.exp (-(u * t)) ∂F.lawT₁ : ℝ) : ℂ) := by
-  rw [iteratedDeriv_ofReal_comp isOpen_Ioi
-    (fun k x hx => F.differentiableAt_iteratedDeriv_profile k hx) j (mem_Ioi.mpr hu),
-    F.iteratedDeriv_profile j hu]
+`∂ᵥ^j (H(sv) : ℂ)|_{v=u} = (-s)^j E[T₁^j e^{-suT₁}]` on `(0,∞)`, in the complex form
+`def:locality-pmp` states the clause in. This is what the Fubini computation consumes. -/
+theorem iteratedDeriv_profileC_comp_mul {s : ℝ} (hs : 0 < s) (j : ℕ) {u : ℝ} (hu : 0 < u) :
+    iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) u
+      = (((-s) ^ j * ∫ t, t ^ j * Real.exp (-(s * u * t)) ∂F.lawT₁ : ℝ) : ℂ) := by
+  rw [iteratedDeriv_ofReal_comp (f := fun v : ℝ => F.profile (s * v)) isOpen_Ioi
+    (fun k x hx => F.differentiableAt_iteratedDeriv_profile_comp_mul hs k hx) j
+    (mem_Ioi.mpr hu), F.iteratedDeriv_profile_comp_mul hs j hu]
 
 end SelfDecomposableExponent
 
