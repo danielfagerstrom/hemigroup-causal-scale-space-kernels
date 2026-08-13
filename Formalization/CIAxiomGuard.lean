@@ -511,6 +511,32 @@ the argument, which is why the split-off node does not carry it.
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_negMoment_nhdsGT_zero
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_inversionSymbol_nhdsGT_zero
 
+/-! ### `lem:moment-recursion-quotient` — clauses (1) and (3) of `lem:moment-recursion`
+
+Split off for the same reason `lem:symbol-vanishes-at-origin` was: the node they come from spends
+ledger **A13** on its clause (2), and these lines are the check that they do not spend it too.
+A17 and nothing else.
+
+Clause (1) is two statements and both are now here. `B(0) = 0` was already
+`tendsto_inversionSymbol_nhdsGT_zero`, which needs no polynomial hypothesis;
+`coeff_zero_eq_zero_of_symbol_eq` is where the polynomial hypothesis enters, and only to turn that
+limit into a value. The factorisation `B(-z) = z·Q(z)` is then exact and analysis-free — the Euler
+factors' own recursion `E_{j+1}(z) = -z·E_j(z+1)`, so `Q` comes out in the same basis one degree
+lower.
+
+Clause (3) is `lem:mellin-data` at a *real* point of the strip, where `H̃` is known not to vanish,
+so the symbol identity holds pointwise and `z` cancels. **Its range is `0 < z < z_* - 1`**, not the
+blueprint's `(0,∞)`: widening it is `z_* = ∞`, which is clause (2) and which is what A13 carries.
+-/
+
+#print axioms Hemigroup.mellinEulerFactor_zero_eq_zero
+#print axioms Hemigroup.symbolQuotient
+#print axioms Hemigroup.sum_mellinEulerFactor_eq_mul_symbolQuotient
+#print axioms Hemigroup.symbolQuotient_two
+#print axioms Hemigroup.SelfDecomposableExponent.coeff_zero_eq_zero_of_symbol_eq
+#print axioms Hemigroup.SelfDecomposableExponent.exists_pos_symbolQuotient_of_symbol_eq
+#print axioms Hemigroup.SelfDecomposableExponent.exists_symbolQuotient_of_isLocalOfOrder
+
 /-! ### `lem:gamma-recursion-uniqueness` — ledger A15, order-two case, discharged
 
 Krull--Webster restricted to a linear `Q`, which is the only case `thm:locality` applies it to,

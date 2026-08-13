@@ -285,10 +285,17 @@ at the real point of its axis of convergence; \sscite{widder1941laplace}, Ch.~II
 Thm.~5b, pp.~58--59. Cited, not reproven here.
 \textbf{Assignment.} \ledger{A13} carries clause~(2) alone, and only its final step: that a
 finite $z_*$ would be a singularity of $\tilde H$, contradicting the analytic continuation the
-recursion supplies. Clauses~(1) and~(3) are \textbf{[T]}, proved below from
-\ref{lem:mellin-data} by letting $z \downarrow 0$; clause~(1) is machine-checked, as
-\ref{lem:symbol-vanishes-at-origin}, which also records that the polynomial hypothesis plays no
-part in it. Two cautions recorded in the ledger. First,
+recursion supplies. Clauses~(1) and~(3) are \textbf{[T]} and \textbf{both are now
+machine-checked}, split off so that a node spending A13 on clause~(2) does not appear to spend it
+on them: the vanishing $B(0) = 0$ is \ref{lem:symbol-vanishes-at-origin}, which also records that
+the polynomial hypothesis plays no part in it, and the factorisation together with the recursion
+is \ref{lem:moment-recursion-quotient}. \textbf{One thing does not survive the split, and it is
+the range.} Clause~(3) is stated here on $(0,\infty)$, and the split-off node proves it on
+$0 < z < z_* - 1$; the difference is exactly clause~(2), so writing it on the whole half-line is
+already using A13. On the locality hypothesis the two ranges coincide once A13 is spent, which is
+why the chapter may go on using the wider form --- but the machine-checked statement is the
+narrower one, and saying so is the point of the split.
+Two cautions recorded in the ledger. First,
 the anchor is the theorem number: Widder's own footnote credits the result to Hamburger
 (1921), and ``Pringsheim--Landau'' --- the name the draft uses, and the received one --- is
 attached to the Dirichlet- and power-series forms rather than to this page. Second, the
@@ -646,4 +653,77 @@ for every $z > d$. Both $m$ and $G$ satisfy the same recursion on $(0,\infty)$, 
 $m(z + k)\,G(z) = m(z)\,G(z+k)$ for every $k \in \mathbb{N}$; choosing $k$ with $z + k > d$ and
 cancelling $G(z+k) > 0$ extends $m = C\,G$ to all of $(0,\infty)$. Finally $z \downarrow 0$ gives
 $C\,\Gamma(a) = 1$, since $c^{\,z} \to 1$ and $\Gamma$ is continuous at $a > 0$.
+\end{proof}
+
+% additive: not in the draft. Clauses (1)-factorisation and (3) of Lemma 12.3, split off for the
+% same reason clause (1)'s vanishing was: the node they come from spends A13 on its clause (2).
+% Numbered 12.11, a number the draft does not use.
+\begin{lemma}[the symbol's linear factor and the moment recursion]
+\label{lem:moment-recursion-quotient}
+\uses{lem:local-polynomial-symbol,lem:mellin-data,lem:symbol-vanishes-at-origin,lem:inversion-symbol}
+\lean{Hemigroup.SelfDecomposableExponent.exists_symbolQuotient_of_isLocalOfOrder}\leanok
+Assume (H), and let $A$ be local of order $n$ at a height $0 < c < z_* - 1$, so that by
+\ref{lem:local-polynomial-symbol} its symbol is $P(z) = \sum_{j=0}^{n}\gamma_j E_j(z)$ with
+$\gamma_j = c_j(1)$. Then $\gamma_0 = 0$, and with
+\[
+  Q(z) \;:=\; -\sum_{k=0}^{n-1}\gamma_{k+1}\,E_k(z+1)
+\]
+one has $P(z) = z\,Q(z)$ for every $z$, and for every real $z$ with $0 < z < z_* - 1$ the value
+$Q(z)$ is a positive real satisfying
+\[
+  m(z+1) \;=\; Q(z)\,m(z).
+\]
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{exists\_symbolQuotient\_of\_isLocalOfOrder}, on A17 and nothing else --- in particular not
+on \ledger{A13}, which is the whole reason for the split.
+\textbf{The factorisation is exact and contains no analysis.} $E_{j+1}(z) = -z\,E_j(z+1)$ is the
+Euler factors' own recursion, so removing the factor $z$ shifts the argument by one and drops the
+index by one, and $Q$ comes out in the same falling-factorial basis one degree lower. What the
+analysis is spent on is $\gamma_0 = 0$, and only in one step: \ref{lem:symbol-vanishes-at-origin}
+gives the limit $B(-c) \to 0$ without any hypothesis on $B$'s form, and the polynomial hypothesis
+enters exactly here, to turn a limit into a value.
+\textbf{The recursion is \ref{lem:mellin-data} read at a real point.} $\tilde H$ does not vanish
+at the real points of the strip (\ref{lem:inversion-symbol}), so the symbol identity of
+\ref{lem:local-polynomial-symbol} --- which is conditioned on exactly that --- holds pointwise
+there, and cancelling $z$ against the closed form $B(-z) = z\,m(z+1)/m(z)$ leaves the recursion.
+Positivity of $Q$ is then not a separate argument: $Q(z)$ \emph{is} a ratio of two positive
+moments, so it inherits both its realness and its sign.
+\textbf{The range is $0 < z < z_* - 1$, and that is the honest one.}
+\ref{lem:moment-recursion}(3) states the recursion on all of $(0,\infty)$, which presupposes
+$z_* = \infty$ --- clause~(2), the one clause \ledger{A13} carries. Stating the range A13 is not
+needed for is what makes the split mean something.
+\textbf{Why the degree of $Q$ is not stated as a degree.} The blueprint calls $Q$ a polynomial of
+degree $n-1$; the Lean statement gives the expansion above instead, which is that claim in the
+falling-factorial basis, the basis being triangular. \texttt{Polynomial} does not appear anywhere
+in this development --- \texttt{mellinEulerFactor} is a plain function --- and introducing it for
+one adjective would propagate through every statement below. At the order the chapter actually
+consumes, \texttt{symbolQuotient\_two} makes the claim literal: $Q(z) = \gamma_2 z +
+(\gamma_2 - \gamma_1)$, linear with leading coefficient $\gamma_2 \ne 0$, which is the shape
+\ref{lem:gamma-recursion-uniqueness} takes.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:symbol-vanishes-at-origin,lem:inversion-symbol,lem:local-polynomial-symbol}
+\emph{$\gamma_0 = 0$.} $E_j(0) = \prod_{i<j}(-i)$ vanishes for $j \ge 1$, its $i = 0$ factor being
+$0$, so $P(0) = \gamma_0$. At a real $c$ with $0 < c < z_* - 1$ the transform $\tilde H(c)$ is
+nonzero (\ref{lem:inversion-symbol}), so \ref{lem:local-polynomial-symbol} gives $B(-c) = P(c)$
+there. Letting $c \downarrow 0$, the left side tends to $0$ by
+\ref{lem:symbol-vanishes-at-origin} and the right side to $P(0) = \gamma_0$ by continuity; limits
+in $\mathbb{C}$ are unique, so $\gamma_0 = 0$.
+
+\emph{The factorisation.} With $\gamma_0 = 0$ the $j = 0$ term drops, and reindexing $j = k+1$,
+\[
+  P(z) \;=\; \sum_{k=0}^{n-1}\gamma_{k+1}E_{k+1}(z)
+        \;=\; \sum_{k=0}^{n-1}\gamma_{k+1}\bigl(-z\,E_k(z+1)\bigr)
+        \;=\; z\,Q(z),
+\]
+by $E_{j+1}(z) = -z\,E_j(z+1)$, which is the definition of $E$ with its first factor peeled.
+
+\emph{The recursion.} Fix a real $z$ with $0 < z < z_* - 1$. Then $\tilde H(z) \ne 0$, so
+$B(-z) = P(z) = z\,Q(z)$; and \ref{lem:inversion-symbol}'s closed form gives
+$B(-z) = z\,m(z+1)/m(z)$. Both $m(z)$ and $m(z+1)$ are finite and strictly positive --- finite
+because $z + 1 < z_*$, positive because $T_1$ charges only $(0,\infty)$ --- so $m(z) \ne 0$ and,
+cancelling the factor $z \ne 0$, $Q(z) = m(z+1)/m(z)$. That exhibits $Q(z)$ as a quotient of
+positive reals, which is both the recursion and the positivity.
 \end{proof}

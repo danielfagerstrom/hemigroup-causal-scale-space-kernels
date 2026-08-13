@@ -40,7 +40,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Forty-nine nodes carry `\lean{...}\leanok`:
+Fifty nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -53,7 +53,7 @@ Forty-nine nodes carry `\lean{...}\leanok`:
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
 | 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals`, `thm:signaling-form` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
-| 12 Locality | `lem:log-convexity`, `def:locality-pmp`, `lem:local-polynomial-symbol`, `lem:symbol-vanishes-at-origin`, `lem:gamma-recursion-uniqueness` — the chapter's classification step, as an equivalence: `A` is local of order `n` iff its symbol is the corresponding polynomial, read off the zeros of `H̃`. Ledger **A15** (Krull–Webster) is discharged in the order-two case it is applied to, from Mathlib's Bohr–Mollerup |
+| 12 Locality | `lem:log-convexity`, `def:locality-pmp`, `lem:local-polynomial-symbol`, `lem:symbol-vanishes-at-origin`, `lem:moment-recursion-quotient`, `lem:gamma-recursion-uniqueness` — the chapter's classification step, as an equivalence: `A` is local of order `n` iff its symbol is the corresponding polynomial, read off the zeros of `H̃`; the moment recursion `m(z+1) = Q(z)m(z)` on the range that needs no A13; ledger **A15** (Krull–Webster) discharged in the order-two case it is applied to, from Mathlib's Bohr–Mollerup. What is left in the chapter is `[A]`: A13 (`z_* = ∞`), A14 (the PMP step), A16 |
 
 The two `[A]` nodes of chapter 2 that the formalisation was expected to lean on — Feller's
 continuity theorem (A5) and his uniqueness theorem (A6) — turned out not to be needed: the
