@@ -1,12 +1,164 @@
-% §3 Preliminaries — draft §2 (lines 57–94), plus the causal-space vocabulary lifted from
-% draft §10 head (lines 436–443): X₀ = L¹(ℝ₊), the delay semigroup T_r, and the core 𝒟 —
-% NOTES-exposition Part 4 repair 1, so that §9 (signaling) cites nothing in the appendix.
+% §3 Preliminaries — draft §2, statements verbatim from blueprint part 02.
 %
-% Keep: Definitions 2.1–2.2 (CM, BF), Proposition 2.3 (toolbox) with the "which vocabulary
-% does the work" paragraph (already written in the draft), Lemma 2.4 (vanishing).
-% Shared statements: def:completely-monotone? — check blueprint part 02 for the exact
-% labels; every labelled statement here carries `% shared with blueprint <label>`.
+% Contents and departures:
+%   - notation lead, Defs CM/BF, the toolbox, the "which vocabulary does the work"
+%     paragraph (adapted refs), the vanishing lemma with the blueprint's proof;
+%   - prop:laplace-continuity / prop:laplace-uniqueness INCLUDED (additive in the
+%     blueprint; the draft used both without stating them — the paper states them so
+%     that later proofs can cite a numbered statement instead of a bracket);
+%   - the blueprint's [T] refinement nodes (def:levy-exponent, the causal cases,
+%     transform tightness) are NOT transcribed — formalisation vocabulary, covered by
+%     §1.1's account;
+%   - the causal vocabulary (causal functions, X₀, T_r, the core 𝒟) LIFTED here from
+%     draft §§9–10 heads (NOTES-exposition Part 4 repair 1), so §9 (signaling) stands
+%     on this section and cites nothing in Appendix A.
 
 \section{Preliminaries and notation}\label{sec:preliminaries}
 
-% [transcription pending]
+Time runs over $\RR$. We write $X = \Lone$, real, with positive cone $X_+$ and
+$\int f := \int_{\RR} f(t)\,dt$; $\Mplus(\RR)$ for the finite positive Borel measures on
+$\RR$, with total mass $\|\mu\| = \mu(\RR)$; translations $(\shift_a f)(t) = f(t-a)$ for
+$a \in \RR$; dilations on functions $(\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma)$,
+$\sigma > 0$, which preserve mass, and on measures $\dil_\sigma \mu :=$ the pushforward of
+$\mu$ under $t \mapsto \sigma t$; and convolution
+$(\mu * f)(t) = \int f(t - r)\,\mu(dr)$ for $\mu \in \Mplus(\RR)$, $f \in X$. Then
+$\|\mu * f\|_1 \le \|\mu\|\,\|f\|_1$, and dilation is compatible with convolution:
+\[
+  \dil_\sigma(\mu * f) = (\dil_\sigma \mu) * (\dil_\sigma f).
+\]
+
+For $\mu \in \Mplus$ supported on $[0,\infty)$ the Laplace transform is
+\[
+  \hat\mu(s) = \int_{[0,\infty)} e^{-st}\,\mu(dt), \qquad s \ge 0 .
+\]
+If $\mu \ne 0$ then $\hat\mu(s) > 0$ for all $s \ge 0$.
+
+% shared with blueprint def:completely-monotone
+\begin{definition}[completely monotone]\label{def:completely-monotone}
+A function $f : (0,\infty) \to \RR$ is \emph{completely monotone} (CM) if $f \in C^\infty$
+and $(-1)^n f^{(n)} \ge 0$ for all $n \ge 0$.
+\end{definition}
+
+% shared with blueprint def:bernstein-function
+\begin{definition}[Bernstein function]\label{def:bernstein-function}
+A function $g : (0,\infty) \to [0,\infty)$ is a \emph{Bernstein function} if $g \in C^\infty$
+and $g'$ is completely monotone. We write $g \in \BF$, and $g \in \BFz$ if moreover
+$g(\zp) = 0$.
+\end{definition}
+
+The toolbox that connects the two classes to Laplace transforms is classical, and it is
+cited rather than reproven: \sscite{feller2009introduction}, Ch.~XIII, and
+\sscite{schilling2012bernstein}, Ch.~1 and~3.
+
+% shared with blueprint prop:bernstein-toolbox
+\begin{proposition}[the Bernstein-function toolbox]\label{prop:bernstein-toolbox}
+\begin{enumerate}
+\item (Bernstein--Widder / Feller criterion.) $f$ is the Laplace transform of a probability
+measure on $[0,\infty)$ if and only if $f$ is completely monotone and $f(\zp) = 1$. More
+generally, $f$ is completely monotone if and only if $f(s) = \int_{[0,\infty)} e^{-st}\,F(dt)$
+for a measure $F$ on $[0,\infty)$, not necessarily finite, and $F$ is then unique.
+\item For $g : (0,\infty) \to [0,\infty)$ the following are equivalent: $g \in \BF$; the
+composition $h \circ g$ is completely monotone for every completely monotone $h$; and
+$e^{-\tau g}$ is completely monotone for every $\tau > 0$.
+\item Every $g \in \BF$ is nonnegative, nondecreasing and concave, and has the
+Lévy--Khintchine representation
+\[
+  g(s) = a + b s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu(dt), \qquad
+  a, b \ge 0, \quad \int_0^\infty (1 \wedge t)\,\nu(dt) < \infty,
+\]
+with $g(\zp) = a$. The triple $(a, b, \nu)$ is unique.
+\item $\BF$ is a convex cone, closed under pointwise limits: if $g_n \in \BF$ and
+$g_n(s) \to g(s) < \infty$ for every $s > 0$, then $g \in \BF$. Consequently $\BF$ is closed
+under mixtures $s \mapsto \int g_u(s)\,m(du)$ with $m \ge 0$, whenever the integral is finite.
+\end{enumerate}
+\end{proposition}
+
+\emph{Which vocabulary does the work.} Proposition~\ref{prop:bernstein-toolbox} is used as a
+bridge and not as a toolkit. The object the arguments below manipulate is the
+\emph{representation}, part~(3) --- a drift and a Lévy measure --- and almost every proof in
+\S\S\ref{sec:representation}--\ref{sec:signaling} works with it directly: the increments of
+Theorem~\ref{thm:increments-bernstein} are produced as representations, not as pointwise
+limits of Bernstein functions; the potential kernel of the appendix is constructed as a
+subordinator's potential measure, not represented from complete monotonicity; the Mellin
+calculus of \S\ref{sec:signaling} mentions neither class. Complete monotonicity and the
+derivative-sign definition of $\BF$ are genuinely needed at exactly three places, and it is
+worth naming them: Lemma~\ref{lem:selfdecomposable-exponents}'s implications
+(1)~$\Rightarrow$~(2)~$\Rightarrow$~(3), where $B(s) = sF'(s)$ has no meaning until the
+representation is in hand; Proposition~\ref{prop:pair-regularity}(3) and
+Proposition~\ref{prop:thorin-subclass}, where the $\CM$ class is the \emph{subject} rather
+than a tool; and Proposition~\ref{prop:bernstein-toolbox} itself, which identifies the two
+vocabularies once so that no later proof has to. A reader who wants the shortest path to
+Theorem~\ref{thm:main-characterization} or Theorem~\ref{thm:signaling-form} may take~(3) as
+the definition of admissibility and never invoke Bernstein--Widder.
+
+The same class carries a second name, after its representation rather than its derivative
+signs; several statements below are given in both forms, and
+Proposition~\ref{prop:bernstein-toolbox}(3) is the identification.
+
+% shared with blueprint def:levy-exponent
+\begin{definition}[Lévy exponent]\label{def:levy-exponent}
+A function $g : [0,\infty) \to [0,\infty]$ is a \emph{Lévy exponent} if
+\[
+  g(s) = b_0\,s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu(dt),
+  \qquad b_0 \ge 0,
+\]
+for a drift $b_0$ and a positive Borel measure $\nu$ on $(0,\infty)$ --- with no killing term,
+so that $g(0) = 0$. We write $g \in \LE$, and call $(b_0, \nu)$ its \emph{triple}.
+\end{definition}
+
+By Proposition~\ref{prop:bernstein-toolbox}(3), $\LE = \BFz$ as classes of functions, with
+the triple unique. Both names are kept because the two readings matter separately: the proofs
+of this paper argue mostly in the representation, and the machine-checked development
+(\S\ref{sec:machine-checked}) argues \emph{only} there --- it never defines complete
+monotonicity at all --- so a statement whose conclusion is given in $\LE$ is one the
+formalisation can state verbatim.
+
+% shared with blueprint lem:vanishing
+\begin{lemma}[vanishing lemma]\label{lem:vanishing}
+If $g \in \BFz$ and $g(s_0) = 0$ for some $s_0 > 0$, then $g \equiv 0$.
+\end{lemma}
+
+\begin{proof}
+$g$ is nonnegative and concave by Proposition~\ref{prop:bernstein-toolbox}(3), with
+$g(\zp) = g(s_0) = 0$. A nonnegative concave function vanishing at both ends of $[0, s_0]$
+vanishes on it, so $g \equiv 0$ on $(0, s_0]$ and hence $g' \equiv 0$ on $(0, s_0)$. Now $g'$
+is nonincreasing, being the derivative of a concave function, and nonnegative, being
+completely monotone; a nonnegative nonincreasing function that vanishes on $(0,s_0)$ vanishes
+identically. So $g' \equiv 0$ on $(0,\infty)$, and with $g(\zp) = 0$ this gives $g \equiv 0$.
+\end{proof}
+
+Two further classical facts are used repeatedly and are recorded here so that each later
+use can cite a statement; both are from \sscite{feller2009introduction}, Vol.~2,
+\S~XIII.1, which states the probability and the general-measure forms as separate theorems
+(Theorems~2 and~2a, and Theorems~1 and~1a, respectively).
+
+% shared with blueprint prop:laplace-continuity
+\begin{proposition}[continuity theorem for Laplace transforms]\label{prop:laplace-continuity}
+Let $\mu_n, \mu$ be probability measures on $[0,\infty)$. Then $\mu_n \to \mu$ weakly if and
+only if $\hat\mu_n(s) \to \hat\mu(s)$ for every $s > 0$. The same equivalence holds for
+arbitrary measures on $[0,\infty)$, provided that in the direction from transforms to measures
+the masses $\hat\mu_n(a)$ are bounded for some $a > 0$.
+\end{proposition}
+
+% shared with blueprint prop:laplace-uniqueness
+\begin{proposition}[uniqueness of the Laplace transform]\label{prop:laplace-uniqueness}
+A measure on $[0,\infty)$ is determined by its Laplace transform: if $\hat\mu(s) = \hat\rho(s)$
+for all $s$ in some interval $(a,\infty)$, then $\mu = \rho$.
+\end{proposition}
+
+Finally, the causal vocabulary, used from \S\ref{sec:signaling} on and in the appendix. A
+function $f \in X$ is \emph{causal} if it vanishes a.e.\ on $(-\infty, 0)$; its transform
+$\hat f(s) = \int_0^\infty e^{-st} f(t)\,dt$ is then defined for $s > 0$ with
+$|\hat f(s)| \le \|f\|_1$. We write
+\[
+  \Xz := L^1(\RR_+),
+\]
+identified with the causal elements of $X$; by (A3) every $\Phi_{x,y}$ restricts to $\Xz$.
+On $\Xz$, $(T_r)_{r \ge 0}$ denotes the \emph{delay semigroup},
+$(T_r f)(t) = f(t - r)\,\mathbf{1}_{t \ge r}$, a strongly continuous semigroup of positive
+isometries, and
+\[
+  \core \;:=\; \bigl\{\, f \in \Xz :\ f \text{ absolutely continuous},\ f' \in \Xz,\
+  f(0) = 0 \,\bigr\}
+\]
+is the operator core used there.
