@@ -47,6 +47,21 @@ tends to `0`. Without it the hinge is false, not merely unprovable: at an atom `
 integral `∫₀^∞ s^{c-1} ds` diverges, while `negMoment` — restricted to `(0,∞)` — does not see
 the atom at all.
 
+## Stated for a measure, not for `T₁`
+
+Nothing in the exchange is about `T₁`. What it needs of the measure is that it charges only
+`(0,∞)`, where the inner Gamma integral converges, and that the negative moment in play is
+finite, which is what licenses the exchange. So the three steps below --- the hinge, the Fubini
+side condition, and the identity --- are stated for an arbitrary `ν` carried by the half-line and
+instantiated at `lawT₁` afterwards.
+
+That is not generality for its own sake: chapter 12 spends it. `∂ₓ^j H(sx) = (-s)^j ∫ tʲ e^{-sxt}
+dμ(t)` says that the `j`-th derivative of the profile is again the Laplace transform of a measure
+--- the *weighted* measure `tʲ μ(dt)` --- so the Gamma-integral computation applies to it
+verbatim rather than being restated with a weight carried through it. The pointwise inner step
+`lintegral_ofReal_rpow_mul_exp` needed nothing at all, having been stated for an arbitrary
+`t > 0` from the start.
+
 ## Design decisions carried over from the skeleton
 
 * **`T₁` is `F.kernel 0 1`**, the kernel `μ_{0,1}` the construction already produces. No new
@@ -104,6 +119,126 @@ theorem lintegral_ofReal_rpow_mul_exp {c t : ℝ} (hc : 0 < c) (ht : 0 < t) :
     Real.integral_rpow_mul_exp_neg_mul_Ioi hc ht]
   congr 1
   rw [one_div, Real.inv_rpow ht.le, ← Real.rpow_neg ht.le, mul_comm]
+
+/-! ## The hinge, for a measure carried by the open half-line
+
+See the module docstring: `lem:mellin-data` is a statement about a measure on `(0,∞)` with a
+finite negative moment, and `lawT₁` enters only by being one. Chapter 12 applies the same three
+steps to `tʲ μ(dt)`. -/
+
+section OfMeasure
+
+variable {ν : Measure ℝ}
+
+/-- **The `ℝ≥0∞` hinge**, for any measure carried by `(0,∞)`:
+`∫∫ s^{c-1} e^{-ts} ds dν(t) = Γ(c) · ∫ t^{-c} dν(t)`. -/
+theorem lintegral_lintegral_gamma_of_ae_mem_Ioi (hν : ∀ᵐ t ∂ν, t ∈ Ioi (0 : ℝ)) {c : ℝ}
+    (hc : 0 < c) :
+    ∫⁻ t, (∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (s ^ (c - 1) * Real.exp (-(t * s)))) ∂ν
+      = ENNReal.ofReal (Real.Gamma c) * ∫⁻ t, ENNReal.ofReal (t ^ (-c)) ∂ν := by
+  have hstep : (fun t : ℝ => ∫⁻ s in Ioi (0 : ℝ),
+        ENNReal.ofReal (s ^ (c - 1) * Real.exp (-(t * s))))
+      =ᵐ[ν] fun t : ℝ => ENNReal.ofReal (Real.Gamma c) * ENNReal.ofReal (t ^ (-c)) := by
+    filter_upwards [hν] with t ht
+    exact lintegral_ofReal_rpow_mul_exp hc (mem_Ioi.mp ht)
+  rw [lintegral_congr_ae hstep, lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+
+/-- Joint integrability of `(s,t) ↦ s^{z-1} e^{-ts}` for `volume|_(0,∞) ⊗ ν`: the Fubini side
+condition, and the hinge is all of it. Tonelli turns the total mass of the absolute value into
+the double integral above, whose value is `Γ(Re z)` times the `Re z`-th negative moment of `ν`. -/
+theorem integrable_mellin_laplace_of_ae_mem_Ioi [SFinite ν] (hν : ∀ᵐ t ∂ν, t ∈ Ioi (0 : ℝ))
+    {z : ℂ} (hz : 0 < z.re) (hfin : ∫⁻ t, ENNReal.ofReal (t ^ (-z.re)) ∂ν ≠ ⊤) :
+    Integrable (Function.uncurry fun s t : ℝ =>
+        (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))))
+      ((volume.restrict (Ioi 0)).prod ν) := by
+  have hmeas : Measurable (Function.uncurry fun s t : ℝ =>
+      (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ)))) := by
+    unfold Function.uncurry
+    fun_prop
+  refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+  rw [hasFiniteIntegral_iff_enorm, lintegral_prod_symm _ (hmeas.enorm).aemeasurable]
+  have hcongr : ∀ t : ℝ,
+      (∫⁻ s, ‖Function.uncurry (fun s t : ℝ =>
+          (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ)))) (s, t)‖ₑ
+        ∂(volume.restrict (Ioi (0 : ℝ))))
+        = ∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (s ^ (z.re - 1) * Real.exp (-(t * s))) := by
+    intro t
+    refine setLIntegral_congr_fun measurableSet_Ioi (fun s hs => ?_)
+    have hs' : (0 : ℝ) < s := mem_Ioi.mp hs
+    have h1 : ‖(s : ℂ) ^ (z - 1)‖ = s ^ (z.re - 1) := by
+      rw [Complex.norm_cpow_eq_rpow_re_of_pos hs']; simp
+    have h2 : ‖Complex.exp (-((t : ℂ) * (s : ℂ)))‖ = Real.exp (-(t * s)) := by
+      rw [Complex.norm_exp]; simp
+    rw [Function.uncurry_apply_pair, ← ofReal_norm, norm_mul, h1, h2]
+  rw [lintegral_congr hcongr, lintegral_lintegral_gamma_of_ae_mem_Ioi hν hz]
+  exact lt_top_iff_ne_top.mpr (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hfin)
+
+/-- The Mellin integrand of a Laplace transform is an inner `ν`-integral. -/
+theorem ofReal_laplace_eq_integral (ν : Measure ℝ) (s : ℝ) :
+    ((laplace ν s : ℝ) : ℂ) = ∫ t, Complex.exp (-((t : ℂ) * (s : ℂ))) ∂ν := by
+  have hof : ((∫ t, Real.exp (-(s * t)) ∂ν : ℝ) : ℂ)
+      = ∫ t, ((Real.exp (-(s * t)) : ℝ) : ℂ) ∂ν := (integral_ofReal (𝕜 := ℂ)).symm
+  rw [laplace, hof]
+  refine integral_congr_ae (.of_forall fun t => ?_)
+  dsimp only
+  rw [Complex.ofReal_exp]
+  congr 1
+  push_cast
+  ring
+
+/-- **`lem:mellin-data`'s identity, for a measure carried by `(0,∞)`**:
+`M[laplace ν](z) = Γ(z) · ∫ t^{-z} dν(t)`.
+
+Fubini on `∫₀^∞ s^{z-1} ∫ e^{-st} dν(t) ds`, exchanged to `∫ (∫₀^∞ s^{z-1}e^{-st} ds) dν(t)`. The
+inner integral is Mathlib's `Complex.integral_cpow_mul_exp_neg_mul_Ioi`, which evaluates to
+`(1/t)^z Γ(z)`, so no substitution is needed and the Gamma function enters as Mathlib's rather
+than as a definition of ours. -/
+theorem mellin_laplace_of_ae_mem_Ioi [SFinite ν] (hν : ∀ᵐ t ∂ν, t ∈ Ioi (0 : ℝ)) {z : ℂ}
+    (hz : 0 < z.re) (hfin : ∫⁻ t, ENNReal.ofReal (t ^ (-z.re)) ∂ν ≠ ⊤) :
+    mellin (fun s => (laplace ν s : ℂ)) z = Complex.Gamma z * ∫ t, (t : ℂ) ^ (-z) ∂ν := by
+  have hinner : ∀ s : ℝ, (s : ℂ) ^ (z - 1) • ((laplace ν s : ℝ) : ℂ)
+      = ∫ t, (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))) ∂ν := by
+    intro s
+    rw [integral_const_mul, smul_eq_mul, ofReal_laplace_eq_integral]
+  have hgamma : ∀ t ∈ Ioi (0 : ℝ),
+      (∫ s in Ioi (0 : ℝ), (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))))
+        = (t : ℂ) ^ (-z) * Complex.Gamma z := by
+    intro t ht
+    have ht' : (0 : ℝ) < t := mem_Ioi.mp ht
+    rw [Complex.integral_cpow_mul_exp_neg_mul_Ioi hz ht']
+    congr 1
+    rw [one_div, Complex.inv_cpow _ _ (by
+      rw [Complex.arg_ofReal_of_nonneg ht'.le]; exact Real.pi_ne_zero.symm),
+      ← Complex.cpow_neg]
+  calc mellin (fun s => (laplace ν s : ℂ)) z
+      = ∫ s in Ioi (0 : ℝ), ∫ t, (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ)))
+          ∂ν := by
+        rw [mellin]
+        exact setIntegral_congr_fun measurableSet_Ioi (fun s _ => hinner s)
+    _ = ∫ t, (∫ s in Ioi (0 : ℝ), (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))))
+          ∂ν :=
+        integral_integral_swap (integrable_mellin_laplace_of_ae_mem_Ioi hν hz hfin)
+    _ = ∫ t, (t : ℂ) ^ (-z) * Complex.Gamma z ∂ν := by
+        refine integral_congr_ae ?_
+        filter_upwards [hν] with t ht
+        exact hgamma t ht
+    _ = Complex.Gamma z * ∫ t, (t : ℂ) ^ (-z) ∂ν := by
+        rw [integral_mul_const, mul_comm]
+
+/-- **`lem:mellin-data`'s convergence clause, for a measure carried by `(0,∞)`.**
+
+The hinge again, read the other way round: `integrable_mellin_laplace_of_ae_mem_Ioi` is joint
+integrability for the product measure, Fubini's `Integrable.integral_prod_left` projects it onto
+the `s`-marginal, and the inner `ν`-integral *is* `s^{z-1}·(laplace ν s)`. -/
+theorem mellinConvergent_laplace_of_ae_mem_Ioi [SFinite ν] (hν : ∀ᵐ t ∂ν, t ∈ Ioi (0 : ℝ))
+    {z : ℂ} (hz : 0 < z.re) (hfin : ∫⁻ t, ENNReal.ofReal (t ^ (-z.re)) ∂ν ≠ ⊤) :
+    MellinConvergent (fun s => (laplace ν s : ℂ)) z := by
+  have hprod := (integrable_mellin_laplace_of_ae_mem_Ioi hν hz hfin).integral_prod_left
+  refine hprod.congr (.of_forall fun s => ?_)
+  dsimp only [Function.uncurry]
+  rw [integral_const_mul, ← ofReal_laplace_eq_integral, smul_eq_mul]
+
+end OfMeasure
 
 namespace SelfDecomposableExponent
 
@@ -231,6 +366,12 @@ theorem negMoment_ne_top_of_lt_zStar {c : ℝ} (hc : 0 < c) (hc' : c < F.zStar) 
 
 /-! ## The hinge -/
 
+/-- The negative moment as an unrestricted `lintegral`, which is the form the general statements
+above are stated in: `T₁` charges only `(0,∞)`, so restricting changes nothing. -/
+theorem negMoment_eq_lintegral (h0 : F.lawT₁ {(0 : ℝ)} = 0) (ζ : ℝ) :
+    F.negMoment ζ = ∫⁻ t, ENNReal.ofReal (t ^ (-ζ)) ∂F.lawT₁ := by
+  rw [negMoment, Measure.restrict_eq_self_of_ae_mem (F.ae_mem_Ioi_lawT₁ h0)]
+
 /-- **The `ℝ≥0∞` computation the chapter turns on**:
 `∫∫ s^{c-1} e^{-ts} ds dμ(t) = Γ(c) · E[T₁^{-c}]`.
 
@@ -241,19 +382,8 @@ the strip condition and by no further hypothesis. -/
 theorem lintegral_lintegral_gamma {c : ℝ} (hc : 0 < c) (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
     ∫⁻ t, (∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (s ^ (c - 1) * Real.exp (-(t * s)))) ∂F.lawT₁
       = ENNReal.ofReal (Real.Gamma c) * F.negMoment c := by
-  have hae := F.ae_mem_Ioi_lawT₁ h0
-  have hstep : (fun t : ℝ => ∫⁻ s in Ioi (0 : ℝ),
-        ENNReal.ofReal (s ^ (c - 1) * Real.exp (-(t * s))))
-      =ᵐ[F.lawT₁] fun t : ℝ => ENNReal.ofReal (Real.Gamma c) * ENNReal.ofReal (t ^ (-c)) := by
-    filter_upwards [hae] with t ht
-    exact lintegral_ofReal_rpow_mul_exp hc (mem_Ioi.mp ht)
-  calc ∫⁻ t, (∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (s ^ (c - 1) * Real.exp (-(t * s)))) ∂F.lawT₁
-      = ∫⁻ t, ENNReal.ofReal (Real.Gamma c) * ENNReal.ofReal (t ^ (-c)) ∂F.lawT₁ :=
-        lintegral_congr_ae hstep
-    _ = ENNReal.ofReal (Real.Gamma c) * ∫⁻ t, ENNReal.ofReal (t ^ (-c)) ∂F.lawT₁ :=
-        lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
-    _ = ENNReal.ofReal (Real.Gamma c) * F.negMoment c := by
-        rw [negMoment, Measure.restrict_eq_self_of_ae_mem hae]
+  rw [lintegral_lintegral_gamma_of_ae_mem_Ioi (F.ae_mem_Ioi_lawT₁ h0) hc,
+    F.negMoment_eq_lintegral h0]
 
 /-- Joint integrability of `(s,t) ↦ s^{z-1} e^{-ts}` for `volume|_(0,∞) ⊗ lawT₁`: the Fubini side
 condition, and the hinge is all of it. Tonelli turns the total mass of the absolute value into
@@ -262,29 +392,9 @@ theorem integrable_mellin_laplace {z : ℂ} (hz : 0 < z.re) (hz' : z.re < F.zSta
     (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
     Integrable (Function.uncurry fun s t : ℝ =>
         (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))))
-      ((volume.restrict (Ioi 0)).prod F.lawT₁) := by
-  have hmeas : Measurable (Function.uncurry fun s t : ℝ =>
-      (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ)))) := by
-    unfold Function.uncurry
-    fun_prop
-  refine ⟨hmeas.aestronglyMeasurable, ?_⟩
-  rw [hasFiniteIntegral_iff_enorm, lintegral_prod_symm _ (hmeas.enorm).aemeasurable]
-  have hcongr : ∀ t : ℝ,
-      (∫⁻ s, ‖Function.uncurry (fun s t : ℝ =>
-          (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ)))) (s, t)‖ₑ
-        ∂(volume.restrict (Ioi (0 : ℝ))))
-        = ∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (s ^ (z.re - 1) * Real.exp (-(t * s))) := by
-    intro t
-    refine setLIntegral_congr_fun measurableSet_Ioi (fun s hs => ?_)
-    have hs' : (0 : ℝ) < s := mem_Ioi.mp hs
-    have h1 : ‖(s : ℂ) ^ (z - 1)‖ = s ^ (z.re - 1) := by
-      rw [Complex.norm_cpow_eq_rpow_re_of_pos hs']; simp
-    have h2 : ‖Complex.exp (-((t : ℂ) * (s : ℂ)))‖ = Real.exp (-(t * s)) := by
-      rw [Complex.norm_exp]; simp
-    rw [Function.uncurry_apply_pair, ← ofReal_norm, norm_mul, h1, h2]
-  rw [lintegral_congr hcongr, F.lintegral_lintegral_gamma (by linarith) h0]
-  exact lt_top_iff_ne_top.mpr
-    (ENNReal.mul_ne_top ENNReal.ofReal_ne_top (F.negMoment_ne_top_of_lt_zStar hz hz'))
+      ((volume.restrict (Ioi 0)).prod F.lawT₁) :=
+  integrable_mellin_laplace_of_ae_mem_Ioi (F.ae_mem_Ioi_lawT₁ h0) hz
+    (by rw [← F.negMoment_eq_lintegral h0]; exact F.negMoment_ne_top_of_lt_zStar hz hz')
 
 /-! ## `lem:mellin-data` -/
 
@@ -301,48 +411,8 @@ theorem mellin_profile (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
     mellin (fun s => (F.profile s : ℂ)) z
       = Complex.Gamma z * ∫ t, (t : ℂ) ^ (-z) ∂F.lawT₁ := by
   have h0 := F.lawT₁_singleton_zero hH.1
-  have hae := F.ae_mem_Ioi_lawT₁ h0
-  -- The Mellin integrand is an inner `μ`-integral.
-  have hinner : ∀ s : ℝ, (s : ℂ) ^ (z - 1) • ((F.profile s : ℝ) : ℂ)
-      = ∫ t, (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))) ∂F.lawT₁ := by
-    intro s
-    have hprof : ((F.profile s : ℝ) : ℂ)
-        = ∫ t, Complex.exp (-((t : ℂ) * (s : ℂ))) ∂F.lawT₁ := by
-      have hof : ((∫ t, Real.exp (-(s * t)) ∂F.lawT₁ : ℝ) : ℂ)
-          = ∫ t, ((Real.exp (-(s * t)) : ℝ) : ℂ) ∂F.lawT₁ := (integral_ofReal (𝕜 := ℂ)).symm
-      rw [profile, laplace, hof]
-      refine integral_congr_ae (.of_forall fun t => ?_)
-      dsimp only
-      rw [Complex.ofReal_exp]
-      congr 1
-      push_cast
-      ring
-    rw [integral_const_mul, smul_eq_mul, hprof]
-  -- The inner Gamma integral, for `t > 0`.
-  have hgamma : ∀ t ∈ Ioi (0 : ℝ),
-      (∫ s in Ioi (0 : ℝ), (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))))
-        = (t : ℂ) ^ (-z) * Complex.Gamma z := by
-    intro t ht
-    have ht' : (0 : ℝ) < t := mem_Ioi.mp ht
-    rw [Complex.integral_cpow_mul_exp_neg_mul_Ioi hz ht']
-    congr 1
-    rw [one_div, Complex.inv_cpow _ _ (by
-      rw [Complex.arg_ofReal_of_nonneg ht'.le]; exact Real.pi_ne_zero.symm),
-      ← Complex.cpow_neg]
-  calc mellin (fun s => (F.profile s : ℂ)) z
-      = ∫ s in Ioi (0 : ℝ), ∫ t, (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ)))
-          ∂F.lawT₁ := by
-        rw [mellin]
-        exact setIntegral_congr_fun measurableSet_Ioi (fun s _ => hinner s)
-    _ = ∫ t, (∫ s in Ioi (0 : ℝ), (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))))
-          ∂F.lawT₁ :=
-        integral_integral_swap (F.integrable_mellin_laplace hz hz' h0)
-    _ = ∫ t, (t : ℂ) ^ (-z) * Complex.Gamma z ∂F.lawT₁ := by
-        refine integral_congr_ae ?_
-        filter_upwards [hae] with t ht
-        exact hgamma t ht
-    _ = Complex.Gamma z * ∫ t, (t : ℂ) ^ (-z) ∂F.lawT₁ := by
-        rw [integral_mul_const, mul_comm]
+  exact mellin_laplace_of_ae_mem_Ioi (F.ae_mem_Ioi_lawT₁ h0) hz
+    (by rw [← F.negMoment_eq_lintegral h0]; exact F.negMoment_ne_top_of_lt_zStar hz hz')
 
 /-- **`lem:mellin-data`**, convergence: the Mellin integral of the profile converges absolutely on
 the strip.
@@ -355,20 +425,8 @@ already paid for, and it is `MellinConvergent` verbatim — the first of the two
 theorem mellinConvergent_profile (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
     (hz' : z.re < F.zStar) : MellinConvergent (fun s => (F.profile s : ℂ)) z := by
   have h0 := F.lawT₁_singleton_zero hH.1
-  have hprod := (F.integrable_mellin_laplace hz hz' h0).integral_prod_left
-  refine hprod.congr (.of_forall fun s => ?_)
-  have hprof : ((F.profile s : ℝ) : ℂ) = ∫ t, Complex.exp (-((t : ℂ) * (s : ℂ))) ∂F.lawT₁ := by
-    have hof : ((∫ t, Real.exp (-(s * t)) ∂F.lawT₁ : ℝ) : ℂ)
-        = ∫ t, ((Real.exp (-(s * t)) : ℝ) : ℂ) ∂F.lawT₁ := (integral_ofReal (𝕜 := ℂ)).symm
-    rw [profile, laplace, hof]
-    refine integral_congr_ae (.of_forall fun t => ?_)
-    dsimp only
-    rw [Complex.ofReal_exp]
-    congr 1
-    push_cast
-    ring
-  dsimp only [Function.uncurry]
-  rw [integral_const_mul, ← hprof, smul_eq_mul]
+  exact mellinConvergent_laplace_of_ae_mem_Ioi (F.ae_mem_Ioi_lawT₁ h0) hz
+    (by rw [← F.negMoment_eq_lintegral h0]; exact F.negMoment_ne_top_of_lt_zStar hz hz')
 
 /-- `E[T₁^{-c}]` as a Bochner integral. The two readings agree because `T₁ > 0` almost surely. -/
 theorem integral_rpow_neg_eq_negMoment {c : ℝ} (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
