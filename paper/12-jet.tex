@@ -1,8 +1,120 @@
-% §12 The temporal N-jet — draft §14 (lines 804–846): the embodied jet as the signaling
-% form's consequence (differentiation is re-indexing of the stored fractional-integral
-% family); the Gamma family's jets by subtraction along the shape column; Laguerre
-% structure; the local corner's derivatives as curvatures.
+% §12 The temporal N-jet — transcribed from draft §14 (lines 804–846); no blueprint part,
+% labels paper-only. The section is the embodiment story's consequence: differentiation
+% as re-indexing of the state constructed in §9. Citekey devries1992gamma to be verified
+% by the bibliography task.
 
 \section{The temporal N-jet: the memory embodies its derivatives}\label{sec:jet}
 
-% [transcription pending]
+The output of a scale space is not the smoothed field alone but its jet --- the temporal
+derivatives $\partial_t^n u(t, x)$ across scales, the causal analogue of the
+derivative-of-Gaussian receptive fields. Computed naively, $\partial_t^n u$ requires
+differencing the field in time, i.e.\ a \emph{second} memory recording the recent history of
+the scale space on top of the memory line itself. This section shows that the axioms exclude
+the need for it: the inversion structure of \S\ref{sec:signaling} turns temporal
+differentiation into an instantaneous spatial readout of the present memory state --- the
+memory line embodies its own jet.
+
+\begin{definition}\label{def:jet}
+For $n \ge 1$ let
+$\core^n := \{f \in \Xz : f, f', \dots, f^{(n)} \in \Xz,\ f^{(j)}(0) = 0 \text{ for } j \le n-1\}$
+(so $\core^1 = \core$). The \emph{temporal $N$-jet} of the scale space at $(t, x)$ is
+$\{\partial_t^n u(t, x)\}_{0 \le n \le N}$, and the \emph{scale-normalized jet} is
+$\{x^n \partial_t^n u(t, x)\}_{n \le N}$, which transforms under the joint dilation
+$(t, x) \mapsto (\sigma t, \sigma x)$ like the field itself.
+\end{definition}
+
+\begin{theorem}[the embodied jet]\label{thm:embodied-jet}
+Assume (H), canonical gauge, $f \in \core^n$, and let $u(\cdot, x) = \Phi_{0,x}f$. Then:
+\begin{enumerate}
+\item For every $t > 0$ and $1 < \operatorname{Re} z < z_*$,
+\[
+  \widetilde{\partial_t^n u(t, \cdot)}(z) \;=\; \tilde H(z)\,\bigl(I^{z} f^{(n)}\bigr)(t)
+  \;=\; \tilde H(z)\,\bigl(I^{\,z - n} f\bigr)(t),
+\]
+the second equality holding as a Riemann--Liouville integral for $\operatorname{Re} z > n$ and
+by analytic continuation --- a fractional derivative of $f$ --- below.
+\item Consequently, whenever $z_* > n + 1$, the $n$-th temporal derivative is the $n$-th power
+of the inversion operator applied to the \emph{present} memory state: in the Mellin sense on
+$n + 1 < \operatorname{Re} z < z_*$,
+\[
+  \partial_t^n u(t, \cdot) \;=\; A^n\, u(t, \cdot), \qquad
+  A^n = \frac{1}{x^n}\,B^{(n)}(\theta), \qquad
+  B^{(n)}(-z) := \frac{\tilde H(z + n)}{\tilde H(z)} = \prod_{j=0}^{n-1} B(-z - j).
+\]
+\end{enumerate}
+In particular the entire temporal jet at time $t$ is an instantaneous linear functional of the
+single profile $x \mapsto u(t, x)$; no record of past states is required.
+\end{theorem}
+
+\begin{proof}
+(1) $\partial_t^n u(t, x) = \Ex\bigl[f^{(n)}(t - x T_1)\bigr]$, and
+Lemma~\ref{lem:memory-fractional-integrals} applied to the causal $f^{(n)} \in \Xz$ gives the
+first equality; the second is $I^{z} f^{(n)} = I^{\,z-n} I^{\,n} f^{(n)} = I^{\,z-n} f$, using
+the vanishing boundary values in $\core^n$. (2) Telescoping the shift relation of
+Definition~\ref{def:inversion-operator} $n$ times,
+$\Mel[A^n g](z) = \prod_{j=1}^{n} B(j - z)\,\tilde g(z - n)
+= \tfrac{\tilde H(z)}{\tilde H(z - n)}\,\tilde g(z - n)$; insert
+$\tilde g = \widetilde{u(t,\cdot)}$ from Lemma~\ref{lem:memory-fractional-integrals} and
+compare with (1).
+\end{proof}
+
+\begin{remark}[differentiation is re-indexing]\label{rem:reindexing}
+Combined with Remark~\ref{rem:embodiment}, Theorem~\ref{thm:embodied-jet}(1) says that the
+memory line stores, once and simultaneously, the analytic family $\{(I^{z} f)(t)\}$ of
+fractional integrals of the past --- and the jet of every order is a \emph{re-reading} of that
+same stored family at shifted index, order $n$ living at Mellin depth
+$\operatorname{Re} z > n$ of the strip. Nothing new is stored when one differentiates; the
+embodiment of the signal already contains its jet, at all orders up to the strip width $z_*$.
+\end{remark}
+
+\begin{proposition}[the Gamma family: jets by subtraction along the shape column]\label{prop:gamma-jets}
+For the Gamma family write $u_m(\cdot, x)$ for the field of shape $m$ ($u_0 := f$). From
+$s(1 + xs)^{-m} = x^{-1}\bigl[(1 + xs)^{-(m-1)} - (1 + xs)^{-m}\bigr]$,
+\[
+  x\,\partial_t\, u_m \;=\; u_{m-1} - u_m \;=\; -\,(\nabla u)_m,
+  \qquad (\nabla u)_m := u_m - u_{m-1},
+\]
+and hence, iterating at fixed $x$,
+\[
+  x^n\,\partial_t^n\, u_\gamma \;=\; (-\nabla)^n u_\gamma
+  \;=\; \sum_{j=0}^{n} (-1)^{n-j}\binom{n}{j}\, u_{\gamma - j}(t, x),
+  \qquad 0 \le n \le \gamma .
+\]
+The column $\{u_m(\cdot, x)\}_{m=0}^{\gamma}$ is realized by $\gamma$ identical leaky
+integrators in series with time constant $x$, $u_m = (1 + x\,\partial_t)^{-1} u_{m-1}$ --- the
+gamma memory of \sscite{devries1992gamma} --- so the scale-normalized jet at scale $x$ is a
+binomial-weighted \emph{subtraction of coexisting filter states}, with no temporal
+differencing anywhere in the architecture, $\gamma$ states per scale, and jets available up to
+order $\gamma$. The identity is exact for all $n \le \gamma$, extending beyond the strip
+condition of Theorem~\ref{thm:embodied-jet} (the transforms are rational and continue
+meromorphically) --- consistently with $z_* = \gamma$ marking the strip reading and with the
+third open problem of \S\ref{sec:conclusions}.
+\end{proposition}
+
+\begin{proof}
+The transform identity is $(1+xs)^{-m}\bigl[(1+xs) - 1\bigr] = xs(1+xs)^{-m}$; induction in
+$n$ at fixed $x$; the realization is Proposition~\ref{prop:gamma-cascade} with
+$x_k = x_{k+1}$ degenerate to the pure-pole section.
+\end{proof}
+
+\begin{remark}[receptive fields; Laguerre structure]\label{rem:laguerre}
+By Proposition~\ref{prop:gamma-jets} the jet kernels $x^n \partial_t^n k_{\gamma, x}$ are
+Gamma densities times polynomials in $t/x$ --- associated Laguerre functions --- and the shape
+column spans the order-$\gamma$ rational function space with the single pole $1/x$, i.e.\ the
+classical Laguerre filter space at time constant $x$. The temporal receptive-field family thus
+stands to the causal scale space exactly as the Hermite/derivative-of-Gaussian family stands
+to the Gaussian one: a graded, orthogonalizable basis, read off the embodied state by
+subtraction.
+\end{remark}
+
+\begin{remark}[the local corner: derivatives as curvatures of the memory trace]\label{rem:local-jet}
+For the Bessel family, Theorem~\ref{thm:embodied-jet}(2) is local:
+\[
+  \partial_t^n u \;=\; \Bigl(\tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x\Bigr)^{\!n} u,
+\]
+the jet read from spatial stencils of order $2n$ on the instantaneous memory profile. In the
+heat case $\beta = 0$ this is the statement that the observer reads temporal derivatives as
+curvatures, and iterated curvatures, of its memory trace --- the embodiment reading already
+implicit in \sscite{fagerstrom2005temporal}, Thm.~4, here extended from the local corner to
+the whole class by the Mellin form.
+\end{remark}
