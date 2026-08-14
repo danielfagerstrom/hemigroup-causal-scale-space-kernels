@@ -37,6 +37,7 @@ isometries, and define the core
 % draft: Lemma 10.1
 \begin{lemma}[delay derivative]\label{lem:delay-core}
 \uses{lem:convolution-representation,def:cascade-family}
+\lean{Skeleton.delay_core}\notready
 $\core$ is dense in $\Xz$ and invariant under every $T_r$ and every $\Phi_{x,y}$, and for
 $f \in \core$,
 \[
@@ -44,7 +45,15 @@ $f \in \core$,
   \qquad
   \bigl\|T_r f - f\bigr\|_1 \le \min\bigl(2\|f\|_1,\ r\,\|f'\|_1\bigr).
 \]
-\statusT
+\statusT\quad\emph{(Stated in Lean, unproved. The setting this lemma is about --- $\Xz$, the
+delay semigroup and $\core$ --- is defined and its elementary theory proved in
+\texttt{Hemigroup/DelayCore.lean}; the five clauses are stated in
+\texttt{Skeleton/Chapter10.lean}. $\Xz$ is modelled as a predicate on $X = L^1(\RR)$, not as a
+subtype, on the same grounds as the measure side's \texttt{IsCausal}; and $\core$ is modelled
+as a predicate on genuine functions, because Chapters 11--12 quantify over its consequences
+\emph{pointwise} and an $L^1$ class has no pointwise values. That $\core$ so defined supplies
+exactly the hypotheses \ref{thm:signaling-form} takes about its signal --- neither fewer nor
+more --- is itself a machine-checked equivalence.)}
 \end{lemma}
 
 \begin{proof}

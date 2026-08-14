@@ -1,0 +1,238 @@
+/-
+Copyright (c) 2026 Daniel Fagerström. All rights reserved.
+Released under Apache 2.0 license as described in the file LICENSE.
+Authors: Daniel Fagerström
+-/
+import Hemigroup.SignalingForm
+import Mathlib.MeasureTheory.Function.AbsolutelyContinuous
+
+/-!
+# Chapter 10's setting: `X₀`, the delay semigroup `T_r`, and the core `𝒟`
+
+Blueprint: the preamble of chapter 10, and the objects `lem:delay-core` (10.1) is about. The
+lemma itself is stated in `Skeleton/Chapter10.lean`; **this file carries only definitions and the
+facts about them that are proved**, so that the chapter has a setting before it has a theorem.
+
+Chapter 11 has been using `𝒟` in prose since it was written, and defining none of it: it takes
+the consequences it needs as hypotheses. So the first obligation of this file is not to state
+10.1 but to say what `X₀` and `𝒟` *are*, in a way from which chapter 11's hypotheses follow —
+`memCore_iff_signaling_hypotheses` below is that check, and it is an `iff` on purpose.
+
+## `X₀` is a predicate on `X`, not a type
+
+`def:cascade-family` already acts on `X = L¹(ℝ)` and states causality as a predicate
+(`VanishesBefore`), exactly as the measure side states it as `IsCausal μ` rather than carrying
+measures on a half-line type. `DESIGN-formalization-strategy.md`'s M0 takes that decision one
+level down and gives the reason: *"measures on ℝ supported in `[0,∞)` rather than on a bespoke
+half-line type, so `Measure.conv` and the convolution API apply directly."* The same argument
+applies verbatim one level up. `Φ_{x,y}` is an `X →L[ℝ] X`; so are `transL1`, `dilL1` and
+`mconvL1`; a subtype `L¹(ℝ₊)` would need every one of them re-mounted, and would buy nothing,
+because "every `Φ_{x,y}` restricts to `X₀`" is (A3) — a *theorem shape the development already
+has* rather than something a type would give.
+
+So `causalL1 = {F : X | VanishesBefore 0 F}`, and `T_r` is `transL1 r`.
+
+## `𝒟` is primarily a predicate on functions, and only derivatively on `X`
+
+This is the decision with consequences, and the direction is forced by chapter 11 rather than
+chosen. Chapter 11's hypotheses are *pointwise* — `Measurable f`, `∀ r < 0, f r = 0`,
+`∀ r, f r = ∫_{(0,r]} g` — because `delayedField` exists precisely to name a representative that
+an `L¹` class does not have. A purely `L¹`-level `𝒟` therefore could not *derive* them; it could
+only assert them again. So the primary object is `HasCoreDeriv f g`, on genuine functions, and
+`coreL1` is its image in `X`.
+
+That is the (a)/(b) fork of `PLAN-chapters-8-12.md` answered one notch further along. The record
+there is that "the question was never *whether* to name a representative but *how widely*".
+`HasCoreDeriv` is that naming at the width chapter 10 needs, and `coreL1` is what the density and
+invariance clauses — which are genuinely about `L¹` classes — are stated in.
+
+## `𝒟` is written as a primitive, not as absolute continuity
+
+The blueprint writes `𝒟 = {f ∈ X₀ : f absolutely continuous, f' ∈ X₀, f(0) = 0}`. Mathlib now has
+`AbsolutelyContinuousOnInterval`, so that wording is expressible — and it would be the wrong
+choice, for a reason the `StieltjesFunction` episode of chapter 9 already recorded: **it names a
+tool where a property is meant.** What every consumer uses is the primitive form `f = ∫₀^· g`,
+and getting from absolute continuity to it is the Lebesgue fundamental theorem, which Mathlib does
+*not* have; the direction Mathlib does have is the one nothing uses. Defining `𝒟` by the primitive
+makes the three clauses free (`causal`, `apply_zero`, `abs_le`) and leaves the blueprint's own
+wording available as a derived fact, `HasCoreDeriv.absolutelyContinuousOnInterval`.
+
+Note also that `f ∈ X₀` is a *separate* field and not a consequence: a primitive of an `L¹`
+function tends to `∫₀^∞ g`, so it is integrable only when that limit vanishes. `SignalingForm.lean`
+records the same point, discovered there by assembling clauses that were each fine without it.
+-/
+
+namespace Hemigroup
+
+open MeasureTheory Set Filter
+
+open scoped Topology
+
+/-! ## The delay semigroup -/
+
+/-- The **delay semigroup** at the level of functions, `(T_r f)(t) = f(t-r)·1_{t ≥ r}`.
+
+The indicator is what the blueprint writes, and on `X₀` it is redundant — see
+`delay_eq_translate`. Keeping it in the definition is what makes `T_r` a positive operator on all
+of `X` rather than only on the causal part, which is the reading the blueprint's "semigroup of
+positive isometries" asks for. -/
+noncomputable def delay (r : ℝ) (f : ℝ → ℝ) : ℝ → ℝ :=
+  (Ici r).indicator fun t => f (t - r)
+
+/-- **On causal functions the indicator is redundant**, so `T_r` is translation and the `L¹`
+operator is `transL1 r`.
+
+Causality alone does it: below `t = r` the argument `t - r` is negative, where `f` already
+vanishes. This is why chapter 10 needs no new operator on `X`. -/
+theorem delay_eq_translate {f : ℝ → ℝ} (hf : ∀ s : ℝ, s < 0 → f s = 0) (r : ℝ) :
+    delay r f = fun t => f (t - r) := by
+  funext t
+  by_cases ht : r ≤ t
+  · rw [delay, indicator_of_mem (mem_Ici.mpr ht)]
+  · rw [delay, indicator_of_notMem (by simpa using ht), hf (t - r) (by linarith [not_le.mp ht])]
+
+/-! ## The core, on functions -/
+
+/-- **`f ∈ 𝒟`, with the derivative named**: `f` is the primitive of a causal `g ∈ X₀`, and lies in
+`X₀` itself.
+
+The blueprint's three conditions map onto the fields as follows. *Absolutely continuous with
+`f' ∈ X₀`* is `primitive` together with the three `g`-fields — see the module docstring for why
+the primitive is the definition and absolute continuity the derived fact. *`f(0) = 0`* is
+`primitive` at `r = 0`, where the domain of integration is empty (`apply_zero`). *`f ∈ X₀`* is
+`integrable` together with `causal`, and it is genuinely a separate demand. -/
+structure HasCoreDeriv (f g : ℝ → ℝ) : Prop where
+  /-- The derivative is measurable. Free for an `L¹` class, and mandatory in Lean: the delayed
+  average composes `g` with a map under which a `volume`-null set need not stay null. -/
+  measurable_deriv : Measurable g
+  /-- `f' ∈ L¹`. -/
+  integrable_deriv : Integrable g
+  /-- `f'` is causal — the `X₀` half of `f' ∈ X₀`. -/
+  causal_deriv : ∀ r : ℝ, r < 0 → g r = 0
+  /-- `f` is the primitive of `g` from the origin. This carries absolute continuity and
+  `f(0) = 0` at once. -/
+  primitive : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ
+  /-- `f ∈ L¹`. Not implied by the rest: a primitive of an `L¹` function tends to `∫₀^∞ g`. -/
+  integrable : Integrable f
+
+/-- **`f ∈ 𝒟`**. -/
+def MemCore (f : ℝ → ℝ) : Prop := ∃ g, HasCoreDeriv f g
+
+namespace HasCoreDeriv
+
+variable {f g : ℝ → ℝ}
+
+/-- `f` is causal — the `X₀` half of `f ∈ X₀`, and free from the primitive. -/
+theorem causal (h : HasCoreDeriv f g) : ∀ r : ℝ, r < 0 → f r = 0 := fun r hr => by
+  rw [h.primitive r, Ioc_eq_empty (not_lt.mpr hr.le), Measure.restrict_empty,
+    integral_zero_measure]
+
+/-- `f(0) = 0`. -/
+theorem apply_zero (h : HasCoreDeriv f g) : f 0 = 0 := by
+  rw [h.primitive 0, Ioc_self, Measure.restrict_empty, integral_zero_measure]
+
+/-- The primitive read as an interval integral, valid on all of `ℝ`.
+
+To the left of the origin both sides vanish — the left by the empty domain, the right because `g`
+does. Having the identity at *every* `r` is what makes continuity a one-liner. -/
+theorem eq_intervalIntegral (h : HasCoreDeriv f g) (r : ℝ) : f r = ∫ ρ in (0 : ℝ)..r, g ρ := by
+  rcases le_or_gt 0 r with hr | hr
+  · rw [h.primitive r, intervalIntegral.integral_of_le hr]
+  · have hzero : (∫ ρ in Ioc r (0 : ℝ), g ρ) = 0 := by
+      have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
+        rw [ae_iff]
+        simp
+      refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
+      filter_upwards [hne] with w hw hwmem
+      exact h.causal_deriv w (lt_of_le_of_ne hwmem.2 hw)
+    rw [h.causal r hr, intervalIntegral.integral_of_ge hr.le, hzero, neg_zero]
+
+/-- `f` is continuous — Mathlib's continuity of a primitive, once `eq_intervalIntegral` has put
+`f` in that form. -/
+theorem continuous (h : HasCoreDeriv f g) : Continuous f :=
+  (h.integrable_deriv.continuous_primitive 0).congr fun r => (h.eq_intervalIntegral r).symm
+
+/-- `f` is measurable. This is the one hypothesis of `thm:signaling-form` that `𝒟` does not carry
+as a field. -/
+theorem measurable (h : HasCoreDeriv f g) : Measurable f := h.continuous.measurable
+
+/-- **`f` is bounded by `‖f'‖₁`** — the feature of `𝒟` that widens the strip of
+`lem:memory-fractional-integrals` from `Re z > 1` to `Re z > 0`, and hence the one that makes
+`thm:signaling-form`(2) chain. -/
+theorem abs_le (h : HasCoreDeriv f g) (r : ℝ) : |f r| ≤ ∫ w, |g w| := by
+  rw [h.primitive r]
+  exact SelfDecomposableExponent.abs_primitive_le h.integrable_deriv r
+
+/-- **The blueprint's own wording, recovered**: `f` is absolutely continuous on every `[0,b]`.
+
+Nothing downstream uses this; it is here because `𝒟` is *defined* by the primitive and the
+blueprint defines it by absolute continuity, so the agreement of the two should be checked rather
+than asserted. Only this direction is available — Mathlib has no Lebesgue fundamental theorem —
+and it is the direction that makes the definition faithful rather than the one that would make it
+usable. -/
+theorem absolutelyContinuousOnInterval (h : HasCoreDeriv f g) (b : ℝ) :
+    AbsolutelyContinuousOnInterval f 0 b := by
+  have hf : f = fun x => ∫ ρ in (0 : ℝ)..x, g ρ := funext h.eq_intervalIntegral
+  rw [hf]
+  exact h.integrable_deriv.intervalIntegrable.absolutelyContinuousOnInterval_intervalIntegral
+    left_mem_uIcc
+
+/-- `T_r` acts on the core's members by plain translation. -/
+theorem delay_eq (h : HasCoreDeriv f g) (r : ℝ) : delay r f = fun t => f (t - r) :=
+  delay_eq_translate h.causal r
+
+end HasCoreDeriv
+
+/-- **The derivation check: `f ∈ 𝒟` is exactly what `thm:signaling-form` asks of its signal.**
+
+An `iff`, and both halves are the point. Left to right is the obligation this file exists to
+discharge — chapter 11 has been quantifying over the consequences of `f ∈ 𝒟` without `𝒟` existing,
+and the model chosen here has to *supply* them, not merely be compatible with them. Right to left
+says the model adds nothing: `𝒟` is not a strengthening smuggled in under a chapter-10 name.
+
+The six conjuncts are, in order, the six hypotheses `signaling_form` takes about `f` and `g`.
+`Measurable f` is the only one that is not a field of `HasCoreDeriv`; it comes from continuity of
+the primitive. -/
+theorem memCore_iff_signaling_hypotheses {f g : ℝ → ℝ} :
+    HasCoreDeriv f g ↔
+      Measurable g ∧ Integrable g ∧ (∀ r : ℝ, r < 0 → g r = 0) ∧
+        Measurable f ∧ Integrable f ∧ (∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) :=
+  ⟨fun h => ⟨h.measurable_deriv, h.integrable_deriv, h.causal_deriv, h.measurable, h.integrable,
+      h.primitive⟩,
+   fun ⟨hgm, hg, hgc, _, hfi, hf⟩ => ⟨hgm, hg, hgc, hf, hfi⟩⟩
+
+/-! ## The core and `X₀`, on `X` -/
+
+/-- **`X₀ = L¹(ℝ₊)`**, as the causal elements of `X`. -/
+def causalL1 : Set X := {F | VanishesBefore 0 F}
+
+/-- **`F ∈ 𝒟` with its derivative named, at the level of `L¹` classes.**
+
+The existential over representatives is what a statement about `L¹` classes has to say: `𝒟` is a
+subset of `X₀`, and membership is the existence of a representative in the core. -/
+def HasCoreDerivL1 (F G : X) : Prop :=
+  ∃ f g, HasCoreDeriv f g ∧ (F : ℝ → ℝ) =ᵐ[volume] f ∧ (G : ℝ → ℝ) =ᵐ[volume] g
+
+/-- **`𝒟` as a subset of `X`.** -/
+def coreL1 : Set X := {F | ∃ G, HasCoreDerivL1 F G}
+
+/-- `𝒟 ⊆ X₀`: the core sits inside the causal part, which is what makes "dense in `X₀`" the right
+statement rather than "dense in `X`". -/
+theorem coreL1_subset_causalL1 : coreL1 ⊆ causalL1 := by
+  rintro F ⟨G, f, g, hfg, hF, -⟩
+  filter_upwards [hF] with t ht htlt
+  rw [ht]
+  exact hfg.causal t htlt
+
+/-- `X₀` is invariant under the delay semigroup — the trivial half of `lem:delay-core`'s
+invariance clause, and the one that does not mention the core. -/
+theorem causalL1_transL1 {r : ℝ} (hr : 0 ≤ r) {F : X} (hF : F ∈ causalL1) :
+    transL1 r F ∈ causalL1 := by
+  have hsh : ∀ᵐ t : ℝ, t - r < 0 → (F : ℝ → ℝ) (t - r) = 0 :=
+    (measurePreserving_sub_const r).quasiMeasurePreserving.ae hF
+  change VanishesBefore 0 (transL1 r F)
+  filter_upwards [coeFn_transL1 r F, hsh] with t ht hsub htlt
+  rw [ht]
+  exact hsub (by linarith)
+
+end Hemigroup

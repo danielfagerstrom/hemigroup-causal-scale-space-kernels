@@ -1333,3 +1333,92 @@ Chapter 11 needs nothing further. What remains in the article:
 3. Blocked upstream, unchanged: chapter 10's C₀-semigroup content, chapter 12 (Bessel `K`),
    `prop:scale-evolution` and `cor:exact-inversion` (distributions).
 4. `prop:pair-regularity`(2) is `[A]` by design (ledger A9) — the repo's one `sorry`.
+
+---
+
+# Chapter 10's setting, built; `lem:delay-core` stated — 2026-08-14
+
+`Hemigroup/DelayCore.lean` (definitions and their elementary theory, all Lean core) and
+`Skeleton/Chapter10.lean` (the five clauses, `sorry`; the collation above them `sorry`-free).
+`lem:delay-core` is `\lean{Skeleton.delay_core}\notready`. 81 nodes, 52 `\leanok` — unchanged,
+which is the point of the middle state.
+
+## The modelling decision, and the one argument that settled it
+
+Chapter 10 is stated about three objects the development had never built: `X₀`, the delay
+semigroup, and the core `𝒟`. Only the first looks like a free choice, and it is not.
+
+**`X₀` is a predicate on `X = L¹(ℝ)`, not a subtype.** `DESIGN-formalization-strategy.md`'s M0
+already took this decision one level down and gave the reason — *"measures on ℝ supported in
+`[0,∞)` rather than on a bespoke half-line type, so `Measure.conv` and the convolution API apply
+directly"* — and the argument transfers verbatim: `Φ_{x,y}`, `transL1`, `dilL1` and `mconvL1` are
+all operators on `X`, and a subtype needs every one re-mounted. What settles it rather than
+merely favouring it is that **(A3) is already the theorem "every `Φ_{x,y}` restricts to `X₀`"**,
+stated as `VanishesBefore t₀ f → VanishesBefore t₀ (Φ x y f)`. A subtype would be a second way of
+saying what the axiom says.
+
+**`𝒟` is a predicate on genuine functions, and `coreL1` is its image in `X`.** This is the
+decision with consequences, and chapter 11 forces the direction. Its hypotheses are *pointwise*
+(`Measurable f`, `∀ r < 0, f r = 0`, `∀ r, f r = ∫_{(0,r]} g`), because `delayedField` exists
+precisely to name a representative an `L¹` class does not have. A purely `L¹`-level `𝒟` could not
+*derive* those; it could only assert them again — which would be exactly the drift the task was to
+avoid. So the function level is primary.
+
+That is the (a)/(b) fork answered one notch further along. The record from 2026-08-12 was that
+*"the question was never whether to name a representative but how widely"*. `HasCoreDeriv` is that
+naming at the width chapter 10 needs, and it costs nothing extra: (b)'s "new layer under three
+chapters" is, again, the same choice promoted.
+
+## The check is an equivalence, and that is not decoration
+
+`memCore_iff_signaling_hypotheses` states `HasCoreDeriv f g` ↔ the six hypotheses
+`thm:signaling-form` takes about its signal. Both halves earn their place. Left to right is the
+obligation — the model must *supply* what chapter 11 assumed while `𝒟` had no definition. Right to
+left says the model adds nothing: `𝒟` is not a strengthening smuggled in under a chapter-10 name,
+which is the failure a one-way check would not see. Only one of the six is not a field of the
+structure, `Measurable f`, and it comes from continuity of the primitive.
+
+## `𝒟` is defined by the primitive, and Mathlib's absolute continuity is the derived fact
+
+The blueprint writes `𝒟 = {f ∈ X₀ : f absolutely continuous, f' ∈ X₀, f(0) = 0}`, and Mathlib
+*now has* `AbsolutelyContinuousOnInterval` (`MeasureTheory/Function/AbsolutelyContinuous.lean`,
+new since the 2026-08-11 survey). Defining `𝒟` that way would have been wrong, for the reason the
+`StieltjesFunction` episode already recorded: **it names a tool where a property is meant.** Every
+consumer uses the primitive form `f = ∫₀^· g`; getting there from absolute continuity is the
+Lebesgue fundamental theorem, which Mathlib does **not** have, while the direction it does have
+(`IntervalIntegrable.absolutelyContinuousOnInterval_intervalIntegral`) is the one nothing uses.
+
+So `𝒟` is defined by the primitive and `HasCoreDeriv.absolutelyContinuousOnInterval` recovers the
+blueprint's wording as a theorem. Three clauses then come for free — `causal`, `apply_zero`
+(`f(0) = 0` is the empty domain of integration), `abs_le` — and the fourth, `f ∈ X₀`, stays a
+separate field, as `SignalingForm.lean` found by assembling clauses that were each fine without it.
+
+**Worth naming, because it inverts an expectation.** A new Mathlib theory arriving is normally
+what unblocks a node. Here the new theory arrived and the right move was still not to use it, and
+the reason was legible only after asking what the *consumers* of the definition need. Same test as
+"read the Assignment clause and the consuming node first, the citation last" — one level down,
+about a definition rather than a ledger entry.
+
+## What the five clauses are expected to cost
+
+1. `dense_coreL1` — the blueprint says "standard", and the standard route does not work: step
+   functions are dense in `X₀` and are not in `𝒟` at all. The mollification
+   `f_h := h⁻¹ 1_{[0,h]} ∗ f` is in `𝒟` outright, with derivative `h⁻¹(f - T_h f)`, and converges
+   by continuity of translation in `L¹` — **the same input clause 4 needs**, so the two are one
+   piece of work seen from two sides and should be attacked together.
+2. `hasCoreDerivL1_transL1` — stated as `(T_r f)' = T_r f'` rather than `T_r f ∈ 𝒟`, because that
+   is what the blueprint proves and what `def:phillips-generator` will consume.
+3. `hasCoreDerivL1_mconvL1` — invariance under `Φ` at the level `lem:convolution-representation`
+   supplies it, i.e. for a causal probability measure. Reading it back onto a `CascadeCore` is the
+   representation theorem, not this lemma.
+4. `tendsto_differenceQuotient` — continuity of translation in `L¹`; the blueprint's `[0,h)`
+   boundary term is **the only place `f(0) = 0` is used**.
+5. `norm_transL1_sub_le` — the `2‖f‖₁` half is the triangle inequality and the isometry; the
+   `r‖f'‖₁` half is the integrated form of clause 4.
+
+## Next
+
+1. Clauses 1 and 4 together, through continuity of translation in `L¹`; then 5, which follows 4.
+2. Clauses 2 and 3 are independent of those and cheaper.
+3. Unchanged and still not schedulable: the rest of chapter 10 (C₀-semigroups), chapter 12's
+   ladder (Bessel `K`), `prop:scale-evolution` and `cor:exact-inversion` (distributions).

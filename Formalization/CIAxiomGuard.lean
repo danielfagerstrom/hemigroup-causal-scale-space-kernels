@@ -785,3 +785,32 @@ lines remain the load-bearing ones. It also asserts *less* than the halves — t
 #print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_profile_eq_eulerExpression
 #print axioms Hemigroup.SelfDecomposableExponent.isLocalOfOrder_of_symbol_eq
 #print axioms Hemigroup.SelfDecomposableExponent.nonempty_isLocalOfOrder_iff_symbol_eq
+
+/-! ### Chapter 10's setting: `X₀`, `T_r` and the core `𝒟`
+
+Definitions and their elementary theory (`Hemigroup/DelayCore.lean`), listed here for the reason
+`Hemigroup/Subordinator.lean`'s lemmas are: they are proved and in the library while their
+consumer — `lem:delay-core`, still in `Skeleton/Chapter10.lean` — is not, so CI's sorry guard
+cannot see them and this list is the only check that they are interface-free.
+
+`memCore_iff_signaling_hypotheses` is the one worth reading. It is an `iff` between `f ∈ 𝒟` and
+the six hypotheses `thm:signaling-form` takes about its signal, and it is what says the model of
+`𝒟` chosen here supplies chapter 11's hypotheses rather than drifting from them — chapter 11 was
+written taking those six directly, `𝒟` having no definition at the time.
+
+Lean core throughout: nothing here mentions a hemigroup object. `abs_le` is the exception in
+appearance only — it reuses `abs_primitive_le`, which sits in the `SelfDecomposableExponent`
+namespace without taking an `F`.
+-/
+
+#print axioms Hemigroup.delay_eq_translate
+#print axioms Hemigroup.HasCoreDeriv.causal
+#print axioms Hemigroup.HasCoreDeriv.apply_zero
+#print axioms Hemigroup.HasCoreDeriv.eq_intervalIntegral
+#print axioms Hemigroup.HasCoreDeriv.continuous
+#print axioms Hemigroup.HasCoreDeriv.measurable
+#print axioms Hemigroup.HasCoreDeriv.abs_le
+#print axioms Hemigroup.HasCoreDeriv.absolutelyContinuousOnInterval
+#print axioms Hemigroup.memCore_iff_signaling_hypotheses
+#print axioms Hemigroup.coreL1_subset_causalL1
+#print axioms Hemigroup.causalL1_transL1

@@ -68,10 +68,17 @@ The next work, in order. `blueprint/PLAN-chapters-8-12.md` carries the reasoning
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable:
 
-1. **`lem:delay-core` (10.1), the one piece of new formalisation that is available.** The core
-   `𝒟`, its density, its invariance under the delay semigroup and under `Φ`, and the `L¹`
-   difference quotient — no C₀-semigroup theory and no closed operators. Nothing now depends on
-   it, so it discharges `\uses` edges rather than unblocking anything. **Chapter 11 is complete,
+1. **`lem:delay-core` (10.1), the one piece of new formalisation that is available — now
+   *stated*.** The setting is built: `X₀` as a predicate on `X = L¹(ℝ)`, the delay semigroup as
+   `transL1`, and the core `𝒟` as a predicate on genuine functions, in
+   `Formalization/Hemigroup/DelayCore.lean`. That `𝒟` supplies exactly the six hypotheses
+   `thm:signaling-form` takes about its signal — chapter 11 having been written before `𝒟` had a
+   definition — is `memCore_iff_signaling_hypotheses`, an equivalence and not a one-way check.
+   The five clauses (density, invariance under `T_r` and under `Φ`, the `L¹` difference quotient,
+   the two-sided estimate) are the `sorry`s of `Formalization/Skeleton/Chapter10.lean`, with the
+   node tagged `\notready`; the collation above them is `sorry`-free. No C₀-semigroup theory and
+   no closed operators anywhere in it. Nothing depends on the lemma, so it discharges `\uses`
+   edges rather than unblocking anything. **Chapter 11 is complete,
    Theorem 4$'$ included** — all six conjuncts of `thm:signaling-form` are machine-checked and
    assembled into one declaration, and none of the chapter spends ledger A12, although three of
    its nodes had been recorded as waiting on it.

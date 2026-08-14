@@ -4,6 +4,7 @@ import Hemigroup.ClosedForms
 import Hemigroup.Construction
 import Hemigroup.Continuity
 import Hemigroup.Covariance
+import Hemigroup.DelayCore
 import Hemigroup.Examples
 import Hemigroup.ExponentDerivative
 import Hemigroup.Family
