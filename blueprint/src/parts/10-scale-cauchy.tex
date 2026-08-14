@@ -88,6 +88,7 @@ bound $\|T_rf - f\|_1 \le 2\|f\|_1$.
 % draft: Definition 10.2
 \begin{definition}[per-scale generator; Phillips form]\label{def:phillips-generator}
 \uses{lem:selfdecomposable-exponents,lem:delay-core}
+\lean{Hemigroup.SelfDecomposableExponent.phillipsGenerator}\leanok
 Let $\nu_1$ be the Lebesgue--Stieltjes measure $-dk$ on $(0,\infty)$, with $k$ taken
 right-continuous and $k(\infty) = 0$, so that $\nu_1\bigl((r,\infty)\bigr) = k(r)$; and for
 $x > 0$ put $\nu_x := x^{-1}$ times the pushforward of $\nu_1$ under $r \mapsto xr$, i.e.\
@@ -96,25 +97,34 @@ $\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
   \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - T_r f\bigr)\,\nu_x(dr)
   \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - T_{xr} f\bigr)\,\nu_1(dr).
 \]
-\statusT\quad\emph{(\textbf{Not blocked by generation theory}, re-checked 2026-08-14. Everything
-this definition names now exists: $\core$ and $(T_r)$ are \ref{lem:delay-core}'s, built in
-\texttt{Hemigroup/DelayCore.lean}, and $\nu_1$ is chapter~9's \texttt{exists\_tailMeasure} --- the
-quantile construction made for \ref{lem:potential-kernel} precisely because
-\texttt{StieltjesFunction} does not apply to a L\'evy tail. The integral is an $\Xz$-valued
-Bochner integral, which needs no new theory: $X = L^1(\RR)$ is a complete normed real space, $T_r$
-is a continuous linear map on it, and $r \mapsto T_rf$ is continuous, so the integrand is strongly
-measurable and the definition is total.
+\statusT\quad\emph{(\textbf{Defined in Lean} (2026-08-14), in
+\texttt{Hemigroup/PhillipsGenerator.lean}, and \textbf{not blocked by generation theory} --- the
+re-check that found so is recorded at \ref{lem:generator-properties}. Everything this definition
+names already existed: $\core$ and $(T_r)$ are \ref{lem:delay-core}'s, and $\nu_1$ is chapter~9's
+\texttt{exists\_tailMeasure} --- the quantile construction made for \ref{lem:potential-kernel}
+precisely because \texttt{StieltjesFunction} does not apply to a L\'evy tail.
+\textbf{The $\Xz$-valued Bochner integral needed no new theory}, against a plan that had recorded
+it as the expensive part of the chapter: $X = L^1(\RR)$ is a complete normed real space, $T_r$ is
+a continuous linear map on it, and $r \mapsto T_rf$ is continuous, so the integrand is strongly
+measurable and the definition is \emph{total} --- clause (1) below is what says it means something
+on $\core$, not what makes it well formed. Note the contrast with \ref{lem:delay-core}, where the
+blueprint named a Bochner integral the obligation did not need; here the integral is in the
+statement rather than in a proof, so it has to be built, and building it costs nothing.
 \textbf{The right-continuity normalisation is neither available nor needed.} A $k$ that is only
 nonincreasing has no right-continuous representative nameable here, and
 \texttt{exists\_tailMeasure} accordingly delivers $\nu_1\bigl((r,\infty)\bigr) = k(r)$ for
 \emph{almost every} $r$ rather than every $r$. That is exactly enough, because every use of the
 tail below sits under an integral in $r$ --- the same accounting chapter~9 already made for the
-potential kernel.)}
+potential kernel. Accordingly $\nu_1$ enters the Lean statements as a \emph{parameter} meeting
+that specification rather than as a construction, so that the chapter does not wait on an
+existence half; \texttt{exists\_hasLevyTail} closes the gap, and the two displayed forms above are
+one change of variables apart (\texttt{phillipsGenerator\_eq\_smul\_integral}).)}
 \end{definition}
 
 % draft: Lemma 10.3
 \begin{lemma}[properties of the generator]\label{lem:generator-properties}
 \uses{def:phillips-generator,lem:delay-core,lem:memory-kernel,prop:laplace-uniqueness}
+\lean{Skeleton.generator_properties}\notready
 For $f \in \core$ and $x > 0$:
 \begin{enumerate}
 \item The integral converges absolutely in $\Xz$, with
@@ -127,14 +137,24 @@ $\varphi_x(s) = s F'(xs)$.
 $\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
 coincides on $\core$ with the memory-kernel operator of Chapter~9.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Not blocked by generation theory}, re-checked 2026-08-14: no clause
-mentions a generator's domain, a resolvent, or a generation theorem, and the ``strong continuity
-of $T$'' that (4) invokes is \texttt{continuous\_transL1}, proved in chapter~4. Clause by clause
+\statusT\quad\emph{(\textbf{Stated in Lean, unproved} (2026-08-14):
+\texttt{Skeleton/Chapter10.lean} carries the five clauses as named sub-lemmas with a
+\texttt{sorry}-free collation above them, which is the decomposition gate's middle state and not a
+claim. \textbf{Not blocked by generation theory}: no clause mentions a generator's domain, a
+resolvent, or a generation theorem, and the ``strong continuity of $T$'' that (4) invokes is
+\texttt{continuous\_transL1}, proved in chapter~4. Clause by clause
 the inputs are (1) \ref{lem:delay-core}'s estimate, (2) Fubini and \ref{lem:memory-kernel},
 (3) that $\Phi_{y,z}$ is a continuous linear map, so it passes through a Bochner integral,
 (4) dominated convergence, (5) \texttt{laplaceL\_memoryKernel} and
 \ref{prop:laplace-uniqueness}. The C$_0$-semigroup reason that filed all of chapter~10 as blocked
 attaches to \ref{thm:scale-cauchy} and \ref{prop:fixed-scale-semigroup}, and not here.
+Two departures the statements make, neither changing the content. The commutation clause is
+stated for an \emph{arbitrary} causal probability measure rather than for the family's own
+$\Phi_{y,z}$: that is what its proof uses, and it keeps the clause off the ledger entry
+quantifying over the constructed family would have put it on. And (5) is stated in the primitive
+vocabulary $\core$ is defined in --- $\kappa^{(x)} * f$ agrees a.e.\ with the \emph{primitive} of
+$\varphi_x(\partial_t)f$ --- which is the same assertion as ``absolutely continuous with that
+derivative'' and carries the trailing $(\kappa^{(x)}*f)(\zp) = 0$ for free.
 Two things the re-reading found, both the pattern this article keeps meeting --- the classical
 derivation asking for more than the statement does. The convergence
 $\int (1 \wedge r)\,\nu_x(dr) < \infty$ is \emph{one layer cake},

@@ -884,6 +884,32 @@ interface-free.
 #print axioms Hemigroup.dense_coreL1
 #print axioms Hemigroup.delay_core
 
+/-! ### `def:phillips-generator` (10.2)
+
+The per-scale generator in Phillips form, `Hemigroup/PhillipsGenerator.lean`. Listed here for the
+same reason the setting above is: the definition is in the library while its consumer,
+`lem:generator-properties`, is still in `Skeleton/Chapter10.lean`, so the sorry guard cannot see
+it and this list is the only check that it is interface-free. It is — **Lean core throughout**,
+including `exists_hasLevyTail`, which routes through chapter 9's quantile transform and not
+through Bernstein–Widder.
+
+Two things the definition settles rather than assumes. The `X₀`-valued Bochner integral needs
+nothing new: `X = L¹(ℝ)` is a complete normed real space and `r ↦ transL1 r f` is continuous
+(`continuous_sub_transL1`), so the integrand is strongly measurable and the definition is *total*
+— clause (1) of 10.3 is what says it means something on `𝒟`, not what makes it typecheck. And
+`ν₁` is a *parameter* meeting `HasLevyTail` rather than a construction, so that the chapter does
+not wait on an existence half; the specification's tail identity is `ae`, because a `k` that is
+only nonincreasing has no right-continuous representative this development can name.
+-/
+
+#print axioms Hemigroup.dilatedTail
+#print axioms Hemigroup.dilatedTail_Ioi
+#print axioms Hemigroup.continuous_sub_transL1
+#print axioms Hemigroup.SelfDecomposableExponent.HasLevyTail
+#print axioms Hemigroup.SelfDecomposableExponent.exists_hasLevyTail
+#print axioms Hemigroup.SelfDecomposableExponent.phillipsGenerator
+#print axioms Hemigroup.SelfDecomposableExponent.phillipsGenerator_eq_smul_integral
+
 /-! ### `Ein`, the entire exponential integral
 
 Mathlib has no exponential integral of any kind — no `Ein`, no `Ei`, no `E₁` — so `ein` is

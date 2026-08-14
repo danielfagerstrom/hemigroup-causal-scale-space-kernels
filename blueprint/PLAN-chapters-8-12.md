@@ -1914,3 +1914,91 @@ problem"**, and not "chapter 10 is blocked".
 `lem:generator-properties`. Re-check each against its node before starting; this inventory has
 been wrong before, in both directions, and this entry is the second time in a week that a
 chapter-level "blocked" turned out to have gone stale against work done since.
+
+---
+
+# Chapter 10 opened: `def:phillips-generator` defined, `lem:generator-properties` stated — 2026-08-14
+
+`Hemigroup/PhillipsGenerator.lean` (10.2, **proved** — a definition has no `sorry` to carry) and
+`Skeleton/Chapter10.lean` (10.3, five clauses `sorry`-marked under a `sorry`-free collation).
+**58 nodes `\leanok`**, two `\notready` (`lem:generator-properties`, `prop:pair-regularity`).
+Lean core throughout the definition, `exists_hasLevyTail` included. Trust boundary unchanged.
+
+`Skeleton/Chapter10.lean` is the **first file here to be reopened**. It was emptied by
+`lem:delay-core` this morning and now carries 10.3, which is the library working the way it was
+built to: proving 10.1 constructed the setting that made 10.2 and 10.3 stateable, and the
+chapter-level "blocked on C₀-semigroup theory" had been written before that setting existed.
+
+## What the definition cost, against what the plan said it would
+
+`PLAN` had the `X₀`-valued Bochner integral down as the expensive part of the chapter. It is
+**seven lines**, and every piece of it was already here:
+
+* `X = L¹(ℝ)` is a complete normed real space, so `MeasureTheory.integral` applies;
+* `transL1 r` is a `→L[ℝ]`, so the integrand is a difference of continuous linear images;
+* `r ↦ transL1 r f` is continuous — `continuous_transL1`, chapter 4 — so
+  `Continuous.aestronglyMeasurable` gives strong measurability against *any* measure.
+
+So the definition is **total**, with Bochner's junk value where the integral diverges, and clause
+(1) of 10.3 is what says it means something on `𝒟` rather than what makes it well formed.
+
+Worth setting beside `lem:delay-core`'s finding, which was the same object pointing the other way:
+there the blueprint named a Bochner integral the *obligation did not need*, and going through
+`ℝ≥0∞` was shorter. Here the integral is in the **statement** and not in a proof, so it has to be
+built — and building it is free. The moral is not "avoid vector-valued integrals" but the narrower
+one the plan keeps re-learning: *price the obligation, not the derivation*, in both directions.
+
+## Three decisions the statements forced, which is what statement-first is for
+
+**`ν₁` is a parameter, not a construction.** Every clause quantifies over a `ν` meeting
+`HasLevyTail F ν` — causal, with `ν((r,∞)) = k(r)` a.e. — and `exists_hasLevyTail` supplies one
+from chapter 9's quantile transform. That is `sonine_conservation`'s discipline ("stated against
+an arbitrary `ℓ` meeting the specification, so that it does not wait on the existence half"), and
+here it buys something extra: **the tail identity can only be `ae`**, because a `k` that is merely
+`AntitoneOn (Ioi 0)` has no right-continuous representative this development can name. The
+blueprint's "with `k` taken right-continuous" is a normalisation of the prose. It is also exactly
+enough, every use of the tail sitting under an integral in `r` — but that is a fact about the
+*consumers*, and writing the specification is what made it a checkable claim instead of a hope.
+
+**The commutation clause is stated for an arbitrary causal probability measure.** Not for
+`F.kernel y z`. It is what the proof uses — convolutions commute — it is strictly more general,
+and it keeps clause (3) **off ledger A17**, which quantifying over the constructed family would
+have put it on. `lem:delay-core`'s own `Φ`-clause is stated at the same level; this is one notch
+further, and the notch is a ledger entry.
+
+**Clause (5) is stated as a primitive, not as absolute continuity.** The blueprint says
+`κ^{(x)} * f` is a.e. equal to an absolutely continuous function with derivative
+`φ_x(∂_t)f`; the Lean statement says it agrees a.e. with the *primitive* of `φ_x(∂_t)f`. Same
+assertion, and the primitive form is the one `𝒟` is defined in, the one Mathlib can get to
+(the converse being the Lebesgue fundamental theorem), and the one that carries the blueprint's
+trailing `(κ^{(x)}*f)(0+) = 0` for free — a primitive vanishes at the origin by construction. That
+remark, which the prose proves in a sentence about `κ^{(x)}([0,t]) → b₀`, costs nothing here. The
+third time the `𝒟`-as-primitive decision has paid, and the first time it has retired a step of a
+proof rather than a hypothesis.
+
+## The work order, with the estimate written down so it can be checked
+
+Clauses (1), (3), (4) moderate; (2) and (5) the bulk. In `Skeleton/Chapter10.lean` in full; the
+part worth repeating is where the two expensive ones actually get expensive.
+
+**(2) cannot use the move that discharges (3).** `mconvL1 μ` is a continuous linear map, so
+`ContinuousLinearMap.integral_comp_comm` pulls it straight through the Bochner integral. `Lap` is
+**not** a continuous linear map on `L¹(ℝ)` — `e^{-st}` is unbounded to the left of the origin — so
+the same move is unavailable and the exchange goes through causal representatives in `[0,∞]`,
+as in chapter 2's Tonelli identity and `lem:delay-core`'s estimate. Two clauses of one lemma,
+one of them a one-liner and the other not, for a reason invisible in the prose, which writes both
+as "Fubini".
+
+**(5) has a prerequisite the previous entry had already named.** It wants
+`mconv_eq_setIntegral_mconv` for a *locally finite* causal measure; the existing lemma assumes
+`IsFiniteMeasure`, and `κ^{(x)}` has total mass `F'(0+)`, which `prop:moments` has just finished
+proving may be `⊤`. The generalisation was flagged two entries ago as "worth making and not worth
+making today". This is the consumer that makes it worth making, and the sequence — general fact
+proved narrowly, narrow form outlived by its first consumer, generalisation deferred until a
+second consumer appears — is exactly the one `Hemigroup/Subordinator.lean` was created to avoid.
+
+## Next
+
+Prove 10.3, starting at `integrable_min_one_id` — `∫(1∧r)ν(dr) = ∫₀¹ν((u,∞))du = ∫₀¹k`, one layer
+cake, and not the integration by parts the blueprint's proof names. Otherwise `PLAN`'s *available*
+row: `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.
