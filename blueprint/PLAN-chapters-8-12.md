@@ -1497,3 +1497,62 @@ not taken before.
 `dense_coreL1`, alone. `ρ_ε * f ∈ 𝒟` with derivative `ε⁻¹(f - T_ε f)`, plus
 `tendsto_bconv_approxId`; both halves are chapter 4's, and what has to be written is the
 identification of `∫_{(0,t]} ε⁻¹(f - T_ε f)` with `ρ_ε * f`.
+
+## `lem:delay-core` is proved — 2026-08-14
+
+All five clauses. `Hemigroup/DelayCore.lean`; the node is `\lean{Hemigroup.delay_core}\leanok`;
+**Lean core throughout**, so the whole of chapter 10's Lemma 10.1 is interface-free. 53 nodes
+`\leanok`. `Skeleton/Chapter10.lean` holds no declarations, one round after it was created.
+
+### Density: the standard route is the wrong route, and chapter 4 had the right one
+
+The blueprint says "standard", and the sentence hides which standard argument. Step functions are
+dense in `X₀` and are in `𝒟` **nowhere**; Mathlib's `MemLp.exists_hasCompactSupport_eLpNorm_sub_le`
+gives compactly supported approximants that are not causal. What works is mollification, and it
+has to be by a *causal* mollifier for `ρ_ε * f` to land in `𝒟` rather than merely near it.
+
+`approxId ε = ε⁻¹·1_{(0,ε)}` is exactly that, and it was built in chapter 4, where causality was
+needed for a different reason: the approximants `Φ ρ_ε` had to be causal probability densities for
+the Prokhorov argument. So the density clause is `tendsto_bconv_approxId` plus one computation,
+that `ρ_ε * f` is the primitive of `ε⁻¹(f - T_ε f)` — Chasles twice, once on each side.
+
+### What the statement-first step bought, priced honestly
+
+The five clauses cost about 350 lines, against an estimate that treated continuity of translation
+in `L¹` as the main expense. That estimate was wrong by most of the work, in the direction of
+*less*, because the fact was already proved here. Set against that, what the skeleton commit
+actually earned was the **modelling decision**, and it earned it twice over:
+
+* `𝒟` defined by the primitive rather than by absolute continuity. Mathlib's
+  `AbsolutelyContinuousOnInterval` had arrived since the last survey, so the blueprint's own
+  wording was expressible — and unusable, because the passage to `f = ∫₀^· f'` is the Lebesgue
+  fundamental theorem and Mathlib carries only the converse. Every one of the five clauses uses
+  the primitive form. **A new upstream theory arriving is normally what unblocks a node; here it
+  arrived and the right move was still not to use it**, and that was legible only from the
+  consumers.
+* `memCore_iff_signaling_hypotheses`, the `iff`. Chapter 11 quantifies over the consequences of
+  `f ∈ 𝒟` because `𝒟` had no definition when it was written; the equivalence is what says the
+  definition supplies exactly those, and the `⇐` half is what would have caught a `𝒟` quietly
+  strengthened to suit chapter 10.
+
+### Two constructions the blueprint names and the obligation does not need
+
+Recorded in `CIAxiomGuard.lean` and in the node's annotation. The estimate needs no `X₀`-valued
+Bochner integral (bound pointwise, exchange in `ℝ≥0∞`), and the limit needs no separate treatment
+of `[0,h)` (the identity `h⁻¹(T_hf - f) + f' = -h⁻¹∫₀^h (T_uf' - f')du` is exact on all of `ℝ`, so
+the quotient is an *average* of translation defects). Both are the familiar pattern — the
+classical derivation asks for more than the statement does — in a form it had not taken here
+before: what it asked for was a **construction** rather than a citation.
+
+## Next
+
+Chapter 10 is finished to what Mathlib allows. `def:phillips-generator`, `lem:generator-properties`,
+`thm:scale-cauchy` and `prop:fixed-scale-semigroup` all quantify over a generator and a
+`C([0,∞);X₀) ∩ C¹((0,∞);X₀)` solution class, and Mathlib still has no closed-operator theory to
+build one on. Note that they are *stateable* now in a way they were not this morning — `𝒟` and
+`T_r` exist — so the gap is precisely Hille–Yosida-adjacent infrastructure and nothing else.
+
+What is schedulable is `PLAN`'s **available, nothing depends on them** row, unchanged and now the
+only such row: `prop:moments`, `prop:stable-moments`, `prop:gamma-kernels`, `prop:extreme-rays`,
+`prop:volterra`, `lem:potential-kernel-scaling`, `cor:semigroup-case`. Re-check each against its
+node before starting; that inventory has been wrong before, in both directions.

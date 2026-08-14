@@ -130,24 +130,28 @@ theorem tendsto_norm_transL1_sub (F : X) :
   rw [transL1_zero, sub_self] at h
   simpa [Function.comp_def] using (continuous_norm.tendsto (0 : X)).comp h
 
-/-! ## Two facts about causal integrands, used by both invariance clauses -/
+/-! ## Three facts about causal integrands
+
+Every clause of `lem:delay-core` moves the base point of an integral — by a substitution, by a
+translation, or by Chasles — and each time causality is what moves it back. These are the three
+forms that takes.
+-/
+
+/-- A causal integrand contributes nothing to the left of the origin. -/
+theorem setIntegral_Ioc_eq_zero_of_causal {g : ℝ → ℝ} (hgc : ∀ r : ℝ, r < 0 → g r = 0) {a b : ℝ}
+    (hb : b ≤ 0) : (∫ w in Ioc a b, g w) = 0 := by
+  have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
+    rw [ae_iff]
+    simp
+  refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
+  filter_upwards [hne] with w hw hwmem
+  exact hgc w (lt_of_le_of_ne (hwmem.2.trans hb) hw)
 
 /-- **A causal integrand does not see the left end of the interval.** Extending the domain of a
-primitive to the left of the origin changes nothing, because there is nothing there.
-
-Both invariance clauses need it, and for the same reason: a substitution moves the base point of
-an integral off the origin, and causality is what moves it back. -/
+primitive to the left of the origin changes nothing, because there is nothing there. -/
 theorem setIntegral_Ioc_of_causal {g : ℝ → ℝ} (hg : Integrable g)
     (hgc : ∀ r : ℝ, r < 0 → g r = 0) {a : ℝ} (ha : a ≤ 0) (b : ℝ) :
     (∫ w in Ioc a b, g w) = ∫ w in Ioc (0 : ℝ) b, g w := by
-  have hzero : ∀ c d : ℝ, d ≤ 0 → (∫ w in Ioc c d, g w) = 0 := by
-    intro c d hd
-    have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
-      rw [ae_iff]
-      simp
-    refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
-    filter_upwards [hne] with w hw hwmem
-    exact hgc w (lt_of_le_of_ne (hwmem.2.trans hd) hw)
   rcases lt_or_ge 0 b with hb | hb
   · have hsplit : Ioc a b = Ioc a 0 ∪ Ioc (0 : ℝ) b := (Ioc_union_Ioc_eq_Ioc ha hb.le).symm
     have hdisj : Disjoint (Ioc a (0 : ℝ)) (Ioc (0 : ℝ) b) := by
@@ -155,8 +159,21 @@ theorem setIntegral_Ioc_of_causal {g : ℝ → ℝ} (hg : Integrable g)
       rintro w ⟨-, hw2⟩ ⟨hw3, -⟩
       exact absurd hw3 (not_lt.mpr hw2)
     rw [hsplit, setIntegral_union hdisj measurableSet_Ioc hg.integrableOn hg.integrableOn,
-      hzero a 0 le_rfl, zero_add]
-  · rw [hzero a b hb, Ioc_eq_empty (not_lt.mpr hb), Measure.restrict_empty, integral_zero_measure]
+      setIntegral_Ioc_eq_zero_of_causal hgc le_rfl, zero_add]
+  · rw [setIntegral_Ioc_eq_zero_of_causal hgc hb, Ioc_eq_empty (not_lt.mpr hb),
+      Measure.restrict_empty, integral_zero_measure]
+
+/-- **The primitive of a causal integrand is an interval integral at every real point**, the
+negative half-line included, where both sides vanish. Having it everywhere rather than on
+`[0,∞)` is what lets Chasles be applied without a case split. -/
+theorem setIntegral_Ioc_eq_intervalIntegral_of_causal {g : ℝ → ℝ} (hg : Integrable g)
+    (hgc : ∀ r : ℝ, r < 0 → g r = 0) (t : ℝ) :
+    (∫ ρ in Ioc (0 : ℝ) t, g ρ) = ∫ ρ in (0 : ℝ)..t, g ρ := by
+  rcases le_or_gt 0 t with ht | ht
+  · rw [intervalIntegral.integral_of_le ht]
+  · rw [Ioc_eq_empty (not_lt.mpr ht.le), Measure.restrict_empty, integral_zero_measure,
+      intervalIntegral.integral_of_ge ht.le, setIntegral_Ioc_eq_zero_of_causal hgc le_rfl,
+      neg_zero]
 
 /-- `μ ∗ f` is genuinely measurable when `f` is, not merely `AEStronglyMeasurable`.
 
@@ -269,16 +286,8 @@ theorem apply_zero (h : HasCoreDeriv f g) : f 0 = 0 := by
 To the left of the origin both sides vanish — the left by the empty domain, the right because `g`
 does. Having the identity at *every* `r` is what makes continuity a one-liner. -/
 theorem eq_intervalIntegral (h : HasCoreDeriv f g) (r : ℝ) : f r = ∫ ρ in (0 : ℝ)..r, g ρ := by
-  rcases le_or_gt 0 r with hr | hr
-  · rw [h.primitive r, intervalIntegral.integral_of_le hr]
-  · have hzero : (∫ ρ in Ioc r (0 : ℝ), g ρ) = 0 := by
-      have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
-        rw [ae_iff]
-        simp
-      refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
-      filter_upwards [hne] with w hw hwmem
-      exact h.causal_deriv w (lt_of_le_of_ne hwmem.2 hw)
-    rw [h.causal r hr, intervalIntegral.integral_of_ge hr.le, hzero, neg_zero]
+  rw [h.primitive r,
+    setIntegral_Ioc_eq_intervalIntegral_of_causal h.integrable_deriv h.causal_deriv r]
 
 /-- `f` is continuous — Mathlib's continuity of a primitive, once `eq_intervalIntegral` has put
 `f` in that form. -/
@@ -634,5 +643,146 @@ theorem tendsto_differenceQuotient {F G : X} (h : HasCoreDerivL1 F G) :
     exact hlt.le
   simp only [sub_neg_eq_add, Real.dist_eq, sub_zero, abs_norm]
   linarith
+
+/-! ## Density
+
+The blueprint says "standard", and the standard route is the wrong one: step functions are dense
+in `X₀` and are not in `𝒟` at all, while the smooth compactly supported functions Mathlib does
+supply are not causal. What works is the mollification `ρ_ε * f`, which lands *in* `𝒟` rather than
+near it — and both halves of it are chapter 4's, `approxId` and `tendsto_bconv_approxId`. All that
+has to be written here is that `ρ_ε * f` is the primitive of `ε⁻¹(f - T_ε f)`, which is Chasles
+twice.
+-/
+
+/-- A causal element of `X` has a representative that is measurable and causal **at every point**.
+
+Truncating a measurable representative below the origin costs nothing, because a causal class
+already vanishes a.e. there — which is where the hypothesis is spent. `𝒟`'s pointwise reading
+needs this: `HasCoreDeriv` quantifies over all of `ℝ`, not almost all of it. -/
+theorem exists_causal_representative {F : X} (hF : F ∈ causalL1) :
+    ∃ f : ℝ → ℝ, Measurable f ∧ Integrable f ∧ (∀ r : ℝ, r < 0 → f r = 0) ∧
+      (F : ℝ → ℝ) =ᵐ[volume] f := by
+  set f₁ := (Lp.aestronglyMeasurable F).mk (F : ℝ → ℝ) with hf₁
+  have hm : Measurable f₁ := (Lp.aestronglyMeasurable F).stronglyMeasurable_mk.measurable
+  have hae : (F : ℝ → ℝ) =ᵐ[volume] f₁ := (Lp.aestronglyMeasurable F).ae_eq_mk
+  have hcut : (fun t => if t < 0 then (0 : ℝ) else f₁ t) =ᵐ[volume] f₁ := by
+    filter_upwards [hae, hF] with t ht htc
+    by_cases h0 : t < 0
+    · simp only [if_pos h0, ← ht, htc h0]
+    · simp only [if_neg h0]
+  refine ⟨fun t => if t < 0 then (0 : ℝ) else f₁ t,
+    Measurable.ite (measurableSet_lt measurable_id measurable_const) measurable_const hm,
+    ((L1.integrable_coeFn F).congr hae).congr hcut.symm, fun r hr => if_pos hr,
+    hae.trans hcut.symm⟩
+
+/-- **The mollification is the primitive of its own difference quotient**:
+`(ρ_ε * f)(t) = ∫₀^t ε⁻¹(f(ρ) - f(ρ-ε)) dρ`.
+
+Both sides are `ε⁻¹(P(t) - P(t-ε))` for `P` the primitive of `f`; the left by the substitution
+`ρ = t - r` and Chasles, the right by Chasles after causality has discarded `∫_{-ε}^0 f`. This
+is the whole content of the density clause. -/
+theorem setIntegral_Ioc_differenceQuotient {f : ℝ → ℝ} (hf : Integrable f)
+    (hfc : ∀ r : ℝ, r < 0 → f r = 0) {ε : ℝ} (hε : 0 < ε) (t : ℝ) :
+    (∫ ρ in Ioc (0 : ℝ) t, ε⁻¹ * (f ρ - f (ρ - ε))) = ∫ r, approxId ε r * f (t - r) := by
+  have hft : Integrable fun ρ : ℝ => f (ρ - ε) := integrable_translate hf ε
+  have hftc : ∀ r : ℝ, r < 0 → f (r - ε) = 0 := fun r hr => hfc _ (by linarith)
+  -- the left-hand side
+  have hL : (∫ ρ in Ioc (0 : ℝ) t, ε⁻¹ * (f ρ - f (ρ - ε)))
+      = ε⁻¹ * ((∫ ρ in (0 : ℝ)..t, f ρ) - ∫ ρ in (0 : ℝ)..(t - ε), f ρ) := by
+    rw [integral_const_mul, integral_sub hf.integrableOn hft.integrableOn,
+      setIntegral_Ioc_eq_intervalIntegral_of_causal hf hfc t,
+      setIntegral_Ioc_eq_intervalIntegral_of_causal hft hftc t]
+    congr 2
+    have hshift : (∫ ρ in (0 : ℝ)..t, f (ρ - ε)) = ∫ w in (0 - ε)..(t - ε), f w :=
+      intervalIntegral.integral_comp_sub_right (fun w => f w) ε
+    have hchasles : (∫ w in (0 - ε)..(0 : ℝ), f w) + (∫ w in (0 : ℝ)..(t - ε), f w)
+        = ∫ w in (0 - ε)..(t - ε), f w :=
+      intervalIntegral.integral_add_adjacent_intervals hf.intervalIntegrable hf.intervalIntegrable
+    have hleft : (∫ w in (0 - ε)..(0 : ℝ), f w) = 0 := by
+      rw [intervalIntegral.integral_of_le (by linarith)]
+      exact setIntegral_Ioc_eq_zero_of_causal hfc le_rfl
+    rw [hshift, ← hchasles, hleft, zero_add]
+  -- the right-hand side
+  have hind : ∀ r : ℝ,
+      approxId ε r * f (t - r) = ε⁻¹ * (Ioo (0 : ℝ) ε).indicator (fun r' => f (t - r')) r := by
+    intro r
+    by_cases hr : r ∈ Ioo (0 : ℝ) ε
+    · rw [approxId, indicator_of_mem hr, indicator_of_mem hr, mul_one]
+    · rw [approxId, indicator_of_notMem hr, indicator_of_notMem hr, mul_zero, zero_mul]
+  have hR : (∫ r, approxId ε r * f (t - r))
+      = ε⁻¹ * ((∫ ρ in (0 : ℝ)..t, f ρ) - ∫ ρ in (0 : ℝ)..(t - ε), f ρ) := by
+    simp only [hind]
+    rw [integral_const_mul, integral_indicator measurableSet_Ioo,
+      ← integral_Ioc_eq_integral_Ioo, ← intervalIntegral.integral_of_le hε.le]
+    congr 1
+    have hsub : (∫ r in (0 : ℝ)..ε, f (t - r)) = ∫ w in (t - ε)..(t - 0), f w :=
+      intervalIntegral.integral_comp_sub_left (fun w => f w) t
+    have hchasles : (∫ w in (0 : ℝ)..(t - ε), f w) + (∫ w in (t - ε)..t, f w)
+        = ∫ w in (0 : ℝ)..t, f w :=
+      intervalIntegral.integral_add_adjacent_intervals hf.intervalIntegrable hf.intervalIntegrable
+    rw [hsub, sub_zero]
+    linarith
+  rw [hL, hR]
+
+/-- **`ρ_ε * f ∈ 𝒟`** for causal `f` and `ε > 0`, with derivative `ε⁻¹(f - T_ε f)`.
+
+Causality of the mollifier is what makes this true rather than merely approximately true: `ρ_ε`
+is carried by `[0,ε]`, so `ρ_ε * f` is causal and starts at the origin. -/
+theorem hasCoreDerivL1_bconv_approxId {ε : ℝ} (hε : 0 < ε) {F : X} (hF : F ∈ causalL1) :
+    bconv (approxId ε) F ∈ coreL1 := by
+  obtain ⟨f, hfm, hfi, hfc, hFf⟩ := exists_causal_representative hF
+  set g : ℝ → ℝ := fun t => ε⁻¹ * (f t - f (t - ε)) with hg
+  set φ : ℝ → ℝ := fun t => ∫ ρ in Ioc (0 : ℝ) t, g ρ with hφ
+  have hgm : Measurable g := (hfm.sub (hfm.comp (measurable_id.sub_const ε))).const_mul _
+  have hgi : Integrable g := ((hfi.sub (integrable_translate hfi ε))).const_mul _
+  have hgc : ∀ r : ℝ, r < 0 → g r = 0 := fun r hr => by
+    simp only [hg, hfc r hr, hfc (r - ε) (by linarith), sub_zero, mul_zero]
+  -- the mollification, computed
+  have hbconv : (bconv (approxId ε) F : ℝ → ℝ) =ᵐ[volume] φ := by
+    refine (coeFn_bconv (integrable_approxId ε) F).trans ?_
+    refine .of_forall fun t => ?_
+    show (∫ r, approxId ε r * (F : ℝ → ℝ) (t - r)) = φ t
+    have hswap : (∫ r, approxId ε r * (F : ℝ → ℝ) (t - r)) = ∫ r, approxId ε r * f (t - r) := by
+      refine integral_congr_ae ?_
+      filter_upwards [(measurePreserving_const_sub t).quasiMeasurePreserving.ae hFf] with r hr
+      rw [hr]
+    rw [hswap]
+    exact (setIntegral_Ioc_differenceQuotient hfi hfc hε t).symm
+  have hφi : Integrable φ := (L1.integrable_coeFn (bconv (approxId ε) F)).congr hbconv
+  exact ⟨hgi.toL1 g, φ, g, ⟨hgm, hgi, hgc, fun _ => rfl, hφi⟩, hbconv, hgi.coeFn_toL1⟩
+
+/-- **`lem:delay-core`, density**: `𝒟` is dense in `X₀`.
+
+Stated as `X₀ ⊆ closure 𝒟` rather than with `Dense`, which would ask for density in all of `X`:
+`𝒟` is not dense in `X`, and `coreL1_subset_causalL1` is why. -/
+theorem dense_coreL1 : causalL1 ⊆ closure coreL1 := fun F hF =>
+  mem_closure_of_tendsto (tendsto_bconv_approxId F)
+    ((eventually_mem_nhdsWithin (a := (0 : ℝ)) (s := Ioi 0)).mono fun _ hε =>
+      hasCoreDerivL1_bconv_approxId hε hF)
+
+/-- **`lem:delay-core` (Lemma 10.1).** `𝒟` is dense in `X₀` and invariant under every `T_r` and
+every `Φ_{x,y}`; the difference quotient `h⁻¹(T_hf - f)` converges to `-f'` in `X₀`; and the
+delay of a core element is controlled two ways.
+
+The collation the node carries, assembled from the five lemmas above. Two things it says that
+they do not. The `Φ`-clause is stated for the convolution operators
+`lem:convolution-representation` produces, which is where the node's `\uses` edge is discharged.
+And the invariance clauses appear here in the form the blueprint states — `T_r f ∈ 𝒟` — while the
+lemmas prove the stronger tracked form `(T_r f)' = T_r f'`, which is what `def:phillips-generator`
+will want. -/
+theorem delay_core :
+    causalL1 ⊆ closure coreL1 ∧
+      (∀ r : ℝ, 0 ≤ r → ∀ F ∈ coreL1, transL1 r F ∈ coreL1) ∧
+      (∀ (μ : Measure ℝ) [IsProbabilityMeasure μ], IsCausal μ → ∀ F ∈ coreL1,
+        mconvL1 μ F ∈ coreL1) ∧
+      (∀ F G : X, HasCoreDerivL1 F G →
+        Tendsto (fun r : ℝ => r⁻¹ • (transL1 r F - F)) (𝓝[>] (0 : ℝ)) (𝓝 (-G))) ∧
+      (∀ r : ℝ, 0 ≤ r → ∀ F G : X, HasCoreDerivL1 F G →
+        ‖transL1 r F - F‖ ≤ min (2 * ‖F‖) (r * ‖G‖)) :=
+  ⟨dense_coreL1,
+   fun _ hr _ ⟨G, hG⟩ => ⟨transL1 _ G, hasCoreDerivL1_transL1 hr hG⟩,
+   fun μ _ hμ _ ⟨G, hG⟩ => ⟨mconvL1 μ G, hasCoreDerivL1_mconvL1 μ hμ hG⟩,
+   fun _ _ h => tendsto_differenceQuotient h,
+   fun _ hr _ _ h => norm_transL1_sub_le hr h⟩
 
 end Hemigroup

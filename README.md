@@ -40,7 +40,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Fifty-two nodes carry `\lean{...}\leanok`:
+Fifty-three nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -52,6 +52,7 @@ Fifty-two nodes carry `\lean{...}\leanok`:
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
+| 10 The scale-Cauchy problem | `lem:delay-core` — the core `𝒟`, dense in `X₀` and invariant under the delay semigroup and under every `Φ`, with the `L¹` difference quotient and the two-sided delay estimate. That is the whole of the chapter that does not need C₀-semigroup theory |
 | 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals`, `thm:signaling-form` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
 | 12 Locality | `lem:log-convexity`, `def:locality-pmp`, `lem:local-polynomial-symbol`, `lem:symbol-vanishes-at-origin`, `lem:moment-recursion-quotient`, `lem:pmp-verification`, `lem:local-moment-classification`, `lem:gamma-recursion-uniqueness` — the chapter's classification step, as an equivalence: `A` is local of order `n` iff its symbol is the corresponding polynomial, read off the zeros of `H̃`; the moment recursion `m(z+1) = Q(z)m(z)` on the range that needs no A13; the maximum principle verified where `thm:locality` exhibits its operators; ledger **A15** (Krull–Webster) discharged in the order-two case it is applied to, from Mathlib's Bohr–Mollerup. What is left in the chapter is `[A]`: A13 (`z_* = ∞`), A14 (the *order bound* — the opposite use of the maximum principle), A16 |
 
@@ -64,21 +65,22 @@ restricted cases the article actually uses are proved here, so neither name appe
 `thm:increments-bernstein` does not: the representation comes straight off the weak limit, so
 that proof reduces to Lean core.
 
-The next work, in order. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; the
+Where the work stands. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; the
 distinction that matters is between a **queue** and a **dependency**, because only the first is
-schedulable:
+schedulable. What is schedulable today is the row `PLAN` calls *available, nothing depends on
+them* — `prop:moments`, `prop:stable-moments`, `prop:gamma-kernels`, `prop:extreme-rays`,
+`prop:volterra`, `lem:potential-kernel-scaling`, `cor:semigroup-case`. Everything else:
 
-1. **`lem:delay-core` (10.1), the one piece of new formalisation that is available — now
-   *stated*.** The setting is built: `X₀` as a predicate on `X = L¹(ℝ)`, the delay semigroup as
-   `transL1`, and the core `𝒟` as a predicate on genuine functions, in
-   `Formalization/Hemigroup/DelayCore.lean`. That `𝒟` supplies exactly the six hypotheses
-   `thm:signaling-form` takes about its signal — chapter 11 having been written before `𝒟` had a
-   definition — is `memCore_iff_signaling_hypotheses`, an equivalence and not a one-way check.
-   The five clauses (density, invariance under `T_r` and under `Φ`, the `L¹` difference quotient,
-   the two-sided estimate) are the `sorry`s of `Formalization/Skeleton/Chapter10.lean`, with the
-   node tagged `\notready`; the collation above them is `sorry`-free. No C₀-semigroup theory and
-   no closed operators anywhere in it. Nothing depends on the lemma, so it discharges `\uses`
-   edges rather than unblocking anything. **Chapter 11 is complete,
+1. **`lem:delay-core` (10.1) is done**, and with it everything in chapter 10 that does not need
+   C₀-semigroup theory. The setting is built in `Formalization/Hemigroup/DelayCore.lean`: `X₀` as
+   a predicate on `X = L¹(ℝ)`, the delay semigroup as `transL1`, and the core `𝒟` as a predicate
+   on genuine functions defined by the primitive `f = ∫₀^· f'` — absolute continuity is recovered
+   as a consequence, the converse being the Lebesgue fundamental theorem, which Mathlib lacks.
+   That `𝒟` supplies exactly the six hypotheses `thm:signaling-form` takes about its signal —
+   chapter 11 having been written before `𝒟` had a definition — is
+   `memCore_iff_signaling_hypotheses`, an equivalence and not a one-way check. Lean core
+   throughout. Nothing depended on the lemma, so it discharges `\uses` edges rather than
+   unblocking anything. **Chapter 11 is complete,
    Theorem 4$'$ included** — all six conjuncts of `thm:signaling-form` are machine-checked and
    assembled into one declaration, and none of the chapter spends ledger A12, although three of
    its nodes had been recorded as waiting on it.

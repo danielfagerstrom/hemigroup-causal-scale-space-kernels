@@ -860,3 +860,26 @@ once, inside `HasCoreDeriv`, to make the identity hold at all. Lean core through
 #print axioms Hemigroup.norm_transL1_sub_le
 #print axioms Hemigroup.norm_differenceQuotient_le
 #print axioms Hemigroup.tendsto_differenceQuotient
+
+/-! ### `lem:delay-core` (10.1) — density, and the node
+
+`𝒟` is dense in `X₀`. The blueprint says "standard", and the standard route is the wrong one:
+step functions are dense in `X₀` and lie in `𝒟` nowhere, while Mathlib's smooth compactly
+supported approximants are not causal. The mollification `ρ_ε * f` lands *in* `𝒟`, because
+`approxId ε = ε⁻¹·1_{(0,ε)}` is carried by `[0,ε]` — chapter 4 built it that way for Prokhorov,
+and causality is exactly what makes `ρ_ε * f` start at the origin.
+
+`delay_core` is the node: a **bundle**, in the sense `thm:signaling-form` is, so the per-clause
+lines above it are the load-bearing ones. It also states the invariance clauses in the
+blueprint's weaker form (`T_r f ∈ 𝒟`) where the lemmas prove the tracked form
+`(T_r f)' = T_r f'`. Lean core throughout — the whole of chapter 10's Lemma 10.1 is
+interface-free.
+-/
+
+#print axioms Hemigroup.exists_causal_representative
+#print axioms Hemigroup.setIntegral_Ioc_eq_zero_of_causal
+#print axioms Hemigroup.setIntegral_Ioc_eq_intervalIntegral_of_causal
+#print axioms Hemigroup.setIntegral_Ioc_differenceQuotient
+#print axioms Hemigroup.hasCoreDerivL1_bconv_approxId
+#print axioms Hemigroup.dense_coreL1
+#print axioms Hemigroup.delay_core
