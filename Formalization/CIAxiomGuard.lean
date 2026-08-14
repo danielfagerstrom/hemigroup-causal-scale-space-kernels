@@ -209,6 +209,10 @@ and not this node.
 #print axioms Hemigroup.lintegral_ofReal_rpow_mul_exp
 #print axioms Hemigroup.SelfDecomposableExponent.lawT₁_singleton_zero
 #print axioms Hemigroup.SelfDecomposableExponent.negMoment_ne_top_of_lt_zStar
+#print axioms Hemigroup.SelfDecomposableExponent.zStar
+#print axioms Hemigroup.SelfDecomposableExponent.le_zStar_of_negMoment_ne_top
+#print axioms Hemigroup.SelfDecomposableExponent.zStar_eq_top_of_forall_negMoment_ne_top
+#print axioms Hemigroup.SelfDecomposableExponent.one_lt_zStar_of_forall_negMoment_ne_top
 #print axioms Hemigroup.SelfDecomposableExponent.lintegral_lintegral_gamma
 #print axioms Hemigroup.SelfDecomposableExponent.integrable_mellin_laplace
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_profile

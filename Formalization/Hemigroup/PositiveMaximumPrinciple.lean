@@ -175,8 +175,8 @@ Case (1) of `thm:locality` is `n = 1`, where the leading hypothesis is vacuous: 
 operator satisfies the PMP for the single reason that `g'(x₀) = 0`. Case (2) is `n = 2` with
 `γ_2 = 2 > 0`. -/
 theorem satisfiesPMP_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z)
     (hn : n ≤ 2) (h0 : γ 0 = 0) (h2 : 2 ≤ n → 0 ≤ (γ 2).re) :

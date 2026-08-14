@@ -219,7 +219,7 @@ theorem integral_cpow_neg_weightedLawT₁ (h0 : F.lawT₁ {(0 : ℝ)} = 0) (j : 
 The strip has moved by `j`, as it must: the weight makes the integrand larger at infinity and
 the moment that has to converge is `E[T₁^{j-Re z}]`. -/
 theorem mellin_weightedProfile (hH : F.StandingHypothesis) (j : ℕ) {z : ℂ}
-    (hz : 0 < z.re - j) (hz' : z.re - j < F.zStar) :
+    (hz : 0 < z.re - j) (hz' : ENNReal.ofReal (z.re - j) < F.zStar) :
     mellin (fun x : ℝ => (F.weightedProfile j x : ℂ)) z
       = Complex.Gamma z * ∫ t, (t : ℂ) ^ ((j : ℂ) - z) ∂F.lawT₁ := by
   have h0 := F.lawT₁_singleton_zero hH.1
@@ -234,7 +234,7 @@ theorem mellin_weightedProfile (hH : F.StandingHypothesis) (j : ℕ) {z : ℂ}
     F.integral_cpow_neg_weightedLawT₁ h0]
 
 theorem mellinConvergent_weightedProfile (hH : F.StandingHypothesis) (j : ℕ) {z : ℂ}
-    (hz : 0 < z.re - j) (hz' : z.re - j < F.zStar) :
+    (hz : 0 < z.re - j) (hz' : ENNReal.ofReal (z.re - j) < F.zStar) :
     MellinConvergent (fun x : ℝ => (F.weightedProfile j x : ℂ)) z := by
   have h0 := F.lawT₁_singleton_zero hH.1
   have hzre : 0 < z.re := by have := Nat.cast_nonneg (α := ℝ) j; linarith
@@ -263,7 +263,7 @@ No integration by parts: the derivative is already an integral, the weight `xʲ`
 shift, and the dilation is a factor. What is left is `lem:mellin-data` on `tʲ μ(dt)` and the
 functional equation of `Γ`. -/
 theorem mellin_pow_mul_iteratedDeriv_profile (hH : F.StandingHypothesis) {s : ℝ} (hs : 0 < s)
-    (j : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
+    (j : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : ENNReal.ofReal w.re < F.zStar) :
     mellin (fun x : ℝ => (x : ℂ) ^ j *
         iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) w
       = mellinEulerFactor j w * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
@@ -298,7 +298,7 @@ theorem mellin_pow_mul_iteratedDeriv_profile (hH : F.StandingHypothesis) {s : �
 /-- Each term of the differential expression has a convergent Mellin integral on the strip, which
 is what lets the transform be taken term by term. -/
 theorem mellinConvergent_pow_mul_iteratedDeriv_profile (hH : F.StandingHypothesis) {s : ℝ}
-    (hs : 0 < s) (j : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
+    (hs : 0 < s) (j : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : ENNReal.ofReal w.re < F.zStar) :
     MellinConvergent (fun x : ℝ => (x : ℂ) ^ j *
       iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) w := by
   have hshift : (w + (j : ℂ)).re - j = w.re := by simp
@@ -334,7 +334,7 @@ theorem eulerExpression_eq (γ : ℕ → ℂ) (n : ℕ) (s : ℝ) :
       ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) := rfl
 
 theorem mellinConvergent_eulerExpression (hH : F.StandingHypothesis) {s : ℝ} (hs : 0 < s)
-    (γ : ℕ → ℂ) (n : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
+    (γ : ℕ → ℂ) (n : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : ENNReal.ofReal w.re < F.zStar) :
     MellinConvergent (F.eulerExpression γ n s) w := by
   rw [eulerExpression_eq]
   refine mellinConvergent_finset_sum _ _ _ fun j _ => ?_
@@ -344,7 +344,7 @@ theorem mellinConvergent_eulerExpression (hH : F.StandingHypothesis) {s : ℝ} (
 /-- **The engine, summed**: `M[E](w) = P(w)·M[H(s·)](w)`, with `mellin_finset_sum` splitting the
 sum --- licensed by the convergence of each term and not by any estimate on the whole. -/
 theorem mellin_eulerExpression (hH : F.StandingHypothesis) {s : ℝ} (hs : 0 < s) (γ : ℕ → ℂ)
-    (n : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
+    (n : ℕ) {w : ℂ} (hw : 0 < w.re) (hw' : ENNReal.ofReal w.re < F.zStar) :
     mellin (F.eulerExpression γ n s) w
       = (∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j w) *
         mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
@@ -373,7 +373,7 @@ missing, and the only one.
 power, and `integrable_norm_Gamma_mul_add_abs_pow_vertical` is that. This is `lem:mellin-vertical`
 with `n` in place of `0`, by the same induction. -/
 theorem verticalIntegrable_mellin_eulerExpression (hH : F.StandingHypothesis) {s : ℝ} (hs : 0 < s)
-    (γ : ℕ → ℂ) (n : ℕ) {c : ℝ} (hc : 0 < c) (hc' : c < F.zStar) :
+    (γ : ℕ → ℂ) (n : ℕ) {c : ℝ} (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar) :
     Complex.VerticalIntegrable (mellin (F.eulerExpression γ n s)) c := by
   have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
   have hn : (0 : ℝ) ≤ n := Nat.cast_nonneg n
@@ -442,7 +442,7 @@ which the height `c` of the contour no longer appears --- which is why locality 
 The weight `x` is what turns `c_j(x) = γ_j x^{j-1}` into the Euler form `γ_j xʲ`; it is the same
 `x⁻¹` of `def:inversion-operator`, cleared. -/
 theorem mul_profile_eq_sum_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s) {x : ℝ}
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s) {x : ℝ}
     (hx : 0 < x) :
     (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)
       = ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 *
@@ -451,7 +451,7 @@ theorem mul_profile_eq_sum_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : �
   have key : (s : ℂ) * (F.profile (s * x) : ℂ)
       = ∑ j ∈ Finset.range (n + 1), hL.coeff j x *
           iteratedDeriv j (fun u : ℝ => (F.profile (s * u) : ℂ)) x :=
-    (F.inversionOperator_profile hH hc (by linarith) hs hx).symm.trans
+    (F.inversionOperator_profile hH hc (ofReal_add_one_lt_of_lt_sub_one hc.le hc') hs hx).symm.trans
       (hL.eq_sum_iteratedDeriv_profile hs hx)
   calc (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)
       = (x : ℂ) * ((s : ℂ) * (F.profile (s * x) : ℂ)) := by ring
@@ -469,8 +469,8 @@ theorem mul_profile_eq_sum_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : �
 
 The pointwise identity says `h` *is* the Euler expression, so this is `mellin_eulerExpression`. -/
 theorem mellin_profile_weight_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s)
-    {w : ℂ} (hw : 0 < w.re) (hw' : w.re < F.zStar) :
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s)
+    {w : ℂ} (hw : 0 < w.re) (hw' : ENNReal.ofReal w.re < F.zStar) :
     mellin (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) w
       = (∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j w) *
         mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
@@ -490,12 +490,13 @@ This is the honest form of "the symbol is the polynomial `P`", and it is the for
 between analytic functions*, never from a value of `B` at a point. Reading `B = P` off it requires
 dividing by `H̃(z)`, which is legitimate exactly where the denominator does not vanish. -/
 theorem mellin_profile_shift_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {z : ℂ}
-    (hz : 0 < z.re) (hz' : z.re < F.zStar - 1) :
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {z : ℂ}
+    (hz : 0 < z.re) (hz' : ENNReal.ofReal z.re < F.zStar - 1) :
     mellin (fun u : ℝ => (F.profile u : ℂ)) (z + 1)
       = (∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j z) *
         mellin (fun u : ℝ => (F.profile u : ℂ)) z := by
-  have key := F.mellin_profile_weight_eq_of_isLocalOfOrder hH hc hc' hL one_pos hz (by linarith)
+  have key := F.mellin_profile_weight_eq_of_isLocalOfOrder hH hc hc' hL one_pos hz
+    (lt_of_lt_sub_one hz')
   rw [F.mellin_profile_comp_mul_weight one_pos z, F.mellin_profile_comp_mul one_pos z] at key
   simpa only [Complex.ofReal_one, Complex.one_cpow, one_mul] using key
 
@@ -505,8 +506,8 @@ theorem mellin_profile_shift_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c
 is the same one --- so what has to be supplied is only the transform identity, which is the
 display above. -/
 theorem realisesAction_sum_mellinEulerFactor (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s) {c' : ℝ}
-    (hc0 : 0 < c') (hc1 : c' + 1 < F.zStar) :
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s) {c' : ℝ}
+    (hc0 : 0 < c') (hc1 : ENNReal.ofReal (c' + 1) < F.zStar) :
     F.RealisesAction c'
       (fun z => ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j z)
       (fun u : ℝ => (F.profile (s * u) : ℂ))
@@ -515,14 +516,15 @@ theorem realisesAction_sum_mellinEulerFactor (hH : F.StandingHypothesis) {c : �
     intro y _
     have hre : ((c' : ℂ) + y * Complex.I).re = c' := by simp
     exact F.mellin_profile_weight_eq_of_isLocalOfOrder hH hc hc' hL hs
-      (by rw [hre]; exact hc0) (by rw [hre]; linarith)
+      (by rw [hre]; exact hc0)
+      (by rw [hre]; exact F.ofReal_lt_zStar_of_le (by linarith) hc1)
   convergent := F.mellinConvergent_profile_comp_mul_weight hH hc0 hc1 hs
   verticalIntegrable := F.verticalIntegrable_mellin_profile_comp_mul_weight hH hc0 hc1 hs
 
 /-- The symbol and the polynomial act identically on the profile: `lem:symbol-uniqueness`'s
 hypothesis, supplied by locality. -/
 theorem sameSymbolAction_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) :
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) :
     F.SameSymbolAction F.inversionSymbol
       (fun z => ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j z) :=
   F.sameSymbolAction_of_realisesAction one_pos
@@ -533,7 +535,7 @@ theorem sameSymbolAction_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
 agree near every point of the strip, the point itself excepted --- `lem:symbol-rigidity`'s reading
 of "equal on the strip", and the unconditional one. -/
 theorem eventuallyEq_inversionSymbol_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {z : ℂ}
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {z : ℂ}
     (hz : z ∈ verticalStrip 0 (F.zStar - 1)) :
     F.inversionSymbol
       =ᶠ[𝓝[≠] z] fun w => ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j w :=
@@ -552,11 +554,11 @@ recursion divided by `H̃(z)`, and at a zero of `H̃` the quotient `H̃(z+1)/0` 
 is known nonzero only at the *real* points of the strip. The meromorphic reading, which needs no
 side condition, is `eventuallyEq_inversionSymbol_of_isLocalOfOrder`. -/
 theorem exists_symbol_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) :
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) :
     ∃ γ : ℕ → ℂ, γ n ≠ 0 ∧
       (∀ j ∈ Finset.range (n + 1), ∀ x : ℝ, 0 < x →
         hL.coeff j x = γ j * (x : ℂ) ^ ((j : ℤ) - 1)) ∧
-      (∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+      (∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
         mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
         F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) := by
   refine ⟨fun j => hL.coeff j 1, ?_, ?_, ?_⟩
@@ -611,8 +613,8 @@ The route is the same as there and the two hypotheses that were harder are now a
 symbol identity moves to the transforms *almost everywhere on the line*, and
 `mellinInv_mellin_eq` recovers the Euler expression from its transform. -/
 theorem inversionOperator_profile_eq_eulerExpression (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z)
     {s : ℝ} (hs : 0 < s) {x : ℝ} (hx : 0 < x) :
@@ -623,9 +625,10 @@ theorem inversionOperator_profile_eq_eulerExpression (hH : F.StandingHypothesis)
       F.inversionSymbol ((c : ℂ) + y * Complex.I) *
           mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) ((c : ℂ) + y * Complex.I)
         = mellin (F.eulerExpression γ n s) ((c : ℂ) + y * Complex.I) := by
-    filter_upwards [F.ae_mellin_profile_ne_zero hH hc (by linarith)] with y hy
+    filter_upwards [F.ae_mellin_profile_ne_zero hH hc (lt_of_lt_sub_one hc')] with y hy
     rw [hsymbol _ (by rw [hre]; exact hc) (by rw [hre]; exact hc') hy,
-      F.mellin_eulerExpression hH hs γ n (by rw [hre]; exact hc) (by rw [hre]; linarith)]
+      F.mellin_eulerExpression hH hs γ n (by rw [hre]; exact hc)
+        (by rw [hre]; exact lt_of_lt_sub_one hc')]
   rw [inversionOperator,
     mellinInv_congr_line_ae
       (G := fun z => F.inversionSymbol z * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) z)
@@ -633,15 +636,15 @@ theorem inversionOperator_profile_eq_eulerExpression (hH : F.StandingHypothesis)
     mellinInv_mellin_eq c (F.eulerExpression γ n s) hx
       (F.mellinConvergent_eulerExpression hH hs γ n
         (by simp only [Complex.ofReal_re]; exact hc)
-        (by simp only [Complex.ofReal_re]; linarith))
-      (F.verticalIntegrable_mellin_eulerExpression hH hs γ n hc (by linarith))
+        (by simpa only [Complex.ofReal_re] using lt_of_lt_sub_one hc'))
+      (F.verticalIntegrable_mellin_eulerExpression hH hs γ n hc (lt_of_lt_sub_one hc'))
       (F.continuousAt_eulerExpression hs γ n hx)]
 
 /-- **`lem:local-polynomial-symbol`, the (⇐) direction, entire**: a polynomial symbol makes `A`
 local of order `n` in the full sense of `def:locality-pmp`, profiles included. -/
 theorem isLocalOfOrder_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
     Nonempty (F.IsLocalOfOrder c n) := by
@@ -664,9 +667,9 @@ The bundle, in the sense `thm:main-characterization` and `thm:signaling-form` ar
 halves are what carry the content, and `exists_symbol_eq_of_isLocalOfOrder` additionally carries
 the coefficient form `c_j(x) = γ_j x^{j-1}`, which an equivalence of this shape cannot state. -/
 theorem nonempty_isLocalOfOrder_iff_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) (n : ℕ) :
+    (hc' : ENNReal.ofReal c < F.zStar - 1) (n : ℕ) :
     Nonempty (F.IsLocalOfOrder c n) ↔
-      ∃ γ : ℕ → ℂ, γ n ≠ 0 ∧ ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+      ∃ γ : ℕ → ℂ, γ n ≠ 0 ∧ ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
         mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
         F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z := by
   constructor

@@ -261,8 +261,19 @@ noncomputable def profile (s : ℝ) : ℝ := laplace F.lawT₁ s
 noncomputable def negMoment (ζ : ℝ) : ℝ≥0∞ :=
   ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (t ^ (-ζ)) ∂F.lawT₁
 
-/-- **`z_*`**, the abscissa beyond which the negative moments diverge. -/
-noncomputable def zStar : ℝ := sSup {ζ : ℝ | 0 < ζ ∧ F.negMoment ζ ≠ ⊤}
+/-- **`z_*`**, the abscissa beyond which the negative moments diverge, valued in `[0,∞]`.
+
+**Not in `ℝ`, and the difference is not cosmetic.** `lem:moment-recursion`(2) concludes `z_* = ∞`
+for a local operator, and that is the truth for the stable and inverse-gamma families --- every
+negative moment of `T₁ = 1/(2γ_a)` is finite. `Real.sSup` of an unbounded set is the junk value
+`0`, so a real-valued abscissa would make `1 < z_*` *false* exactly there, and every theorem
+stated under (H) vacuous for precisely the kernels chapter 12 classifies. In `ℝ≥0∞` the supremum
+is `⊤` and says what it means.
+
+Stated as the supremum of the *image*, so that the ambient order is `ℝ≥0∞` throughout;
+`le_zStar_of_negMoment_ne_top` and `negMoment_ne_top_of_lt_zStar` are the two directions anything
+downstream uses, and neither mentions the image again. -/
+noncomputable def zStar : ℝ≥0∞ := sSup (ENNReal.ofReal '' {ζ : ℝ | 0 < ζ ∧ F.negMoment ζ ≠ ⊤})
 
 /-- **The standing hypothesis (H)**, `def:standing-hypothesis`: no atom at zero delay, and the
 negative moments survive past the first. -/
@@ -350,19 +361,88 @@ theorem negMoment_ne_top_of_le {c ζ : ℝ} (hc : 0 < c) (hcζ : c ≤ ζ)
     (h : F.negMoment ζ ≠ ⊤) : F.negMoment c ≠ ⊤ :=
   ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨h, ENNReal.one_ne_top⟩) (F.negMoment_le_of_le hc.le hcζ)
 
-/-- **`c < z_*` is exactly finiteness of the `c`-th negative moment.**
+/-- A finite moment is below the abscissa. One of the two directions anything downstream uses. -/
+theorem le_zStar_of_negMoment_ne_top {ζ : ℝ} (hζ : 0 < ζ) (h : F.negMoment ζ ≠ ⊤) :
+    ENNReal.ofReal ζ ≤ F.zStar :=
+  le_sSup ⟨ζ, ⟨hζ, h⟩, rfl⟩
 
-The empty case is not a formality: `sSup ∅ = 0` in Lean, so `0 < c < z_*` is already enough to
-know the defining set is nonempty, and no separate hypothesis is needed. -/
-theorem negMoment_ne_top_of_lt_zStar {c : ℝ} (hc : 0 < c) (hc' : c < F.zStar) :
-    F.negMoment c ≠ ⊤ := by
-  have hne : {ζ : ℝ | 0 < ζ ∧ F.negMoment ζ ≠ ⊤}.Nonempty := by
-    by_contra hemp
-    rw [Set.not_nonempty_iff_eq_empty] at hemp
-    rw [zStar, hemp, Real.sSup_empty] at hc'
-    linarith
-  obtain ⟨ζ, hζ, hcζ⟩ := exists_lt_of_lt_csSup hne hc'
-  exact F.negMoment_ne_top_of_le hc hcζ.le hζ.2
+/-- **`c < z_*` is exactly finiteness of the `c`-th negative moment**, and this is the other
+direction.
+
+No nonemptiness side condition is needed: `sSup ∅ = 0` in `ℝ≥0∞` too, so `ofReal c < z_*` already
+forces the defining set to be inhabited --- and `lt_sSup_iff`, `ℝ≥0∞` being a complete *linear*
+order, hands the witness over directly. -/
+theorem negMoment_ne_top_of_lt_zStar {c : ℝ} (hc : 0 < c)
+    (hc' : ENNReal.ofReal c < F.zStar) : F.negMoment c ≠ ⊤ := by
+  rw [zStar, lt_sSup_iff] at hc'
+  obtain ⟨x, ⟨ζ, ⟨hζ0, hζ⟩, rfl⟩, hlt⟩ := hc'
+  exact F.negMoment_ne_top_of_le hc (le_of_lt (by exact_mod_cast ENNReal.ofReal_lt_ofReal_iff_of_nonneg hc.le |>.mp hlt)) hζ
+
+/-- Monotonicity in the argument, which is what call sites want: everything below something known
+to be below the abscissa is below it. In `ℝ` this was `linarith`; here it is a lemma, and having
+it once keeps the arithmetic out of the call sites. -/
+theorem ofReal_lt_zStar_of_le {c d : ℝ} (hcd : c ≤ d) (hd : ENNReal.ofReal d < F.zStar) :
+    ENNReal.ofReal c < F.zStar :=
+  lt_of_le_of_lt (ENNReal.ofReal_le_ofReal hcd) hd
+
+/-- A finite moment strictly above `c` puts `c` strictly below the abscissa. This is how a witness
+becomes a strip condition, and with `z_*` possibly infinite it is the only way. -/
+theorem ofReal_lt_zStar_of_lt {c ζ : ℝ} (hc : 0 ≤ c) (hcζ : c < ζ)
+    (h : F.negMoment ζ ≠ ⊤) : ENNReal.ofReal c < F.zStar :=
+  lt_of_lt_of_le ((ENNReal.ofReal_lt_ofReal_iff_of_nonneg hc).mpr hcζ)
+    (F.le_zStar_of_negMoment_ne_top (lt_of_le_of_lt hc hcζ) h)
+
+/-- **`z_* = ∞`, sayable at last**: if every negative moment is finite then the abscissa is `⊤`.
+
+This is what `lem:moment-recursion`(2) concludes for a local operator, and it is the truth for the
+stable and inverse-gamma families. It is also the check on the definition above: with `zStar : ℝ`
+the same hypothesis gave `z_* = 0`, since `Real.sSup` of an unbounded set is junk, and so made
+(H)'s `1 < z_*` **false** for exactly the kernels chapter 12 classifies --- every theorem stated
+under (H) vacuous there. -/
+theorem zStar_eq_top_of_forall_negMoment_ne_top (h : ∀ ζ : ℝ, 0 < ζ → F.negMoment ζ ≠ ⊤) :
+    F.zStar = ⊤ := by
+  refine ENNReal.eq_top_of_forall_nnreal_le fun r => ?_
+  refine le_trans ?_ (F.le_zStar_of_negMoment_ne_top (ζ := (r : ℝ) + 1) (by positivity)
+    (h _ (by positivity)))
+  rw [← ENNReal.ofReal_coe_nnreal]
+  exact ENNReal.ofReal_le_ofReal (by linarith)
+
+/-- …and then (H)'s second clause holds rather than fails. -/
+theorem one_lt_zStar_of_forall_negMoment_ne_top (h : ∀ ζ : ℝ, 0 < ζ → F.negMoment ζ ≠ ⊤) :
+    (1 : ℝ≥0∞) < F.zStar := by
+  rw [F.zStar_eq_top_of_forall_negMoment_ne_top h]
+  exact ENNReal.one_lt_top
+
+/-- The real interval `(0, z_*)`: the orders strictly below the abscissa.
+
+Open and convex, which is what the analyticity and identity-theorem arguments need and what a bare
+finiteness condition would not supply --- the set where `m` is finite may contain its right
+endpoint, and `z_*` is precisely the supremum that discards it. -/
+def momentInterval : Set ℝ := {c : ℝ | 0 < c ∧ ENNReal.ofReal c < F.zStar}
+
+lemma mem_momentInterval {c : ℝ} : c ∈ F.momentInterval ↔ 0 < c ∧ ENNReal.ofReal c < F.zStar :=
+  Iff.rfl
+
+lemma isOpen_momentInterval : IsOpen F.momentInterval :=
+  (isOpen_lt continuous_const continuous_id).inter
+    (isOpen_Iio.preimage ENNReal.continuous_ofReal)
+
+lemma convex_momentInterval : Convex ℝ F.momentInterval := by
+  refine (convex_iff_ordConnected (𝕜 := ℝ)).mpr ⟨fun x hx y hy z hz => ?_⟩
+  exact ⟨lt_of_lt_of_le hx.1 hz.1, F.ofReal_lt_zStar_of_le hz.2 hy.2⟩
+
+/-- Under (H) there is a real `ζ > 1` with `m(ζ)` finite.
+
+In the real-valued reading one took the midpoint of `(1, z_*)`; with `z_*` possibly infinite that
+is not available, and the witness comes from the supremum instead. -/
+theorem exists_one_lt_negMoment_ne_top (hH : F.StandingHypothesis) :
+    ∃ ζ : ℝ, 1 < ζ ∧ F.negMoment ζ ≠ ⊤ := by
+  have h1 : (1 : ℝ≥0∞) < F.zStar := hH.2
+  rw [zStar, lt_sSup_iff] at h1
+  obtain ⟨x, ⟨ζ, ⟨hζ0, hζ⟩, rfl⟩, hlt⟩ := h1
+  refine ⟨ζ, ?_, hζ⟩
+  rwa [show (1 : ℝ≥0∞) = ENNReal.ofReal 1 from by simp,
+    ENNReal.ofReal_lt_ofReal_iff_of_nonneg zero_le_one] at hlt
 
 /-! ## The hinge -/
 
@@ -388,7 +468,7 @@ theorem lintegral_lintegral_gamma {c : ℝ} (hc : 0 < c) (h0 : F.lawT₁ {(0 : �
 /-- Joint integrability of `(s,t) ↦ s^{z-1} e^{-ts}` for `volume|_(0,∞) ⊗ lawT₁`: the Fubini side
 condition, and the hinge is all of it. Tonelli turns the total mass of the absolute value into
 the double integral above, whose value is `Γ(Re z) · E[T₁^{-Re z}]`. -/
-theorem integrable_mellin_laplace {z : ℂ} (hz : 0 < z.re) (hz' : z.re < F.zStar)
+theorem integrable_mellin_laplace {z : ℂ} (hz : 0 < z.re) (hz' : ENNReal.ofReal z.re < F.zStar)
     (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
     Integrable (Function.uncurry fun s t : ℝ =>
         (s : ℂ) ^ (z - 1) * Complex.exp (-((t : ℂ) * (s : ℂ))))
@@ -407,7 +487,7 @@ The inner integral is Mathlib's `Complex.integral_cpow_mul_exp_neg_mul_Ioi`, whi
 than as a definition of ours. The exchange is licensed by `integrable_mellin_laplace`, i.e. by
 the hinge, i.e. by `Re z < z_*`. -/
 theorem mellin_profile (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
-    (hz' : z.re < F.zStar) :
+    (hz' : ENNReal.ofReal z.re < F.zStar) :
     mellin (fun s => (F.profile s : ℂ)) z
       = Complex.Gamma z * ∫ t, (t : ℂ) ^ (-z) ∂F.lawT₁ := by
   have h0 := F.lawT₁_singleton_zero hH.1
@@ -423,7 +503,7 @@ and the inner `μ`-integral *is* `s^{z-1}H(s)`. So this costs nothing beyond wha
 already paid for, and it is `MellinConvergent` verbatim — the first of the two hypotheses
 `mellinInv_mellin_eq` asks for, the other being `lem:mellin-vertical`. -/
 theorem mellinConvergent_profile (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
-    (hz' : z.re < F.zStar) : MellinConvergent (fun s => (F.profile s : ℂ)) z := by
+    (hz' : ENNReal.ofReal z.re < F.zStar) : MellinConvergent (fun s => (F.profile s : ℂ)) z := by
   have h0 := F.lawT₁_singleton_zero hH.1
   exact mellinConvergent_laplace_of_ae_mem_Ioi (F.ae_mem_Ioi_lawT₁ h0) hz
     (by rw [← F.negMoment_eq_lintegral h0]; exact F.negMoment_ne_top_of_lt_zStar hz hz')
@@ -440,7 +520,7 @@ theorem integral_rpow_neg_eq_negMoment {c : ℝ} (h0 : F.lawT₁ {(0 : ℝ)} = 0
 
 Immediate from the identity, since `|t^{-(c+iτ)}| = t^{-c}` for `t > 0`. -/
 theorem norm_mellin_profile_le (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) (τ : ℝ) :
+    (hc' : ENNReal.ofReal c < F.zStar) (τ : ℝ) :
     ‖mellin (fun s => (F.profile s : ℂ)) (c + τ * Complex.I)‖
       ≤ (F.negMoment c).toReal * ‖Complex.Gamma (c + τ * Complex.I)‖ := by
   have h0 := F.lawT₁_singleton_zero hH.1
@@ -466,7 +546,7 @@ Chapter 11 uses it as the outer factor of a Fubini side condition; chapter 12 us
 dominating function of a dominated-convergence argument. It belongs here rather than at either
 use, being a statement about `negMoment` and nothing else. -/
 theorem integrable_rpow_neg (F : SelfDecomposableExponent) (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : c < F.zStar) : Integrable (fun τ : ℝ => τ ^ (-c)) F.lawT₁ := by
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar) : Integrable (fun τ : ℝ => τ ^ (-c)) F.lawT₁ := by
   have h0 := F.lawT₁_singleton_zero hH.1
   have hae := F.ae_mem_Ioi_lawT₁ h0
   refine ⟨by fun_prop, ?_⟩

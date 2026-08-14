@@ -64,7 +64,7 @@ is, `f ∈ 𝒟` — and let `u(t,x) = E[f(t - xT₁)]` be the field, read throu
 3. *(Uniqueness.)* Any symbol whose operator has property (1) agrees with `B` as a meromorphic
    function on the strip. -/
 theorem signaling_form (hH : F.StandingHypothesis) (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0)
-    {c : ℝ} (hc : 0 < c) (hc' : c + 1 < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g)
+    {c : ℝ} (hc : 0 < c) (hc' : ENNReal.ofReal (c + 1) < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g)
     (hg : Integrable g) (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hfm : Measurable f)
     (hfi : Integrable f) (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) :
     -- (1) the profiles are eigenfunctions
@@ -82,14 +82,14 @@ theorem signaling_form (hH : F.StandingHypothesis) (hF : ∃ s₀, 0 < s₀ ∧ 
             (fun u : ℝ => ((laplaceFun f s : ℝ) : ℂ) * (F.profile (s * u) : ℂ)) x
           = (s : ℂ) * (((laplaceFun f s : ℝ) : ℂ) * (F.profile (s * x) : ℂ))) ∧
     -- (2d) the Mellin form
-    (∀ z : ℂ, 1 < z.re → z.re < F.zStar → ∀ t : ℝ, 0 < t →
+    (∀ z : ℂ, 1 < z.re → ENNReal.ofReal z.re < F.zStar → ∀ t : ℝ, 0 < t →
         mellin (fun s => (F.profile s : ℂ)) (z - 1) ≠ 0 →
         mellin (fun x : ℝ => (F.delayedField g t x : ℂ)) z
           = F.inversionSymbol (z - 1) * mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) (z - 1))
       ∧
     -- (3) uniqueness of the symbol within the covariant Mellin class
     (∀ s : ℝ, 0 < s → ∀ B : ℂ → ℂ,
-        (∀ c' : ℝ, 0 < c' → c' + 1 < F.zStar →
+        (∀ c' : ℝ, 0 < c' → ENNReal.ofReal (c' + 1) < F.zStar →
           F.RealisesAction c' B (fun u : ℝ => (F.profile (s * u) : ℂ))
             (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ))) →
         ∀ z ∈ verticalStrip 0 (F.zStar - 1), F.inversionSymbol =ᶠ[𝓝[≠] z] B) :=

@@ -238,7 +238,7 @@ the exchange is licensed by the *two* ends of the strip at once, one apiece — 
 `lawT₁` may have atoms. Choosing a measurable representative is free for an `L¹` class, so this
 costs the article nothing. -/
 theorem integrable_delayed (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
-    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) {t : ℝ}
+    (hz' : ENNReal.ofReal z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) {t : ℝ}
     (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
     Integrable (Function.uncurry fun x τ : ℝ => (x : ℂ) ^ (z - 1) * (f (t - x * τ) : ℂ))
       ((volume.restrict (Ioi 0)).prod F.lawT₁) := by
@@ -282,7 +282,7 @@ a dilate, contributing `τ^{-z}` times the past integral, and the outer integral
 turns the past integral into `Γ(z)(Iᶻf)(t)`; the two `Γ`s cancel, which is why the statement has
 no `Γ` in it. -/
 theorem mellin_delayed_average (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
-    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f)
+    (hz' : ENNReal.ofReal z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f)
     (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t)
     (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
     mellin (fun x : ℝ => ∫ τ, (f (t - x * τ) : ℂ) ∂F.lawT₁) z
@@ -558,7 +558,7 @@ every scale `x > 0`. So the memory line at time `t`, seen through the Mellin tra
 whole analytic family `{(Iᶻf)(t)}` weighted by the negative delay-moments — which is what the
 article's Remark 11.7 reads as the observer's embodiment of its past. -/
 theorem mellin_delayedField (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
-    (hz' : z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f)
+    (hz' : ENNReal.ofReal z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f)
     (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t)
     (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
     mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) z
@@ -585,14 +585,15 @@ regular, the factor `H̃(z-1)` cancelling every denominator", which is true of t
 cancelled at the point. That is the third time in this chapter the same distinction has had to be
 drawn. -/
 theorem inversionSymbol_mul_mellin_delayedField (hH : F.StandingHypothesis) {z : ℂ}
-    (hz : 1 < z.re) (hz' : z.re < F.zStar) {f : ℝ → ℝ} {C : ℝ} (hfm : Measurable f)
+    (hz : 1 < z.re) (hz' : ENNReal.ofReal z.re < F.zStar) {f : ℝ → ℝ} {C : ℝ} (hfm : Measurable f)
     (hbdd : ∀ y : ℝ, |f y| ≤ C) (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t)
     (hne : mellin (fun s => (F.profile s : ℂ)) (z - 1) ≠ 0) :
     F.inversionSymbol (z - 1) * mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) (z - 1)
       = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville (z - 1) f t := by
   have hre : (z - 1).re = z.re - 1 := by simp
   have hz1 : 0 < (z - 1).re := by rw [hre]; linarith
-  have hz1' : (z - 1).re < F.zStar := by rw [hre]; linarith
+  have hz1' : ENNReal.ofReal (z - 1).re < F.zStar := by
+    rw [hre]; exact F.ofReal_lt_zStar_of_le (by linarith) hz'
   have hpast := integrableOn_pastIntegrand_of_bounded (z := z - 1) hz1 hfm hbdd hcausal ht
   rw [F.mellin_delayedField hH hz1 hz1' hfm hcausal ht hpast, inversionSymbol,
     sub_add_cancel]
@@ -710,7 +711,7 @@ theorem abs_primitive_le {g : ℝ → ℝ} (hg : Integrable g) (r : ℝ) :
 The field of `f'` transformed by `lem:delayed-average-mellin`, then
 `lem:fractional-integral-derivative` to turn `Iᶻf'` into `I^{z-1}f`. -/
 theorem mellin_delayedField_deriv (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
-    (hz' : z.re < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hz' : ENNReal.ofReal z.re < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
     (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ)
     {t : ℝ} (ht : 0 < t) :
     mellin (fun x : ℝ => (F.delayedField g t x : ℂ)) z
@@ -732,7 +733,7 @@ Both sides equal `H̃(z)(I^{z-1}f)(t)`; the left by `mellin_delayedField_deriv`,
 — because it applies `lem:delayed-average-mellin` at `z-1`, below the strip an `L¹` hypothesis
 would give — is `abs_primitive_le`, i.e. exactly the part of `f ∈ 𝒟` that is load-bearing. -/
 theorem mellin_signaling_form (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
-    (hz' : z.re < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hz' : ENNReal.ofReal z.re < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
     (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hfm : Measurable f)
     (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) {t : ℝ} (ht : 0 < t)
     (hne : mellin (fun s => (F.profile s : ℂ)) (z - 1) ≠ 0) :

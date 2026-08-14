@@ -77,7 +77,32 @@ i.e.\ no atom of the kernels at zero delay --- and
 \[
   z_* \;:=\; \sup\bigl\{\, \zeta > 0 :\ \Ex\bigl[T_1^{-\zeta}\bigr] < \infty \,\bigr\} \;>\; 1 .
 \]
-\statusT
+\statusT\quad\emph{(\textbf{Formalised}, as
+\texttt{Hemigroup.SelfDecomposableExponent.StandingHypothesis}. One thing about the formalisation
+had to be corrected, and the paragraph below this definition is what caught it.
+\textbf{$z_*$ is valued in $[0,\infty]$, not in $\mathbb{R}$.} The supremum is genuinely infinite
+for the stable and Bessel-K families --- the paragraph below says so, and
+\ref{lem:moment-recursion}(2) \emph{proves} it for every local operator --- while Lean's
+\texttt{Real.sSup} of an unbounded set is the junk value $0$. With a real-valued $z_*$ the
+hypothesis $1 < z_*$ was therefore \textbf{false} exactly for the kernels \ref{thm:locality}
+classifies, so every theorem of chapters 11 and 12 was vacuous there, while remaining true and
+non-vacuous for the Gamma family, where $z_* = \gamma$ is finite. Nothing was unsound and no proof
+was wrong; the statements simply said nothing about the article's own examples. In $[0,\infty]$
+the supremum is $\infty$, \texttt{zStar\_eq\_top\_of\_forall\_negMoment\_ne\_top} says so, and (H)
+holds there rather than failing.
+\textbf{What it cost downstream.} Every strip condition now reads
+\texttt{ENNReal.ofReal c < F.zStar}, and \texttt{verticalStrip} takes its right edge in
+$[0,\infty]$ so that \texttt{verticalStrip 0 F.zStar} is unchanged at every use. The arithmetic
+that used to be \texttt{linarith} became three lemmas --- monotonicity, a witness above the
+shift, and the $b-1$ shift, subtraction in $[0,\infty]$ being truncated --- and nothing else
+changed. In particular the interval $(0,z_*)$ is still open and convex, which is what the
+analyticity and identity-theorem arguments need and what a bare finiteness condition would not
+supply: that is why the abscissa was kept as the primitive rather than replaced by
+$\Ex[T_1^{-c}] < \infty$.
+\textbf{How it surfaced.} Not from a failing proof --- everything compiled --- but from asking
+what \ref{lem:moment-recursion}(2) would unlock, and finding that its conclusion contradicts the
+hypothesis every downstream statement carries. A hypothesis that a chapter's own theorem refutes
+is a defect only visible to something that tries to use both.)}
 \end{definition}
 
 The second condition is equivalent to $\int_0^\infty e^{-F(s)}\,ds < \infty$. It holds with

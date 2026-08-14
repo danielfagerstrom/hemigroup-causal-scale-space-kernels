@@ -123,11 +123,11 @@ The symbol identity is available at the real points of the strip because `H̃` d
 there --- which is the one place the side condition it carries is discharged rather than assumed
 away. -/
 theorem coeff_zero_eq_zero_of_symbol_eq (hH : F.StandingHypothesis) {n : ℕ} (γ : ℕ → ℂ)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
     γ 0 = 0 := by
-  have hz1 : (1 : ℝ) < F.zStar := hH.2
+  obtain ⟨ζ, hζ1, hζtop⟩ := F.exists_one_lt_negMoment_ne_top hH
   -- the polynomial's own limit at the origin
   have hP : Tendsto (fun c : ℝ => ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j (c : ℂ))
       (𝓝[>] (0 : ℝ)) (𝓝 (γ 0)) := by
@@ -140,22 +140,25 @@ theorem coeff_zero_eq_zero_of_symbol_eq (hH : F.StandingHypothesis) {n : ℕ} (�
       (hcomp.tendsto (0 : ℝ)).mono_left nhdsWithin_le_nhds
     simpa [sum_mellinEulerFactor_zero] using hlim
   -- and the symbol's, which is `lem:symbol-vanishes-at-origin`
-  have hsmall : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c < F.zStar - 1 :=
-    nhdsWithin_le_nhds (gt_mem_nhds (by linarith : (0 : ℝ) < F.zStar - 1))
+  have hsmall : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), ENNReal.ofReal c < F.zStar - 1 := by
+    filter_upwards [self_mem_nhdsWithin,
+      nhdsWithin_le_nhds (gt_mem_nhds (by linarith : (0 : ℝ) < ζ - 1))] with c hc hcζ
+    exact (ofReal_lt_sub_one_iff (le_of_lt hc)).mpr
+      (F.ofReal_lt_zStar_of_lt (by linarith [mem_Ioi.mp hc]) (by linarith) hζtop)
   have heq : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), F.inversionSymbol (c : ℂ)
       = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j (c : ℂ) := by
     filter_upwards [self_mem_nhdsWithin, hsmall] with c hc hcz
     have hc0 : (0 : ℝ) < c := hc
     have hre : ((c : ℂ)).re = c := Complex.ofReal_re c
     exact hsymbol _ (by rw [hre]; exact hc0) (by rw [hre]; exact hcz)
-      (F.mellin_profile_ofReal_ne_zero hH hc0 (by linarith))
+      (F.mellin_profile_ofReal_ne_zero hH hc0 (lt_of_lt_sub_one hcz))
   exact (tendsto_nhds_unique ((F.tendsto_inversionSymbol_nhdsGT_zero hH).congr' heq) hP).symm
 
 /-! ## The recursion at a real point of the strip -/
 
 /-- `m(c)` is a positive real, at every order the strip allows. -/
 theorem negMoment_toReal_pos (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) : 0 < (F.negMoment c).toReal :=
+    (hc' : ENNReal.ofReal c < F.zStar) : 0 < (F.negMoment c).toReal :=
   ENNReal.toReal_pos (F.negMoment_pos (F.lawT₁_singleton_zero hH.1) c).ne'
     (F.negMoment_ne_top_of_lt_zStar hc hc')
 
@@ -170,23 +173,25 @@ positive moments, so it inherits both realness and sign.
 The range is `0 < z < z_* - 1`. Extending it to `(0,∞)`, which is how the blueprint states the
 clause, is `z_* = ∞`, i.e. clause (2), i.e. ledger A13. -/
 theorem exists_pos_symbolQuotient_of_symbol_eq (hH : F.StandingHypothesis) {n : ℕ} (γ : ℕ → ℂ)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z)
-    {z : ℝ} (hz : 0 < z) (hz' : z < F.zStar - 1) :
+    {z : ℝ} (hz : 0 < z) (hz' : ENNReal.ofReal z < F.zStar - 1) :
     ∃ q : ℝ, 0 < q ∧ symbolQuotient γ n (z : ℂ) = (q : ℂ) ∧
       (F.negMoment (z + 1)).toReal = q * (F.negMoment z).toReal := by
   have h0 := F.lawT₁_singleton_zero hH.1
   have hre : ((z : ℂ)).re = z := Complex.ofReal_re z
   have hzne : (z : ℂ) ≠ 0 := by exact_mod_cast hz.ne'
-  have hmz : 0 < (F.negMoment z).toReal := F.negMoment_toReal_pos hH hz (by linarith)
+  have hz1' : ENNReal.ofReal (z + 1) < F.zStar := ofReal_add_one_lt_of_lt_sub_one hz.le hz'
+  have hmz : 0 < (F.negMoment z).toReal :=
+    F.negMoment_toReal_pos hH hz (lt_of_lt_sub_one hz')
   have hmz1 : 0 < (F.negMoment (z + 1)).toReal :=
-    F.negMoment_toReal_pos hH (by linarith) (by linarith)
+    F.negMoment_toReal_pos hH (by linarith) hz1'
   -- the two readings of the symbol at `z`
   have hpoly : F.inversionSymbol (z : ℂ)
       = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j (z : ℂ) :=
     hsymbol _ (by rw [hre]; exact hz) (by rw [hre]; exact hz')
-      (F.mellin_profile_ofReal_ne_zero hH hz (by linarith))
+      (F.mellin_profile_ofReal_ne_zero hH hz (lt_of_lt_sub_one hz'))
   have hclosed : F.inversionSymbol (z : ℂ)
       = (z : ℂ) * F.negMomentC ((z : ℂ) + 1) / F.negMomentC (z : ℂ) :=
     F.inversionSymbol_eq hH ⟨by rw [hre]; exact hz, by rw [hre]; exact hz'⟩
@@ -219,13 +224,13 @@ supplies the symbol identity, and everything above consumes it. -/
 What is *not* here is clause (2), `z_* = ∞`, which is ledger A13 and which is also what would
 widen the second display's range to the whole half-line. -/
 theorem exists_symbolQuotient_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) :
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) :
     ∃ Q : ℂ → ℂ,
       (∀ z : ℂ, (∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j z)
         = z * Q z) ∧
-      (∀ z : ℝ, 0 < z → z < F.zStar - 1 → ∃ q : ℝ, 0 < q ∧ Q (z : ℂ) = (q : ℂ) ∧
+      (∀ z : ℝ, 0 < z → ENNReal.ofReal z < F.zStar - 1 → ∃ q : ℝ, 0 < q ∧ Q (z : ℂ) = (q : ℂ) ∧
         (F.negMoment (z + 1)).toReal = q * (F.negMoment z).toReal) := by
-  have hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+  have hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z
         = ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j z :=

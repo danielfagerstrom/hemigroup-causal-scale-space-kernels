@@ -133,8 +133,8 @@ Locality is data, so the content of this direction is the *structure*, with its 
 displayed: that is `isLocalOfOrderCoreOfSymbolEq`, and a caller that has to say which coefficients
 it got --- as the profile clause below does --- takes it rather than the `Nonempty` reading. -/
 noncomputable def isLocalOfOrderCoreOfSymbolEq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
     F.IsLocalOfOrderCore c n where
@@ -155,7 +155,7 @@ noncomputable def isLocalOfOrderCoreOfSymbolEq (hH : F.StandingHypothesis) {c : 
           = ∑ j ∈ Finset.range (n + 1),
               γ j * mellin (fun t : ℝ => (t : ℂ) ^ j * iteratedDeriv j g t)
                 ((c : ℂ) + y * Complex.I) := by
-      filter_upwards [F.ae_mellin_profile_ne_zero hH hc (by linarith)] with y hy
+      filter_upwards [F.ae_mellin_profile_ne_zero hH hc (lt_of_lt_sub_one hc')] with y hy
       have hre : ((c : ℂ) + y * Complex.I).re = c := by simp
       rw [hsymbol _ (by rw [hre]; exact hc) (by rw [hre]; exact hc') hy, Finset.sum_mul]
       refine Finset.sum_congr rfl fun j _ => ?_
@@ -186,16 +186,16 @@ noncomputable def isLocalOfOrderCoreOfSymbolEq (hH : F.StandingHypothesis) {c : 
 /-- **`lem:local-polynomial-symbol`, the (⇐) direction**, in its propositional reading --- the one
 `thm:locality` quantifies over. -/
 theorem isLocalOfOrderCore_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) :
     Nonempty (F.IsLocalOfOrderCore c n) :=
   ⟨F.isLocalOfOrderCoreOfSymbolEq hH hc hc' γ hγ hsymbol⟩
 
 @[simp] theorem coeff_isLocalOfOrderCoreOfSymbolEq (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
-    (hsymbol : ∀ z : ℂ, 0 < z.re → z.re < F.zStar - 1 →
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
       mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
       F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z) (j : ℕ)
     (x : ℝ) :

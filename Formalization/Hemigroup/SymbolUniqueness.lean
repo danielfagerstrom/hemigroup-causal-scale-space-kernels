@@ -93,7 +93,7 @@ form: the article's symbols have poles exactly where this statement makes no cla
 value. -/
 theorem eventuallyEq (h : F.SameSymbolAction B₁ B₂) (hH : F.StandingHypothesis) {z : ℂ}
     (hz : z ∈ verticalStrip 0 (F.zStar - 1)) : B₁ =ᶠ[𝓝[≠] z] B₂ := by
-  have hz' : z ∈ verticalStrip 0 F.zStar := ⟨hz.1, by have := hz.2; linarith⟩
+  have hz' : z ∈ verticalStrip 0 F.zStar := ⟨hz.1, lt_of_lt_sub_one hz.2⟩
   have hstrip : ∀ᶠ w in 𝓝[≠] z, w ∈ verticalStrip 0 (F.zStar - 1) :=
     nhdsWithin_le_nhds ((isOpen_verticalStrip 0 (F.zStar - 1)).mem_nhds hz)
   filter_upwards [hstrip, F.eventually_mellin_profile_ne_zero hH hz'] with w hw hne
@@ -135,10 +135,10 @@ nonvanishing factor. And the conclusion is pointwise on the whole strip, includi
 `H̃ ≠ 0` rather than merely holding almost everywhere. An a.e. hypothesis would conclude nothing
 at any named point. -/
 theorem sameSymbolAction_of_realisesAction {s : ℝ} (hs : 0 < s) {B₁ B₂ : ℂ → ℂ}
-    (h₁ : ∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+    (h₁ : ∀ c : ℝ, 0 < c → ENNReal.ofReal (c + 1) < F.zStar →
       F.RealisesAction c B₁ (fun u : ℝ => (F.profile (s * u) : ℂ))
         (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)))
-    (h₂ : ∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+    (h₂ : ∀ c : ℝ, 0 < c → ENNReal.ofReal (c + 1) < F.zStar →
       F.RealisesAction c B₂ (fun u : ℝ => (F.profile (s * u) : ℂ))
         (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ))) :
     F.SameSymbolAction B₁ B₂ := by
@@ -152,13 +152,14 @@ theorem sameSymbolAction_of_realisesAction {s : ℝ} (hs : 0 < s) {B₁ B₂ : �
       = (s : ℂ) ^ (-w) * mellin (fun u => (F.profile u : ℂ)) w :=
     F.mellin_profile_comp_mul hs w
   have key : ∀ B : ℂ → ℂ,
-      (∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+      (∀ c : ℝ, 0 < c → ENNReal.ofReal (c + 1) < F.zStar →
         F.RealisesAction c B (fun u : ℝ => (F.profile (s * u) : ℂ))
           (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ))) →
       mellin (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) w
         = B w * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
     intro B hB
-    have := (hB w.re hw0 (by linarith)).mellin_eq w.im (by rwa [hre])
+    have := (hB w.re hw0 (ofReal_add_one_lt_of_lt_sub_one hw0.le hw1)).mellin_eq w.im
+      (by rwa [hre])
     rwa [hre] at this
   have heq : B₁ w * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w
       = B₂ w * mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w :=
@@ -182,7 +183,7 @@ The article's own symbol qualifies, by `realisesSymbolAction_profile`; so the st
 vacuous, and the definite article in "*the* inversion" is earned. -/
 theorem eventuallyEq_inversionSymbol_of_realisesAction (hH : F.StandingHypothesis) {s : ℝ}
     (hs : 0 < s) {B : ℂ → ℂ}
-    (hB : ∀ c : ℝ, 0 < c → c + 1 < F.zStar →
+    (hB : ∀ c : ℝ, 0 < c → ENNReal.ofReal (c + 1) < F.zStar →
       F.RealisesAction c B (fun u : ℝ => (F.profile (s * u) : ℂ))
         (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)))
     {z : ℂ} (hz : z ∈ verticalStrip 0 (F.zStar - 1)) :

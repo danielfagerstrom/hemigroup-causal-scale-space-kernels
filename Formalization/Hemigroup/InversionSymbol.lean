@@ -58,16 +58,47 @@ open scoped ENNReal Topology
 
 /-! ## Vertical strips -/
 
-/-- The open vertical strip `a < Re z < b`. -/
-def verticalStrip (a b : ℝ) : Set ℂ := {z : ℂ | a < z.re ∧ z.re < b}
+/-- The open vertical strip `a < Re z < b`, with the right edge in `[0,∞]` so that `b = ∞` --- the
+whole right half-plane past `a` --- is one of its values. The abscissa `z_*` is infinite for the
+stable and inverse-gamma families, so this is not a generality that goes unused. -/
+def verticalStrip (a : ℝ) (b : ℝ≥0∞) : Set ℂ :=
+  {z : ℂ | a < z.re ∧ ENNReal.ofReal z.re < b}
 
-lemma mem_verticalStrip {a b : ℝ} {z : ℂ} : z ∈ verticalStrip a b ↔ a < z.re ∧ z.re < b := Iff.rfl
+lemma mem_verticalStrip {a : ℝ} {b : ℝ≥0∞} {z : ℂ} :
+    z ∈ verticalStrip a b ↔ a < z.re ∧ ENNReal.ofReal z.re < b := Iff.rfl
 
-lemma isOpen_verticalStrip (a b : ℝ) : IsOpen (verticalStrip a b) :=
-  (isOpen_Ioo (a := a) (b := b)).preimage Complex.continuous_re
+/-- The real points below an edge: `{x | ofReal x < b}`, which is `Iio` something or all of `ℝ`,
+and in either case downward closed. Both topological facts below come off it. -/
+lemma ofReal_lt_lower {b : ℝ≥0∞} {x y : ℝ} (hxy : x ≤ y) (hy : ENNReal.ofReal y < b) :
+    ENNReal.ofReal x < b :=
+  lt_of_le_of_lt (ENNReal.ofReal_le_ofReal hxy) hy
 
-lemma convex_verticalStrip (a b : ℝ) : Convex ℝ (verticalStrip a b) :=
-  (convex_Ioo a b).linear_preimage Complex.reLm
+/-- The strip shifted: `Re z < b - 1` says `Re z + 1 < b`, and in `ℝ≥0∞` that has to be said
+rather than computed, subtraction there being truncated. -/
+lemma ofReal_lt_sub_one_iff {b : ℝ≥0∞} {x : ℝ} (hx : 0 ≤ x) :
+    ENNReal.ofReal x < b - 1 ↔ ENNReal.ofReal (x + 1) < b := by
+  rw [ENNReal.ofReal_add hx zero_le_one, ENNReal.ofReal_one]
+  exact (ENNReal.cancel_of_ne ENNReal.one_ne_top).lt_tsub_iff_right
+
+lemma ofReal_add_one_lt_of_lt_sub_one {b : ℝ≥0∞} {x : ℝ} (hx : 0 ≤ x)
+    (h : ENNReal.ofReal x < b - 1) : ENNReal.ofReal (x + 1) < b :=
+  (ofReal_lt_sub_one_iff hx).mp h
+
+lemma lt_of_lt_sub_one {b : ℝ≥0∞} {x : ℝ} (h : ENNReal.ofReal x < b - 1) :
+    ENNReal.ofReal x < b :=
+  lt_of_lt_of_le h tsub_le_self
+
+lemma isOpen_verticalStrip (a : ℝ) (b : ℝ≥0∞) : IsOpen (verticalStrip a b) := by
+  have h₁ : IsOpen {z : ℂ | a < z.re} := isOpen_lt continuous_const Complex.continuous_re
+  have h₂ : IsOpen {z : ℂ | ENNReal.ofReal z.re < b} :=
+    isOpen_Iio.preimage (ENNReal.continuous_ofReal.comp Complex.continuous_re)
+  exact h₁.inter h₂
+
+lemma convex_verticalStrip (a : ℝ) (b : ℝ≥0∞) : Convex ℝ (verticalStrip a b) := by
+  have hset : Convex ℝ {x : ℝ | a < x ∧ ENNReal.ofReal x < b} := by
+    refine (convex_iff_ordConnected (𝕜 := ℝ)).mpr ⟨fun x hx y hy z hz => ?_⟩
+    exact ⟨lt_of_lt_of_le hx.1 hz.1, ofReal_lt_lower hz.2 hy.2⟩
+  exact hset.linear_preimage Complex.reLm
 
 /-- `Γ` is analytic on the right half-plane. Mathlib carries differentiability; the half-plane is
 open, so Goursat upgrades it. -/
@@ -106,10 +137,10 @@ theorem negMomentC_eq_complexMGF (h0 : F.lawT₁ {(0 : ℝ)} = 0) (z : ℂ) :
   ring
 
 /-- The strip is inside the exponential-integrability set of `-log T₁`, membership being exactly
-`negMoment_ne_top_of_lt_zStar`. Stated for the *open* interval, which is what makes the interior
-step below free. -/
-theorem Ioo_subset_integrableExpSet (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
-    Ioo (0 : ℝ) F.zStar ⊆ integrableExpSet (fun t : ℝ => -Real.log t) F.lawT₁ := by
+`negMoment_ne_top_of_lt_zStar`. Stated for the *open* interval `momentInterval`, which is what
+makes the interior step below free. -/
+theorem momentInterval_subset_integrableExpSet (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
+    F.momentInterval ⊆ integrableExpSet (fun t : ℝ => -Real.log t) F.lawT₁ := by
   rintro c ⟨hc0, hcz⟩
   have hae := F.ae_mem_Ioi_lawT₁ h0
   have heq : (fun t : ℝ => Real.exp (c * -Real.log t)) =ᵐ[F.lawT₁] fun t : ℝ => t ^ (-c) := by
@@ -131,7 +162,8 @@ theorem Ioo_subset_integrableExpSet (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
 theorem analyticAt_negMomentC (h0 : F.lawT₁ {(0 : ℝ)} = 0) {z : ℂ}
     (hz : z ∈ verticalStrip 0 F.zStar) : AnalyticAt ℂ F.negMomentC z := by
   have hmem : z.re ∈ interior (integrableExpSet (fun t : ℝ => -Real.log t) F.lawT₁) :=
-    interior_maximal (F.Ioo_subset_integrableExpSet h0) isOpen_Ioo ⟨hz.1, hz.2⟩
+    interior_maximal (F.momentInterval_subset_integrableExpSet h0) F.isOpen_momentInterval
+      ⟨hz.1, hz.2⟩
   refine (analyticAt_complexMGF hmem).congr ?_
   exact Filter.Eventually.of_forall fun w => (F.negMomentC_eq_complexMGF h0 w).symm
 
@@ -158,7 +190,8 @@ theorem analyticAt_mellin_profile_shift (hH : F.StandingHypothesis) {z : ℂ}
   obtain ⟨hz0, hz1⟩ := hz
   have hshift : AnalyticAt ℂ (fun w : ℂ => w + 1) z := analyticAt_id.add analyticAt_const
   have hmem : z + 1 ∈ verticalStrip 0 F.zStar := by
-    constructor <;> simp <;> linarith
+    refine ⟨by simp; linarith, ?_⟩
+    simpa using ofReal_add_one_lt_of_lt_sub_one hz0.le hz1
   have hcomp := AnalyticAt.comp (g := mellin fun s => (F.profile s : ℂ))
     (f := fun w : ℂ => w + 1) (x := z) (F.analyticAt_mellin_profile hH hmem) hshift
   simpa [Function.comp_def] using hcomp
@@ -191,7 +224,7 @@ theorem negMomentC_ofReal (h0 : F.lawT₁ {(0 : ℝ)} = 0) (c : ℝ) :
 Both factors of `Γ(c)E[T₁^{-c}]` are strictly positive there. This is what makes `H̃ ≢ 0`, and so
 what makes its zeros isolated. -/
 theorem mellin_profile_ofReal_ne_zero (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) : mellin (fun s => (F.profile s : ℂ)) (c : ℂ) ≠ 0 := by
+    (hc' : ENNReal.ofReal c < F.zStar) : mellin (fun s => (F.profile s : ℂ)) (c : ℂ) ≠ 0 := by
   have h0 := F.lawT₁_singleton_zero hH.1
   have hre : ((c : ℂ)).re = c := Complex.ofReal_re c
   rw [F.mellin_profile hH (by rw [hre]; exact hc) (by rw [hre]; exact hc')]
@@ -246,7 +279,7 @@ The form every inversion integral over the line needs, and the reason
 becomes countable in `ℝ` because `y ↦ c + iy` is injective, and a countable subset of `ℝ` is
 Lebesgue-null. -/
 theorem ae_mellin_profile_ne_zero (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) :
+    (hc' : ENNReal.ofReal c < F.zStar) :
     ∀ᵐ y : ℝ, mellin (fun s => (F.profile s : ℂ)) ((c : ℂ) + y * Complex.I) ≠ 0 := by
   have hinj : Function.Injective fun y : ℝ => (c : ℂ) + y * Complex.I := by
     intro y₁ y₂ hy
@@ -280,8 +313,9 @@ theorem inversionSymbol_eq (hH : F.StandingHypothesis) {z : ℂ}
     F.inversionSymbol z = z * F.negMomentC (z + 1) / F.negMomentC z := by
   obtain ⟨hz0, hz1⟩ := hz
   have hre1 : (z + 1).re = z.re + 1 := by simp
-  have h1 := F.mellin_profile hH (z := z + 1) (by rw [hre1]; linarith) (by rw [hre1]; linarith)
-  have h2 := F.mellin_profile hH (z := z) hz0 (by linarith)
+  have h1 := F.mellin_profile hH (z := z + 1) (by rw [hre1]; linarith)
+    (by rw [hre1]; exact ofReal_add_one_lt_of_lt_sub_one hz0.le hz1)
+  have h2 := F.mellin_profile hH (z := z) hz0 (lt_of_lt_sub_one hz1)
   have hz0' : z ≠ 0 := fun h => by rw [h] at hz0; simp at hz0
   have hΓ : Complex.Gamma z ≠ 0 := Complex.Gamma_ne_zero_of_re_pos hz0
   rw [inversionSymbol, h1, h2, Complex.Gamma_add_one z hz0']
@@ -300,7 +334,7 @@ theorem analyticAt_inversionSymbol (hH : F.StandingHypothesis) {z : ℂ}
   obtain ⟨hz0, hz1⟩ := hz
   have hnum : AnalyticAt ℂ (fun w : ℂ => mellin (fun s => (F.profile s : ℂ)) (w + 1)) z :=
     F.analyticAt_mellin_profile_shift hH ⟨hz0, hz1⟩
-  exact hnum.div (F.analyticAt_mellin_profile hH ⟨hz0, by linarith⟩) hne
+  exact hnum.div (F.analyticAt_mellin_profile hH ⟨hz0, lt_of_lt_sub_one hz1⟩) hne
 
 /-- **`lem:inversion-symbol`**, meromorphy: `B` is meromorphic on `0 < Re z < z_* - 1`. -/
 theorem meromorphicOn_inversionSymbol (hH : F.StandingHypothesis) :
@@ -310,7 +344,7 @@ theorem meromorphicOn_inversionSymbol (hH : F.StandingHypothesis) :
   have hnum : AnalyticAt ℂ (fun w : ℂ => mellin (fun s => (F.profile s : ℂ)) (w + 1)) z :=
     F.analyticAt_mellin_profile_shift hH ⟨hz0, hz1⟩
   have hden : AnalyticAt ℂ (mellin fun s => (F.profile s : ℂ)) z :=
-    F.analyticAt_mellin_profile hH ⟨hz0, by linarith⟩
+    F.analyticAt_mellin_profile hH ⟨hz0, lt_of_lt_sub_one hz1⟩
   exact hnum.meromorphicAt.div hden.meromorphicAt
 
 end SelfDecomposableExponent

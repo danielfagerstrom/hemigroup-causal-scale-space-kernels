@@ -123,7 +123,7 @@ abbrev RealisesSymbolAction (c : ℝ) (g h : ℝ → ℂ) : Prop :=
 uses: the zeros of `H̃` on the line are null (`ae_mellin_profile_ne_zero`). -/
 theorem RealisesAction.mellin_eq_ae {F : SelfDecomposableExponent} (hH : F.StandingHypothesis)
     {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) {B : ℂ → ℂ} {g h : ℝ → ℂ} (hrep : F.RealisesAction c B g h) :
+    (hc' : ENNReal.ofReal c < F.zStar) {B : ℂ → ℂ} {g h : ℝ → ℂ} (hrep : F.RealisesAction c B g h) :
     ∀ᵐ y : ℝ, mellin h ((c : ℂ) + y * Complex.I)
       = B ((c : ℂ) + y * Complex.I) * mellin g ((c : ℂ) + y * Complex.I) := by
   filter_upwards [F.ae_mellin_profile_ne_zero hH hc hc'] with y hy using hrep.mellin_eq y hy
@@ -135,7 +135,7 @@ This is the step ledger A12 carries, and it is Mathlib's `mellinInv_mellin_eq` o
 has been recognised as `mellin h`. Recognising it is the whole of the proof, and the null set
 where the recognition fails is discarded by `integral_congr_ae` — which is available precisely
 because `mellinInv` integrates over the line rather than evaluating on it. -/
-theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) (hc' : c < F.zStar)
+theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar)
     {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h) {x : ℝ}
     (hx : 0 < x) (hcont : ContinuousAt h x) :
     F.inversionOperator c g x = x⁻¹ * h x := by
@@ -155,7 +155,7 @@ theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) 
 No strip condition. Once the pointwise formula is known on `(0,∞)`, the weight `x⁻¹` is
 `mellin_cpow_smul` at exponent `-1`, which shifts the argument and is available at every `z`. -/
 theorem mellin_inversionOperator (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
+    (hc' : ENNReal.ofReal c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
     (hcont : ContinuousOn h (Ioi 0)) (z : ℂ) :
     mellin (F.inversionOperator c g) z = mellin h (z - 1) := by
   have hpt : ∀ t ∈ Ioi (0 : ℝ),
@@ -175,7 +175,7 @@ theorem mellin_inversionOperator (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 <
 where the product identity holds pointwise — which, by `lem:inversion-symbol`, is every point of
 the strip off the isolated zeros of `H̃`. -/
 theorem mellin_inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
+    (hc' : ENNReal.ofReal c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
     (hcont : ContinuousOn h (Ioi 0)) {z : ℂ}
     (hz : mellin h (z - 1) = F.inversionSymbol (z - 1) * mellin g (z - 1)) :
     mellin (F.inversionOperator c g) z = F.inversionSymbol (z - 1) * mellin g (z - 1) := by
@@ -226,10 +226,10 @@ theorem mellin_profile_comp_mul_weight {s : ℝ} (hs : 0 < s) (w : ℂ) :
 /-- `MellinConvergent` for the realising function, from the profile's own convergence one step
 higher in the strip: the weight `x` and the dilation are both Mellin-transparent. -/
 theorem mellinConvergent_profile_comp_mul_weight (hH : F.StandingHypothesis) {c s : ℝ}
-    (hc : 0 < c) (hc' : c + 1 < F.zStar) (hs : 0 < s) :
+    (hc : 0 < c) (hc' : ENNReal.ofReal (c + 1) < F.zStar) (hs : 0 < s) :
     MellinConvergent (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) c := by
   have hbase : MellinConvergent (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) ((c : ℂ) + 1) :=
-    F.mellinConvergent_profile hH (z := (c : ℂ) + 1) (by simp; linarith) (by simp; linarith)
+    F.mellinConvergent_profile hH (z := (c : ℂ) + 1) (by simp; linarith) (by simpa using hc')
   have hdil : MellinConvergent (fun x : ℝ => ((F.profile (s * x) : ℝ) : ℂ)) ((c : ℂ) + 1) :=
     (MellinConvergent.comp_mul_left hs).mpr hbase
   have hweight : MellinConvergent
@@ -245,7 +245,7 @@ theorem mellinConvergent_profile_comp_mul_weight (hH : F.StandingHypothesis) {c 
 /-- Vertical integrability for the realising function: `lem:mellin-vertical` at height `c+1`,
 carried across by a multiplier of constant modulus `s^{-c}`. -/
 theorem verticalIntegrable_mellin_profile_comp_mul_weight (hH : F.StandingHypothesis) {c s : ℝ}
-    (hc : 0 < c) (hc' : c + 1 < F.zStar) (hs : 0 < s) :
+    (hc : 0 < c) (hc' : ENNReal.ofReal (c + 1) < F.zStar) (hs : 0 < s) :
     Complex.VerticalIntegrable
       (mellin fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) c := by
   have hs0 : (s : ℂ) ≠ 0 := by exact_mod_cast hs.ne'
@@ -278,7 +278,7 @@ which `A` is ever applied and the referent is exhibited rather than asserted. Th
 identity is `inversionSymbol` written out with its denominator cleared, so it holds exactly where
 `H̃` does not vanish — a set of full measure on the line by `ae_mellin_profile_ne_zero`. -/
 theorem realisesSymbolAction_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 0 < c)
-    (hc' : c + 1 < F.zStar) (hs : 0 < s) :
+    (hc' : ENNReal.ofReal (c + 1) < F.zStar) (hs : 0 < s) :
     F.RealisesSymbolAction c (fun x : ℝ => (F.profile (s * x) : ℂ))
       (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) where
   mellin_eq := by
@@ -294,7 +294,7 @@ on, and the same statement as the instance above.
 `A g = x⁻¹ h` with `h(x) = s x H(sx)` is `s H(sx)` on the nose — the weight `x⁻¹` in
 `def:inversion-operator` is exactly what cancels the weight `x` that shifts the transform. -/
 theorem inversionOperator_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 0 < c)
-    (hc' : c + 1 < F.zStar) (hs : 0 < s) {x : ℝ} (hx : 0 < x) :
+    (hc' : ENNReal.ofReal (c + 1) < F.zStar) (hs : 0 < s) {x : ℝ} (hx : 0 < x) :
     F.inversionOperator c (fun u : ℝ => (F.profile (s * u) : ℂ)) x
       = (s : ℂ) * (F.profile (s * x) : ℂ) := by
   have hprof : ContinuousAt (fun u : ℝ => ((F.profile u : ℝ) : ℂ)) (s * x) := by
@@ -306,7 +306,8 @@ theorem inversionOperator_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 
       (fun u : ℝ => (s : ℂ) * (u : ℂ) * (F.profile (s * u) : ℂ)) x := by
     exact ((continuousAt_const.mul (Complex.continuous_ofReal.continuousAt)).mul
       (hprof.comp (by fun_prop)))
-  rw [F.inversionOperator_eq hH hc (by linarith) (F.realisesSymbolAction_profile hH hc hc' hs)
+  rw [F.inversionOperator_eq hH hc (F.ofReal_lt_zStar_of_le (by linarith) hc')
+    (F.realisesSymbolAction_profile hH hc hc' hs)
     hx hcont]
   have hx0 : (x : ℂ) ≠ 0 := by exact_mod_cast hx.ne'
   rw [show (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)
@@ -346,7 +347,7 @@ The field's Laplace profile is `û(s,·) = f̂(s)·H(s·)`, so this *is* the Lap
 identification is made (`laplaceFun_delayedField`). Homogeneity plus
 `lem:profile-eigenfunction`. -/
 theorem inversionOperator_const_mul_profile (hH : F.StandingHypothesis) {c s : ℝ} (hc : 0 < c)
-    (hc' : c + 1 < F.zStar) (hs : 0 < s) (a : ℂ) {x : ℝ} (hx : 0 < x) :
+    (hc' : ENNReal.ofReal (c + 1) < F.zStar) (hs : 0 < s) (a : ℂ) {x : ℝ} (hx : 0 < x) :
     F.inversionOperator c (fun u : ℝ => a * (F.profile (s * u) : ℂ)) x
       = (s : ℂ) * (a * (F.profile (s * x) : ℂ)) := by
   rw [F.inversionOperator_const_mul c a _ x, F.inversionOperator_profile hH hc hc' hs hx]

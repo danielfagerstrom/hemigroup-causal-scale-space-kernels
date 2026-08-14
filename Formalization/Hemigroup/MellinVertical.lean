@@ -218,7 +218,7 @@ variable (F : SelfDecomposableExponent)
 /-- `H̃` is continuous along a vertical line of the strip, being analytic there. Split off because
 chapter 12 needs it for a transform that carries `H̃` as a factor. -/
 theorem continuous_mellin_profile_vertical (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) :
+    (hc' : ENNReal.ofReal c < F.zStar) :
     Continuous fun τ : ℝ => mellin (fun s => (F.profile s : ℂ)) ((c : ℂ) + τ * Complex.I) := by
   refine continuous_iff_continuousAt.mpr fun τ => ?_
   have hre : ((c : ℂ) + τ * Complex.I).re = c := by simp
@@ -231,7 +231,7 @@ theorem continuous_mellin_profile_vertical (hH : F.StandingHypothesis) {c : ℝ}
 /-- **`lem:mellin-vertical`** (11.13): the profile's transform is absolutely integrable on every
 vertical line of the strip. -/
 theorem verticalIntegrable_mellin_profile (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : c < F.zStar) :
+    (hc' : ENNReal.ofReal c < F.zStar) :
     Complex.VerticalIntegrable (mellin fun s => (F.profile s : ℂ)) c := by
   refine ((integrable_norm_Gamma_vertical hc).const_mul (F.negMoment c).toReal).mono'
     (F.continuous_mellin_profile_vertical hH hc hc').aestronglyMeasurable ?_

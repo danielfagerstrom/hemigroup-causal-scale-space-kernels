@@ -98,15 +98,15 @@ The blueprint says `(0,∞)`; that is the same statement once `z_* = ∞`, which
 `lem:moment-recursion`(2) and the clause ledger **A13** carries. Stated here on the domain
 available without it. -/
 theorem convexOn_log_negMoment (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
-    ConvexOn ℝ (Ioo 0 F.zStar) (fun ζ => Real.log (F.negMoment ζ).toReal) := by
-  refine ⟨convex_Ioo _ _, fun ζ₁ h₁ ζ₂ h₂ θ η hθ hη hsum => ?_⟩
+    ConvexOn ℝ F.momentInterval (fun ζ => Real.log (F.negMoment ζ).toReal) := by
+  refine ⟨F.convex_momentInterval, fun ζ₁ h₁ ζ₂ h₂ θ η hθ hη hsum => ?_⟩
   have hη' : η = 1 - θ := by linarith
   subst hη'
   -- finiteness of the three moments involved
-  have hfin : ∀ ζ ∈ Ioo (0 : ℝ) F.zStar, F.negMoment ζ ≠ ⊤ :=
+  have hfin : ∀ ζ ∈ F.momentInterval, F.negMoment ζ ≠ ⊤ :=
     fun ζ hζ => F.negMoment_ne_top_of_lt_zStar hζ.1 hζ.2
-  have hmid : θ * ζ₁ + (1 - θ) * ζ₂ ∈ Ioo (0 : ℝ) F.zStar := by
-    simpa [smul_eq_mul] using convex_Ioo (0 : ℝ) F.zStar h₁ h₂ hθ hη hsum
+  have hmid : θ * ζ₁ + (1 - θ) * ζ₂ ∈ F.momentInterval := by
+    simpa [smul_eq_mul] using F.convex_momentInterval h₁ h₂ hθ hη hsum
   have key := F.negMoment_le_rpow_mul_rpow (ζ₁ := ζ₁) (ζ₂ := ζ₂) hθ (by linarith)
   -- push the `[0,∞]` inequality down to `ℝ` and take logarithms
   have hp₁ := F.negMoment_pos h0 ζ₁
@@ -143,7 +143,7 @@ theorem tendsto_negMoment_nhdsGT_zero (hH : F.StandingHypothesis) :
   have h0 := F.lawT₁_singleton_zero hH.1
   have hae := F.ae_mem_Ioi_lawT₁ h0
   have hbound : Integrable (fun t : ℝ => 1 + t ^ (-(1 : ℝ))) F.lawT₁ :=
-    (integrable_const 1).add (integrable_rpow_neg F hH one_pos hH.2)
+    (integrable_const 1).add (integrable_rpow_neg F hH one_pos (by simpa using hH.2))
   have hle1 : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c ≤ 1 :=
     Filter.Eventually.mono (nhdsWithin_le_nhds (gt_mem_nhds (by norm_num : (0 : ℝ) < 1)))
       fun _ h => le_of_lt h
@@ -188,11 +188,9 @@ that interval nonempty. -/
 theorem tendsto_inversionSymbol_nhdsGT_zero (hH : F.StandingHypothesis) :
     Tendsto (fun c : ℝ => F.inversionSymbol (c : ℂ)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
   have h0 := F.lawT₁_singleton_zero hH.1
-  have hz1 : (1 : ℝ) < F.zStar := hH.2
-  set ζ : ℝ := (1 + F.zStar) / 2 with hζdef
-  have hζ1 : 1 < ζ := by rw [hζdef]; linarith
-  have hζ2 : ζ < F.zStar := by rw [hζdef]; linarith
-  have hζtop : F.negMoment ζ ≠ ⊤ := F.negMoment_ne_top_of_lt_zStar (by linarith) hζ2
+  -- a witness above `1` with a finite moment; with `z_*` possibly infinite there is no midpoint
+  -- of `(1, z_*)` to take, so the supremum hands the witness over instead
+  obtain ⟨ζ, hζ1, hζtop⟩ := F.exists_one_lt_negMoment_ne_top hH
   -- the denominator
   have hden : Tendsto (fun c : ℝ => (F.negMoment c).toReal) (𝓝[>] (0 : ℝ)) (𝓝 1) :=
     F.tendsto_negMoment_nhdsGT_zero hH
@@ -220,8 +218,10 @@ theorem tendsto_inversionSymbol_nhdsGT_zero (hH : F.StandingHypothesis) :
       (𝓝[>] (0 : ℝ)) (𝓝 0) := by
     simpa [Pi.div_def] using hnum.div hden one_ne_zero
   -- transport to the symbol
-  have hstrip : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), c < F.zStar - 1 :=
-    nhdsWithin_le_nhds (gt_mem_nhds (by linarith : (0 : ℝ) < F.zStar - 1))
+  have hstrip : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ), ENNReal.ofReal c < F.zStar - 1 := by
+    filter_upwards [self_mem_nhdsWithin, hsmall] with c hc hcζ
+    exact (ofReal_lt_sub_one_iff (le_of_lt hc)).mpr
+      (F.ofReal_lt_zStar_of_lt (by linarith [mem_Ioi.mp hc]) (by linarith) hζtop)
   have heq : ∀ᶠ c : ℝ in 𝓝[>] (0 : ℝ),
       Complex.ofReal (c * (F.negMoment (c + 1)).toReal / (F.negMoment c).toReal)
         = F.inversionSymbol (c : ℂ) := by
