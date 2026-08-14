@@ -96,7 +96,20 @@ $\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
   \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - T_r f\bigr)\,\nu_x(dr)
   \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - T_{xr} f\bigr)\,\nu_1(dr).
 \]
-\statusT
+\statusT\quad\emph{(\textbf{Not blocked by generation theory}, re-checked 2026-08-14. Everything
+this definition names now exists: $\core$ and $(T_r)$ are \ref{lem:delay-core}'s, built in
+\texttt{Hemigroup/DelayCore.lean}, and $\nu_1$ is chapter~9's \texttt{exists\_tailMeasure} --- the
+quantile construction made for \ref{lem:potential-kernel} precisely because
+\texttt{StieltjesFunction} does not apply to a L\'evy tail. The integral is an $\Xz$-valued
+Bochner integral, which needs no new theory: $X = L^1(\RR)$ is a complete normed real space, $T_r$
+is a continuous linear map on it, and $r \mapsto T_rf$ is continuous, so the integrand is strongly
+measurable and the definition is total.
+\textbf{The right-continuity normalisation is neither available nor needed.} A $k$ that is only
+nonincreasing has no right-continuous representative nameable here, and
+\texttt{exists\_tailMeasure} accordingly delivers $\nu_1\bigl((r,\infty)\bigr) = k(r)$ for
+\emph{almost every} $r$ rather than every $r$. That is exactly enough, because every use of the
+tail below sits under an integral in $r$ --- the same accounting chapter~9 already made for the
+potential kernel.)}
 \end{definition}
 
 % draft: Lemma 10.3
@@ -114,7 +127,28 @@ $\varphi_x(s) = s F'(xs)$.
 $\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
 coincides on $\core$ with the memory-kernel operator of Chapter~9.
 \end{enumerate}
-\statusT
+\statusT\quad\emph{(\textbf{Not blocked by generation theory}, re-checked 2026-08-14: no clause
+mentions a generator's domain, a resolvent, or a generation theorem, and the ``strong continuity
+of $T$'' that (4) invokes is \texttt{continuous\_transL1}, proved in chapter~4. Clause by clause
+the inputs are (1) \ref{lem:delay-core}'s estimate, (2) Fubini and \ref{lem:memory-kernel},
+(3) that $\Phi_{y,z}$ is a continuous linear map, so it passes through a Bochner integral,
+(4) dominated convergence, (5) \texttt{laplaceL\_memoryKernel} and
+\ref{prop:laplace-uniqueness}. The C$_0$-semigroup reason that filed all of chapter~10 as blocked
+attaches to \ref{thm:scale-cauchy} and \ref{prop:fixed-scale-semigroup}, and not here.
+Two things the re-reading found, both the pattern this article keeps meeting --- the classical
+derivation asking for more than the statement does. The convergence
+$\int (1 \wedge r)\,\nu_x(dr) < \infty$ is \emph{one layer cake},
+$\int_0^1 \nu_1\bigl((u,\infty)\bigr)\,du = \int_0^1 k$, and not the integration by parts the
+proof above names; the $k(1) < \infty$ half of that argument's hypothesis is unused. And the
+uniqueness step of (5) is about a \emph{signed} function where the available injectivity is about
+measures --- but $\varphi_x(\partial_t)$ and $\kappa^{(x)} * \cdot$ are both linear in $f$, so it
+is enough to treat $f' \ge 0$, where $f$ is nondecreasing, $f - T_rf \ge 0$, and both sides are
+measures.
+What (2) does cost is worth naming in advance: $\Lap$ is not a bounded functional on $L^1(\RR)$,
+$e^{-st}$ being unbounded to the left of the origin, so the exchange is done on causal
+representatives in $[0,\infty]$ --- as in chapter~2's Tonelli identity and in
+\ref{lem:delay-core}'s estimate --- rather than by pulling a continuous linear map through the
+Bochner integral, which is available only for (3).)}
 \end{lemma}
 
 \begin{proof}

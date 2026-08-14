@@ -1812,3 +1812,105 @@ knowing before it is met at scale.
 `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`. And chapter 10's
 `def:phillips-generator` and `lem:generator-properties`, whose blocked status is re-examined in
 the next entry.
+
+---
+
+# Chapter 10 re-checked: `def:phillips-generator` and `lem:generator-properties` are not blocked — 2026-08-14
+
+Nothing formalised this round; this entry is a **reclassification**, made the way the chapter-12
+correction says to make one — by reading the nodes rather than the chapter-level status line that
+was written above them. The verdict: 10.2 and 10.3 move from *blocked upstream* to *available,
+nothing depends on them*. 10.4 (`thm:scale-cauchy`) and 10.5 (`prop:fixed-scale-semigroup`) stay
+blocked, and the C₀-semigroup reason belongs to them alone.
+
+`Skeleton/Chapter10.lean` is deliberately left holding no declarations. The statement-first rule
+opens a node by writing its target type `sorry`-marked, and doing that today would re-add a
+`sorry` to a repo that has just cleared its last avoidable one, for a node nobody is about to
+attack. The reclassification is the deliverable; the skeleton entry belongs to the round that
+takes the node on.
+
+## Why the old status was stale, and it was stale in the ordinary way
+
+"All of chapter 10 needs C₀-semigroup theory" was written when `𝒟` and `T_r` did not exist. They
+exist now — `Hemigroup/DelayCore.lean`, this morning — and once the objects are there, what the
+two nodes ask for is visible clause by clause:
+
+| clause | what it needs | available? |
+|---|---|---|
+| 10.2, the definition | `𝒟`, `T_r`, `ν₁` | `DelayCore`, `transL1`, `exists_tailMeasure` |
+| 10.3(1), absolute convergence | `norm_transL1_sub_le` and `∫(1∧r)ν_x < ∞` | yes |
+| 10.3(2), the symbol | Fubini and `lem:memory-kernel` | yes |
+| 10.3(3), commutation | `Φ` is a CLM, so it passes through the integral | yes |
+| 10.3(4), continuity in `x` | dominated convergence, `continuous_transL1` | yes |
+| 10.3(5), agreement with `κ^{(x)}*` | `laplaceL_memoryKernel`, Laplace uniqueness | yes |
+
+**No clause mentions a generator's domain, a resolvent, or a generation theorem.** The one place
+semigroup language appears is (4)'s "strong continuity of `T`", which is `continuous_transL1` —
+chapter 4's, and one of the two facts the last round found the development already had.
+
+The `X₀`-valued Bochner integral, which the plan had recorded as the expensive part of the
+chapter, needs nothing new either: `X = L¹(ℝ)` is a complete normed real space, `transL1 r` is a
+continuous linear map on it, and `r ↦ transL1 r f` is continuous, so the integrand is strongly
+measurable and `MeasureTheory.integral` applies as written. Note that this is the *opposite* of
+`lem:delay-core`'s finding, where the blueprint named a Bochner integral the obligation did not
+need: here the integral is in the statement and not merely in the proof, so it has to be built —
+and building it costs nothing.
+
+## Three things the reading turned up, none of them a block
+
+**The right-continuity normalisation is unavailable and unnecessary.** 10.2 says "with `k` taken
+right-continuous and `k(∞) = 0`, so that `ν₁((r,∞)) = k(r)`". A `k` that is only nonincreasing has
+no right-continuous representative this development can name, and `exists_tailMeasure` accordingly
+gives the tail identity for **a.e.** `r`. That is exactly enough: every use of the tail is under
+an integral in `r`. Chapter 9 made the same accounting for the potential kernel; the normalisation
+is a convenience of the prose.
+
+**`∫(1∧r)ν_x(dr) < ∞` is one layer cake, not integration by parts.** The proof of (1) reaches it
+"from `∫₀¹k < ∞` and `k(1) < ∞` by integration by parts". Directly:
+`∫(1∧r)ν₁(dr) = ∫₀¹ ν₁((u,∞))du = ∫₀¹ k(u)du`, which is `integrableOn_k` — and the `k(1) < ∞` half
+of the cited hypothesis is not used at all. Fifth appearance of
+`lintegral_comp_eq_lintegral_meas_lt_mul` in this article, and the fourth time it has replaced a
+classical integration by parts.
+
+**The uniqueness step of (5) is about a signed function, and linearity fixes that.**
+`laplaceL_injective_of_ne_top` is about measures; the `V` of (5) is a signed locally integrable
+function. Both `φ_x(∂_t)` and `κ^{(x)} * ·` are linear in `f`, and `f' ≥ 0` is preserved by
+splitting `f'` into positive and negative parts (each is in `X₀`, and each primitive is in `𝒟`),
+so it is enough to prove (5) for `f' ≥ 0` — where `f` is nondecreasing, `f - T_rf ≥ 0`, and both
+sides of the identity are measures. Recorded because the obstruction looks real until the
+linearity is used, and someone will otherwise reach for a signed-measure Laplace uniqueness the
+development does not have.
+
+## What it will actually cost, said in advance
+
+Not free. Clause (2) is the one to price honestly: `Lap` is **not** a bounded functional on
+`L¹(ℝ)`, `e^{-st}` being unbounded to the left of the origin, so `ContinuousLinearMap.integral_
+comp_comm` — which does discharge (3) outright — does not apply to it. The exchange has to be done
+on causal representatives in `[0,∞]`, the move chapter 2's Tonelli identity and `lem:delay-core`'s
+estimate both make. Clause (5) additionally wants `mconv_eq_setIntegral_mconv` for a *locally
+finite* causal measure, `κ^{(x)}` having total mass `F'(0+)`, which `prop:moments` has just finished
+proving may be `⊤`; the existing lemma assumes `IsFiniteMeasure`. That is the generalisation the
+previous entry already flagged as worth making and not worth making yet — this is the consumer
+that makes it worth making.
+
+Estimate: 10.2 small, 10.3 clauses (1), (3), (4) moderate, clauses (2) and (5) the bulk.
+
+## What stays blocked, and why the distinction is not cosmetic
+
+`thm:scale-cauchy` quantifies over a solution class `C([0,∞);X₀) ∩ C¹((0,∞);X₀)` and needs the
+generation theory. It is also blocked a second way, through `prop:scale-evolution`(2), which is
+distributional and which no Mathlib bump has yet made stateable — so it would remain out of reach
+even with Hille–Yosida in hand. `prop:fixed-scale-semigroup` is the chapter's only `[A]` node
+(Phillips, ledger A11) and records the semigroup reading for its own sake;
+`thm:scale-cauchy` does not use it.
+
+So the sentence that should be carried forward is **"chapter 10 is everything but the Cauchy
+problem"**, and not "chapter 10 is blocked".
+
+## Next
+
+`PLAN`'s *available, nothing depends on them* row, now: `prop:stable-moments`,
+`prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`, `def:phillips-generator`,
+`lem:generator-properties`. Re-check each against its node before starting; this inventory has
+been wrong before, in both directions, and this entry is the second time in a week that a
+chapter-level "blocked" turned out to have gone stale against work done since.

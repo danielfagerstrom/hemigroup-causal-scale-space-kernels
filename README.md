@@ -69,7 +69,8 @@ Where the work stands. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; 
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable. What is schedulable today is the row `PLAN` calls *available, nothing depends on
 them* — `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
-`lem:potential-kernel-scaling`. Everything else:
+`lem:potential-kernel-scaling`, and, since 2026-08-14, chapter 10's `def:phillips-generator` and
+`lem:generator-properties`. Everything else:
 
 0. **`prop:moments` (8.4) is done**, and the skeleton is down to one file's worth of open
    statements. The mean rate `F'(0+) = b₀ + ∫₀^∞ k` is `[0,∞]`-valued — the proposition's second
@@ -108,8 +109,12 @@ them* — `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
    path — checked by `#print axioms`, not asserted. What is left in the chapter is `[A]`
    (`prop:pair-regularity` on A9, `prop:volterra-density` on A10) or distributional
    (`prop:scale-evolution`, `cor:exact-inversion`), which Mathlib cannot yet state.
-3. **Blocked on upstream Mathlib, not queued.** The rest of chapter 10 needs C₀-semigroup and
-   closed-operator theory; chapter 12 needs Bessel `K`; `prop:scale-evolution` and `cor:exact-inversion` need a
+3. **Blocked on upstream Mathlib, not queued.** Chapter 10's `thm:scale-cauchy` and
+   `prop:fixed-scale-semigroup` need C₀-semigroup and closed-operator theory — but only those two:
+   `def:phillips-generator` and `lem:generator-properties` were re-checked on 2026-08-14 against
+   the setting `lem:delay-core` built, and neither mentions a generator's domain, a resolvent, or
+   a generation theorem, so both are available work rather than blocked (and `thm:scale-cauchy` is
+   blocked through `prop:scale-evolution` in any case). Chapter 12 needs Bessel `K`; `prop:scale-evolution` and `cor:exact-inversion` need a
    locally integrable function read as a distribution and a distribution convolved with a measure,
    neither of which `Analysis/Distribution/` yet has. None of the three is a scheduling decision,
    and all are worth re-checking on each Mathlib bump.
