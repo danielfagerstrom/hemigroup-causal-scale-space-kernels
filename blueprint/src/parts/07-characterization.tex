@@ -56,6 +56,13 @@
 % vocabulary until the representation is in hand. That asymmetry is real mathematics, and it is
 % the reason the split falls exactly where the trust boundary does.
 %
+% THE SPLIT OF prop:extreme-rays (2026-08-14), by the same rule for the third time. 7.7 asserted
+% four things -- the cone, the Ein superposition, injectivity of the map, and the extreme rays --
+% of which the first two are elementary and the last two need, respectively, uniqueness of the
+% Levy-Khintchine triple (A3) and a Choquet argument. So 7.13 lem:admissible-cone and 7.14
+% lem:dickman-superposition are appended and machine-checked; 7.7 keeps its number and exactly
+% the two clauses that are not.
+%
 % M1b (2026-08-09) formalised the half of Lemma 7.1 that (<=) consumes -- (3) => (1), as
 % Hemigroup.levyExponentD_increment -- together with the vanishing lemma in the same
 % representation form (Hemigroup.levyExponentD_eq_zero_of_eq_zero), which is what (<=) uses to
@@ -235,45 +242,47 @@ deterministic front.
 % exponent follows by lambda = -s and u = st. The citation is therefore to the density and the
 % transform, not to the Ein form, and is worded that way.
 \begin{proposition}[Choquet structure of the admissible cone]\label{prop:extreme-rays}
-\uses{thm:main-characterization,lem:selfdecomposable-derivative,prop:bernstein-toolbox}
-The admissible exponents of \ref{thm:main-characterization} form a convex cone, and the map
+\uses{thm:main-characterization,lem:selfdecomposable-derivative,prop:bernstein-toolbox,lem:admissible-cone,lem:dickman-superposition}
+The superposition map of \ref{lem:dickman-superposition},
 \[
   (b_0, \rho) \;\mapsto\; F, \qquad
   F(s) = b_0\,s + \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
-  \qquad \mathrm{Ein}(z) := \int_0^z \frac{1 - e^{-u}}{u}\,du,
 \]
-is a linear bijection from
+is a linear \emph{bijection} from
 $\bigl\{(b_0, \rho) : b_0 \ge 0,\ \rho \in \Mplus(0,\infty),\
 \int \bigl[\tau \wedge (1 + \log_+ \tau)\bigr]\,\rho(d\tau) < \infty \bigr\}$
-onto that cone, with inverse $\rho = -dk$, $k(t) = \rho\bigl((t,\infty)\bigr)$. Consequently the
+onto the cone of \ref{lem:admissible-cone}, with inverse $\rho = -dk$,
+$k(t) = \rho\bigl((t,\infty)\bigr)$. Consequently the
 extreme rays of the cone are the pure delay $s \mapsto s$ together with the one-parameter family
 $\mathrm{Ein}(\tau\,\cdot)$, $\tau > 0$ --- the Laplace exponents, with L\'evy density
 $t^{-1}\mathbf{1}_{(0,\tau)}(t)$, of the \emph{dilated Dickman subordinators}
-(\sscite{caravenna2019dickman}, (1.1)--(1.2), p.~1) --- and every admissible family is a unique
-superposition of Dickman rays and drift.
-\statusT\quad\emph{(The integrability condition was written out here first and the draft's
-Remark 7.6 has since acquired it; it is forced by the bijection, being exactly finiteness of
-$F$. Not formalised: it
-needs Lebesgue--Stieltjes measures and a Choquet argument, neither of which the
-$\Rightarrow$ direction
-consumes.)}
+(\sscite{caravenna2019dickman}, (1.1)--(1.2), p.~1) --- and every admissible family is a
+\emph{unique} superposition of Dickman rays and drift.
+\statusT\quad\emph{(Narrowed 2026-08-14; the cone and the superposition are now
+\ref{lem:admissible-cone} and \ref{lem:dickman-superposition}, both machine-checked, and what
+this node keeps is exactly the two clauses that are not.
+\textbf{Injectivity} is uniqueness of the L\'evy--Khintchine triple, \ledger{A3} as the proof
+below spends it. It is plausibly avoidable here --- $F'(s) = b_0 + \int e^{-st}k(t)\,dt$ is
+proved (\ref{lem:memory-kernel}) and the development carries Laplace injectivity for locally
+finite measures, so $F$ determines $k$ up to a null set without any statement about $\BF$ as a
+class --- but that is a piece of work in its own right and it has not been done.
+\textbf{The extreme rays} need a Choquet argument, and the obstruction is not Mathlib's
+\texttt{IsExtreme}: it is that the decomposition $\rho = \int \delta_\tau\,\rho(d\tau)$ has to be
+read as a barycentre in a cone of measures. Neither clause is consumed by the
+$\Rightarrow$ direction, and \ref{rem:extreme-rays} is where the article uses them.
+The integrability condition was written out here first and the draft's Remark 7.6 has since
+acquired it; it is forced by the bijection, being exactly finiteness of $F$.)}
 \end{proposition}
 
 \begin{proof}
-By \ref{thm:main-characterization} an admissible $F$ is exactly one of the form (7.1) with $b_0
-\ge 0$ and $k$ nonincreasing, and $k$ may be taken right-continuous with $k(\infty) = 0$, the
-latter forced by $\int^\infty k(t)\,t^{-1}dt < \infty$. So $\rho := -dk$ is a positive measure
-on $(0,\infty)$ with $k(t) = \rho((t,\infty))$, and Tonelli gives
-\[
-  \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\frac{k(t)}{t}\,dt
-  = \int_{(0,\infty)} \rho(d\tau) \int_0^\tau \bigl(1 - e^{-st}\bigr)\,\frac{dt}{t}
-  = \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
-\]
-which is the displayed representation. Since $\mathrm{Ein}(z) \le z$ and
+\uses{lem:admissible-cone,lem:dickman-superposition}
+Surjectivity onto the cone is \ref{lem:dickman-superposition}, and linearity is
+\ref{lem:admissible-cone}. Since $\mathrm{Ein}(z) \le z$ and
 $\mathrm{Ein}(z) = \log z + \gamma_E + o(1)$ as $z \to \infty$, the integral is finite for one
 $s > 0$ iff it is finite for all, iff $\int [\tau \wedge (1 + \log_+\tau)]\,\rho(d\tau) <
-\infty$; so the stated domain is exactly the set of pairs the representation accepts. The map
-is linear in $(b_0, \rho)$ by construction and surjective by the above. It is injective because
+\infty$; so the stated domain is exactly the set of pairs the representation accepts.
+
+The map is injective because
 the L\'evy--Khintchine triple of $F$ is unique (\ref{prop:bernstein-toolbox}(3)): the triple
 determines $b_0$ and the L\'evy measure $k(t)t^{-1}dt$, hence $k$ up to a null set, hence
 $\rho = -dk$.
@@ -285,7 +294,7 @@ uniquely as $b_0\,(1,0) + \int (0,\delta_\tau)\,\rho(d\tau)$, and a pair is extr
 admits no nontrivial such splitting, which forces $\rho = 0$ or $\rho$ a single atom with
 $b_0 = 0$. Under the map, $(1,0) \mapsto s$, the pure delay; and $(0, \delta_\tau) \mapsto
 \mathrm{Ein}(\tau s)$, whose $k(t) = \delta_\tau((t,\infty)) = \mathbf{1}_{(0,\tau)}(t)$ gives
-the L\'evy density $t^{-1}\mathbf{1}_{(0,\tau)}(t)$.
+the L\'evy density $t^{-1}\mathbf{1}_{(0,\tau)}(t)$ --- which is \ref{lem:dickman-superposition}(1).
 \end{proof}
 
 % draft: the discussion half of Remark 7.6.
@@ -612,4 +621,65 @@ $B(s) = \beta s + \int (1 - e^{-su})\rho(du)$. Running the same computation back
 invoking uniqueness of the Lévy--Khintchine triple (\ref{prop:bernstein-toolbox}(3))
 identifies $\beta = b_0$ and $\nu(dt) = k(t)t^{-1}dt$ with $k(t) = \rho((t,\infty))$
 nonincreasing.
+\end{proof}
+
+\bigskip
+
+The two statements below are the half of \ref{prop:extreme-rays} that needs neither uniqueness of
+the L\'evy--Khintchine triple nor a Choquet argument: the cone itself, and the superposition
+formula. Additive, and appended, by the same rule as above.
+
+% additive: not in the draft. The cone clause of prop:extreme-rays.
+\begin{lemma}[the admissible exponents form a convex cone]\label{lem:admissible-cone}
+\uses{def:levy-exponent,thm:main-characterization}
+\lean{Skeleton.admissible_cone}\notready
+If $F_1, F_2$ are admissible in the sense of \ref{thm:main-characterization} --- of the form
+(7.1) with drift $b_0 \ge 0$ and $k \ge 0$ nonincreasing --- then so are $F_1 + F_2$, with data
+$(b_0^1 + b_0^2,\, k_1 + k_2)$, and $c\,F_1$ for $c \ge 0$, with data $(c\,b_0^1,\, c\,k_1)$. So
+the admissible exponents form a convex cone in the pointwise order, and the correspondence with
+the pairs $(b_0,k)$ is linear.
+\statusT
+\end{lemma}
+
+\begin{proof}
+Each of the six defining conditions is stable: nonnegativity and monotonicity of $k$ are
+preserved by sums and by nonnegative multiples, the drift stays nonnegative, and the exponent of
+a sum is the sum of the exponents by additivity of the integral --- so finiteness is inherited.
+Linearity of $(b_0,k) \mapsto F$ is the same computation read forwards.
+\end{proof}
+
+% additive: not in the draft. The representation clause of prop:extreme-rays.
+\begin{lemma}[Dickman superposition]\label{lem:dickman-superposition}
+\uses{def:levy-exponent,lem:admissible-cone,prop:admissibility-criterion}
+\lean{Skeleton.dickman_superposition}\notready
+Write $\mathrm{Ein}(z) := \int_0^z \bigl(1 - e^{-u}\bigr)\,u^{-1}du$.
+\begin{enumerate}
+\item \emph{(The rays.)} For $\tau > 0$ the density $k = \mathbf{1}_{(0,\tau)}$ is admissible,
+with drift $0$, and its exponent is $s \mapsto \mathrm{Ein}(\tau s)$.
+\item \emph{(The superposition.)} Every admissible $F$, with drift $b_0$ and density $k$,
+satisfies
+\[
+  F(s) \;=\; b_0\, s \;+\; \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau)
+  \qquad (s \ge 0),
+\]
+where $\rho$ is any positive measure on $(0,\infty)$ with $\rho\bigl((t,\infty)\bigr) = k(t)$ for
+almost every $t > 0$; such a $\rho$ exists.
+\end{enumerate}
+\statusT
+\end{lemma}
+
+\begin{proof}
+(1) is the substitution $u = st$ in $\int_0^\tau (1 - e^{-st})\,t^{-1}dt$; admissibility is the
+integrability criterion of \ref{prop:admissibility-criterion}, both halves being immediate for a
+bounded, compactly supported $k$.
+
+(2) $k$ is nonincreasing and nonnegative and $k(\infty) = 0$, the last forced by
+$\int^\infty k(t)\,t^{-1}dt < \infty$; so a positive measure with tail $k$ exists. Then Tonelli
+over the region $\{0 < t < \tau\}$ gives
+\[
+  \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\frac{k(t)}{t}\,dt
+  = \int_{(0,\infty)} \rho(d\tau) \int_0^\tau \bigl(1 - e^{-st}\bigr)\,\frac{dt}{t}
+  = \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
+\]
+the inner integral being $\mathrm{Ein}(\tau s)$ by (1).
 \end{proof}

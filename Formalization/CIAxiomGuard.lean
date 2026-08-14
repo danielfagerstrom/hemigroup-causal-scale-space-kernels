@@ -883,3 +883,20 @@ interface-free.
 #print axioms Hemigroup.hasCoreDerivL1_bconv_approxId
 #print axioms Hemigroup.dense_coreL1
 #print axioms Hemigroup.delay_core
+
+/-! ### `Ein`, the entire exponential integral
+
+Mathlib has no exponential integral of any kind — no `Ein`, no `Ei`, no `E₁` — so `ein` is
+defined here, on the pattern `riemannLiouville` set in chapter 11. That adds a definition and no
+interface: the article cites Caravenna–Sun–Zygouras for the Dickman subordinator's Lévy density
+and transform, not for a theorem about `Ein`.
+
+Note that `intervalIntegrable_einIntegrand` is stated on `z ≥ 0` and not on `ℝ`. The bound
+`(1 - e^{-u})/u ≤ 1` is false to the left of the origin, where the integrand grows like
+`e^{|u|}/|u|`; every use is at `z ≥ 0`, and the layer cake asks for exactly `∀ t > 0`.
+-/
+
+#print axioms Hemigroup.ein
+#print axioms Hemigroup.einIntegrand_nonneg
+#print axioms Hemigroup.einIntegrand_le_one
+#print axioms Hemigroup.intervalIntegrable_einIntegrand
