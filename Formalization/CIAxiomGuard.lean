@@ -900,3 +900,36 @@ Note that `intervalIntegrable_einIntegrand` is stated on `z ≥ 0` and not on `�
 #print axioms Hemigroup.einIntegrand_nonneg
 #print axioms Hemigroup.einIntegrand_le_one
 #print axioms Hemigroup.intervalIntegrable_einIntegrand
+
+/-! ### `lem:admissible-cone` (7.13) and `lem:dickman-superposition` (7.14)
+
+The two clauses of `prop:extreme-rays` that need neither uniqueness of the Lévy–Khintchine triple
+nor a Choquet argument, split off and proved. Lean core throughout.
+
+`ℝ≥0∞` is what makes the cone cheap, and it is worth a line: additivity of `levyJump` in `k` is a
+statement about `lintegral`, so `lintegral_add_left'` needs only `AEMeasurable` of one summand and
+no integrability side condition. The classical argument has to know both integrals are finite
+first; here finiteness is the *conclusion*, which is exactly what `ne_top` asks for.
+
+The superposition is Mathlib's layer cake for the third time in this development — the same
+`lintegral_comp_eq_lintegral_meas_lt_mul` chapter 9's Route B ran on twice, with only the
+antiderivative changed, from `1 - e^{-su}` to `Ein(su)`. It needs no σ-finiteness on `ρ`, which
+matters: the tail measure of a bounded `k` puts infinite mass at the origin, and only its
+restriction to `(0,∞)` is σ-finite.
+
+`add` and `smul` are listed alongside the theorems for the reason `gammaExponent` and
+`dickmanExponent` are: they carry proof obligations in their fields, and an interface leaking into
+one would mean the witness is not a witness.
+-/
+
+#print axioms Hemigroup.levyJump_add
+#print axioms Hemigroup.levyJump_smul
+#print axioms Hemigroup.SelfDecomposableExponent.add
+#print axioms Hemigroup.SelfDecomposableExponent.smul
+#print axioms Hemigroup.SelfDecomposableExponent.exponent_add
+#print axioms Hemigroup.SelfDecomposableExponent.exponent_smul
+#print axioms Hemigroup.SelfDecomposableExponent.admissible_cone
+#print axioms Hemigroup.dickmanExponent_exponent
+#print axioms Hemigroup.SelfDecomposableExponent.exists_tailMeasure_k
+#print axioms Hemigroup.SelfDecomposableExponent.exponent_eq_lintegral_ein
+#print axioms Hemigroup.dickman_superposition

@@ -1556,3 +1556,69 @@ What is schedulable is `PLAN`'s **available, nothing depends on them** row, unch
 only such row: `prop:moments`, `prop:stable-moments`, `prop:gamma-kernels`, `prop:extreme-rays`,
 `prop:volterra`, `lem:potential-kernel-scaling`, `cor:semigroup-case`. Re-check each against its
 node before starting; that inventory has been wrong before, in both directions.
+
+---
+
+# `prop:extreme-rays`, split and half proved — 2026-08-14
+
+`lem:admissible-cone` (7.13) and `lem:dickman-superposition` (7.14), in
+`Hemigroup/AdmissibleCone.lean` and `Hemigroup/DickmanSuperposition.lean`, with `Ein` defined in
+`Hemigroup/Ein.lean`. Lean core throughout. 55 nodes `\leanok`, 83 in the blueprint;
+`Skeleton/Chapter7.lean` holds no declarations, one round after it was created.
+
+## The node was the Lemma 7.1 shape for the third time in one chapter
+
+7.7 asserted four things: the admissible exponents form a convex cone; the map
+`(b₀,ρ) ↦ b₀s + ∫Ein(τs)ρ(dτ)` is a linear bijection onto it; hence the extreme rays are the pure
+delay and the Dickman rays; and every admissible family is a *unique* superposition. The first two
+are elementary. The third and fourth are not, and they are not hard for the same reason:
+
+* **injectivity** is uniqueness of the Lévy–Khintchine triple — ledger **A3**, which quantifies
+  over `BF` and cannot be stated here;
+* **the extreme rays** need a Choquet argument, and the obstruction is *not* that Mathlib lacks
+  `IsExtreme`. It has it. It is that `ρ = ∫δ_τ ρ(dτ)` has to be read as a barycentre in a cone of
+  measures.
+
+The node's own status line already said "not formalised: it needs Lebesgue–Stieltjes measures and
+a Choquet argument". Half of that was wrong in the way this file keeps recording: the
+Lebesgue–Stieltjes measure is not needed at all — `exists_tailMeasure` from chapter 9 supplies `ρ`,
+and it was built precisely because `StieltjesFunction` does *not* apply to a Lévy tail. A
+chapter-level "not formalised" reason had gone stale against work done two chapters later.
+
+## What the injectivity clause is actually worth, recorded rather than attempted
+
+Worth writing down because it is the same shape as chapter 9's Route B and might retire an A3
+appeal. `hasDerivAt_toRealExponent` gives `F'(s) = b₀ + ∫₀^∞ e^{-st}k(t)dt`, and
+`laplaceL_injective_of_ne_top` is Laplace injectivity for locally finite measures. So `F`
+determines the measure `k(t)dt`, hence `k` a.e., hence `ρ` — with **no statement about `BF` as a
+class**. That is a piece of work in its own right and it has not been done; it is in the node's
+annotation so the next reader does not have to rediscover that the citation overstates the
+obligation.
+
+## Three things the proofs turned up
+
+**`ℝ≥0∞` is why the cone is cheap.** Additivity of `levyJump` in `k` is a statement about
+`lintegral`, so `lintegral_add_left'` needs only `AEMeasurable` of one summand and no
+integrability side condition — where the classical argument has to know both integrals are finite
+first. Here finiteness is the *conclusion*: it is exactly the `ne_top` field, and it comes out of
+the additivity rather than being needed for it.
+
+**The layer cake, for the third time.** `lintegral_comp_eq_lintegral_meas_lt_mul` carried both
+halves of Route B and now carries this; only the antiderivative changes, from `1 - e^{-su}` to
+`Ein(su)`. And its lack of a σ-finiteness hypothesis is load-bearing rather than convenient: the
+tail measure of a *bounded* `k` — the Dickman ray being the extreme case — is a pushforward that
+puts infinite mass at the origin, so `ρ` is σ-finite only after restriction to `(0,∞)`. Restricting
+is what makes it a measure *on* `(0,∞)`, which is what the blueprint's `ρ ∈ M₊(0,∞)` says.
+
+**And a docstring in `Examples.lean` was overcautious.** It records the Dickman exponent as having
+"no elementary closed form", which is true and was read as "no closed form to prove". `Ein` is not
+elementary and the identity `F_τ(s) = Ein(τs)` is one substitution; Mathlib has no exponential
+integral of any kind, so `ein` is defined here on the pattern `riemannLiouville` set in chapter 11
+— a definition, not an interface, since the article cites Caravenna–Sun–Zygouras for the Dickman
+density and transform and not for a theorem about `Ein`.
+
+## Next
+
+`PLAN`'s *available, nothing depends on them* row, minus the entry just done: `prop:moments`,
+`prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`,
+`cor:semigroup-case`. Re-check each against its node before starting.

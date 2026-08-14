@@ -1,3 +1,4 @@
+import Hemigroup.AdmissibleCone
 import Hemigroup.Additivity
 import Hemigroup.Basic
 import Hemigroup.ClosedForms
@@ -5,6 +6,7 @@ import Hemigroup.Construction
 import Hemigroup.Continuity
 import Hemigroup.Covariance
 import Hemigroup.DelayCore
+import Hemigroup.DickmanSuperposition
 import Hemigroup.Ein
 import Hemigroup.Examples
 import Hemigroup.ExponentDerivative

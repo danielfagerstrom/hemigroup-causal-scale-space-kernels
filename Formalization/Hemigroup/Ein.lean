@@ -74,4 +74,57 @@ theorem intervalIntegrable_einIntegrand {z : ℝ} (hz : 0 ≤ z) :
   rw [Real.norm_eq_abs, abs_of_nonneg (einIntegrand_nonneg hu.1.le)]
   exact einIntegrand_le_one hu.1.le
 
+/-! ## The dilated integrand
+
+`(1 - e^{-su})/u` is the Lévy integrand of the Dickman ray at rate `s`, and it is `s` times
+`einIntegrand (su)`. That single line is the whole of `lem:dickman-superposition`(1): the
+substitution `u ↦ su` turns `∫₀^τ (1 - e^{-st})\,dt/t` into `Ein(sτ)`.
+-/
+
+/-- `(1 - e^{-su})/u = s · einIntegrand(su)`, at every real `s` and `u`.
+
+No hypothesis, and the two degenerate cases are why: at `u = 0` both sides are `0/0 = 0` in
+Lean's convention, and at `s = 0` both are `0`. -/
+theorem dilate_einIntegrand (s u : ℝ) :
+    (1 - Real.exp (-(s * u))) / u = s * einIntegrand (s * u) := by
+  rcases eq_or_ne s 0 with rfl | hs
+  · simp [einIntegrand]
+  rcases eq_or_ne u 0 with rfl | hu
+  · simp [einIntegrand]
+  · rw [einIntegrand]
+    field_simp
+
+/-- **The substitution**: `∫₀^z (1 - e^{-st})\,dt/t = Ein(sz)`. -/
+theorem intervalIntegral_dilate_einIntegrand (s z : ℝ) :
+    (∫ t in (0 : ℝ)..z, (1 - Real.exp (-(s * t))) / t) = ein (s * z) := by
+  rcases eq_or_ne s 0 with rfl | hs
+  · simp [ein, einIntegrand]
+  · simp only [dilate_einIntegrand]
+    rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_comp_mul_left _ hs,
+      mul_zero, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hs, one_mul, ein]
+
+/-- The dilated integrand is nonnegative on the half-line. -/
+theorem dilate_einIntegrand_nonneg {s : ℝ} (hs : 0 ≤ s) {u : ℝ} (hu : 0 ≤ u) :
+    0 ≤ (1 - Real.exp (-(s * u))) / u := by
+  rw [dilate_einIntegrand]
+  exact mul_nonneg hs (einIntegrand_nonneg (mul_nonneg hs hu))
+
+/-- The dilated integrand is interval-integrable on `[0,z]` for `s, z ≥ 0`: bounded by `s`. -/
+theorem intervalIntegrable_dilate_einIntegrand {s : ℝ} (hs : 0 ≤ s) {z : ℝ} (hz : 0 ≤ z) :
+    IntervalIntegrable (fun t => (1 - Real.exp (-(s * t))) / t) volume 0 z := by
+  rw [intervalIntegrable_iff_integrableOn_Ioc_of_le hz]
+  have hfin : volume (Ioc (0 : ℝ) z) ≠ ⊤ := by
+    rw [Real.volume_Ioc]
+    exact ENNReal.ofReal_ne_top
+  have hmeas : Measurable fun t : ℝ => (1 - Real.exp (-(s * t))) / t :=
+    (measurable_const.sub (Real.measurable_exp.comp (by fun_prop))).div measurable_id
+  refine Integrable.mono' (g := fun _ : ℝ => s) (integrableOn_const (hs := hfin))
+    hmeas.aestronglyMeasurable ?_
+  refine (ae_restrict_iff' measurableSet_Ioc).mpr (.of_forall fun u hu => ?_)
+  rw [Real.norm_eq_abs, abs_of_nonneg (dilate_einIntegrand_nonneg hs hu.1.le),
+    dilate_einIntegrand]
+  calc s * einIntegrand (s * u) ≤ s * 1 :=
+        mul_le_mul_of_nonneg_left (einIntegrand_le_one (mul_nonneg hs hu.1.le)) hs
+    _ = s := mul_one s
+
 end Hemigroup

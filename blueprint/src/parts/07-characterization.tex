@@ -632,7 +632,7 @@ formula. Additive, and appended, by the same rule as above.
 % additive: not in the draft. The cone clause of prop:extreme-rays.
 \begin{lemma}[the admissible exponents form a convex cone]\label{lem:admissible-cone}
 \uses{def:levy-exponent,thm:main-characterization}
-\lean{Skeleton.admissible_cone}\notready
+\lean{Hemigroup.SelfDecomposableExponent.admissible_cone}\leanok
 If $F_1, F_2$ are admissible in the sense of \ref{thm:main-characterization} --- of the form
 (7.1) with drift $b_0 \ge 0$ and $k \ge 0$ nonincreasing --- then so are $F_1 + F_2$, with data
 $(b_0^1 + b_0^2,\, k_1 + k_2)$, and $c\,F_1$ for $c \ge 0$, with data $(c\,b_0^1,\, c\,k_1)$. So
@@ -642,6 +642,7 @@ the pairs $(b_0,k)$ is linear.
 \end{lemma}
 
 \begin{proof}
+\leanok
 Each of the six defining conditions is stable: nonnegativity and monotonicity of $k$ are
 preserved by sums and by nonnegative multiples, the drift stays nonnegative, and the exponent of
 a sum is the sum of the exponents by additivity of the integral --- so finiteness is inherited.
@@ -651,7 +652,7 @@ Linearity of $(b_0,k) \mapsto F$ is the same computation read forwards.
 % additive: not in the draft. The representation clause of prop:extreme-rays.
 \begin{lemma}[Dickman superposition]\label{lem:dickman-superposition}
 \uses{def:levy-exponent,lem:admissible-cone,prop:admissibility-criterion}
-\lean{Skeleton.dickman_superposition}\notready
+\lean{Hemigroup.dickman_superposition}\leanok
 Write $\mathrm{Ein}(z) := \int_0^z \bigl(1 - e^{-u}\bigr)\,u^{-1}du$.
 \begin{enumerate}
 \item \emph{(The rays.)} For $\tau > 0$ the density $k = \mathbf{1}_{(0,\tau)}$ is admissible,
@@ -669,6 +670,7 @@ almost every $t > 0$; such a $\rho$ exists.
 \end{lemma}
 
 \begin{proof}
+\leanok
 (1) is the substitution $u = st$ in $\int_0^\tau (1 - e^{-st})\,t^{-1}dt$; admissibility is the
 integrability criterion of \ref{prop:admissibility-criterion}, both halves being immediate for a
 bounded, compactly supported $k$.
