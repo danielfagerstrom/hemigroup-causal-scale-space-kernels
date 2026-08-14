@@ -54,12 +54,8 @@ theorem meanRate_ne_top_iff : F.meanRate ≠ ⊤ ↔ IntegrableOn F.k (Ioi 1) :=
         + ∫⁻ t in Ioi (1 : ℝ), ENNReal.ofReal (F.k t) := by
     rw [← Ioc_union_Ioi_eq_Ioi (zero_le_one : (0 : ℝ) ≤ 1),
       lintegral_union measurableSet_Ioi Ioc_disjoint_Ioi_same]
-  have hlow : (∫⁻ t in Ioc (0 : ℝ) 1, ENNReal.ofReal (F.k t)) ≠ ⊤ := by
-    have h := F.integrableOn_k.2
-    rw [hasFiniteIntegral_iff_enorm] at h
-    refine ne_of_lt (lt_of_le_of_lt (lintegral_mono_ae ?_) h)
-    refine (ae_restrict_iff' measurableSet_Ioc).mpr (.of_forall fun t ht => ?_)
-    rw [Real.enorm_eq_ofReal (hnn t (mem_Ioi.mpr ht.1))]
+  have hlow : (∫⁻ t in Ioc (0 : ℝ) 1, ENNReal.ofReal (F.k t)) ≠ ⊤ :=
+    F.lintegral_ofReal_k_Ioc_ne_top
   constructor
   · intro h
     refine integrableOn_of_lintegral_ofReal_ne_top

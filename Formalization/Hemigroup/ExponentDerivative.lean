@@ -98,6 +98,20 @@ theorem integrableOn_k : IntegrableOn F.k (Ioc 0 1) := by
   exact ne_of_lt (lt_of_le_of_lt hle
     (ENNReal.mul_lt_top (by norm_num) (lt_top_iff_ne_top.mpr F.levyJump_one_ne_top)))
 
+/-- **`∫₀¹ k < ∞` in `ℝ≥0∞`**, which is `integrableOn_k` in the form every estimate at the origin
+actually consumes.
+
+Separated because two unrelated consumers want it without the `Integrable` packaging:
+`meanRate_ne_top_iff`, where it is the end of the mean rate that costs nothing, and chapter 10's
+`integrable_min_one_id`, where it is the whole of `∫(1∧r)ν₁(dr) < ∞` after one layer cake. -/
+theorem lintegral_ofReal_k_Ioc_ne_top :
+    (∫⁻ t in Ioc (0 : ℝ) 1, ENNReal.ofReal (F.k t)) ≠ ⊤ := by
+  have h := F.integrableOn_k.2
+  rw [hasFiniteIntegral_iff_enorm] at h
+  refine ne_of_lt (lt_of_le_of_lt (lintegral_mono_ae ?_) h)
+  refine (ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall fun t ht => ?_)
+  rw [Real.enorm_eq_ofReal (F.k_nonneg t (mem_Ioi.mpr ht.1))]
+
 /-- **`k t / t` is integrable at infinity**, likewise forced. -/
 theorem integrableOn_k_div : IntegrableOn (fun t => F.k t / t) (Ioi 1) := by
   refine integrableOn_of_lintegral_ofReal_ne_top

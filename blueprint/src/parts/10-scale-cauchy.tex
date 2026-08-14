@@ -137,10 +137,20 @@ $\varphi_x(s) = s F'(xs)$.
 $\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
 coincides on $\core$ with the memory-kernel operator of Chapter~9.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Stated in Lean, unproved} (2026-08-14):
-\texttt{Skeleton/Chapter10.lean} carries the five clauses as named sub-lemmas with a
+\statusT\quad\emph{(\textbf{Stated in Lean, clause (1) proved} (2026-08-14):
+\texttt{Skeleton/Chapter10.lean} carries the open clauses as named sub-lemmas with a
 \texttt{sorry}-free collation above them, which is the decomposition gate's middle state and not a
-claim. \textbf{Not blocked by generation theory}: no clause mentions a generator's domain, a
+claim; clause (1) has moved into \texttt{Hemigroup/PhillipsGenerator.lean} and is Lean core, the
+statements quantifying over any $\nu_1$ meeting the tail specification rather than over the
+constructed family. \textbf{The convergence
+$\int (1 \wedge r)\,\nu_1(dr) < \infty$ is one layer cake and not the integration by parts the
+proof above names}: $\int (1\wedge r)\nu_1 = \int_0^1 \nu_1\bigl((u,\infty)\bigr)du = \int_0^1 k$,
+so the $k(1) < \infty$ half of that argument's hypothesis is unused, and the tail identity is
+consumed under an integral in $u$ --- which is where $\nu_1$'s almost-everywhere specification is
+paid for and found free. Worth noting where $f \in \core$ is spent: $\|T_rf-f\|_1 \le r\|f'\|_1$
+is what makes the integrand small at the origin, while $\|T_rf-f\|_1 \le 2\|f\|_1$ holds for every
+$f \in X$; the core hypothesis buys only the first, which is the half $\nu_1$'s mass at the origin
+needs. \textbf{Not blocked by generation theory}: no clause mentions a generator's domain, a
 resolvent, or a generation theorem, and the ``strong continuity of $T$'' that (4) invokes is
 \texttt{continuous\_transL1}, proved in chapter~4. Clause by clause
 the inputs are (1) \ref{lem:delay-core}'s estimate, (2) Fubini and \ref{lem:memory-kernel},

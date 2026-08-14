@@ -2002,3 +2002,65 @@ second consumer appears — is exactly the one `Hemigroup/Subordinator.lean` was
 Prove 10.3, starting at `integrable_min_one_id` — `∫(1∧r)ν(dr) = ∫₀¹ν((u,∞))du = ∫₀¹k`, one layer
 cake, and not the integration by parts the blueprint's proof names. Otherwise `PLAN`'s *available*
 row: `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.
+
+---
+
+# `lem:generator-properties`(1), proved — 2026-08-14
+
+`Hemigroup/PhillipsGenerator.lean`. **Lean core**, which is the reading the parameterisation was
+chosen for: the clause quantifies over any `ν` meeting `HasLevyTail` rather than over the
+constructed family, so it does not touch A17. `Skeleton/Chapter10.lean` is down to four clauses.
+Trust boundary unchanged. The node stays `\notready`.
+
+## The estimate held, which is the first time this file gets to say that
+
+The skeleton commit wrote the work order down "so that the next round can be measured against it",
+and the round is the same day. What it said about clause (1):
+
+> `integrable_min_one_id` first — `∫(1∧r)ν(dr) < ∞` is **one layer cake**,
+> `∫₀¹ν((u,∞))du = ∫₀¹k`, and not the integration by parts the blueprint's proof names; the
+> `k(1) < ∞` half of that argument's hypothesis is unused.
+
+All three claims are right, and the proof is the sentence transcribed:
+`lintegral_eq_lintegral_meas_lt`, then `{r : u < 1∧r}` is empty above `u = 1` and `(u,∞)` below it,
+then the tail identity, then `∫₀¹k < ∞`. **The `k(1) < ∞` hypothesis really is unused** — the
+blueprint's integration by parts produces a boundary term the layer cake never forms.
+
+Two entries ago this file recorded a cost estimate wrong "by most of the work, in the direction of
+*less*". The difference is not luck: that estimate was made before the statement existed, and this
+one was made *from* the statement. That is the whole argument for statement-first, and it is worth
+having an instance where the estimate was checkable rather than merely surprising.
+
+## Where `f ∈ 𝒟` is actually spent
+
+`norm_transL1_sub_le` is two bounds, `‖T_rf - f‖₁ ≤ min(2‖f‖₁, r‖f'‖₁)`, and only the second
+mentions `f'`. Under `ν₁` they divide the line: `r‖f'‖₁` handles the mass at the origin, where
+`ν₁` is infinite for the stable family, and `2‖f‖₁` — true of **every** `f ∈ X` — handles the tail.
+So the core hypothesis is bought for exactly one end of the integral, and the proposition would be
+false without it only there.
+
+That is why `integrable_min_one_id` is stated for `1 ∧ r` and not for the clause's own
+`min(2‖f‖₁, xr‖f'‖₁)`: the content is `ν₁`'s behaviour at the two ends, and the constants belong
+to the consumer. `min(c, dr) ≤ max(c,d)·(1∧r)` on the half-line is the one line that connects them
+(`integrable_min_const_mul`), and it covers every core element and every scale at once.
+
+## Two small structural things
+
+**The change of variables is now stated once.** `integral_dilatedTail` and
+`integrable_dilatedTail_iff` say that an integral (resp. integrability) against `ν_x` is `x⁻¹`
+times (resp. the same as) the dilated one against `ν₁`. The definition's second display
+(`phillipsGenerator_eq_smul_integral`) is now a one-line corollary of the first, where it had been
+its own `rw` chain. Every remaining clause will want one of these two.
+
+**`lintegral_ofReal_k_Ioc_ne_top` was extracted.** `∫₀¹k < ∞` in `ℝ≥0∞` had been an inline `have`
+inside `meanRate_ne_top_iff`; it is now a named lemma next to `integrableOn_k`, and
+`meanRate_ne_top_iff` cites it. The second consumer arriving is what made it worth naming — the
+same shape as `mconv_eq_setIntegral_mconv`, which is still waiting for its own second consumer
+(clause (5)) to justify the generalisation to a locally finite measure.
+
+## Next
+
+Clause (3) — `ContinuousLinearMap.integral_comp_comm` against `mconvL1 μ`, which clause (1) has
+now supplied the integrability hypothesis for — then (4), then (2) and (5). Or `PLAN`'s
+*available* row: `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
+`lem:potential-kernel-scaling`.

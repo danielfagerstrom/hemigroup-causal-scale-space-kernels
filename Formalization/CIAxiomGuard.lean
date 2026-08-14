@@ -904,11 +904,43 @@ only nonincreasing has no right-continuous representative this development can n
 
 #print axioms Hemigroup.dilatedTail
 #print axioms Hemigroup.dilatedTail_Ioi
+#print axioms Hemigroup.isCausal_dilatedTail
 #print axioms Hemigroup.continuous_sub_transL1
+#print axioms Hemigroup.integral_dilatedTail
+#print axioms Hemigroup.integrable_dilatedTail_iff
 #print axioms Hemigroup.SelfDecomposableExponent.HasLevyTail
 #print axioms Hemigroup.SelfDecomposableExponent.exists_hasLevyTail
 #print axioms Hemigroup.SelfDecomposableExponent.phillipsGenerator
 #print axioms Hemigroup.SelfDecomposableExponent.phillipsGenerator_eq_smul_integral
+
+/-! ### `lem:generator-properties` (10.3), clause (1)
+
+Absolute convergence of the Phillips integral in `X₀`, with the two-sided bound. **Lean core** —
+the clause quantifies over a `ν` meeting `HasLevyTail` rather than over the constructed family, so
+it does not touch A17, which is the point of stating it that way.
+
+`integrable_min_one_id` is the whole of it. The blueprint reaches `∫(1∧r)ν₁(dr) < ∞` "from
+`∫₀¹ k < ∞` and `k(1) < ∞` by integration by parts"; it is **one layer cake**,
+`∫(1∧r)ν = ∫₀^∞ ν{r : u < 1∧r}du = ∫₀¹ν((u,∞))du = ∫₀¹k`, and the second half of that hypothesis
+is unused. Fifth appearance of the layer cake here and the fourth time it has replaced a classical
+integration by parts. It is also where `HasLevyTail`'s `ae` qualifier is paid for and found free:
+the tail identity is consumed under an integral in `u`.
+
+`lintegral_ofReal_k_Ioc_ne_top` is `integrableOn_k` without the `Integrable` packaging, extracted
+from `meanRate_ne_top_iff` where it had been an inline `have` — the second consumer arriving is
+what made it worth naming.
+
+Worth noting where `f ∈ 𝒟` is spent in `integrable_sub_transL1`: `‖T_rf - f‖₁ ≤ r‖f'‖₁` is what
+makes the integrand small at the origin, and `‖T_rf - f‖₁ ≤ 2‖f‖₁` — true of every `f ∈ X` — is
+what makes it bounded far out. The core hypothesis buys only the first, which is the half `ν₁`'s
+mass at the origin needs.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_ofReal_k_Ioc_ne_top
+#print axioms Hemigroup.SelfDecomposableExponent.integrable_min_one_id
+#print axioms Hemigroup.SelfDecomposableExponent.integrable_min_const_mul
+#print axioms Hemigroup.SelfDecomposableExponent.integrable_sub_transL1
+#print axioms Hemigroup.SelfDecomposableExponent.norm_phillipsGenerator_le
 
 /-! ### `Ein`, the entire exponential integral
 

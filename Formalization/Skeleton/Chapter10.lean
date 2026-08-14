@@ -16,15 +16,15 @@ named sub-lemma, with a `sorry`-free collation above them. The definition they a
 `def:phillips-generator` (10.2), is *proved* and lives in `Hemigroup/PhillipsGenerator.lean` —
 a definition has no `sorry` to carry.
 
-| clause | sub-lemma | what it needs |
+| clause | declaration | state |
 |---|---|---|
-| (1) convergence | `integrable_sub_transL1` | `norm_transL1_sub_le`, `integrable_min_one_id` |
-| (1) the bound | `norm_phillipsGenerator_le` | the same, plus `norm_integral_le_integral_norm` |
-| (2) the symbol | `laplaceFun_phillipsGenerator` | Fubini and `lem:memory-kernel` |
-| (3) commutation | `mconvL1_phillipsGenerator` | `ContinuousLinearMap.integral_comp_comm` |
-| (4) continuity in `x` | `continuousOn_phillipsGenerator` | dominated convergence |
-| (5) the memory-kernel form | `mconv_memoryKernel_ae_eq` | `laplaceL_memoryKernel`, uniqueness |
-| the node | `generator_properties` | `sorry`-free |
+| (1) convergence | `integrable_sub_transL1` | **proved**, `Hemigroup/PhillipsGenerator.lean` |
+| (1) the bound | `norm_phillipsGenerator_le` | **proved**, same file |
+| (2) the symbol | `laplaceFun_phillipsGenerator` | open — Fubini and `lem:memory-kernel` |
+| (3) commutation | `mconvL1_phillipsGenerator` | open — `ContinuousLinearMap.integral_comp_comm` |
+| (4) continuity in `x` | `continuousOn_phillipsGenerator` | open — dominated convergence |
+| (5) the memory-kernel form | `mconv_memoryKernel_ae_eq` | open — transform, then uniqueness |
+| the node | `generator_properties` | `sorry`-free collation |
 
 ## Why this is not blocked, since the chapter was filed as blocked
 
@@ -59,14 +59,11 @@ not carry.
 
 ## Work order, and where the cost actually is
 
-Clauses (1), (3), (4) are moderate; (2) and (5) are the bulk.
+Clause (1) is **done** and has moved; it cost what the estimate said, and the estimate was that
+`integrable_min_one_id` — `∫(1∧r)ν(dr) < ∞` — is one layer cake and not the integration by parts
+the blueprint's proof names, with the `k(1) < ∞` half of that argument's hypothesis unused. It is.
+The rest: (3), (4) moderate; (2) and (5) the bulk.
 
-1. `integrable_min_one_id` first — `∫(1∧r)ν(dr) < ∞` is **one layer cake**,
-   `∫₀¹ν((u,∞))du = ∫₀¹k`, and not the integration by parts the blueprint's proof names; the
-   `k(1) < ∞` half of that argument's hypothesis is unused. Fifth appearance of
-   `lintegral_comp_eq_lintegral_meas_lt_mul` in this article.
-2. (1) is then `norm_transL1_sub_le` — the two-sided delay estimate of `lem:delay-core` — under
-   that integral, and the bound is `norm_integral_le_integral_norm`.
 3. (3) is `ContinuousLinearMap.integral_comp_comm` applied to `mconvL1 μ`, which **is** a
    continuous linear map, together with `hasCoreDerivL1_mconvL1` to know the right-hand side is
    the generator of a core element. It needs (1) for the integrability hypothesis.
@@ -121,34 +118,6 @@ open Hemigroup
 namespace GeneratorProperties
 
 variable (F : Hemigroup.SelfDecomposableExponent) {ν : Measure ℝ} {x : ℝ} {A B : X}
-
-/-- **`∫₀^∞ (1 ∧ r) ν₁(dr) < ∞`**, the convergence the whole of clause (1) reduces to.
-
-Stated for `1 ∧ r` rather than for the clause's own `min(2‖f‖₁, xr‖f'‖₁)`, which is bounded by a
-constant multiple of it: the content is the behaviour of `ν₁` at the two ends, and the constants
-are the consumer's. One layer cake — `∫(1∧r)ν(dr) = ∫₀¹ν((u,∞))du = ∫₀¹k` — and `integrableOn_k`,
-which is forced by the structure's `ne_top` field rather than assumed. -/
-theorem integrable_min_one_id (hν : F.HasLevyTail ν) :
-    Integrable (fun r : ℝ => min 1 r) ν := by
-  sorry
-
-/-- **`lem:generator-properties`(1), convergence**: the Phillips integral converges absolutely in
-`X₀`. -/
-theorem integrable_sub_transL1 (hν : F.HasLevyTail ν) (hx : 0 < x)
-    (hAB : HasCoreDerivL1 A B) :
-    Integrable (fun r : ℝ => A - transL1 r A) (dilatedTail ν x) := by
-  sorry
-
-/-- **`lem:generator-properties`(1), the bound**:
-`‖φ_x(∂_t)f‖₁ ≤ b₀‖f'‖₁ + x⁻¹∫ min(2‖f‖₁, xr‖f'‖₁) ν₁(dr)`.
-
-The `x⁻¹` is outside the integral where the blueprint puts it inside, against `x⁻¹ν₁(dr)`; the two
-readings agree and this one is `phillipsGenerator_eq_smul_integral`'s. -/
-theorem norm_phillipsGenerator_le (hν : F.HasLevyTail ν) (hx : 0 < x)
-    (hAB : HasCoreDerivL1 A B) :
-    ‖F.phillipsGenerator ν x A B‖
-      ≤ F.b₀ * ‖B‖ + x⁻¹ * ∫ r, min (2 * ‖A‖) (x * r * ‖B‖) ∂ν := by
-  sorry
 
 /-- **`lem:generator-properties`(2), the symbol**: `Lap[φ_x(∂_t)f](s) = φ_x(s) f̂(s)`, with
 `φ_x(s) = sF'(xs)` — which is `symbol`, defined in chapter 9.
@@ -218,7 +187,7 @@ theorem generator_properties (F : Hemigroup.SelfDecomposableExponent) {ν : Meas
         mconv (F.memoryKernel x) f
           =ᵐ[volume] fun t => ∫ ρ in Ioc (0 : ℝ) t,
             ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) ρ) :=
-  ⟨⟨integrable_sub_transL1 F hν hx hAB, norm_phillipsGenerator_le F hν hx hAB⟩,
+  ⟨⟨F.integrable_sub_transL1 hν hx hAB, F.norm_phillipsGenerator_le hν hx hAB⟩,
    fun _ hs => laplaceFun_phillipsGenerator F hν hx hAB hs,
    fun μ _ hμ => mconvL1_phillipsGenerator F hν hx hAB μ hμ,
    continuousOn_phillipsGenerator F hν hAB,
