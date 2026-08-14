@@ -174,7 +174,8 @@ the uniqueness clause is \ref{prop:main-uniqueness}.
 
 % draft: Corollary 7.4
 \begin{corollary}[recovering the semigroup case]\label{cor:semigroup-case}
-\uses{thm:main-characterization,lem:covariance-laplace,prop:canonical-gauge}
+\uses{thm:main-characterization,lem:covariance-laplace,prop:canonical-gauge,thm:increments-bernstein}
+\lean{Hemigroup.CascadeCore.semigroup_case}\leanok
 Assume in addition that the family is one-parameter: $\Phi_{x,y}$ depends only on $y - x$.
 Then, after the normalization $g_{0,1}(1) = 1$,
 \[
@@ -183,10 +184,22 @@ Then, after the normalization $g_{0,1}(1) = 1$,
 i.e.\ the kernels are exactly the extremal stable densities of
 \sscite{fagerstrom2005temporal}, Thm.~2, together with the boundary case $\alpha = 1$ --- the
 pure delay $\mu_{0,x} = \delta_x$.
-\statusT
+\statusT\quad\emph{(\textbf{Machine-checked}, \texttt{\#print axioms} reducing to Lean core: the
+corollary spends no ledger entry, every input being chapters 4--6 or
+\ref{thm:increments-bernstein}. Two things the formalisation says that the proof below does not.
+\textbf{The multiplier of the action \emph{is} $F$.} The proof introduces $c$ with
+$\Sact_\sigma x = c(\sigma)x$ and $c(\sigma)g(s) = g(\sigma s)$, and treats them as two unknown
+functions until Cauchy identifies both. Under the stated normalization they are the same function:
+(6.1) at $s = 1$ gives $\Sact_\sigma x = x\,G(1,\sigma)$ outright, so $c = F$ on $(0,\infty)$ and
+Cauchy is applied once, not twice. \textbf{And $\alpha \le 1$ needs only subadditivity.} Membership
+of $\BFz$ is more than the bound uses: $F(s+t) \le F(s) + F(t)$ is
+$(1-e^{-su})(1-e^{-tu}) \ge 0$ read through the representation, and at $s = t = 1$ it gives
+$2^\alpha \le 2$. So the bound is available in $\LE$ and costs no bridge --- the same discipline
+\ref{lem:selfdecomposable-increment} follows.)}
 \end{corollary}
 
 \begin{proof}
+\leanok
 Homogeneity gives $g_{x,y} = (y - x)\,g$ with $g := g_{0,1}$, and (6.1) becomes
 $(\Sact_\sigma y - \Sact_\sigma x)\, g(s) = (y - x)\, g(\sigma s)$. Hence $\Sact_\sigma$ is
 affine, and fixing $0$ it is linear: $\Sact_\sigma x = c(\sigma) x$ with

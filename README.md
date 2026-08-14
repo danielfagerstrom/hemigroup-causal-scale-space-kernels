@@ -40,7 +40,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Fifty-five nodes carry `\lean{...}\leanok`:
+Fifty-six nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -49,7 +49,7 @@ Fifty-five nodes carry `\lean{...}\leanok`:
 | 4 Convolution representation | `lem:convolution-representation`, `lem:transform-continuity` — chapter complete |
 | 5 The cascade | `lem:additivity`, `thm:increments-bernstein`, `cor:strict-monotonicity` — chapter complete |
 | 6 Scale covariance | `lem:covariance-laplace`, `lem:action-rigidity`, `prop:canonical-gauge` — chapter complete |
-| 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves; and `lem:admissible-cone`, `lem:dickman-superposition` — the two clauses of `prop:extreme-rays` that need neither uniqueness of the Lévy–Khintchine triple nor a Choquet argument, so that the cone and the `Ein` superposition are machine-checked and only the bijection and the extreme rays are not |
+| 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves; and `lem:admissible-cone`, `lem:dickman-superposition` — the two clauses of `prop:extreme-rays` that need neither uniqueness of the Lévy–Khintchine triple nor a Choquet argument, so that the cone and the `Ein` superposition are machine-checked and only the bijection and the extreme rays are not; and `cor:semigroup-case` — the one-parameter case, recovering the 2005 stable kernels `F(s) = s^α`, `0 < α ≤ 1`, together with the pure delay at `α = 1` |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
 | 10 The scale-Cauchy problem | `lem:delay-core` — the core `𝒟`, dense in `X₀` and invariant under the delay semigroup and under every `Φ`, with the `L¹` difference quotient and the two-sided delay estimate. That is the whole of the chapter that does not need C₀-semigroup theory |
@@ -69,7 +69,7 @@ Where the work stands. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; 
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable. What is schedulable today is the row `PLAN` calls *available, nothing depends on
 them* — `prop:moments`, `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
-`lem:potential-kernel-scaling`, `cor:semigroup-case`. Everything else:
+`lem:potential-kernel-scaling`. Everything else:
 
 0. **`prop:extreme-rays` is split and half of it is done.** The node asserted four things at four
    prices and reported the maximum; the cone and the `Ein` superposition are now

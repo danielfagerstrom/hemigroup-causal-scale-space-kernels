@@ -933,3 +933,25 @@ one would mean the witness is not a witness.
 #print axioms Hemigroup.SelfDecomposableExponent.exists_tailMeasure_k
 #print axioms Hemigroup.SelfDecomposableExponent.exponent_eq_lintegral_ein
 #print axioms Hemigroup.dickman_superposition
+
+/-! ### `cor:semigroup-case` (7.4)
+
+The one-parameter case: `F(s) = s^α` with `0 < α ≤ 1`, the scaling action `S_σ x = σ^α x`, and the
+2005 stable kernels recovered together with the pure delay at `α = 1`. **Lean core** — the
+corollary spends no ledger entry, which is the expected reading, since every input is either
+chapter 4–6 (all Lean core) or `thm:increments-bernstein`.
+
+Three general lemmas underneath, none of them mentioning a hemigroup. The two Cauchy arguments are
+not the same problem: the additive one lives on `[0,∞)`, where Mathlib's `map_real_smul` does not
+apply and an odd extension is needed; the multiplicative one conjugates by `exp`/`log` onto all of
+`ℝ`, where it does. `levyExponent_add_le` is subadditivity, which is the part of membership of
+`BF₀` that the bound `α ≤ 1` actually needs, and it is visible in the representation.
+-/
+
+#print axioms Hemigroup.eq_mul_of_addOn_Ici
+#print axioms Hemigroup.exists_rpow_of_mul
+#print axioms Hemigroup.levyExponent_add_le
+#print axioms Hemigroup.CascadeCore.repr_of_isOneParameter
+#print axioms Hemigroup.CascadeCore.G_add
+#print axioms Hemigroup.CascadeCore.G_eq_mul_of_isOneParameter
+#print axioms Hemigroup.CascadeCore.semigroup_case

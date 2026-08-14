@@ -47,6 +47,7 @@ import Hemigroup.ProfileDeriv
 import Hemigroup.ProfileEuler
 import Hemigroup.Representation
 import Hemigroup.SelfDecomposable
+import Hemigroup.SemigroupCase
 import Hemigroup.Sonine
 import Hemigroup.Subordinator
 import Hemigroup.Symmetries

@@ -1622,3 +1622,54 @@ density and transform and not for a theorem about `Ein`.
 `PLAN`'s *available, nothing depends on them* row, minus the entry just done: `prop:moments`,
 `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`,
 `cor:semigroup-case`. Re-check each against its node before starting.
+
+---
+
+# `cor:semigroup-case`, proved — 2026-08-14
+
+`Hemigroup/SemigroupCase.lean`. **Lean core**: the corollary spends no ledger entry, every input
+being chapters 4–6 or `thm:increments-bernstein`. 56 nodes `\leanok`. No skeleton file was needed;
+the decomposition into three general lemmas was enough to keep the main argument straight.
+
+## Two Cauchy equations, and they are not the same problem
+
+The proof uses Cauchy's functional equation twice, and Lean makes the asymmetry visible where the
+prose does not.
+
+* **Additive, on `[0,∞)`** — `x ↦ G(x,s)`. Mathlib's `map_real_smul` (continuous additive maps of
+  real vector spaces are linear) does **not** apply on a half-line, so it needs an odd extension:
+  `oddExtend h x = h(x⁺) - h(x⁻)`, continuous by construction because `max x 0` and `max (-x) 0`
+  are, and additive because a difference of values depends only on the difference of arguments.
+* **Multiplicative, on `(0,∞)`** — the multiplier of the action. Conjugating by `exp`/`log` puts it
+  on **all** of `ℝ`, where `map_real_smul` applies with no extension at all.
+
+So the equation the draft cites a lemma for (`fagerstrom2005temporal`, Lemma 2 — the multiplicative
+one) is the *cheaper* of the two here, and the one it treats as obvious is the one that costs
+forty lines. Worth recording next to `lem:mellin-vertical`'s lesson: which step is expensive in
+Lean is not predictable from which step a paper pauses over.
+
+## The formalisation collapsed two unknown functions into one
+
+The blueprint's proof introduces `c` with `S_σ x = c(σ)x` and `c(σ)g(s) = g(σs)`, carries both
+until Cauchy identifies `c(σ) = σ^α`, and only then concludes `g(s) = g(1)s^α`. Under the stated
+normalisation `g_{0,1}(1) = 1` they are the same function: `(6.1)` at `s = 1` reads
+`G(S_σ x, 1) = G(x, σ)`, and homogeneity turns the left side into `S_σ x` and the right into
+`x·G(1,σ)`. So `S_σ x = x·G(1,σ)`, i.e. **`c = F` on `(0,∞)`**, and Cauchy is applied once.
+
+That is not a shortcut around the mathematics — it is what the normalisation is *for* — and it is
+the kind of thing a two-function presentation hides. The node's annotation now says it.
+
+## `α ≤ 1` needs subadditivity, not membership of `BF₀`
+
+The proof reads the bound off `F ∈ BF₀`, which the development cannot state. What the bound
+actually uses is subadditivity, `F(s+t) ≤ F(s) + F(t)`, which is
+`(1-e^{-su})(1-e^{-tu}) ≥ 0` rearranged under the Lévy integral and is therefore visible in `LE`
+directly. At `s = t = 1` it gives `2^α ≤ 2`. So the bound costs no bridge and no ledger entry —
+the same discipline `lem:selfdecomposable-increment` follows, and the third time in this chapter
+that reading the obligation rather than the citation kept a proof interface-free.
+
+## Next
+
+`PLAN`'s *available, nothing depends on them* row, minus the two just done: `prop:moments`,
+`prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.
+Re-check each against its node before starting.
