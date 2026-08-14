@@ -835,3 +835,28 @@ is the direction the chapter-11 lemma should have been stated in. Lean core thro
 #print axioms Hemigroup.hasCoreDerivL1_transL1
 #print axioms Hemigroup.hasCoreDerivL1_mconvL1
 #print axioms Hemigroup.tendsto_norm_transL1_sub
+
+/-! ### `lem:delay-core`, the two quantitative clauses
+
+The difference quotient `h⁻¹(T_hf - f) → -f'` in `X₀`, and the estimate
+`‖T_rf - f‖₁ ≤ min(2‖f‖₁, r‖f'‖₁)`. Both run on one pointwise identity,
+`f(t) - f(t-r) = ∫₀^r f'(t-u)du`, and one exchange of integrals in `ℝ≥0∞`.
+
+Two departures from the blueprint's route, neither changing the result. The estimate is reached
+without an `X`-valued Bochner integral — `T_rf - f = -∫₀^r T_ρf' dρ` — because going through
+`ℝ≥0∞` needs no integrability side condition. And the limit needs no separate treatment of the
+interval `[0,h)`: `norm_differenceQuotient_le` says the quotient is an *average* of the
+translation defects over `(0,h]`, so it cannot exceed their supremum, and `f(0) = 0` is used
+once, inside `HasCoreDeriv`, to make the identity hold at all. Lean core throughout.
+-/
+
+#print axioms Hemigroup.norm_eq_lintegral_of_ae
+#print axioms Hemigroup.HasCoreDeriv.sub_translate
+#print axioms Hemigroup.HasCoreDeriv.enorm_sub_translate_le
+#print axioms Hemigroup.HasCoreDeriv.enorm_differenceQuotient_le
+#print axioms Hemigroup.lintegral_lintegral_enorm_translate
+#print axioms Hemigroup.lintegral_lintegral_enorm_translate_sub
+#print axioms Hemigroup.norm_transL1_sub_eq_lintegral
+#print axioms Hemigroup.norm_transL1_sub_le
+#print axioms Hemigroup.norm_differenceQuotient_le
+#print axioms Hemigroup.tendsto_differenceQuotient

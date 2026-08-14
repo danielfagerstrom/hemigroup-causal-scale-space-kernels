@@ -79,18 +79,9 @@ not dense in `X`, and `coreL1_subset_causalL1` is the half of that already prove
 theorem dense_coreL1 : causalL1 ⊆ closure coreL1 := by
   sorry
 
-/-! Clauses 2 and 3 — invariance under `T_r` and under `Φ_{x,y}` — are **proved**, and have moved
-to `Hemigroup/DelayCore.lean` as `hasCoreDerivL1_transL1` and `hasCoreDerivL1_mconvL1`. -/
-
-/-- **The difference quotient**: `h⁻¹(T_h f - f) → -f'` in `X₀` as `h ↓ 0`. -/
-theorem tendsto_differenceQuotient {F G : X} (h : HasCoreDerivL1 F G) :
-    Tendsto (fun r : ℝ => r⁻¹ • (transL1 r F - F)) (𝓝[>] (0 : ℝ)) (𝓝 (-G)) := by
-  sorry
-
-/-- **The estimate**: `‖T_r f - f‖₁ ≤ min(2‖f‖₁, r‖f'‖₁)`. -/
-theorem norm_transL1_sub_le {r : ℝ} (hr : 0 ≤ r) {F G : X} (h : HasCoreDerivL1 F G) :
-    ‖transL1 r F - F‖ ≤ min (2 * ‖F‖) (r * ‖G‖) := by
-  sorry
+/-! Clauses 2–5 are **proved**, and have moved to `Hemigroup/DelayCore.lean`:
+`hasCoreDerivL1_transL1`, `hasCoreDerivL1_mconvL1`, `tendsto_differenceQuotient` and
+`norm_transL1_sub_le`. Density is what is left. -/
 
 /-- **`lem:delay-core` (Lemma 10.1).** `𝒟` is dense in `X₀` and invariant under every `T_r` and
 every `Φ_{x,y}`, the difference quotient converges to `-f'` in `X₀`, and the delay of a core

@@ -1463,3 +1463,37 @@ measure. The chapter-11 lemma is the special case, proved first because chapter 
 first. Nothing is broken by the duplication and it is not worth a refactor today; but it is an
 instance of a general fact having been proved in the narrow form its first consumer needed, which
 is the shape `Hemigroup/Subordinator.lean` was created to avoid.
+
+## The two quantitative clauses, proved — density is all that is left
+
+`tendsto_differenceQuotient` and `norm_transL1_sub_le`, in `Hemigroup/DelayCore.lean`. Lean core.
+`Skeleton/Chapter10.lean` holds one `sorry`, clause 1.
+
+Two departures from the blueprint's route, neither changing anything but both worth recording,
+because in each case the blueprint names a construction the obligation does not need.
+
+**The estimate needs no `X`-valued Bochner integral.** The blueprint gets `‖T_rf - f‖₁ ≤ r‖f'‖₁`
+from `T_rf - f = -∫₀^r T_ρ f' dρ` as a Bochner integral in `X₀`, plus `‖T_ρ f'‖₁ = ‖f'‖₁`. Working
+in `ℝ≥0∞` instead — bound the pointwise `‖f(t-r) - f(t)‖` by `∫_{(0,r]}‖f'(t-u)‖du` and exchange —
+gives the same constant with no integrability side condition and no vector-valued integral at all.
+The same move as chapter 2's Tonelli identity, and the same reason.
+
+**The limit needs no separate treatment of `[0,h)`.** The blueprint splits the difference quotient
+into an estimate on `[h,∞)` handled by continuity of translation and a boundary term on `[0,h)`
+handled by `f(0) = 0`. In the primitive model there is no boundary term: the identity
+`h⁻¹(T_hf - f) + f' = -h⁻¹∫₀^h (T_uf' - f')du` is exact on all of `ℝ`, so **the quotient is an
+average of translation defects and cannot exceed their supremum**, and `f(0) = 0` is spent once,
+inside `HasCoreDeriv`, making the identity hold at all rather than repairing it at an endpoint.
+That is `norm_differenceQuotient_le`, and stating it separately from the limit is what made the
+`ε` in the limit a two-line choice.
+
+Both are instances of the pattern this file keeps recording from the other side: *the classical
+derivation asks for more than the statement does*. Here what it asked for was a construction —
+a Bochner integral, an interval split — rather than a citation, which is a form the pattern had
+not taken before.
+
+## Next
+
+`dense_coreL1`, alone. `ρ_ε * f ∈ 𝒟` with derivative `ε⁻¹(f - T_ε f)`, plus
+`tendsto_bconv_approxId`; both halves are chapter 4's, and what has to be written is the
+identification of `∫_{(0,t]} ε⁻¹(f - T_ε f)` with `ρ_ε * f`.

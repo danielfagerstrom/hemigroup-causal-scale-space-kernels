@@ -66,7 +66,7 @@ namespace Hemigroup
 
 open MeasureTheory Set Filter
 
-open scoped Topology
+open scoped ENNReal Topology
 
 /-! ## The delay semigroup -/
 
@@ -425,5 +425,214 @@ theorem hasCoreDerivL1_mconvL1 (μ : Measure ℝ) [IsProbabilityMeasure μ] (hμ
   exact ⟨mconv μ f, mconv μ g, hfg.conv hμ,
     (coeFn_mconvL1 μ F).trans (mconv_congr_ae μ hF),
     (coeFn_mconvL1 μ G).trans (mconv_congr_ae μ hG)⟩
+
+/-! ## The two quantitative clauses
+
+Both run on one pointwise identity, `f(t) - f(t-r) = ∫₀^r g(t-u) du`, and one exchange of
+integrals in `ℝ≥0∞` — where no integrability side condition is needed. The estimate takes the
+crude bound `‖g(t-u)‖` on the inner integrand; the difference quotient subtracts `g(t)` first and
+takes `‖T_u g - g‖₁`, which continuity of translation makes small. That is the whole difference
+between them.
+-/
+
+/-- The `L¹` norm as a lower integral of a chosen representative. -/
+theorem norm_eq_lintegral_of_ae {a : X} {φ : ℝ → ℝ} (h : (a : ℝ → ℝ) =ᵐ[volume] φ) :
+    ‖a‖ = (∫⁻ t, ‖φ t‖ₑ).toReal := by
+  rw [Lp.norm_def, eLpNorm_one_eq_lintegral_enorm]
+  exact congrArg ENNReal.toReal (lintegral_congr_ae (h.mono fun t ht => by simp only [ht]))
+
+namespace HasCoreDeriv
+
+variable {f g : ℝ → ℝ}
+
+/-- **The pointwise identity both quantitative clauses run on**: `f(t) - f(t-r) = ∫₀^r g(t-u) du`.
+
+The reflection `u ↦ t - u` turns the right-hand side into `∫_{t-r}^t g`, and Chasles does the
+rest. No sign condition on `r` or `t`: `eq_intervalIntegral` holds at every real point, which is
+what it was extended to the negative half-line for. -/
+theorem sub_translate (h : HasCoreDeriv f g) (r t : ℝ) :
+    f t - f (t - r) = ∫ u in (0 : ℝ)..r, g (t - u) := by
+  have hcomp : (∫ u in (0 : ℝ)..r, g (t - u)) = ∫ x in (t - r)..(t - 0), g x :=
+    intervalIntegral.integral_comp_sub_left (fun x => g x) t
+  have hadd : (∫ x in (0 : ℝ)..(t - r), g x) + (∫ x in (t - r)..t, g x) = ∫ x in (0 : ℝ)..t, g x :=
+    intervalIntegral.integral_add_adjacent_intervals
+      h.integrable_deriv.intervalIntegrable h.integrable_deriv.intervalIntegrable
+  rw [hcomp, sub_zero, h.eq_intervalIntegral t, h.eq_intervalIntegral (t - r)]
+  linarith
+
+/-- The pointwise bound behind the estimate. -/
+theorem enorm_sub_translate_le (h : HasCoreDeriv f g) {r : ℝ} (hr : 0 ≤ r) (t : ℝ) :
+    ‖f (t - r) - f t‖ₑ ≤ ∫⁻ u in Ioc (0 : ℝ) r, ‖g (t - u)‖ₑ := by
+  have hid : f (t - r) - f t = -∫ u in (0 : ℝ)..r, g (t - u) := by
+    rw [← h.sub_translate r t]; ring
+  rw [hid, enorm_neg, intervalIntegral.integral_of_le hr]
+  exact enorm_integral_le_lintegral_enorm _
+
+/-- The pointwise bound behind the difference quotient. Subtracting `g(t)` inside the integral is
+the whole of the blueprint's `-h⁻¹∫_{t-h}^t (f'(ρ) - f'(t))dρ`. -/
+theorem enorm_differenceQuotient_le (h : HasCoreDeriv f g) {r : ℝ} (hr : 0 < r) (t : ℝ) :
+    ‖r⁻¹ * (f (t - r) - f t) + g t‖ₑ
+      ≤ ENNReal.ofReal r⁻¹ * ∫⁻ u in Ioc (0 : ℝ) r, ‖g (t - u) - g t‖ₑ := by
+  have hgt : IntervalIntegrable (fun u : ℝ => g (t - u)) volume 0 r :=
+    (h.integrable_deriv.comp_sub_left t).intervalIntegrable
+  have hsplit : (∫ u in (0 : ℝ)..r, (g (t - u) - g t))
+      = (f t - f (t - r)) - r * g t := by
+    rw [intervalIntegral.integral_sub hgt intervalIntegrable_const, ← h.sub_translate r t,
+      intervalIntegral.integral_const, sub_zero, smul_eq_mul]
+  have hid : r⁻¹ * (f (t - r) - f t) + g t = -(r⁻¹ * ∫ u in (0 : ℝ)..r, (g (t - u) - g t)) := by
+    rw [hsplit]
+    field_simp
+    ring
+  rw [hid, enorm_neg, enorm_mul, Real.enorm_eq_ofReal (by positivity),
+    intervalIntegral.integral_of_le hr.le]
+  gcongr
+  exact enorm_integral_le_lintegral_enorm _
+
+end HasCoreDeriv
+
+/-- The exchange of integrals behind the estimate: `∫∫_{(0,r]} ‖g(t-u)‖ = r·‖g‖₁`. -/
+theorem lintegral_lintegral_enorm_translate {g : ℝ → ℝ} (hgm : Measurable g) (r : ℝ) :
+    ∫⁻ t, (∫⁻ u in Ioc (0 : ℝ) r, ‖g (t - u)‖ₑ) = ENNReal.ofReal r * ∫⁻ w, ‖g w‖ₑ := by
+  have hm : AEMeasurable (Function.uncurry fun t u : ℝ => ‖g (t - u)‖ₑ)
+      (volume.prod (volume.restrict (Ioc (0 : ℝ) r))) := by
+    have : Measurable (Function.uncurry fun t u : ℝ => ‖g (t - u)‖ₑ) := by
+      unfold Function.uncurry
+      fun_prop
+    exact this.aemeasurable
+  rw [lintegral_lintegral_swap hm]
+  have hinner : ∀ u : ℝ, (∫⁻ t, ‖g (t - u)‖ₑ) = ∫⁻ w, ‖g w‖ₑ := fun u =>
+    lintegral_sub_right_eq_self (fun w => ‖g w‖ₑ) u
+  calc ∫⁻ u in Ioc (0 : ℝ) r, (∫⁻ t, ‖g (t - u)‖ₑ)
+      = ∫⁻ _u in Ioc (0 : ℝ) r, ∫⁻ w, ‖g w‖ₑ := by simp only [hinner]
+    _ = (∫⁻ w, ‖g w‖ₑ) * volume (Ioc (0 : ℝ) r) := setLIntegral_const _ _
+    _ = ENNReal.ofReal r * ∫⁻ w, ‖g w‖ₑ := by
+        rw [Real.volume_Ioc, sub_zero, mul_comm]
+
+/-- The exchange of integrals behind the difference quotient. The inner integral is the `L¹`
+distance from `g` to its own translate, which is what continuity of translation controls. -/
+theorem lintegral_lintegral_enorm_translate_sub {g : ℝ → ℝ} (hgm : Measurable g) (r : ℝ) :
+    ∫⁻ t, (∫⁻ u in Ioc (0 : ℝ) r, ‖g (t - u) - g t‖ₑ)
+      = ∫⁻ u in Ioc (0 : ℝ) r, ∫⁻ t, ‖g (t - u) - g t‖ₑ := by
+  have hm : AEMeasurable (Function.uncurry fun t u : ℝ => ‖g (t - u) - g t‖ₑ)
+      (volume.prod (volume.restrict (Ioc (0 : ℝ) r))) := by
+    have : Measurable (Function.uncurry fun t u : ℝ => ‖g (t - u) - g t‖ₑ) := by
+      unfold Function.uncurry
+      fun_prop
+    exact this.aemeasurable
+  exact lintegral_lintegral_swap hm
+
+/-- `‖T_u f - f‖₁` as a lower integral of a chosen representative. -/
+theorem norm_transL1_sub_eq_lintegral {G : X} {g : ℝ → ℝ} (hG : (G : ℝ → ℝ) =ᵐ[volume] g)
+    (u : ℝ) : ‖transL1 u G - G‖ = (∫⁻ t, ‖g (t - u) - g t‖ₑ).toReal := by
+  refine norm_eq_lintegral_of_ae ?_
+  filter_upwards [Lp.coeFn_sub (transL1 u G) G, coeFn_transL1 u G, hG,
+    (measurePreserving_sub_const u).quasiMeasurePreserving.ae hG] with t h1 h2 h3 h4
+  simp only [h1, Pi.sub_apply, h2, h3, h4]
+
+/-- **`lem:delay-core`, the estimate**: `‖T_r f - f‖₁ ≤ min(2‖f‖₁, r‖f'‖₁)`.
+
+The first half is the triangle inequality and the isometry, and holds for every `f ∈ X`. The
+second is where the core enters: `f(t-r) - f(t) = -∫₀^r f'(t-u)du`, and integrating that bound in
+`t` is one exchange in `ℝ≥0∞`. The blueprint reaches it as the integrated form of the difference
+quotient, through an `X`-valued Bochner integral `T_rf - f = -∫₀^r T_ρ f' dρ`; going through
+`ℝ≥0∞` instead needs no integrability side condition and no vector-valued integral, and gives the
+same constant. -/
+theorem norm_transL1_sub_le {r : ℝ} (hr : 0 ≤ r) {F G : X} (h : HasCoreDerivL1 F G) :
+    ‖transL1 r F - F‖ ≤ min (2 * ‖F‖) (r * ‖G‖) := by
+  obtain ⟨f, g, hfg, hF, hG⟩ := h
+  refine le_min ?_ ?_
+  · calc ‖transL1 r F - F‖ ≤ ‖transL1 r F‖ + ‖F‖ := norm_sub_le _ _
+      _ ≤ ‖F‖ + ‖F‖ := by gcongr; exact norm_transL1_le r F
+      _ = 2 * ‖F‖ := by ring
+  · have hLne : (∫⁻ w, ‖g w‖ₑ) ≠ ⊤ := by
+      have h2 := hfg.integrable_deriv.2
+      rw [hasFiniteIntegral_iff_enorm] at h2
+      exact h2.ne
+    have hbound : (∫⁻ t, ‖f (t - r) - f t‖ₑ) ≤ ENNReal.ofReal r * ∫⁻ w, ‖g w‖ₑ :=
+      calc (∫⁻ t, ‖f (t - r) - f t‖ₑ)
+          ≤ ∫⁻ t, ∫⁻ u in Ioc (0 : ℝ) r, ‖g (t - u)‖ₑ :=
+            lintegral_mono fun t => hfg.enorm_sub_translate_le hr t
+        _ = ENNReal.ofReal r * ∫⁻ w, ‖g w‖ₑ :=
+            lintegral_lintegral_enorm_translate hfg.measurable_deriv r
+    rw [norm_transL1_sub_eq_lintegral hF r, norm_eq_lintegral_of_ae hG]
+    refine le_trans (ENNReal.toReal_mono (ENNReal.mul_ne_top ENNReal.ofReal_ne_top hLne)
+      hbound) ?_
+    rw [ENNReal.toReal_mul, ENNReal.toReal_ofReal hr]
+
+/-- **The difference quotient, quantitatively.** If every delay in `(0,r]` moves `f'` by at most
+`ε` in `X₀`, then the quotient is within `ε` of `-f'`.
+
+This is the whole of the blueprint's limit argument except for the choice of `ε`: the identity
+`h⁻¹(T_hf - f) + f' = -h⁻¹∫₀^h (T_uf' - f')du` is exact, so the quotient is an *average* of the
+translation defects and cannot exceed their supremum. The blueprint's separate treatment of the
+interval `[0,h)`, where it uses `f(0) = 0`, is not needed in this form — `f(0) = 0` is already
+inside `HasCoreDeriv`, carried by the primitive, and what it buys is the identity itself. -/
+theorem norm_differenceQuotient_le {r : ℝ} (hr : 0 < r) {F G : X} (h : HasCoreDerivL1 F G)
+    {ε : ℝ} (hε : ∀ u ∈ Ioc (0 : ℝ) r, ‖transL1 u G - G‖ ≤ ε) :
+    ‖r⁻¹ • (transL1 r F - F) + G‖ ≤ ε := by
+  obtain ⟨f, g, hfg, hF, hG⟩ := h
+  have hε0 : 0 ≤ ε := le_trans (norm_nonneg _) (hε r ⟨hr, le_rfl⟩)
+  set N : ℝ → ℝ≥0∞ := fun u => ∫⁻ t, ‖g (t - u) - g t‖ₑ with hN
+  have hNne : ∀ u : ℝ, N u ≠ ⊤ := fun u => by
+    have hint : Integrable fun t => g (t - u) - g t :=
+      (hfg.integrable_deriv.comp_sub_right u).sub hfg.integrable_deriv
+    have h2 := hint.2
+    rw [hasFiniteIntegral_iff_enorm] at h2
+    exact h2.ne
+  have hNle : ∀ u ∈ Ioc (0 : ℝ) r, N u ≤ ENNReal.ofReal ε := fun u hu => by
+    rw [← ENNReal.ofReal_toReal (hNne u), ← norm_transL1_sub_eq_lintegral hG u]
+    exact ENNReal.ofReal_le_ofReal (hε u hu)
+  -- the chosen representative of the quotient
+  have hae : ((r⁻¹ • (transL1 r F - F) + G : X) : ℝ → ℝ)
+      =ᵐ[volume] fun t => r⁻¹ * (f (t - r) - f t) + g t := by
+    filter_upwards [Lp.coeFn_add (r⁻¹ • (transL1 r F - F)) G, Lp.coeFn_smul r⁻¹
+      (transL1 r F - F), Lp.coeFn_sub (transL1 r F) F, coeFn_transL1 r F, hF, hG,
+      (measurePreserving_sub_const r).quasiMeasurePreserving.ae hF] with t h1 h2 h3 h4 h5 h6 h7
+    simp only [h1, Pi.add_apply, h2, Pi.smul_apply, h3, Pi.sub_apply, h4, h5, h6, h7, smul_eq_mul]
+  have hbound : (∫⁻ t, ‖r⁻¹ * (f (t - r) - f t) + g t‖ₑ)
+      ≤ ENNReal.ofReal r⁻¹ * (ENNReal.ofReal ε * ENNReal.ofReal r) :=
+    calc (∫⁻ t, ‖r⁻¹ * (f (t - r) - f t) + g t‖ₑ)
+        ≤ ∫⁻ t, ENNReal.ofReal r⁻¹ * ∫⁻ u in Ioc (0 : ℝ) r, ‖g (t - u) - g t‖ₑ :=
+          lintegral_mono fun t => hfg.enorm_differenceQuotient_le hr t
+      _ = ENNReal.ofReal r⁻¹ * ∫⁻ t, ∫⁻ u in Ioc (0 : ℝ) r, ‖g (t - u) - g t‖ₑ :=
+          lintegral_const_mul' _ _ ENNReal.ofReal_ne_top
+      _ = ENNReal.ofReal r⁻¹ * ∫⁻ u in Ioc (0 : ℝ) r, N u := by
+          rw [lintegral_lintegral_enorm_translate_sub hfg.measurable_deriv r]
+      _ ≤ ENNReal.ofReal r⁻¹ * ∫⁻ _u in Ioc (0 : ℝ) r, ENNReal.ofReal ε :=
+          mul_le_mul' le_rfl (setLIntegral_mono' measurableSet_Ioc hNle)
+      _ = ENNReal.ofReal r⁻¹ * (ENNReal.ofReal ε * ENNReal.ofReal r) := by
+          rw [setLIntegral_const, Real.volume_Ioc, sub_zero]
+  rw [norm_eq_lintegral_of_ae hae]
+  refine le_trans (ENNReal.toReal_mono (by finiteness) hbound) (le_of_eq ?_)
+  rw [ENNReal.toReal_mul, ENNReal.toReal_mul, ENNReal.toReal_ofReal (by positivity),
+    ENNReal.toReal_ofReal hε0, ENNReal.toReal_ofReal hr.le]
+  field_simp
+
+/-- **`lem:delay-core`, the difference quotient**: `h⁻¹(T_h f - f) → -f'` in `X₀` as `h ↓ 0`.
+
+Continuity of translation supplies the `ε`; `norm_differenceQuotient_le` does the rest, since the
+quotient is an average of translation defects over `(0,h]` and every one of them is small once `h`
+is. -/
+theorem tendsto_differenceQuotient {F G : X} (h : HasCoreDerivL1 F G) :
+    Tendsto (fun r : ℝ => r⁻¹ • (transL1 r F - F)) (𝓝[>] (0 : ℝ)) (𝓝 (-G)) := by
+  rw [tendsto_iff_norm_sub_tendsto_zero]
+  refine Metric.tendsto_nhds.mpr fun δ hδ => ?_
+  obtain ⟨η, hη, hηb⟩ := Metric.eventually_nhds_iff.mp
+    (Metric.tendsto_nhds.mp (tendsto_norm_transL1_sub G) (δ / 2) (by linarith))
+  have h1 : ∀ᶠ r : ℝ in 𝓝 (0 : ℝ), dist r 0 < η :=
+    Metric.eventually_nhds_iff.mpr ⟨η, hη, fun _ hx => hx⟩
+  filter_upwards [h1.filter_mono nhdsWithin_le_nhds, self_mem_nhdsWithin] with r hrη hrpos
+  have hr : (0 : ℝ) < r := hrpos
+  have hrlt : r < η := by rwa [Real.dist_eq, sub_zero, abs_of_pos hr] at hrη
+  have hbound : ‖r⁻¹ • (transL1 r F - F) + G‖ ≤ δ / 2 := by
+    refine norm_differenceQuotient_le hr h fun u hu => ?_
+    have hdu : dist u (0 : ℝ) < η := by
+      rw [Real.dist_eq, sub_zero, abs_of_pos hu.1]
+      linarith [hu.2]
+    have hlt := hηb hdu
+    rw [Real.dist_eq, sub_zero, abs_norm] at hlt
+    exact hlt.le
+  simp only [sub_neg_eq_add, Real.dist_eq, sub_zero, abs_norm]
+  linarith
 
 end Hemigroup
