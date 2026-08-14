@@ -293,6 +293,73 @@ theorem norm_phillipsGenerator_le {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x
           (integral_mono_ae (F.integrable_sub_transL1 hν hx hAB).norm hdom hbound)
     _ = F.b₀ * ‖B‖ + x⁻¹ * ∫ r, min (2 * ‖A‖) (x * r * ‖B‖) ∂ν := by rw [hchange]
 
+/-! ## `lem:generator-properties`(3) and (4)
+
+Both run on clause (1) and one Mathlib theorem apiece, and the pair is worth reading together
+because the theorems are the two ways an operator meets a Bochner integral. (3) pulls a
+*continuous linear map* through it — `ContinuousLinearMap.integral_comp_comm`, which needs only
+the integrability clause (1) supplies. (4) differentiates nothing and pulls nothing through: it is
+dominated convergence in the parameter, `continuousAt_of_dominated`, with clause (1)'s bound
+re-used as the dominating function.
+
+That (4) can re-use the bound at all is what `phillipsGenerator_eq_smul_integral` buys. In the
+`ν_x` form the scale sits in the *measure*, where a limit in `x` has nothing to dominate; in the
+dilated form it sits in the integrand, and the bound `min(2‖f‖₁, xr‖f'‖₁)` is monotone in `x`, so
+one bound at the top of a neighbourhood covers the whole neighbourhood.
+-/
+
+/-- **`lem:generator-properties`(3), commutation**: `φ_x(∂_t)` commutes with every `Φ` on `𝒟`.
+
+Stated for an arbitrary finite measure. The blueprint says "every `Φ_{y,z}`", and neither
+causality nor normalisation is used — `mconvL1_transL1` (chapter 3, (A2) for `mconvL1`) holds for
+any finite measure and the rest is linearity — so the clause is proved off the constructed family
+entirely, and with it off the ledger. -/
+theorem mconvL1_phillipsGenerator {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ} (hx : 0 < x)
+    {A B : X} (hAB : HasCoreDerivL1 A B) (μ : Measure ℝ) [IsFiniteMeasure μ] :
+    mconvL1 μ (F.phillipsGenerator ν x A B)
+      = F.phillipsGenerator ν x (mconvL1 μ A) (mconvL1 μ B) := by
+  rw [phillipsGenerator, phillipsGenerator, map_add, map_smul,
+    ← ContinuousLinearMap.integral_comp_comm _ (F.integrable_sub_transL1 hν hx hAB)]
+  congr 1
+  refine integral_congr_ae (.of_forall fun r => ?_)
+  change mconvL1 μ (A - transL1 r A) = mconvL1 μ A - transL1 r (mconvL1 μ A)
+  rw [map_sub, mconvL1_transL1]
+
+/-- **`lem:generator-properties`(4), continuity**: `x ↦ φ_x(∂_t)f` is continuous from `(0,∞)` to
+`X₀`.
+
+Dominated convergence in the dilated form. The dominating function is clause (1)'s, evaluated at
+the top of a neighbourhood of the point: `min(2‖f‖₁, xr‖f'‖₁)` increases in `x`, so a single
+`min(2‖f‖₁, 2x₀r‖f'‖₁)` dominates every `x < 2x₀` at once — which is the sense in which the
+blueprint's "for `x` in a compact subset of `(0,∞)`" is discharged without ever forming a compact
+set. -/
+theorem continuousOn_phillipsGenerator {ν : Measure ℝ} (hν : F.HasLevyTail ν) {A B : X}
+    (hAB : HasCoreDerivL1 A B) :
+    ContinuousOn (fun y : ℝ => F.phillipsGenerator ν y A B) (Ioi 0) := by
+  have hr : ∀ y : ℝ, Continuous fun r : ℝ => A - transL1 (y * r) A := fun y =>
+    (continuous_sub_transL1 A).comp (by fun_prop)
+  have hy : ∀ r : ℝ, Continuous fun y : ℝ => A - transL1 (y * r) A := fun r =>
+    (continuous_sub_transL1 A).comp (by fun_prop)
+  have key : ∀ y₀ : ℝ, 0 < y₀ →
+      ContinuousAt (fun y : ℝ => ∫ r, (A - transL1 (y * r) A) ∂ν) y₀ := by
+    intro y₀ hy₀
+    refine continuousAt_of_dominated
+      (bound := fun r => min (2 * ‖A‖) (2 * y₀ * ‖B‖ * r))
+      (.of_forall fun y => (hr y).aestronglyMeasurable) ?_
+      (F.integrable_min_const_mul hν (by positivity) (by positivity))
+      (.of_forall fun r => (hy r).continuousAt)
+    filter_upwards [Ioo_mem_nhds (show y₀ / 2 < y₀ by linarith)
+      (show y₀ < 2 * y₀ by linarith)] with y hyw
+    filter_upwards [hν.1.ae_nonneg] with r hrnn
+    rw [norm_sub_rev]
+    refine le_trans (norm_transL1_sub_le (by nlinarith [hyw.1]) hAB) (min_le_min le_rfl ?_)
+    nlinarith [mul_nonneg hrnn (norm_nonneg B), hyw.2]
+  refine ContinuousOn.congr ?_ fun y hyi =>
+    F.phillipsGenerator_eq_smul_integral (mem_Ioi.mp hyi) ν A B
+  intro y hyi
+  have hy0 : 0 < y := mem_Ioi.mp hyi
+  exact (continuousAt_const.add ((continuousAt_inv₀ hy0.ne').smul (key y hy0))).continuousWithinAt
+
 end SelfDecomposableExponent
 
 end Hemigroup

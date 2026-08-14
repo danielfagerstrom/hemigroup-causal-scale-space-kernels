@@ -2064,3 +2064,69 @@ Clause (3) — `ContinuousLinearMap.integral_comp_comm` against `mconvL1 μ`, wh
 now supplied the integrability hypothesis for — then (4), then (2) and (5). Or `PLAN`'s
 *available* row: `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
 `lem:potential-kernel-scaling`.
+
+---
+
+# `lem:generator-properties`(3) and (4), proved — 2026-08-14
+
+`Hemigroup/PhillipsGenerator.lean`. **Lean core.** `Skeleton/Chapter10.lean` is down to two
+clauses, (2) and (5) — the two the skeleton commit priced as the bulk. Trust boundary unchanged;
+the node stays `\notready`.
+
+## They are the two ways an operator meets a Bochner integral
+
+Worth stating as a pair, because the prose writes both as routine and Lean makes the asymmetry
+sharp:
+
+* **(3) pulls a continuous linear map through the integral.** `mconvL1 μ` *is* a
+  `X →L[ℝ] X`, so `ContinuousLinearMap.integral_comp_comm` applies, and its only hypothesis is the
+  integrability clause (1) had already supplied. Four lines.
+* **(4) pulls nothing through.** It is dominated convergence in the *parameter*,
+  `continuousAt_of_dominated`, and what it needs is a bound uniform on a neighbourhood.
+
+And (2), still open, is the case where the first route is unavailable — `Lap` is not a bounded
+functional on `L¹(ℝ)` — which is exactly why it costs more than (3) despite the blueprint writing
+both as "Fubini" and "pull through".
+
+## Two things the proofs said that the statements did not
+
+**(3) needs neither causality nor normalisation of `Φ`.** The blueprint says "commutes with every
+`Φ_{y,z}`"; the skeleton statement had already generalised to an arbitrary *causal probability*
+measure, on the grounds that this is what the proof uses. The proof uses less still: for **any
+finite measure**. `mconvL1_transL1` plus linearity is the whole argument, and neither half sees
+`IsCausal` or `IsProbabilityMeasure`. So the hypothesis was narrowed twice, once when the statement
+was written and once when it was proved, and the second narrowing was invisible until the proof
+existed. That is an argument for writing the statement first *and* for re-reading it after.
+
+**(4) never forms a compact set.** The blueprint dominates "for `x` in a compact subset of
+`(0,∞)`". What the proof needs is one bound valid on a neighbourhood, and
+`min(2‖f‖₁, xr‖f'‖₁)` is *monotone in `x`*, so evaluating it at the top of an interval
+`(x₀/2, 2x₀)` dominates the whole interval. Compactness was standing in for monotonicity. Same
+shape as `lem:delay-core`'s two departures — the classical derivation asking for a construction
+the obligation does not need — and the third time in this chapter.
+
+**And the dilated form is what makes that possible at all.** In the `ν_x` form the scale sits in
+the *measure*, where a limit in `x` has nothing to dominate; `phillipsGenerator_eq_smul_integral`
+moves it into the integrand. The definition file's docstring had guessed this ("puts the
+`x`-dependence in the integrand where dominated convergence can see it") before either clause was
+attempted; it is right, and it is the only place in the chapter where which of the two displayed
+forms one works in actually decides whether a proof exists.
+
+## The duplicate, caught by the compiler
+
+`mconvL1_transL1` was written here and rejected: it has been in `Hemigroup/Family.lean` since
+chapter 3, as "(A2) for `mconvL1`", with the same statement and essentially the same proof. Third
+time this file has recorded the shape — after `continuous_transL1` and `approxId/tendsto_bconv_
+approxId` — and the first time it cost anything, because the duplicate was *written* rather than
+merely re-derived in the estimate. The lesson is unchanged and the practice evidently is not:
+**grep the development before writing a lemma about its own operators**, not only before pricing
+one. Cheap here, since the name collided and the compiler said so at once; a slightly different
+name would have shipped.
+
+## Next
+
+(2) and (5), the two priced as the bulk, and (2) first — (5) consumes its transform identity.
+(2) wants the `Lap`/Bochner exchange on causal representatives in `[0,∞]`, plus the scalar
+identity `b₀s + ∫(1-e^{-sr})ν_x(dr) = sF'(xs)`, which is the layer cake against
+`hasDerivAt_toRealExponent`. (5) additionally wants `mconv_eq_setIntegral_mconv` generalised to a
+locally finite causal measure.

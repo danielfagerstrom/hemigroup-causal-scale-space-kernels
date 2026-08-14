@@ -21,8 +21,8 @@ a definition has no `sorry` to carry.
 | (1) convergence | `integrable_sub_transL1` | **proved**, `Hemigroup/PhillipsGenerator.lean` |
 | (1) the bound | `norm_phillipsGenerator_le` | **proved**, same file |
 | (2) the symbol | `laplaceFun_phillipsGenerator` | open — Fubini and `lem:memory-kernel` |
-| (3) commutation | `mconvL1_phillipsGenerator` | open — `ContinuousLinearMap.integral_comp_comm` |
-| (4) continuity in `x` | `continuousOn_phillipsGenerator` | open — dominated convergence |
+| (3) commutation | `mconvL1_phillipsGenerator` | **proved**, same file |
+| (4) continuity in `x` | `continuousOn_phillipsGenerator` | **proved**, same file |
 | (5) the memory-kernel form | `mconv_memoryKernel_ae_eq` | open — transform, then uniqueness |
 | the node | `generator_properties` | `sorry`-free collation |
 
@@ -59,18 +59,11 @@ not carry.
 
 ## Work order, and where the cost actually is
 
-Clause (1) is **done** and has moved; it cost what the estimate said, and the estimate was that
-`integrable_min_one_id` — `∫(1∧r)ν(dr) < ∞` — is one layer cake and not the integration by parts
-the blueprint's proof names, with the `k(1) < ∞` half of that argument's hypothesis unused. It is.
-The rest: (3), (4) moderate; (2) and (5) the bulk.
+Clauses (1), (3) and (4) are **done** and have moved, each at the estimated cost: (1) one layer
+cake, (3) `ContinuousLinearMap.integral_comp_comm` against `mconvL1 μ` with (1) supplying its
+integrability hypothesis, (4) `continuousAt_of_dominated` with (1)'s bound re-used as the
+dominating function. What is left is the bulk, and it is the two clauses that were priced as such.
 
-3. (3) is `ContinuousLinearMap.integral_comp_comm` applied to `mconvL1 μ`, which **is** a
-   continuous linear map, together with `hasCoreDerivL1_mconvL1` to know the right-hand side is
-   the generator of a core element. It needs (1) for the integrability hypothesis.
-4. (4) is dominated convergence in the dilated form `phillipsGenerator_eq_smul_integral`, where
-   the `x`-dependence sits in the integrand: continuity in `x` for each `r` is
-   `continuous_transL1`, and the dominating function is the (1)-bound with `x` ranging over a
-   compact subset of `(0,∞)`.
 5. (2) is the one to price honestly. `Lap` is **not** a bounded functional on `L¹(ℝ)`, `e^{-st}`
    being unbounded to the left of the origin, so `ContinuousLinearMap.integral_comp_comm` — which
    discharges (3) outright — does not apply here. The exchange has to be done on causal
@@ -130,23 +123,6 @@ theorem laplaceFun_phillipsGenerator (hν : F.HasLevyTail ν) (hx : 0 < x)
       = F.symbol x s * laplaceFun ((A : X) : ℝ → ℝ) s := by
   sorry
 
-/-- **`lem:generator-properties`(3), commutation**: `φ_x(∂_t)` commutes with every `Φ_{y,z}` on
-`𝒟`.
-
-Stated for an arbitrary causal probability measure, which is what the proof uses and what keeps
-the clause off ledger A17. -/
-theorem mconvL1_phillipsGenerator (hν : F.HasLevyTail ν) (hx : 0 < x)
-    (hAB : HasCoreDerivL1 A B) (μ : Measure ℝ) [IsProbabilityMeasure μ] (hμ : IsCausal μ) :
-    mconvL1 μ (F.phillipsGenerator ν x A B)
-      = F.phillipsGenerator ν x (mconvL1 μ A) (mconvL1 μ B) := by
-  sorry
-
-/-- **`lem:generator-properties`(4), continuity**: `x ↦ φ_x(∂_t)f` is continuous from `(0,∞)` to
-`X₀`. -/
-theorem continuousOn_phillipsGenerator (hν : F.HasLevyTail ν) (hAB : HasCoreDerivL1 A B) :
-    ContinuousOn (fun y : ℝ => F.phillipsGenerator ν y A B) (Ioi 0) := by
-  sorry
-
 /-- **`lem:generator-properties`(5), the memory-kernel form**: `κ^{(x)} * f` agrees a.e. with the
 primitive of `φ_x(∂_t)f`, so the Phillips form coincides on `𝒟` with chapter 9's operator.
 
@@ -189,8 +165,8 @@ theorem generator_properties (F : Hemigroup.SelfDecomposableExponent) {ν : Meas
             ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) ρ) :=
   ⟨⟨F.integrable_sub_transL1 hν hx hAB, F.norm_phillipsGenerator_le hν hx hAB⟩,
    fun _ hs => laplaceFun_phillipsGenerator F hν hx hAB hs,
-   fun μ _ hμ => mconvL1_phillipsGenerator F hν hx hAB μ hμ,
-   continuousOn_phillipsGenerator F hν hAB,
+   fun μ _ _ => F.mconvL1_phillipsGenerator hν hx hAB μ,
+   F.continuousOn_phillipsGenerator hν hAB,
    fun _ _ hfg hA hB => mconv_memoryKernel_ae_eq F hν hx hfg hA hB⟩
 
 end Skeleton

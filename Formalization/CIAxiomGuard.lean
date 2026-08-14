@@ -942,6 +942,30 @@ mass at the origin needs.
 #print axioms Hemigroup.SelfDecomposableExponent.integrable_sub_transL1
 #print axioms Hemigroup.SelfDecomposableExponent.norm_phillipsGenerator_le
 
+/-! ### `lem:generator-properties` (10.3), clauses (3) and (4)
+
+Commutation with `Φ`, and continuity in the scale. **Lean core**, and (3) more emphatically so
+than the parameterisation alone buys: it is stated for an arbitrary **finite** measure, neither
+causality nor normalisation being used anywhere in it. The blueprint says "commutes with every
+`Φ_{y,z}`", and what the proof needs is `mconvL1_transL1` — chapter 3's (A2) for `mconvL1`, which
+holds for any finite measure — plus linearity.
+
+The two are worth reading together, because their Mathlib inputs are the two ways an operator can
+meet a Bochner integral. (3) pulls a *continuous linear map* through it,
+`ContinuousLinearMap.integral_comp_comm`, whose only hypothesis is the integrability clause (1)
+supplies. (4) pulls nothing through: it is dominated convergence in the parameter,
+`continuousAt_of_dominated`, with clause (1)'s bound re-used as the dominating function.
+
+That (4) can re-use that bound is what `phillipsGenerator_eq_smul_integral` is for. In the `ν_x`
+form the scale sits in the measure, where a limit in `x` has nothing to dominate; in the dilated
+form it sits in the integrand, and `min(2‖f‖₁, xr‖f'‖₁)` is monotone in `x`, so one bound at the
+top of a neighbourhood covers the neighbourhood — the blueprint's "for `x` in a compact subset of
+`(0,∞)`" discharged without forming a compact set.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.mconvL1_phillipsGenerator
+#print axioms Hemigroup.SelfDecomposableExponent.continuousOn_phillipsGenerator
+
 /-! ### `Ein`, the entire exponential integral
 
 Mathlib has no exponential integral of any kind — no `Ein`, no `Ei`, no `E₁` — so `ein` is
