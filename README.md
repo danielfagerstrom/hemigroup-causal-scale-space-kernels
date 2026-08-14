@@ -40,7 +40,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Fifty-six nodes carry `\lean{...}\leanok`:
+Fifty-seven nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -50,7 +50,7 @@ Fifty-six nodes carry `\lean{...}\leanok`:
 | 5 The cascade | `lem:additivity`, `thm:increments-bernstein`, `cor:strict-monotonicity` — chapter complete |
 | 6 Scale covariance | `lem:covariance-laplace`, `lem:action-rigidity`, `prop:canonical-gauge` — chapter complete |
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves; and `lem:admissible-cone`, `lem:dickman-superposition` — the two clauses of `prop:extreme-rays` that need neither uniqueness of the Lévy–Khintchine triple nor a Choquet argument, so that the cone and the `Ein` superposition are machine-checked and only the bijection and the extreme rays are not; and `cor:semigroup-case` — the one-parameter case, recovering the 2005 stable kernels `F(s) = s^α`, `0 < α ≤ 1`, together with the pure delay at `α = 1` |
-| 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family` |
+| 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family`, `prop:moments` — the mean delay `E T_x = xF'(0+)` in `[0,∞]`, with no finiteness hypothesis on either side: monotone convergence twice and a squeeze, in place of the differentiation at the origin the blueprint's proof performs |
 | 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
 | 10 The scale-Cauchy problem | `lem:delay-core` — the core `𝒟`, dense in `X₀` and invariant under the delay semigroup and under every `Φ`, with the `L¹` difference quotient and the two-sided delay estimate. That is the whole of the chapter that does not need C₀-semigroup theory |
 | 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals`, `thm:signaling-form` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
@@ -69,15 +69,17 @@ Where the work stands. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; 
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable. What is schedulable today is the row `PLAN` calls *available, nothing depends on
 them* — `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
-`lem:potential-kernel-scaling`, and the one open clause of `prop:moments` below. Everything else:
+`lem:potential-kernel-scaling`. Everything else:
 
-0. **`prop:moments` (8.4) is stated, two clauses of three proved.** The mean rate
-   `F'(0+) = b₀ + ∫₀^∞ k` is `[0,∞]`-valued — the proposition's second clause is about when it is
-   infinite — so `meanRate_ne_top_iff` carries no finiteness hypothesis, and the influence
-   curve's linearity is `lintegral_id_kernel_zero`, which does **not** depend on the mean-delay
-   identity: `μ_{0,x}` is the law of `xT₁`, so every moment scales by a change of variables. What
-   is open is `E T₁ = F'(0+)`, whose only step beyond monotone convergence is a squeeze; the work
-   order is in `Formalization/Skeleton/Chapter8.lean`.
+0. **`prop:moments` (8.4) is done**, and the skeleton is down to one file's worth of open
+   statements. The mean rate `F'(0+) = b₀ + ∫₀^∞ k` is `[0,∞]`-valued — the proposition's second
+   clause is about when it is infinite — so `meanRate_ne_top_iff` carries no finiteness
+   hypothesis, and the influence curve's linearity is `lintegral_id_kernel_zero`, which does
+   **not** depend on the mean-delay identity: `μ_{0,x}` is the law of `xT₁`, so every moment
+   scales by a change of variables. The identity `E T₁ = F'(0+)` itself needs no differentiation
+   and no Tauberian theorem, the difference quotient `(1-e^{-st})/s` being *monotone* in `s`; what
+   the `[0,∞]` reading buys is that the infinite case — the one the second clause exists to
+   describe — comes out of the same argument rather than being excluded from it.
 
 0. **`prop:extreme-rays` is split and half of it is done.** The node asserted four things at four
    prices and reported the maximum; the cone and the `Ein` superposition are now

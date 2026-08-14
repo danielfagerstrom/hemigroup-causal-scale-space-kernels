@@ -147,6 +147,60 @@ theorem tendsto_einIntegrand_nhdsNE_zero :
   rw [slope_def_field, einIntegrand]
   simp
 
+/-! ## The difference quotient at the origin
+
+`s \mapsto (1 - e^{-st})/s` is the difference quotient whose limit at `s = 0` is the mean delay,
+and written through `einIntegrand` it is `t·einIntegrand(st)`: nondecreasing as `s` decreases by
+`antitoneOn_einIntegrand`, with limit `t` by `tendsto_einIntegrand_nhdsNE_zero`. Both are stated
+below along a *sequence* of scales, which is the form monotone convergence consumes — and stating
+them here rather than at the point of use is what keeps `prop:moments` free of any analysis of its
+own.
+-/
+
+/-- **The difference quotient, through `Ein`'s integrand**: `(1 - e^{-st})/s = t·einIntegrand(st)`.
+
+No hypothesis, and the degenerate cases are why: at `t = 0` both sides are `0`, and at `s = 0`
+Lean's `x / 0 = 0` makes both sides `0` again. -/
+theorem quotient_eq_mul_einIntegrand (s t : ℝ) :
+    (1 - Real.exp (-(s * t))) / s = t * einIntegrand (s * t) := by
+  rw [mul_comm s t]
+  exact dilate_einIntegrand t s
+
+/-- **The quotient grows as the scale shrinks** — `antitoneOn_einIntegrand` with the factor `t`
+carried along. The `t = 0` case is separated because the antitonicity is stated on `(0,∞)`, and
+there the quotient is `0` at every scale. -/
+theorem mul_einIntegrand_le_of_le {t : ℝ} (ht : 0 ≤ t) {s s' : ℝ} (hs' : 0 < s') (hss : s' ≤ s) :
+    t * einIntegrand (s * t) ≤ t * einIntegrand (s' * t) := by
+  rcases ht.eq_or_lt with rfl | ht'
+  · simp
+  · refine mul_le_mul_of_nonneg_left ?_ ht
+    exact antitoneOn_einIntegrand (mem_Ioi.mpr (mul_pos hs' ht'))
+      (mem_Ioi.mpr (mul_pos (hs'.trans_le hss) ht')) (by nlinarith)
+
+/-- `einIntegrand(s_n t) → 1` along any sequence of positive scales tending to `0`.
+
+The sequence stays in `{0}ᶜ` because `t > 0`, which is what lets
+`tendsto_einIntegrand_nhdsNE_zero` — a punctured limit, since the junk value at the origin is `0`
+and not `1` — be composed with it. -/
+theorem tendsto_einIntegrand_mul {t : ℝ} (ht : 0 < t) {s : ℕ → ℝ} (hpos : ∀ n, 0 < s n)
+    (hlim : Filter.Tendsto s Filter.atTop (nhds 0)) :
+    Filter.Tendsto (fun n => einIntegrand (s n * t)) Filter.atTop (nhds 1) := by
+  have hzero : Filter.Tendsto (fun n => s n * t) Filter.atTop (nhds 0) := by
+    simpa using hlim.mul_const t
+  have hmul : Filter.Tendsto (fun n => s n * t) Filter.atTop (nhdsWithin 0 {(0 : ℝ)}ᶜ) := by
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hzero
+      (Filter.Eventually.of_forall fun n => ?_)
+    simpa using (mul_pos (hpos n) ht).ne'
+  simpa [Function.comp_def] using tendsto_einIntegrand_nhdsNE_zero.comp hmul
+
+/-- And the quotient itself converges to `t` — the limit the mean delay is read off from. -/
+theorem tendsto_mul_einIntegrand {t : ℝ} (ht : 0 ≤ t) {s : ℕ → ℝ} (hpos : ∀ n, 0 < s n)
+    (hlim : Filter.Tendsto s Filter.atTop (nhds 0)) :
+    Filter.Tendsto (fun n => t * einIntegrand (s n * t)) Filter.atTop (nhds t) := by
+  rcases ht.eq_or_lt with rfl | ht'
+  · simp
+  · simpa using (tendsto_einIntegrand_mul ht' hpos hlim).const_mul t
+
 /-- The dilated integrand is nonnegative on the half-line. -/
 theorem dilate_einIntegrand_nonneg {s : ℝ} (hs : 0 ≤ s) {u : ℝ} (hu : 0 ≤ u) :
     0 ≤ (1 - Real.exp (-(s * u))) / u := by

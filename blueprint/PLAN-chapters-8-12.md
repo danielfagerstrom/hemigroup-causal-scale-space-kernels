@@ -1737,3 +1737,78 @@ derivative`, here).
 
 `PLAN`'s *available* row, minus what is done: `mean_delay_unit` (the clause above),
 `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.
+
+---
+
+# `prop:moments` proved entire — 2026-08-14
+
+`Hemigroup/MeanDelay.lean`, with the four facts about the difference quotient in
+`Hemigroup/Ein.lean`. The node is `\lean{Hemigroup.moments}\leanok`; **57 nodes `\leanok`**, one
+`\notready` (`prop:pair-regularity`). `Skeleton/Chapter8.lean` held only the open clause and the
+collation, so it is gone, on the precedent of `Skeleton/Chapter12.lean`. The repo's only avoidable
+`sorry` is now discharged: what remains is `hasCMDensity_iff`, which is ledger A9 by design.
+
+Trust boundary unchanged. The identity spends **A17**, through `lawT₁ = μ_{0,1}`, as everything
+that quantifies over the constructed family does; the monotone convergence *inside* the Lévy
+integral (`tendsto_ofReal_inv_mul_exponent`) is Lean core, which is the reading one wants — the
+Lévy side is a statement about `k` alone and does not know the family exists.
+
+## The transform is used once, and everything else is monotone convergence
+
+The three-step work order held, and the proportions it predicted did not. Stated as declarations:
+
+| step | declaration | what it is |
+|---|---|---|
+| the law's quotient | `tendsto_lintegral_quotient_lawT₁` | monotone convergence |
+| the exponent's quotient | `tendsto_ofReal_inv_mul_exponent` | monotone convergence |
+| the two are the same quotient | `lintegral_quotient_lawT₁` | the transform, once |
+| the squeeze | inside `lintegral_id_lawT₁` | `we^{-w} ≤ 1-e^{-w} ≤ w` |
+
+`lintegral_quotient_lawT₁` is the only place the transform appears at all: it evaluates
+`∫(1-e^{-st})/s \,d\mu_{0,1}` as `(1-e^{-F(s)})/s`, and the `ℝ≥0∞` subtraction it needs
+(`1 - \mathrm{laplaceL}`) is bounded above by the probability mass, so `lintegral_sub` applies with
+no hypothesis beyond causality. After that the two sides are two sequences of `ofReal`s of real
+numbers, and the argument is about `w_n = F(s_n)` and nothing else.
+
+## The `⊤` case cost nothing, and the reason is worth stating precisely
+
+The plan expected the infinite case to be most of the work, and the route it sketched — take both
+suprema and reach `⨆ A ≥ B_m` for each `m` through `ENNReal.mul_iSup` — would have needed an index
+shift, because `A_n ≥ B_m · c_n` holds only for `n ≥ m`. **Working with `Tendsto` instead of `⨆`
+removes the shift and the case split together.** Both sequences are monotone, so their limits are
+their suprema and monotone convergence hands them over directly; and
+
+    ENNReal.Tendsto.mul : Tendsto ma f (𝓝 a) → (a ≠ 0 ∨ b ≠ ⊤) →
+                          Tendsto mb f (𝓝 b) → (b ≠ 0 ∨ a ≠ ⊤) → Tendsto (ma * mb) f (𝓝 (a*b))
+
+has **both** side conditions discharged by `b = 1` alone, whatever `a` is. So `B_n · c_n → F'(0+)`
+with no finiteness hypothesis, and `le_of_tendsto_of_tendsto'` closes the inequality in the
+infinite case by the same line as in the finite one. The `0 · ⊤` pathology that makes `ℝ≥0∞`
+multiplication discontinuous never arises, because the factor being killed tends to `1` and not
+to `0`.
+
+That is the general lesson and not a trick: *in `ℝ≥0∞`, a squeeze whose gap is multiplicative and
+tends to `1` is unconditional, where a squeeze whose gap is additive would need the two sides to be
+finite before they could be subtracted.* The classical proof differentiates and therefore works
+additively, which is exactly why it has to assume the mean finite; the `[0,∞]` statement is not a
+weakening of that proof but a different one.
+
+## Two smaller things
+
+**The quotient identity needs no hypothesis at all.** `(1-e^{-st})/s = t·einIntegrand(st)` is
+`dilate_einIntegrand` with the two arguments exchanged, and it holds at `s = 0` and at `t = 0`
+alike because Lean's `x / 0 = 0` makes both sides vanish in each. So neither monotone-convergence
+step carries a guard, and the `t = 0` atom the law may have — nothing here excludes it, (H) not
+being assumed — passes through untouched.
+
+**`positivity` does not see through a `private def`.** `0 ≤ (s_n)⁻¹` had to be supplied as
+`inv_nonneg.mpr (hpos n).le` in four places. Not a problem, but the failure mode is a bare
+"failed to prove positivity" with no indication that the definition is the reason, which is worth
+knowing before it is met at scale.
+
+## Next
+
+`PLAN`'s *available, nothing depends on them* row, minus what is done: `prop:stable-moments`,
+`prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`. And chapter 10's
+`def:phillips-generator` and `lem:generator-properties`, whose blocked status is re-examined in
+the next entry.

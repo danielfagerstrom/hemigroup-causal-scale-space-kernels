@@ -956,10 +956,11 @@ apply and an odd extension is needed; the multiplicative one conjugates by `exp`
 #print axioms Hemigroup.CascadeCore.G_eq_mul_of_isOneParameter
 #print axioms Hemigroup.CascadeCore.semigroup_case
 
-/-! ### `prop:moments` (8.4), the two clauses that are proved
+/-! ### `prop:moments` (8.4), entire
 
 The mean rate `F'(0+) = b₀ + ∫₀^∞ k` is `[0,∞]`-valued, because the proposition's second clause is
-precisely about when it is infinite; no finiteness hypothesis appears anywhere.
+precisely about when it is infinite; no finiteness hypothesis appears anywhere, and the identity
+`E T₁ = F'(0+)` is proved in `[0,∞]` with both sides allowed to be `⊤`.
 
 `lintegral_id_kernel_zero` is the influence curve's linearity, and it is worth its own line
 because it does **not** depend on the mean-delay identity — the blueprint derives it from that
@@ -969,11 +970,14 @@ every moment scales by a change of variables, finite or not.
 A17 through `kernel`, as everything that quantifies over the constructed family does;
 `meanRate_ne_top_iff` is about `k` alone and reduces to Lean core.
 
-The remaining clause, `E T₁ = F'(0+)`, is stated in `Skeleton/Chapter8.lean` and is not listed
-here, because nothing in the skeleton is claimed. `antitoneOn_einIntegrand` is the piece of it
-already available — `(1-e^{-u})/u` nonincreasing, through the representation `∫₀¹ e^{-uv}dv` — and
-it is what makes the difference quotient monotone, hence what will let the identity be reached by
-monotone convergence rather than by a Tauberian theorem.
+**No differentiation and no Tauberian theorem.** The blueprint's proof differentiates the
+transform at the origin; in `[0,∞]` the difference quotient `(1-e^{-st})/s` is *monotone* in `s`
+(`antitoneOn_einIntegrand`, through the representation `(1-e^{-u})/u = ∫₀¹ e^{-uv}dv`), so the
+identity is monotone convergence twice — once on the law, once inside the Lévy integral — joined
+by the squeeze `we^{-w} ≤ 1-e^{-w} ≤ w` at `w = F(s_n) → 0`. The lower bound is the upper one
+times a factor tending to `1`, and `ENNReal.Tendsto.mul` at a limit of `1` carries no side
+condition, so the infinite case needs no separate treatment: a real-valued argument would have had
+to exclude exactly the case the proposition's second clause exists to describe.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.meanRate
@@ -982,3 +986,9 @@ monotone convergence rather than by a Tauberian theorem.
 #print axioms Hemigroup.einIntegrand_eq_integral
 #print axioms Hemigroup.antitoneOn_einIntegrand
 #print axioms Hemigroup.tendsto_einIntegrand_nhdsNE_zero
+#print axioms Hemigroup.tendsto_mul_einIntegrand
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_quotient_lawT₁
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_lintegral_quotient_lawT₁
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_ofReal_inv_mul_exponent
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_id_lawT₁
+#print axioms Hemigroup.moments
