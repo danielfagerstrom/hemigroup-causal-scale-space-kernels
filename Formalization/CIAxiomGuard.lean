@@ -577,6 +577,25 @@ finally lets one say.
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_negMoment_succ_nhdsGT_zero
 #print axioms Hemigroup.SelfDecomposableExponent.exists_gamma_form_of_isLocalOfOrder_two
 
+/-! ### `thm:locality`(⇒), the order-one branch
+
+The degenerate member, where the kernels are deterministic delays. Same shape as order two --- A13
+and A14 as hypotheses, A17 alone in the trust base --- but it uses neither Krull--Webster nor
+Bohr--Mollerup, and the node always said so: at order one the recursion has a constant multiplier
+and `log m` is convex with constant unit increments, hence affine.
+
+`eq_of_convexOn_of_periodic` is that fact, and Mathlib does not carry it. The usual proof goes
+through continuity of a convex function on an open interval, to get boundedness, to get
+antitonicity; none of that is needed. Convexity on `x < y < y+1`, with `y` written as a
+combination of `x` and `y+1`, gives `g(y) ≤ g(x)` from periodicity alone. Three points and one
+inequality, and it prints Lean core.
+-/
+
+#print axioms Hemigroup.convexOn_const_mul_id
+#print axioms Hemigroup.antitone_of_convexOn_of_periodic
+#print axioms Hemigroup.eq_of_convexOn_of_periodic
+#print axioms Hemigroup.SelfDecomposableExponent.exists_pow_form_of_isLocalOfOrder_one
+
 /-! ### `lem:gamma-recursion-uniqueness` — ledger A15, order-two case, discharged
 
 Krull--Webster restricted to a linear `Q`, which is the only case `thm:locality` applies it to,

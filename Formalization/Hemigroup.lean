@@ -18,6 +18,7 @@ import Hemigroup.L1Continuity
 import Hemigroup.Levy
 import Hemigroup.LocalOperator
 import Hemigroup.Locality
+import Hemigroup.LocalityOrderOne
 import Hemigroup.LocalityOrderTwo
 import Hemigroup.MemoryKernel
 import Hemigroup.MemoryKernelTransform
