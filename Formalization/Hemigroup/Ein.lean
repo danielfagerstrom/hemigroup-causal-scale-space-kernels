@@ -134,6 +134,19 @@ theorem antitoneOn_einIntegrand : AntitoneOn einIntegrand (Ioi 0) := by
     ((Continuous.intervalIntegrable (by fun_prop) _ _)) fun v hv => ?_
   exact Real.exp_le_exp.mpr (by nlinarith [hv.1])
 
+/-- **`(1 - e^{-u})/u → 1` at the origin** — the difference quotient of `1 - e^{-x}` at `0`, which
+is what `einIntegrand` *is*. -/
+theorem tendsto_einIntegrand_nhdsNE_zero :
+    Filter.Tendsto einIntegrand (nhdsWithin 0 {(0 : ℝ)}ᶜ) (nhds 1) := by
+  have hd : HasDerivAt (fun x : ℝ => 1 - Real.exp (-x)) 1 0 := by
+    have h1 : HasDerivAt (fun x : ℝ => Real.exp (-x)) (-1) 0 := by
+      simpa using (hasDerivAt_neg (0 : ℝ)).exp
+    simpa using h1.const_sub (1 : ℝ)
+  have h := hasDerivAt_iff_tendsto_slope.mp hd
+  refine h.congr fun u => ?_
+  rw [slope_def_field, einIntegrand]
+  simp
+
 /-- The dilated integrand is nonnegative on the half-line. -/
 theorem dilate_einIntegrand_nonneg {s : ℝ} (hs : 0 ≤ s) {u : ℝ} (hu : 0 ≤ u) :
     0 ≤ (1 - Real.exp (-(s * u))) / u := by

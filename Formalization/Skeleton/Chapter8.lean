@@ -42,9 +42,10 @@ The blueprint's proof is "differentiating the transform at the origin", which in
 monotone convergence twice over — no differentiation and no Tauberian theorem, because the
 difference quotient is *monotone*:
 
-1. `antitoneOn_einIntegrand` (proved, `Hemigroup/Ein.lean`) makes `s ↦ (1-e^{-st})/s` nonincreasing
-   in `s` for each `t ≥ 0`, so along `s_n = 1/(n+1)` the integrands increase to `t`. Monotone
-   convergence gives `E T₁ = ⨆ₙ ∫ (1-e^{-s_n t})/s_n dμ = ⨆ₙ (1 - H(s_n))/s_n`, `H` the profile.
+1. `antitoneOn_einIntegrand` and `tendsto_einIntegrand_nhdsNE_zero` (both proved,
+   `Hemigroup/Ein.lean`) make `s ↦ (1-e^{-st})/s` nonincreasing in `s` with limit `t`, so along
+   `s_n = 1/(n+1)` the integrands increase to `t`. Monotone convergence gives
+   `E T₁ = ⨆ₙ ∫ (1-e^{-s_n t})/s_n dμ = ⨆ₙ (1 - H(s_n))/s_n`, `H` the profile.
 2. The same lemma applied inside the Lévy integral gives `F(s)/s = b₀ + ∫ einIntegrand(st) k(t) dt`
    increasing to `meanRate` as `s ↓ 0`. **This is the clause the node's annotation names** —
    "monotone convergence in (7.1) and nothing else".

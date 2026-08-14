@@ -981,3 +981,4 @@ monotone convergence rather than by a Tauberian theorem.
 #print axioms Hemigroup.SelfDecomposableExponent.lintegral_id_kernel_zero
 #print axioms Hemigroup.einIntegrand_eq_integral
 #print axioms Hemigroup.antitoneOn_einIntegrand
+#print axioms Hemigroup.tendsto_einIntegrand_nhdsNE_zero
