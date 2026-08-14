@@ -966,6 +966,42 @@ top of a neighbourhood covers the neighbourhood — the blueprint's "for `x` in 
 #print axioms Hemigroup.SelfDecomposableExponent.mconvL1_phillipsGenerator
 #print axioms Hemigroup.SelfDecomposableExponent.continuousOn_phillipsGenerator
 
+/-! ### `lem:generator-properties` (10.3), clause (2)
+
+The symbol: `Lap[φ_x(∂_t)f](s) = sF'(xs)\hat f(s)`. **Lean core**, and the clause where the
+`HasLevyTail` hypothesis is load-bearing rather than merely available — the identity is true of a
+`ν` with `F`'s tail and of no other.
+
+**The plan's cost estimate for this clause was wrong, and instructively so.** It read: `Lap` is
+not a bounded functional on `L¹(ℝ)`, `e^{-st}` being unbounded to the left of the origin, so
+`ContinuousLinearMap.integral_comp_comm` — which discharges (3) outright — cannot be used and the
+exchange must go through causal representatives in `[0,∞]`. Every word of that is true of the
+**two-sided** transform and false of the article's, which integrates over `(0,∞)` only: its weight
+is `1_{(0,∞)}(t)e^{-st}`, bounded by `1` on all of `ℝ` for `s ≥ 0`. `mulCLM` — chapter 4's, built
+for exactly this shape — turns it into `laplaceCLM : X →L[ℝ] ℝ`, and (2)'s exchange becomes (3)'s
+one-liner. `laplaceCLM_apply` then holds for *every* element of `X`, so the Phillips integral
+never has to be shown causal.
+
+Two further steps also came in under the estimate. `laplaceCLM_of_hasCoreDerivL1` is
+`Lap[f'] = s\hat f`, and it is **not** an integration by parts: `f(0) = 0` was already spent
+inside `HasCoreDeriv`, so what remains is to apply a *continuous* functional to `lem:delay-core`'s
+difference-quotient limit and read `(e^{-sh}-1)/h → -s` off the derivative of `h ↦ e^{-sh}` at the
+origin. No Fubini, and no boundary term to make vanish. And `integral_one_sub_exp_tail` is
+chapter 9's `lintegral_one_sub_exp_eq_tail` — the layer cake at `f = id`, `g r = σe^{-σr}` — with
+the tail identity substituted under the integral in `r`, which is where `HasLevyTail`'s `ae`
+qualifier is consumed and found free.
+-/
+
+#print axioms Hemigroup.laplaceWeight
+#print axioms Hemigroup.abs_laplaceWeight_le_one
+#print axioms Hemigroup.laplaceCLM
+#print axioms Hemigroup.laplaceCLM_apply
+#print axioms Hemigroup.laplaceCLM_transL1
+#print axioms Hemigroup.laplaceCLM_of_hasCoreDerivL1
+#print axioms Hemigroup.SelfDecomposableExponent.integral_one_sub_exp_tail
+#print axioms Hemigroup.SelfDecomposableExponent.integral_one_sub_exp_dilatedTail
+#print axioms Hemigroup.SelfDecomposableExponent.laplaceFun_phillipsGenerator
+
 /-! ### `Ein`, the entire exponential integral
 
 Mathlib has no exponential integral of any kind — no `Ein`, no `Ei`, no `E₁` — so `ein` is

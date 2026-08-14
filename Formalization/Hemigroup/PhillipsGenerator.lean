@@ -5,6 +5,7 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.DelayCore
 import Hemigroup.Subordinator
+import Hemigroup.TransformContinuity
 
 /-!
 # `def:phillips-generator`: the per-scale generator in Phillips form
@@ -114,6 +115,130 @@ theorem integrable_dilatedTail_iff {E : Type*} [NormedAddCommGroup E] {x : ℝ} 
   rw [dilatedTail, integrable_smul_measure (by simp [hx]) ENNReal.ofReal_ne_top,
     integrable_map_measure hf (by fun_prop)]
   rfl
+
+/-! ## The causal transform as a bounded functional on `X`
+
+The plan had priced clause (2) as the expensive one on the grounds that `Lap` is not a bounded
+functional on `L¹(ℝ)`, so `ContinuousLinearMap.integral_comp_comm` — which discharges (3)
+outright — would be unavailable. **That is true of the two-sided transform and false of the causal
+one.** `laplaceFun` integrates over `(0,∞)` only, so its weight is `1_{(0,∞)}(t)e^{-st}`, which for
+`s ≥ 0` is bounded by `1` on all of `ℝ`; and `mulCLM`, built in chapter 4 for exactly this shape,
+turns any such weight into an element of `X →L[ℝ] ℝ`. So the exchange in (2) is the same one-liner
+as in (3), and `laplaceCLM_apply` holds for *every* element of `X` — no causality hypothesis, and
+so no obligation to show the Phillips integral itself is causal.
+-/
+
+/-- The causal Laplace weight `1_{(0,∞)}(t)e^{-st}`. -/
+noncomputable def laplaceWeight (s : ℝ) : ℝ → ℝ :=
+  (Ioi (0 : ℝ)).indicator fun t => Real.exp (-(s * t))
+
+theorem measurable_laplaceWeight (s : ℝ) : Measurable (laplaceWeight s) :=
+  (Real.measurable_exp.comp (by fun_prop)).indicator measurableSet_Ioi
+
+/-- The bound that makes the transform a *bounded* functional, and the only place `s ≥ 0` is
+used. To the left of the origin the indicator kills the growth of `e^{-st}`; to the right the
+exponential is at most `1`. -/
+theorem abs_laplaceWeight_le_one {s : ℝ} (hs : 0 ≤ s) (t : ℝ) : |laplaceWeight s t| ≤ 1 := by
+  rw [laplaceWeight]
+  by_cases ht : t ∈ Ioi (0 : ℝ)
+  · rw [indicator_of_mem ht, abs_of_pos (Real.exp_pos _)]
+    exact Real.exp_le_one_iff.mpr (by nlinarith [mem_Ioi.mp ht])
+  · rw [indicator_of_notMem ht, abs_zero]
+    norm_num
+
+/-- **The causal Laplace transform as a bounded functional on `X`**, of norm at most `1`. -/
+noncomputable def laplaceCLM {s : ℝ} (hs : 0 ≤ s) : X →L[ℝ] ℝ :=
+  mulCLM (laplaceWeight s) (measurable_laplaceWeight s) (abs_laplaceWeight_le_one hs)
+
+/-- The functional *is* the transform, on every element of `X` — the indicator is doing the work
+a causality hypothesis would otherwise have to do. -/
+@[simp] theorem laplaceCLM_apply {s : ℝ} (hs : 0 ≤ s) (G : X) :
+    laplaceCLM hs G = laplaceFun ((G : X) : ℝ → ℝ) s := by
+  rw [laplaceCLM, mulCLM_apply, laplaceFun, ← integral_indicator measurableSet_Ioi]
+  refine integral_congr_ae (.of_forall fun t => ?_)
+  by_cases ht : t ∈ Ioi (0 : ℝ)
+  · simp only [laplaceWeight, indicator_of_mem ht]
+  · simp only [laplaceWeight, indicator_of_notMem ht, zero_mul]
+
+/-- **The transform of a delay**: `Lap[T_rf](s) = e^{-sr}\hat f(s)`, for causal `f` and `r ≥ 0`.
+
+Translation invariance of Lebesgue measure on the *whole* line, plus one a.e. identity: to the
+right of the origin the weight factorises, `w_s(u+r) = e^{-sr}w_s(u)`, and to the left `f` vanishes
+so both sides are zero. Causality is what makes the second half true — the weight itself does not
+factorise there, the indicator having already cut it off. -/
+theorem laplaceCLM_transL1 {s : ℝ} (hs : 0 ≤ s) {r : ℝ} (hr : 0 ≤ r) {A : X}
+    (hA : A ∈ causalL1) :
+    laplaceCLM hs (transL1 r A) = Real.exp (-(s * r)) * laplaceCLM hs A := by
+  have hz : ∀ᵐ u : ℝ, u ≠ 0 := by
+    filter_upwards [compl_mem_ae_iff.mpr (Real.volume_singleton (a := (0 : ℝ)))] with u hu
+    simpa using hu
+  rw [laplaceCLM, mulCLM_apply, mulCLM_apply]
+  have hshift : (∫ t, laplaceWeight s t * ((transL1 r A : X) : ℝ → ℝ) t)
+      = ∫ u, laplaceWeight s (u + r) * ((A : X) : ℝ → ℝ) u := by
+    rw [← integral_sub_right_eq_self
+      (fun u => laplaceWeight s (u + r) * ((A : X) : ℝ → ℝ) u) r]
+    refine integral_congr_ae ?_
+    filter_upwards [coeFn_transL1 r A] with t ht
+    rw [ht, sub_add_cancel]
+  rw [hshift, ← integral_const_mul]
+  refine integral_congr_ae ?_
+  filter_upwards [hA, hz] with u hu hune
+  rcases lt_or_gt_of_ne hune with hneg | hpos
+  · change laplaceWeight s (u + r) * ((A : X) : ℝ → ℝ) u
+        = Real.exp (-(s * r)) * (laplaceWeight s u * ((A : X) : ℝ → ℝ) u)
+    rw [hu hneg, mul_zero, mul_zero, mul_zero]
+  · have hur : (0 : ℝ) < u + r := by linarith
+    have hexp : Real.exp (-(s * (u + r))) = Real.exp (-(s * r)) * Real.exp (-(s * u)) := by
+      rw [← Real.exp_add]
+      congr 1
+      ring
+    change laplaceWeight s (u + r) * ((A : X) : ℝ → ℝ) u
+        = Real.exp (-(s * r)) * (laplaceWeight s u * ((A : X) : ℝ → ℝ) u)
+    simp only [laplaceWeight, indicator_of_mem (mem_Ioi.mpr hur),
+      indicator_of_mem (mem_Ioi.mpr hpos)]
+    rw [hexp, mul_assoc]
+
+/-- **`Lap[f'](s) = s\hat f(s)`** for `f ∈ 𝒟`, from the difference quotient.
+
+The blueprint derives it "using `f(0) = 0`", which classically means integrating by parts and
+watching the boundary term vanish. Here `f(0) = 0` has already been spent, once, inside
+`HasCoreDeriv`; what is left is to apply the *bounded* functional `Lap_s` to `lem:delay-core`'s
+limit `h⁻¹(T_hf - f) → -f'`. The left side is `h⁻¹(e^{-sh} - 1)\hat f(s)` by
+`laplaceCLM_transL1`, whose limit is `-s\hat f(s)` because that quotient is the difference
+quotient of `h ↦ e^{-sh}` at the origin; uniqueness of limits does the rest.
+
+**No Fubini, no integration by parts, and no boundary term to make vanish.** The same shape the
+plan keeps recording — the classical derivation asking for more than the obligation — and here
+what it asked for was the exchange of two integrals. -/
+theorem laplaceCLM_of_hasCoreDerivL1 {s : ℝ} (hs : 0 < s) {A B : X}
+    (hAB : HasCoreDerivL1 A B) : laplaceCLM hs.le B = s * laplaceCLM hs.le A := by
+  have hA : A ∈ causalL1 := coreL1_subset_causalL1 ⟨B, hAB⟩
+  have hquot : Tendsto (fun r : ℝ => laplaceCLM hs.le (r⁻¹ • (transL1 r A - A)))
+      (𝓝[>] (0 : ℝ)) (𝓝 (laplaceCLM hs.le (-B))) :=
+    ((laplaceCLM hs.le).continuous.tendsto _).comp (tendsto_differenceQuotient hAB)
+  have hvalue : (fun r : ℝ => laplaceCLM hs.le (r⁻¹ • (transL1 r A - A)))
+      =ᶠ[𝓝[>] (0 : ℝ)] fun r => (Real.exp (-(s * r)) - 1) / r * laplaceCLM hs.le A := by
+    filter_upwards [self_mem_nhdsWithin] with r hr
+    rw [map_smul, map_sub, laplaceCLM_transL1 hs.le (mem_Ioi.mp hr).le hA, smul_eq_mul,
+      div_eq_inv_mul]
+    ring
+  -- the scalar quotient is the derivative of `r ↦ e^{-sr}` at the origin
+  have hslope : Tendsto (fun r : ℝ => (Real.exp (-(s * r)) - 1) / r) (𝓝[>] (0 : ℝ)) (𝓝 (-s)) := by
+    have hd : HasDerivAt (fun r : ℝ => Real.exp (-(s * r))) (-s) 0 := by
+      have h1 : HasDerivAt (fun r : ℝ => -(s * r)) (-s) 0 := by
+        simpa using (hasDerivAt_id (0 : ℝ)).const_mul (-s)
+      simpa using h1.exp
+    have h := hasDerivAt_iff_tendsto_slope.mp hd
+    refine (h.mono_left (nhdsWithin_mono _ fun r hr => ?_)).congr fun r => ?_
+    · simpa using ne_of_gt (mem_Ioi.mp hr)
+    · rw [slope_def_field]
+      simp
+  have hlim : Tendsto (fun r : ℝ => laplaceCLM hs.le (r⁻¹ • (transL1 r A - A)))
+      (𝓝[>] (0 : ℝ)) (𝓝 (-s * laplaceCLM hs.le A)) :=
+    (hslope.mul_const _).congr' hvalue.symm
+  have := tendsto_nhds_unique hquot hlim
+  rw [map_neg] at this
+  linarith
 
 namespace SelfDecomposableExponent
 
@@ -359,6 +484,86 @@ theorem continuousOn_phillipsGenerator {ν : Measure ℝ} (hν : F.HasLevyTail �
   intro y hyi
   have hy0 : 0 < y := mem_Ioi.mp hyi
   exact (continuousAt_const.add ((continuousAt_inv₀ hy0.ne').smul (key y hy0))).continuousWithinAt
+
+/-! ## `lem:generator-properties`(2): the symbol
+
+Three steps, none of them Fubini. The transform is a *bounded functional*, so it passes through
+the Bochner integral exactly as `Φ` does in (3); `Lap[f'] = s\hat f` comes off the difference
+quotient rather than off an integration by parts; and what is left is the scalar identity
+`b₀s + ∫(1-e^{-sr})ν_x(dr) = sF'(xs)`, which is the layer cake against `lem:memory-kernel`.
+-/
+
+/-- **The Lévy integral of the delay factor**: `∫(1 - e^{-σr})ν₁(dr) = σ∫₀^∞ e^{-σt}k(t)dt`.
+
+The layer cake in the form chapter 9 proved it (`lintegral_one_sub_exp_eq_tail`, the antiderivative
+of `σe^{-σr}` being `1 - e^{-σr}`), and this is the step that makes `HasLevyTail` load-bearing: it
+is where `ν₁`'s tail becomes `k`, and the identity is consumed under an integral in `r`, which is
+why the specification's `ae` qualifier costs nothing. -/
+theorem integral_one_sub_exp_tail {ν : Measure ℝ} (hν : F.HasLevyTail ν) {σ : ℝ} (hσ : 0 < σ) :
+    (∫ r, (1 - Real.exp (-(σ * r))) ∂ν)
+      = σ * ∫ t in Ioi (0 : ℝ), Real.exp (-(σ * t)) * F.k t := by
+  have hnn : ∀ᵐ r ∂ν, 0 ≤ 1 - Real.exp (-(σ * r)) := by
+    filter_upwards [hν.1.ae_nonneg] with r hr
+    have : Real.exp (-(σ * r)) ≤ 1 := Real.exp_le_one_iff.mpr (by nlinarith)
+    linarith
+  have hnn2 : ∀ᵐ r ∂(volume.restrict (Ioi (0 : ℝ))), 0 ≤ σ * Real.exp (-(σ * r)) * F.k r :=
+    (ae_restrict_iff' measurableSet_Ioi).mpr (.of_forall fun r hr =>
+      mul_nonneg (mul_nonneg hσ.le (Real.exp_pos _).le) (F.k_nonneg r hr))
+  have hmeas2 : AEStronglyMeasurable (fun r => σ * Real.exp (-(σ * r)) * F.k r)
+      (volume.restrict (Ioi (0 : ℝ))) :=
+    (((measurable_const.mul (by fun_prop : Measurable fun r : ℝ =>
+      Real.exp (-(σ * r)))).aemeasurable).mul (F.aemeasurable_k subset_rfl)).aestronglyMeasurable
+  have htail : (∫⁻ r in Ioi (0 : ℝ),
+        ENNReal.ofReal (σ * Real.exp (-(σ * r))) * ν (Ioi r))
+      = ∫⁻ r in Ioi (0 : ℝ), ENNReal.ofReal (σ * Real.exp (-(σ * r)) * F.k r) := by
+    refine lintegral_congr_ae ?_
+    filter_upwards [hν.2] with r hr
+    rw [hr, ← ENNReal.ofReal_mul (by positivity)]
+  rw [integral_eq_lintegral_of_nonneg_ae hnn (by fun_prop),
+    lintegral_one_sub_exp_eq_tail hν.1 hσ, htail,
+    ← integral_eq_lintegral_of_nonneg_ae hnn2 hmeas2, ← integral_const_mul]
+  exact setIntegral_congr_fun measurableSet_Ioi fun r _ => by ring
+
+/-- The same integral against `ν_x`, which is where the scale enters:
+`∫(1 - e^{-sr})ν_x(dr) = s∫₀^∞ e^{-xst}k(t)dt`. -/
+theorem integral_one_sub_exp_dilatedTail {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ}
+    (hx : 0 < x) {s : ℝ} (hs : 0 < s) :
+    (∫ r, (1 - Real.exp (-(s * r))) ∂(dilatedTail ν x))
+      = s * ∫ t in Ioi (0 : ℝ), Real.exp (-(x * s * t)) * F.k t := by
+  have hcont : Continuous fun r : ℝ => 1 - Real.exp (-(s * r)) := by fun_prop
+  rw [integral_dilatedTail hx ν hcont.aestronglyMeasurable, smul_eq_mul]
+  have hrw : (∫ r, (1 - Real.exp (-(s * (x * r)))) ∂ν)
+      = ∫ r, (1 - Real.exp (-(x * s * r))) ∂ν := by
+    refine integral_congr_ae (.of_forall fun r => ?_)
+    change 1 - Real.exp (-(s * (x * r))) = 1 - Real.exp (-(x * s * r))
+    rw [show s * (x * r) = x * s * r from by ring]
+  rw [hrw, F.integral_one_sub_exp_tail hν (by positivity : (0 : ℝ) < x * s), ← mul_assoc,
+    inv_mul_cancel_left₀ hx.ne']
+
+/-- **`lem:generator-properties`(2), the symbol**:
+`Lap[φ_x(∂_t)f](s) = φ_x(s)\hat f(s)`, with `φ_x(s) = sF'(xs)` — chapter 9's `symbol`.
+
+The clause that pins the definition: it is true of a `ν` with `F`'s tail and of no other, so the
+`HasLevyTail` hypothesis is load-bearing here and the parameterisation costs nothing in content.
+The two Bernstein representations of `φ_x` agreeing is `integral_one_sub_exp_dilatedTail` against
+`hasDerivAt_toRealExponent`. -/
+theorem laplaceFun_phillipsGenerator {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ} (hx : 0 < x)
+    {A B : X} (hAB : HasCoreDerivL1 A B) {s : ℝ} (hs : 0 < s) :
+    laplaceFun ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) s
+      = F.symbol x s * laplaceFun ((A : X) : ℝ → ℝ) s := by
+  have hA : A ∈ causalL1 := coreL1_subset_causalL1 ⟨B, hAB⟩
+  rw [← laplaceCLM_apply hs.le, ← laplaceCLM_apply hs.le, phillipsGenerator, map_add, map_smul,
+    ← ContinuousLinearMap.integral_comp_comm _ (F.integrable_sub_transL1 hν hx hAB)]
+  have hpt : ∀ᵐ r ∂(dilatedTail ν x), laplaceCLM hs.le (A - transL1 r A)
+      = (1 - Real.exp (-(s * r))) * laplaceCLM hs.le A := by
+    filter_upwards [(isCausal_dilatedTail hx hν.1).ae_nonneg] with r hr
+    rw [map_sub, laplaceCLM_transL1 hs.le hr hA]
+    ring
+  rw [integral_congr_ae hpt, integral_mul_const,
+    F.integral_one_sub_exp_dilatedTail hν hx hs,
+    laplaceCLM_of_hasCoreDerivL1 hs hAB, smul_eq_mul, symbol,
+    (F.hasDerivAt_toRealExponent (by positivity : (0 : ℝ) < x * s)).deriv]
+  ring
 
 end SelfDecomposableExponent
 

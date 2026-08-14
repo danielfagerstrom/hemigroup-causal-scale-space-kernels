@@ -20,7 +20,7 @@ a definition has no `sorry` to carry.
 |---|---|---|
 | (1) convergence | `integrable_sub_transL1` | **proved**, `Hemigroup/PhillipsGenerator.lean` |
 | (1) the bound | `norm_phillipsGenerator_le` | **proved**, same file |
-| (2) the symbol | `laplaceFun_phillipsGenerator` | open — Fubini and `lem:memory-kernel` |
+| (2) the symbol | `laplaceFun_phillipsGenerator` | **proved**, same file |
 | (3) commutation | `mconvL1_phillipsGenerator` | **proved**, same file |
 | (4) continuity in `x` | `continuousOn_phillipsGenerator` | **proved**, same file |
 | (5) the memory-kernel form | `mconv_memoryKernel_ae_eq` | open — transform, then uniqueness |
@@ -59,19 +59,22 @@ not carry.
 
 ## Work order, and where the cost actually is
 
-Clauses (1), (3) and (4) are **done** and have moved, each at the estimated cost: (1) one layer
-cake, (3) `ContinuousLinearMap.integral_comp_comm` against `mconvL1 μ` with (1) supplying its
-integrability hypothesis, (4) `continuousAt_of_dominated` with (1)'s bound re-used as the
-dominating function. What is left is the bulk, and it is the two clauses that were priced as such.
+Clauses (1), (2), (3) and (4) are **done** and have moved. Only (5) is left, and the estimate
+that survives is the one about it.
 
-5. (2) is the one to price honestly. `Lap` is **not** a bounded functional on `L¹(ℝ)`, `e^{-st}`
-   being unbounded to the left of the origin, so `ContinuousLinearMap.integral_comp_comm` — which
-   discharges (3) outright — does not apply here. The exchange has to be done on causal
-   representatives in `[0,∞]`, the move chapter 2's Tonelli identity and `lem:delay-core`'s
-   estimate both make. The scalar identity underneath is
-   `b₀s + ∫(1-e^{-sr})ν_x(dr) = sF'(xs)`, which is the layer cake again against
-   `hasDerivAt_toRealExponent`.
-6. (5) wants `mconv_eq_setIntegral_mconv` for a **locally finite** causal measure: `κ^{(x)}` has
+**The estimate for (2) did not survive, and it is worth saying exactly how it was wrong.** It read:
+`Lap` is not a bounded functional on `L¹(ℝ)`, `e^{-st}` being unbounded to the left of the origin,
+so `ContinuousLinearMap.integral_comp_comm` — which discharges (3) outright — does not apply, and
+the exchange must be done on causal representatives in `[0,∞]`. Every clause of that is true of
+the **two-sided** transform and false of the article's, which integrates over `(0,∞)` only. Its
+weight is `1_{(0,∞)}(t)e^{-st}`, bounded by `1` on all of `ℝ` for `s ≥ 0`, so `mulCLM` — chapter
+4's, built for exactly this shape — makes it an element of `X →L[ℝ] ℝ`, and (2)'s exchange is the
+same one-liner as (3)'s. The bound that was supposed to fail is what the indicator supplies for
+free. Two further steps also came in under: `Lap[f'] = s\hat f` is the difference quotient of
+`lem:delay-core` under a *continuous* functional rather than an integration by parts, and the
+scalar identity is chapter 9's `lintegral_one_sub_exp_eq_tail` verbatim.
+
+5. (5) wants `mconv_eq_setIntegral_mconv` for a **locally finite** causal measure: `κ^{(x)}` has
    total mass `F'(0+)`, which `prop:moments` has just finished proving may be `⊤`, and the
    existing lemma assumes `IsFiniteMeasure`. Generalising it is the refactor the plan flagged as
    worth making and not yet worth making; this is the consumer that makes it worth making.
@@ -111,17 +114,6 @@ open Hemigroup
 namespace GeneratorProperties
 
 variable (F : Hemigroup.SelfDecomposableExponent) {ν : Measure ℝ} {x : ℝ} {A B : X}
-
-/-- **`lem:generator-properties`(2), the symbol**: `Lap[φ_x(∂_t)f](s) = φ_x(s) f̂(s)`, with
-`φ_x(s) = sF'(xs)` — which is `symbol`, defined in chapter 9.
-
-The clause that pins the definition: it is true of a `ν` with `F`'s tail and of no other, so the
-`HasLevyTail` hypothesis is load-bearing and the parameterisation costs nothing in content. -/
-theorem laplaceFun_phillipsGenerator (hν : F.HasLevyTail ν) (hx : 0 < x)
-    (hAB : HasCoreDerivL1 A B) {s : ℝ} (hs : 0 < s) :
-    laplaceFun ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) s
-      = F.symbol x s * laplaceFun ((A : X) : ℝ → ℝ) s := by
-  sorry
 
 /-- **`lem:generator-properties`(5), the memory-kernel form**: `κ^{(x)} * f` agrees a.e. with the
 primitive of `φ_x(∂_t)f`, so the Phillips form coincides on `𝒟` with chapter 9's operator.
@@ -164,7 +156,7 @@ theorem generator_properties (F : Hemigroup.SelfDecomposableExponent) {ν : Meas
           =ᵐ[volume] fun t => ∫ ρ in Ioc (0 : ℝ) t,
             ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) ρ) :=
   ⟨⟨F.integrable_sub_transL1 hν hx hAB, F.norm_phillipsGenerator_le hν hx hAB⟩,
-   fun _ hs => laplaceFun_phillipsGenerator F hν hx hAB hs,
+   fun _ hs => F.laplaceFun_phillipsGenerator hν hx hAB hs,
    fun μ _ _ => F.mconvL1_phillipsGenerator hν hx hAB μ,
    F.continuousOn_phillipsGenerator hν hAB,
    fun _ _ hfg hA hB => mconv_memoryKernel_ae_eq F hν hx hfg hA hB⟩

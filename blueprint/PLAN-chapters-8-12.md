@@ -2130,3 +2130,82 @@ name would have shipped.
 identity `b₀s + ∫(1-e^{-sr})ν_x(dr) = sF'(xs)`, which is the layer cake against
 `hasDerivAt_toRealExponent`. (5) additionally wants `mconv_eq_setIntegral_mconv` generalised to a
 locally finite causal measure.
+
+---
+
+# `lem:generator-properties`(2), proved — and the estimate for it was wrong — 2026-08-14
+
+`Hemigroup/PhillipsGenerator.lean`. **Lean core.** `Skeleton/Chapter10.lean` holds one clause, (5).
+Trust boundary unchanged; the node stays `\notready`.
+
+This entry is mostly a **correction**, because the clause priced as the hardest of the five was
+the second cheapest, and the reason is worth recording precisely.
+
+## What the estimate said, and which word was wrong
+
+Written two entries ago, and repeated into the node and the skeleton docstring:
+
+> (2) is the one to price honestly. `Lap` is **not** a bounded functional on `L¹(ℝ)`, `e^{-st}`
+> being unbounded to the left of the origin, so `ContinuousLinearMap.integral_comp_comm` — which
+> discharges (3) outright — does not apply here. The exchange has to be done on causal
+> representatives in `[0,∞]`.
+
+Every clause of that is true of the **two-sided** transform `∫_ℝ e^{-st}f(t)dt`. The article's
+transform is `laplaceFun f s = ∫_{(0,∞)} e^{-st}f(t)dt`, whose weight is `1_{(0,∞)}(t)e^{-st}` —
+bounded by `1` on **all** of `ℝ` for `s ≥ 0`, the indicator having already cut off the growth the
+estimate was worried about. So the transform *is* an element of `X →L[ℝ] ℝ`, (2)'s exchange is the
+same one-liner as (3)'s, and there is no Tonelli argument in the chapter at all.
+
+**And the development already had the constructor.** `mulCLM g hg hgb : X →L[ℝ] ℝ` — for any
+measurable `g` with `|g| ≤ 1` — was built in chapter 4 for the clamp pairing, with the docstring
+"the hypotheses are carried as arguments because they are what boundedness needs". `laplaceCLM` is
+three lines against it. Fourth time this file has recorded "the development already had it", and
+the second time in two rounds; but note the difference from the `mconvL1_transL1` duplicate, which
+was a *lemma* re-proved. This was an **estimate** made without looking, and it did not merely
+misprice the work — it named an obstruction that does not exist and proposed a detour around it.
+
+The transferable form: *a boundedness claim about an operator is a claim about its domain, and the
+domain here is `(0,∞)` because the article's objects are causal.* The estimate reasoned about
+`e^{-st}` and forgot the indicator, which is precisely the object that makes every other statement
+in this article work.
+
+## Two more steps that came in under
+
+**`Lap[f'] = s f-hat` is not an integration by parts.** The blueprint says "using `f(0) = 0`",
+which classically means integrating by parts and watching a boundary term vanish. But `f(0) = 0`
+was spent once already, inside `HasCoreDeriv`, and the transform is *continuous* — so applying it
+to `lem:delay-core`'s limit `h⁻¹(T_hf - f) → -f'` turns the left side into
+`h⁻¹(e^{-sh}-1)` times the transform, and `(e^{-sh}-1)/h → -s` is the derivative of `h ↦ e^{-sh}`
+at the origin. Uniqueness of limits finishes it. No Fubini, no boundary term. That is
+`lem:delay-core` paying for itself a second time, and the shape this file keeps recording — *the
+classical derivation asks for more than the obligation* — now in its fifth instance in this
+chapter alone.
+
+**The scalar identity was already proved.** `b₀s + ∫(1-e^{-sr})ν_x(dr) = sF'(xs)` reduces to
+`lintegral_one_sub_exp_eq_tail`, which chapter 9 proved for the potential kernel, plus
+`hasDerivAt_toRealExponent`. The only new work is substituting the tail identity under the integral
+in `r` — which is where `HasLevyTail`'s `ae` qualifier is consumed, and found free, exactly as the
+definition's docstring predicted it would be.
+
+## Where the estimates now stand, honestly
+
+| clause | estimate | actual |
+|---|---|---|
+| (1) | one layer cake, `k(1)<∞` unused | as estimated |
+| (2) | **the bulk**; no CLM available; Tonelli | one CLM, one difference quotient, one layer cake |
+| (3) | `integral_comp_comm`, moderate | as estimated, and needing less (any finite measure) |
+| (4) | dominated convergence, moderate | as estimated, and needing no compact set |
+| (5) | the bulk | still open |
+
+Two of five estimates were right, two were right but conservative, and one named a false
+obstruction. The pattern across all five: **estimates made from the Lean statement were right; the
+one made from the mathematics-as-written was wrong.** (2)'s estimate reasoned about the object
+(`Lap`) rather than about the Lean statement (`laplaceFun`, whose definition carries the `Ioi 0`),
+and that is the whole of the difference.
+
+## Next
+
+(5), alone, and the estimate for it stands: it wants `mconv_eq_setIntegral_mconv` generalised to a
+locally finite causal measure — `κ^{(x)}` has total mass `F'(0+)`, which `prop:moments` shows may
+be `⊤` — and then Laplace uniqueness, reduced to the case `f' ≥ 0` by linearity so that both sides
+are measures. Its transform half is now (2).

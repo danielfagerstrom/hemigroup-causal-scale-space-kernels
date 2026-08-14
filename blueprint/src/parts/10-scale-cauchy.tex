@@ -137,12 +137,25 @@ $\varphi_x(s) = s F'(xs)$.
 $\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
 coincides on $\core$ with the memory-kernel operator of Chapter~9.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Stated in Lean, clauses (1), (3), (4) proved} (2026-08-14):
-\texttt{Skeleton/Chapter10.lean} carries the two open clauses as named sub-lemmas with a
-\texttt{sorry}-free collation above them, which is the decomposition gate's middle state and not a
-claim; the three proved clauses have moved into \texttt{Hemigroup/PhillipsGenerator.lean} and are
+\statusT\quad\emph{(\textbf{Stated in Lean, clauses (1)--(4) proved} (2026-08-14):
+\texttt{Skeleton/Chapter10.lean} carries the one open clause, (5), as a named sub-lemma with a
+\texttt{sorry}-free collation above it, which is the decomposition gate's middle state and not a
+claim; the four proved clauses have moved into \texttt{Hemigroup/PhillipsGenerator.lean} and are
 Lean core, the statements quantifying over any $\nu_1$ meeting the tail specification rather than
 over the constructed family.
+\textbf{Clause (2) is where the transform is a bounded functional, which is not obvious and was
+first got wrong here.} $\Lap$ is unbounded on $L^1(\RR)$ --- $e^{-st}$ grows to the left of the
+origin --- but the article's transform integrates over $(0,\infty)$ only, so its weight
+$\mathbf{1}_{(0,\infty)}(t)e^{-st}$ is bounded by $1$ on all of $\RR$ for $s \ge 0$, and it is
+therefore an element of $X \to_L \RR$. So the Fubini step of (2) is the same one-line
+pass-through as (3)'s, and it holds for every element of $X$, so the Phillips integral never has
+to be shown causal. Two further steps of (2) also cost less than the proof above suggests:
+$\Lap[f'] = s\hat f$ is \emph{not} an integration by parts --- $f(0)=0$ is already inside the
+definition of $\core$, so what remains is to apply the (continuous) transform to
+\ref{lem:delay-core}'s difference-quotient limit and read $(e^{-sh}-1)/h \to -s$ off the
+derivative of $h \mapsto e^{-sh}$ at the origin, with no boundary term to make vanish; and the
+scalar identity $b_0s + \int(1-e^{-sr})\nu_x(dr) = sF'(xs)$ is the layer cake of
+\ref{lem:potential-kernel} verbatim, with the tail identity substituted under the integral in $r$.
 \textbf{Clause (3) uses neither causality nor normalisation of $\Phi$} --- it holds for any finite
 measure, being (A2) for the $L^1$ convolution plus linearity, so ``commutes with every
 $\Phi_{y,z}$'' is proved off the constructed family entirely. And (3) and (4) are the two ways an
@@ -184,11 +197,9 @@ uniqueness step of (5) is about a \emph{signed} function where the available inj
 measures --- but $\varphi_x(\partial_t)$ and $\kappa^{(x)} * \cdot$ are both linear in $f$, so it
 is enough to treat $f' \ge 0$, where $f$ is nondecreasing, $f - T_rf \ge 0$, and both sides are
 measures.
-What (2) does cost is worth naming in advance: $\Lap$ is not a bounded functional on $L^1(\RR)$,
-$e^{-st}$ being unbounded to the left of the origin, so the exchange is done on causal
-representatives in $[0,\infty]$ --- as in chapter~2's Tonelli identity and in
-\ref{lem:delay-core}'s estimate --- rather than by pulling a continuous linear map through the
-Bochner integral, which is available only for (3).)}
+What is left is (5), whose transform half is now supplied by (2) and whose uniqueness half needs
+Laplace injectivity for a locally finite measure --- $\kappa^{(x)}$ has total mass $F'(\zp)$,
+which \ref{prop:moments} shows may be infinite.)}
 \end{lemma}
 
 \begin{proof}
