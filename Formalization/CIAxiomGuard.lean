@@ -229,7 +229,7 @@ A12, and it is not here.
 
 #print axioms Hemigroup.analyticAt_Gamma
 #print axioms Hemigroup.SelfDecomposableExponent.negMomentC_eq_complexMGF
-#print axioms Hemigroup.SelfDecomposableExponent.Ioo_subset_integrableExpSet
+#print axioms Hemigroup.SelfDecomposableExponent.momentInterval_subset_integrableExpSet
 #print axioms Hemigroup.SelfDecomposableExponent.analyticAt_negMomentC
 #print axioms Hemigroup.SelfDecomposableExponent.analyticAt_mellin_profile
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_profile_ofReal_ne_zero
