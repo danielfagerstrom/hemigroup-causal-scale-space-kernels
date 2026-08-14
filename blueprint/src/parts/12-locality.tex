@@ -436,7 +436,31 @@ $g(y) \le \lambda g(x) + (1-\lambda)g(y)$ by periodicity alone, and cancelling l
 $g(y) \le g(x)$. Three points and one inequality, with no limit and no continuity; the only limit
 in the branch is at the end, fixing the constant from $m(z) \to 1$.
 \textbf{So both branches of ($\Rightarrow$) are now proved}, and what this node still cites is
-exactly its two interfaces and nothing around them.)}
+exactly its two interfaces and nothing around them.
+\textbf{What keeps this node itself untagged, named.} It carries no \texttt{\textbackslash lean}
+tag and appears white in the dependency graph with green children, and that is the accurate
+reading rather than an oversight --- the theorem asserts strictly more than is proved, in four
+places, and it is worth saying which.
+\emph{(i)} What ($\Rightarrow$) delivers is the \emph{moment} classification,
+\ref{lem:local-moment-classification}. Case~(2) goes on to identify the kernels as the
+inverse-gamma family with the Bessel-$K$ profile, and to read the signaling problem in the
+parabolic gauge as $\partial_t u = \tfrac12\partial_x^2u + (\beta/x)\partial_xu$. Those are
+statements about \emph{densities} and about a PDE, they run through
+\ref{ex:bessel-quadratic}, and through it they need the Bessel function $K$ --- which Mathlib does
+not carry. This is the one genuinely upstream obstruction in the chapter, and it blocks the
+ladder's Meijer-$G$ densities in \ref{prop:local-ladder} for the same reason.
+\emph{(ii)} In ($\Leftarrow$), admissibility of the family is \ref{prop:bessel-family}, itself an
+\textbf{[A]} node; its locality clause is \ref{ex:bessel-quadratic} again. Of that direction only
+the maximum-principle verification is machine-checked, as \ref{lem:pmp-verification}.
+\emph{(iii)} The homogeneity claim runs through \ref{cor:semigroup-case}, not formalised.
+\emph{(iv)} And the order bound is \ledger{A14} itself.
+So the reachable content sits in the four split-off nodes ---
+\ref{lem:symbol-vanishes-at-origin}, \ref{lem:moment-recursion-quotient},
+\ref{lem:pmp-verification}, \ref{lem:local-moment-classification} --- and the theorem node stays
+white until Bessel $K$ exists upstream and \ledger{A14} and \ref{prop:bessel-family} are
+discharged. Splitting rather than tagging is what keeps that difference visible; a
+\texttt{\textbackslash leanok} here would claim the densities and the PDE along with the
+moments.)}
 \end{theorem}
 
 \begin{proof}
