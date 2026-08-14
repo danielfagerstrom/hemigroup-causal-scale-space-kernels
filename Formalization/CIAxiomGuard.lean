@@ -596,6 +596,25 @@ inequality, and it prints Lean core.
 #print axioms Hemigroup.eq_of_convexOn_of_periodic
 #print axioms Hemigroup.SelfDecomposableExponent.exists_pow_form_of_isLocalOfOrder_one
 
+/-! ### `thm:locality`(⇒), collated
+
+The two branches are exhaustive, and the collation is what says so. Order `0` is impossible ---
+`def:locality-pmp` asks `c_0` not to vanish identically while `lem:moment-recursion`(1) forces
+`γ_0 = 0` and
+covariance makes `c_0` identically `0` --- and orders above `2` are excluded by the hypothesis
+that is A14's conclusion. So the theorem's case list is a dichotomy for a reason, not by
+inspection.
+
+The positive maximum principle does not appear in either line, and that is the point: (⇒) uses it
+*only* through **A14**, whose conclusion is the order bound. A statement carrying `SatisfiesPMP`
+as an unused hypothesis would misreport where the principle is spent.
+
+A17 and neither A13 nor A14, both being hypotheses.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.not_isLocalOfOrder_zero
+#print axioms Hemigroup.SelfDecomposableExponent.exists_moment_form_of_isLocalOfOrder
+
 /-! ### `lem:gamma-recursion-uniqueness` — ledger A15, order-two case, discharged
 
 Krull--Webster restricted to a linear `Q`, which is the only case `thm:locality` applies it to,

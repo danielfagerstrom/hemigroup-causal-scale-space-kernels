@@ -830,3 +830,49 @@ times a nonpositive; terms with $j > n$ do not occur, as $n \le 2$. For the symb
 $\operatorname{Re}c_0(x) = \operatorname{Re}(\gamma_0 x^{-1}) = 0$ and
 $\operatorname{Re}c_2(x) = x\operatorname{Re}\gamma_2 \ge 0$ for $x > 0$.
 \end{proof}
+
+% additive: not in the draft. The moment content of Theorem 12.5's (=>) direction, split off for
+% the same reason its PMP half was: that theorem carries A14. Numbered 12.13.
+\begin{lemma}[the moment classification of a local operator]
+\label{lem:local-moment-classification}
+\uses{def:locality-pmp,lem:local-polynomial-symbol,lem:moment-recursion,lem:log-convexity,lem:gamma-recursion-uniqueness,lem:symbol-vanishes-at-origin}
+\lean{Hemigroup.SelfDecomposableExponent.exists_moment_form_of_isLocalOfOrder}\leanok
+Assume (H), that every negative moment of $T_1$ is finite (\ref{lem:moment-recursion}(2)), and
+that $A$ is local of order $n \le 2$ (\ref{thm:locality}'s order bound). Then exactly one of
+\[
+  m(z) \;=\; c'^{\,z}
+  \qquad\text{or}\qquad
+  m(z) \;=\; c_2^{\,z}\,\frac{\Gamma(a+z)}{\Gamma(a)}
+  \qquad (z > 0)
+\]
+holds, with $c' > 0$ in the first case and $c_2, a > 0$ in the second --- that is,
+$T_1 = 1/c'$ almost surely, or $T_1 \stackrel{d}{=} 1/(c_2\gamma_a)$.
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{exists\_moment\_form\_of\_isLocalOfOrder}, on A17 and \emph{neither} \ledger{A13} nor
+\ledger{A14}: both are hypotheses of the statement rather than axioms, phrased as \ledger{A17} is
+so that either demotes to a lemma without touching anything below.
+\textbf{Order $0$ is impossible, and cheaply}, which is what makes the case list a dichotomy
+rather than a trichotomy settled by inspection. \ref{def:locality-pmp} asks the leading
+coefficient not to vanish identically; \ref{lem:moment-recursion}(1) gives $\gamma_0 = 0$; and
+covariance gives $c_0(x) = \gamma_0 x^{-1}$, identically zero. So the definition's two clauses are
+already incompatible at order $0$, with no analysis in between, and \ledger{A13} is not needed for
+it either. That is \texttt{not\_isLocalOfOrder\_zero}.
+\textbf{The maximum principle does not appear in the statement}, and its absence is the honest
+reading. \ref{thm:locality}'s ($\Rightarrow$) direction uses the PMP \emph{only} through
+\ledger{A14}, whose conclusion is the order bound; a collation carrying \texttt{SatisfiesPMP} as
+an unused hypothesis would misreport where the principle is spent. Where the principle \emph{is}
+used, in the other direction, is \ref{lem:pmp-verification}.
+\textbf{What this does not say} is that the kernels are the Bessel-$K$ densities of
+\ref{prop:bessel-family}: that identification is a statement about densities and Mathlib carries
+no Bessel $K$. The moment content is the whole of what is reachable, and it is also the whole of
+what the rest of the chapter consumes.)}
+\end{lemma}
+
+\begin{proof}
+\leanok
+\uses{lem:local-polynomial-symbol,lem:moment-recursion-quotient}
+Order $0$ is excluded as above. At order $1$, $Q \equiv -\gamma_1 =: c'$ is constant and positive,
+so $\log m$ is convex with constant unit increments, hence affine, and $m(z) = c'^{\,z}$. At order
+$2$, $Q(z) = c_2 z + a_0$ with $c_2, a_0 > 0$, and \ref{lem:gamma-recursion-uniqueness} applied to
+$Q(z) = c_2(z + a_0/c_2)$ gives the Gamma form. Orders above $2$ are excluded by hypothesis.
+\end{proof}
