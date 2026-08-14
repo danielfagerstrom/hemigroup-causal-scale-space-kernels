@@ -16,7 +16,8 @@ Both are now proved and have moved. **This file holds no declarations.**
 
 | node | declaration (under `Hemigroup/`) |
 |---|---|
-| `lem:admissible-cone` (7.13) | `SelfDecomposableExponent.admissible_cone`, in `AdmissibleCone.lean` |
+| `lem:admissible-cone` (7.13) | `SelfDecomposableExponent.admissible_cone`,
+in `AdmissibleCone.lean` |
 | `lem:dickman-superposition` (7.14) | `dickman_superposition`, in `DickmanSuperposition.lean` |
 
 ## What stays behind in 7.7

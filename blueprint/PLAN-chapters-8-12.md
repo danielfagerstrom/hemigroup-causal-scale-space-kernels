@@ -1673,3 +1673,67 @@ that reading the obligation rather than the citation kept a proof interface-free
 `PLAN`'s *available, nothing depends on them* row, minus the two just done: `prop:moments`,
 `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.
 Re-check each against its node before starting.
+
+---
+
+# `prop:moments` stated; two clauses of three proved — 2026-08-14
+
+`Hemigroup/MeanDelay.lean` (the two proved clauses and the definition of `meanRate`),
+`Skeleton/Chapter8.lean` (the collation, `sorry`-free above one named sub-lemma). The node is
+`\lean{Skeleton.moments}\notready`. 56 nodes `\leanok`; two `\notready`.
+
+## The node divides again, and along a line the blueprint does not draw
+
+Phase 0 already split this node once, moving the higher-moment criterion out as
+`prop:moment-criterion` because it costs ledger A7 and the mean does not. What is left divides
+again:
+
+| clause | status |
+|---|---|
+| linearity of the influence curve | `lintegral_id_kernel_zero` — **proved** |
+| finite iff `k` integrable at infinity | `meanRate_ne_top_iff` — **proved** |
+| `E T₁ = F'(0+)` | open |
+
+**The interesting one is the first.** The blueprint derives linearity *from* the identity —
+`E T_x = xF'(0+)` is linear in `x` because the right-hand side is. In Lean the dependency runs the
+other way: `kernel_zero_eq_map_lawT₁`, proved for chapter 11, says `μ_{0,x}` is the pushforward of
+`μ_{0,1}` under `t ↦ xt`, so **every** moment scales by a change of variables, finite or not, and
+the identity is needed only at `x = 1`. Same shape as `lem:delay-core`'s estimate: a clause the
+prose derives from the main result rests on something weaker, and separating them is what makes
+the main result's cost visible.
+
+**And `[0,∞]` is the statement, not a convenience.** The proposition's second clause is about when
+the mean is *infinite*, so `meanRate` is `ℝ≥0∞`-valued and no finiteness hypothesis appears
+anywhere. The finiteness criterion is then one line of bookkeeping, because `∫₀¹ k < ∞` is forced
+by the structure's own `ne_top` field (`integrableOn_k`) rather than assumed — so the only
+condition is at infinity, which is exactly what the blueprint asserts.
+
+## What the open clause needs, and why it is not differentiation
+
+The blueprint says "differentiating the transform at the origin". In `[0,∞]` there is no
+differentiation and no Tauberian theorem, because the difference quotient is **monotone**:
+
+1. `antitoneOn_einIntegrand` — proved this round, in `Hemigroup/Ein.lean` — makes
+   `s ↦ (1-e^{-st})/s` nonincreasing in `s` for each `t ≥ 0`. Along `s_n = 1/(n+1)` the integrands
+   increase to `t`, so monotone convergence gives `E T₁ = ⨆ₙ (1 - H(s_n))/s_n`.
+2. The same lemma inside the Lévy integral gives `F(s)/s = b₀ + ∫ einIntegrand(st)k(t)dt`
+   increasing to `meanRate`. This is the clause the node's annotation names — *"monotone
+   convergence in (7.1) and nothing else"*.
+3. A squeeze joins them: `we^{-w} ≤ 1-e^{-w} ≤ w` at `w = F(s_n) → 0`. Both bounds are monotone,
+   so the suprema agree — including when both are `⊤`, the case the proposition's second clause
+   exists to describe and the one a real-valued argument would have to exclude.
+
+Step 3 is the whole of the remaining cost and it is `ℝ≥0∞` bookkeeping, not analysis.
+
+**Worth recording about `antitoneOn_einIntegrand` itself**, since it is the only genuinely new
+mathematics of the round: the obvious route is the sign of the derivative, whose numerator is
+`e^{-u}(1+u) - 1`, i.e. `1 + u ≤ e^u` — true, available, and needing the mean value theorem to get
+back from the derivative to the function. The representation `(1-e^{-u})/u = ∫₀¹ e^{-uv}dv` needs
+none of that: antitonicity is monotonicity of the integrand. Third time in this repo that replacing
+a derivative by an integral was the shorter route (`lem:memory-kernel`, `lem:fractional-integral-
+derivative`, here).
+
+## Next
+
+`PLAN`'s *available* row, minus what is done: `mean_delay_unit` (the clause above),
+`prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.

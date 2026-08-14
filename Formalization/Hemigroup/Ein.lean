@@ -4,6 +4,7 @@ Released under Apache 2.0 license as described in the file LICENSE.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.Examples
+import Mathlib.Analysis.SpecialFunctions.Integrals.Basic
 
 /-!
 # `Ein`, the entire exponential integral
@@ -102,6 +103,36 @@ theorem intervalIntegral_dilate_einIntegrand (s z : ℝ) :
   · simp only [dilate_einIntegrand]
     rw [intervalIntegral.integral_const_mul, intervalIntegral.integral_comp_mul_left _ hs,
       mul_zero, smul_eq_mul, ← mul_assoc, mul_inv_cancel₀ hs, one_mul, ein]
+
+/-- **`(1 - e^{-u})/u = ∫₀¹ e^{-uv} dv`.**
+
+Not true at `u = 0`, where Lean's `0/0 = 0` disagrees with the integral's `1`; that is the one
+place the junk value is visible, and it is why the antitonicity below is stated on `(0,∞)`. -/
+theorem einIntegrand_eq_integral {u : ℝ} (hu : u ≠ 0) :
+    einIntegrand u = ∫ v in (0 : ℝ)..1, Real.exp (-(u * v)) := by
+  have hinner : (∫ w in (0 : ℝ)..u, Real.exp (-w)) = 1 - Real.exp (-u) := by
+    rw [intervalIntegral.integral_comp_neg (fun w => Real.exp w), integral_exp, neg_zero,
+      Real.exp_zero]
+  rw [intervalIntegral.integral_comp_mul_left (fun w => Real.exp (-w)) hu, mul_zero, mul_one,
+    hinner, smul_eq_mul, einIntegrand]
+  field_simp
+
+/-- **`(1 - e^{-u})/u` is nonincreasing on `(0,∞)`.**
+
+Through the integral representation, where it is monotonicity of `e^{-uv}` in `u` and nothing
+else. The direct route is the sign of the derivative, whose numerator is `e^{-u}(1+u) - 1`; that
+is `1 + u ≤ e^u` and would do, but it needs the mean value theorem to get from the derivative to
+the function, where the integral needs nothing.
+
+This is what makes the difference quotient `(1 - e^{-st})/s` monotone in `s`, and hence what lets
+the mean delay be reached by monotone convergence rather than by a Tauberian theorem. -/
+theorem antitoneOn_einIntegrand : AntitoneOn einIntegrand (Ioi 0) := by
+  intro a ha b hb hab
+  rw [einIntegrand_eq_integral (mem_Ioi.mp ha).ne', einIntegrand_eq_integral (mem_Ioi.mp hb).ne']
+  refine intervalIntegral.integral_mono_on zero_le_one
+    ((Continuous.intervalIntegrable (by fun_prop) _ _))
+    ((Continuous.intervalIntegrable (by fun_prop) _ _)) fun v hv => ?_
+  exact Real.exp_le_exp.mpr (by nlinarith [hv.1])
 
 /-- The dilated integrand is nonnegative on the half-line. -/
 theorem dilate_einIntegrand_nonneg {s : ℝ} (hs : 0 ≤ s) {u : ℝ} (hu : 0 ≤ u) :

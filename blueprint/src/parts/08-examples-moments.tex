@@ -152,6 +152,7 @@ that into $\Ex\,T_x^n < \infty$ iff $a > n$.
 % draft: Proposition 8.4
 \begin{proposition}[the mean delay and the influence curve]\label{prop:moments}
 \uses{lem:selfdecomposable-exponents,thm:main-characterization}
+\lean{Skeleton.moments}\notready
 $\Ex\,T_x = x\,F'(\zp) = x\bigl(b_0 + \int_0^\infty k(t)\,dt\bigr)$, finite if and only if $k$
 is integrable at infinity. When the mean is finite, the influence curve of
 \sscite{fagerstrom2005temporal}, \S7, may be defined by the mean delay, and it is exactly
@@ -163,7 +164,16 @@ linear in the canonical gauge:
 none is made. The higher-moment criterion, which \emph{does} need one, was split off as
 \ref{prop:moment-criterion}; before the split this node reported that entry's cost for a result
 that does not incur it. What is \emph{not} claimed here is anything about the mode, which is the
-delay measure the stable family forces one to use --- see \ref{prop:stable-family}.)}
+delay measure the stable family forces one to use --- see \ref{prop:stable-family}.
+\textbf{Stated in Lean, two clauses of three proved} (2026-08-14). The mean rate is
+$[0,\infty]$-valued, so the ``finite if and only if'' clause is
+\texttt{meanRate\_ne\_top\_iff} with both sides allowed to fail and no finiteness hypothesis
+anywhere. \textbf{And the linearity of the influence curve does not depend on the identity}, which
+is the reverse of the order used above: $\mu_{0,x}$ is the law of $x T_1$, so every moment scales
+by a change of variables whether or not it is finite, and the identity is needed only at $x = 1$.
+What is open is that one instance, $\Ex T_1 = F'(\zp)$, whose only step beyond monotone
+convergence is a squeeze joining $\bigl(1 - e^{-F(s)}\bigr)/s$ to $F(s)/s$ --- see the work order
+in \texttt{Skeleton/Chapter8.lean}.)}
 \end{proposition}
 
 \begin{proof}

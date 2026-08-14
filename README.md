@@ -68,8 +68,16 @@ that proof reduces to Lean core.
 Where the work stands. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; the
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable. What is schedulable today is the row `PLAN` calls *available, nothing depends on
-them* — `prop:moments`, `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
-`lem:potential-kernel-scaling`. Everything else:
+them* — `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`,
+`lem:potential-kernel-scaling`, and the one open clause of `prop:moments` below. Everything else:
+
+0. **`prop:moments` (8.4) is stated, two clauses of three proved.** The mean rate
+   `F'(0+) = b₀ + ∫₀^∞ k` is `[0,∞]`-valued — the proposition's second clause is about when it is
+   infinite — so `meanRate_ne_top_iff` carries no finiteness hypothesis, and the influence
+   curve's linearity is `lintegral_id_kernel_zero`, which does **not** depend on the mean-delay
+   identity: `μ_{0,x}` is the law of `xT₁`, so every moment scales by a change of variables. What
+   is open is `E T₁ = F'(0+)`, whose only step beyond monotone convergence is a squeeze; the work
+   order is in `Formalization/Skeleton/Chapter8.lean`.
 
 0. **`prop:extreme-rays` is split and half of it is done.** The node asserted four things at four
    prices and reported the maximum; the cone and the `Ein` superposition are now

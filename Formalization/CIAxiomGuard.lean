@@ -955,3 +955,29 @@ apply and an odd extension is needed; the multiplicative one conjugates by `exp`
 #print axioms Hemigroup.CascadeCore.G_add
 #print axioms Hemigroup.CascadeCore.G_eq_mul_of_isOneParameter
 #print axioms Hemigroup.CascadeCore.semigroup_case
+
+/-! ### `prop:moments` (8.4), the two clauses that are proved
+
+The mean rate `F'(0+) = b₀ + ∫₀^∞ k` is `[0,∞]`-valued, because the proposition's second clause is
+precisely about when it is infinite; no finiteness hypothesis appears anywhere.
+
+`lintegral_id_kernel_zero` is the influence curve's linearity, and it is worth its own line
+because it does **not** depend on the mean-delay identity — the blueprint derives it from that
+identity, where here `μ_{0,x}` is the law of `xT₁` (`kernel_zero_eq_map_lawT₁`, chapter 11), so
+every moment scales by a change of variables, finite or not.
+
+A17 through `kernel`, as everything that quantifies over the constructed family does;
+`meanRate_ne_top_iff` is about `k` alone and reduces to Lean core.
+
+The remaining clause, `E T₁ = F'(0+)`, is stated in `Skeleton/Chapter8.lean` and is not listed
+here, because nothing in the skeleton is claimed. `antitoneOn_einIntegrand` is the piece of it
+already available — `(1-e^{-u})/u` nonincreasing, through the representation `∫₀¹ e^{-uv}dv` — and
+it is what makes the difference quotient monotone, hence what will let the identity be reached by
+monotone convergence rather than by a Tauberian theorem.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.meanRate
+#print axioms Hemigroup.SelfDecomposableExponent.meanRate_ne_top_iff
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_id_kernel_zero
+#print axioms Hemigroup.einIntegrand_eq_integral
+#print axioms Hemigroup.antitoneOn_einIntegrand
