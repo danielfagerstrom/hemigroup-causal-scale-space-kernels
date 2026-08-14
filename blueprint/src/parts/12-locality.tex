@@ -405,7 +405,27 @@ verification is \ref{lem:pmp-verification}, \textbf{now machine-checked} --- spl
 same reason the other [T] parts of this chapter were, since \ledger{A14} sits on the
 \emph{opposite} use of the maximum principle and a node reporting both under one status would say
 the principle costs an interface when half of it costs nothing. The homogeneity claim is
-\textbf{[T]} through \ref{cor:semigroup-case}.)}
+\textbf{[T]} through \ref{cor:semigroup-case}.
+\textbf{The order-2 branch of ($\Rightarrow$) is now machine-checked}, as
+\texttt{exists\_gamma\_form\_of\_isLocalOfOrder\_two}: a local operator of order $2$ forces
+$m(z) = c_2^{\,z}\Gamma(a+z)/\Gamma(a)$ on $(0,\infty)$ with $c_2, a > 0$, which is
+$T_1 \stackrel{d}{=} 1/(c_2\gamma_a)$. \textbf{Both citations enter as hypotheses rather than as
+axioms}, phrased so either can be demoted the day it is proved: clause~(2) of
+\ref{lem:moment-recursion} is the named hypothesis \texttt{AllNegMomentsFinite}, and the order
+bound is simply the order $2$. \texttt{\#print axioms} accordingly shows A17 and \emph{neither}
+\ledger{A13} nor \ledger{A14} --- the interfaces sit in the statement, where a reader sees them,
+and not in the trust base.
+\textbf{Where that step's work actually is}: not in the Gamma form, which is one application of
+\ref{lem:gamma-recursion-uniqueness}, but in $a > 0$. Writing $Q(z) = c_2 z + a_0$, positivity of
+$Q$ on the open half-line gives only $a_0 \ge 0$ --- a linear function positive on $(0,\infty)$
+may vanish at the origin --- so $a_0 = Q(0) = m(1) > 0$ has to be taken as a limit, and that needs
+$m(z+1) \to m(1)$, which is \ref{lem:symbol-vanishes-at-origin}'s dominated-convergence argument
+one unit to the right, with dominating function $t^{-2}+1$. It is available exactly because
+$2 < z_*$, i.e.\ because clause~(2) is in force --- and sayable at all only because $z_*$ is now
+valued in $[0,\infty]$; see \ref{def:standing-hypothesis}.
+\textbf{The order-1 branch is not yet formalised}: there $Q$ is constant, and the argument is that
+a convex function with constant unit increments is affine --- a statement about convexity that
+Mathlib does not carry and that is unrelated to anything else in this chapter.)}
 \end{theorem}
 
 \begin{proof}

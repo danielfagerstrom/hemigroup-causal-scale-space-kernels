@@ -559,6 +559,24 @@ scratch. It mentions nothing of this development and prints **Lean core alone**.
 #print axioms Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_isLocalOfOrderCore
 #print axioms Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq
 
+/-! ### `thm:locality`(⇒), the order-two branch
+
+The step that turns the recursion into the Gamma form, and so `T₁` into the inverse-gamma family.
+Both citations of that direction enter as **hypotheses** rather than as axioms, phrased so either
+can be demoted the day it is proved: `AllNegMomentsFinite` is `lem:moment-recursion`(2), ledger
+**A13**, and the order bound is Courrège, **A14**, which here is just the order `2`. So these lines
+print A17 and neither A13 nor A14 — the interfaces are in the statement, where a reader can see
+them, and not in the trust base.
+
+`tendsto_negMoment_succ_nhdsGT_zero` is where the work is: `a₀ > 0` is `Q(0) = m(1)`, a limit, and
+positivity of `Q` on the open half-line gives only `a₀ ≥ 0`. The dominating function is `t^{-2}+1`,
+integrable exactly because `2 < z_*` — which is what A13 supplies and what the `ℝ≥0∞` abscissa
+finally lets one say.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_negMoment_succ_nhdsGT_zero
+#print axioms Hemigroup.SelfDecomposableExponent.exists_gamma_form_of_isLocalOfOrder_two
+
 /-! ### `lem:gamma-recursion-uniqueness` — ledger A15, order-two case, discharged
 
 Krull--Webster restricted to a linear `Q`, which is the only case `thm:locality` applies it to,
