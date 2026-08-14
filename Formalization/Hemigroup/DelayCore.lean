@@ -91,6 +91,139 @@ theorem delay_eq_translate {f : ℝ → ℝ} (hf : ∀ s : ℝ, s < 0 → f s = 
   · rw [delay, indicator_of_mem (mem_Ici.mpr ht)]
   · rw [delay, indicator_of_notMem (by simpa using ht), hf (t - r) (by linarith [not_le.mp ht])]
 
+/-! ## The two analytic inputs are already in the library
+
+`lem:delay-core`'s density clause and its difference quotient rest on two facts, and the
+blueprint names both. Neither is new work here, and finding that out is the round's main saving.
+
+**Continuity of translation in `L¹`** is `continuous_transL1`, proved in
+`Hemigroup/Representation.lean` for chapter 4's Wendel-style representation argument, which needs
+`r ↦ τ_r g` strongly measurable and buys it with continuity. That file also records the Mathlib
+answer, which is worth repeating because it is not findable by name: Mathlib has no lemma about
+translation in `Lᵖ`, but it has `MeasureTheory.Lp.compMeasurePreserving_continuous`, joint
+continuity of `(g, φ) ↦ g ∘ φ` over measure-preserving `φ` varying in `C(ℝ,ℝ)`, which is the same
+fact wearing a different hat.
+
+**The mollifier is chapter 4's approximate identity.** `approxId ε = ε⁻¹·1_{(0,ε)}` is carried by
+`[0,ε]`, hence *causal* — a property chapter 4 needed for an unrelated reason, its approximants
+having to be causal probability densities for Prokhorov — and causality is exactly what makes
+`ρ_ε * f` land in `𝒟` rather than merely near it. `tendsto_bconv_approxId` is `ρ_ε * f → f`
+in `L¹`.
+
+Worth recording as a pattern, because it runs opposite to this project's usual finding. The usual
+one is that a node's stated prerequisite exceeds what the obligation needs. Here the obligation's
+genuine prerequisites were both **already proved, six chapters earlier, inside an argument with no
+visible relation to this one**. The move that located them is the same — write the statement and
+ask what it consumes — but what it turned up was a library fact rather than a Mathlib one, and a
+survey of Mathlib would have missed both.
+
+`tendsto_norm_transL1_sub` below is the one repackaging the quantitative clauses want: continuity
+at the origin, read as a real-valued limit.
+-/
+
+/-- **`‖T_r f - f‖₁ → 0` as `r → 0`** — `continuous_transL1` at the origin, in the form the
+difference-quotient clause consumes. -/
+theorem tendsto_norm_transL1_sub (F : X) :
+    Tendsto (fun r : ℝ => ‖transL1 r F - F‖) (𝓝 0) (𝓝 0) := by
+  have h : Tendsto (fun r : ℝ => transL1 r F - F) (𝓝 0) (𝓝 (transL1 (0 : ℝ) F - F)) :=
+    ((continuous_transL1 F).tendsto 0).sub tendsto_const_nhds
+  rw [transL1_zero, sub_self] at h
+  simpa [Function.comp_def] using (continuous_norm.tendsto (0 : X)).comp h
+
+/-! ## Two facts about causal integrands, used by both invariance clauses -/
+
+/-- **A causal integrand does not see the left end of the interval.** Extending the domain of a
+primitive to the left of the origin changes nothing, because there is nothing there.
+
+Both invariance clauses need it, and for the same reason: a substitution moves the base point of
+an integral off the origin, and causality is what moves it back. -/
+theorem setIntegral_Ioc_of_causal {g : ℝ → ℝ} (hg : Integrable g)
+    (hgc : ∀ r : ℝ, r < 0 → g r = 0) {a : ℝ} (ha : a ≤ 0) (b : ℝ) :
+    (∫ w in Ioc a b, g w) = ∫ w in Ioc (0 : ℝ) b, g w := by
+  have hzero : ∀ c d : ℝ, d ≤ 0 → (∫ w in Ioc c d, g w) = 0 := by
+    intro c d hd
+    have hne : ∀ᵐ w : ℝ, w ≠ 0 := by
+      rw [ae_iff]
+      simp
+    refine integral_eq_zero_of_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_)
+    filter_upwards [hne] with w hw hwmem
+    exact hgc w (lt_of_le_of_ne (hwmem.2.trans hd) hw)
+  rcases lt_or_ge 0 b with hb | hb
+  · have hsplit : Ioc a b = Ioc a 0 ∪ Ioc (0 : ℝ) b := (Ioc_union_Ioc_eq_Ioc ha hb.le).symm
+    have hdisj : Disjoint (Ioc a (0 : ℝ)) (Ioc (0 : ℝ) b) := by
+      rw [Set.disjoint_left]
+      rintro w ⟨-, hw2⟩ ⟨hw3, -⟩
+      exact absurd hw3 (not_lt.mpr hw2)
+    rw [hsplit, setIntegral_union hdisj measurableSet_Ioc hg.integrableOn hg.integrableOn,
+      hzero a 0 le_rfl, zero_add]
+  · rw [hzero a b hb, Ioc_eq_empty (not_lt.mpr hb), Measure.restrict_empty, integral_zero_measure]
+
+/-- `μ ∗ f` is genuinely measurable when `f` is, not merely `AEStronglyMeasurable`.
+
+`Operator.lean` supplies the `L¹` facts about `mconv`, which is all (A1) needs; the core needs
+more, because `HasCoreDeriv` asks for `Measurable` — a demand chapter 11 also makes, and for the
+recorded reason that a `volume`-null set need not pull back to a null set for the product measure
+when the other factor has atoms. This is Mathlib's strong measurability of a parametric integral,
+with `SFinite` the only hypothesis. -/
+theorem measurable_mconv (μ : Measure ℝ) [SFinite μ] {f : ℝ → ℝ} (hf : Measurable f) :
+    Measurable (mconv μ f) :=
+  ((hf.comp measurable_sub).stronglyMeasurable.integral_prod_right' (ν := μ)).measurable
+
+/-- **`μ ∗ f` is the primitive of `μ ∗ g` whenever `f` is the primitive of `g`.**
+
+The analytic content of `lem:delay-core`'s `Φ`-invariance clause, and the blueprint's own
+argument: `f = 1_{[0,∞)} ∗ g`, so `μ ∗ f = 1_{[0,∞)} ∗ (μ ∗ g)`. In Lean it is Fubini on
+`Ioc 0 t × μ`, and **causality of `μ` is what keeps the primitive based at the origin** — the
+substitution `s ↦ s - τ` moves the lower endpoint to `-τ`, and `τ ≥ 0` a.e. is what
+`setIntegral_Ioc_of_causal` needs to move it back.
+
+`delayedField_eq_setIntegral` is this statement for `μ = ` the law of `xT₁`; that it was proved
+there first, one chapter later and for one measure, is the shape this whole file is correcting. -/
+theorem mconv_eq_setIntegral_mconv {μ : Measure ℝ} [IsFiniteMeasure μ] (hμ : IsCausal μ)
+    {f g : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g) (hgc : ∀ r : ℝ, r < 0 → g r = 0)
+    (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) (t : ℝ) :
+    mconv μ f t = ∫ ρ in Ioc (0 : ℝ) t, mconv μ g ρ := by
+  rcases lt_or_ge t 0 with ht | ht
+  · rw [Ioc_eq_empty (not_lt.mpr ht.le), Measure.restrict_empty, integral_zero_measure]
+    refine mconv_eq_zero_of_lt hμ (fun s hs => ?_) ht
+    rw [hf s, Ioc_eq_empty (not_lt.mpr hs.le), Measure.restrict_empty, integral_zero_measure]
+  · have hinner : ∀ τ : ℝ, 0 ≤ τ → (∫ s in Ioc (0 : ℝ) t, g (s - τ)) = f (t - τ) := by
+      intro τ hτ
+      have hsub : (∫ s in Ioc (0 : ℝ) t, g (s - τ)) = ∫ w in Ioc (0 - τ) (t - τ), g w := by
+        rw [← intervalIntegral.integral_of_le ht, ← intervalIntegral.integral_of_le (by linarith)]
+        exact intervalIntegral.integral_comp_sub_right (fun w => g w) τ
+      rw [hsub, setIntegral_Ioc_of_causal hg hgc (by linarith) (t - τ), hf]
+    have hmeas : Measurable (Function.uncurry fun s τ : ℝ => g (s - τ)) := by
+      unfold Function.uncurry
+      fun_prop
+    have hint : Integrable (Function.uncurry fun s τ : ℝ => g (s - τ))
+        ((volume.restrict (Ioc (0 : ℝ) t)).prod μ) := by
+      refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+      rw [hasFiniteIntegral_iff_enorm, lintegral_prod_symm _ hmeas.enorm.aemeasurable]
+      have hC : ∫⁻ w, ‖g w‖ₑ ≠ ⊤ := by
+        have h2 := hg.2
+        rw [hasFiniteIntegral_iff_enorm] at h2
+        exact h2.ne
+      have hbnd : ∀ τ : ℝ,
+          (∫⁻ s in Ioc (0 : ℝ) t, ‖Function.uncurry (fun s τ : ℝ => g (s - τ)) (s, τ)‖ₑ)
+            ≤ ∫⁻ w, ‖g w‖ₑ := by
+        intro τ
+        calc (∫⁻ s in Ioc (0 : ℝ) t, ‖g (s - τ)‖ₑ)
+            ≤ ∫⁻ s, ‖g (s - τ)‖ₑ := setLIntegral_le_lintegral _ _
+          _ = ∫⁻ w, ‖g w‖ₑ := lintegral_sub_right_eq_self (fun w => ‖g w‖ₑ) τ
+      calc ∫⁻ τ, (∫⁻ s in Ioc (0 : ℝ) t,
+              ‖Function.uncurry (fun s τ : ℝ => g (s - τ)) (s, τ)‖ₑ) ∂μ
+          ≤ ∫⁻ _τ, (∫⁻ w, ‖g w‖ₑ) ∂μ := lintegral_mono hbnd
+        _ = (∫⁻ w, ‖g w‖ₑ) * μ univ := lintegral_const _
+        _ < ⊤ := ENNReal.mul_lt_top (lt_top_iff_ne_top.mpr hC) (measure_lt_top μ univ)
+    calc mconv μ f t
+        = ∫ τ, f (t - τ) ∂μ := rfl
+      _ = ∫ τ, (∫ s in Ioc (0 : ℝ) t, g (s - τ)) ∂μ := by
+          refine (integral_congr_ae ?_).symm
+          filter_upwards [hμ.ae_nonneg] with τ hτ using hinner τ hτ
+      _ = ∫ s in Ioc (0 : ℝ) t, ∫ τ, g (s - τ) ∂μ := (integral_integral_swap hint).symm
+      _ = ∫ s in Ioc (0 : ℝ) t, mconv μ g s := rfl
+
 /-! ## The core, on functions -/
 
 /-- **`f ∈ 𝒟`, with the derivative named**: `f` is the primitive of a causal `g ∈ X₀`, and lies in
@@ -181,6 +314,45 @@ theorem absolutelyContinuousOnInterval (h : HasCoreDeriv f g) (b : ℝ) :
 theorem delay_eq (h : HasCoreDeriv f g) (r : ℝ) : delay r f = fun t => f (t - r) :=
   delay_eq_translate h.causal r
 
+/-- **`lem:delay-core`, invariance under the delay semigroup**, with the derivative tracked:
+`(T_r f)' = T_r f'`.
+
+The blueprint's three assertions — `T_r f` is absolutely continuous, vanishes on `[0,r]`, and has
+derivative `T_r f'` — are here the single field `primitive`, because the primitive form carries
+all three. `r ≥ 0` is used exactly twice: to keep `T_r f'` causal, and to keep the substituted
+interval `Ioc (-r) (s-r)` reachable from `Ioc 0 (s-r)` by `setIntegral_Ioc_of_causal`. -/
+theorem translate (h : HasCoreDeriv f g) {r : ℝ} (hr : 0 ≤ r) :
+    HasCoreDeriv (fun t => f (t - r)) fun t => g (t - r) where
+  measurable_deriv := h.measurable_deriv.comp (measurable_id.sub_const r)
+  integrable_deriv := integrable_translate h.integrable_deriv r
+  causal_deriv := fun s hs => h.causal_deriv (s - r) (by linarith)
+  primitive := fun s => by
+    rcases lt_or_ge s 0 with hs | hs
+    · rw [h.causal (s - r) (by linarith), Ioc_eq_empty (not_lt.mpr hs.le), Measure.restrict_empty,
+        integral_zero_measure]
+    · have hsub : (∫ ρ in Ioc (0 : ℝ) s, g (ρ - r)) = ∫ w in Ioc (0 - r) (s - r), g w := by
+        rw [← intervalIntegral.integral_of_le hs, ← intervalIntegral.integral_of_le (by linarith)]
+        exact intervalIntegral.integral_comp_sub_right (fun w => g w) r
+      rw [hsub, setIntegral_Ioc_of_causal h.integrable_deriv h.causal_deriv (by linarith) (s - r),
+        h.primitive]
+  integrable := integrable_translate h.integrable r
+
+/-- **`lem:delay-core`, invariance under `Φ_{x,y}`**, with the derivative tracked:
+`(μ ∗ f)' = μ ∗ f'`.
+
+Stated for a causal probability measure — the level at which `lem:convolution-representation`
+supplies `Φ`, and therefore the honest content of the node's `\uses` edge. Reading it back onto
+an abstract `CascadeCore` is that representation theorem and not this lemma. -/
+theorem conv {μ : Measure ℝ} [IsProbabilityMeasure μ] (h : HasCoreDeriv f g) (hμ : IsCausal μ) :
+    HasCoreDeriv (mconv μ f) (mconv μ g) where
+  measurable_deriv := measurable_mconv μ h.measurable_deriv
+  integrable_deriv :=
+    integrable_mconv μ h.integrable_deriv.aestronglyMeasurable h.integrable_deriv
+  causal_deriv := fun _ hs => mconv_eq_zero_of_lt hμ h.causal_deriv hs
+  primitive := mconv_eq_setIntegral_mconv hμ h.measurable_deriv h.integrable_deriv h.causal_deriv
+    h.primitive
+  integrable := integrable_mconv μ h.integrable.aestronglyMeasurable h.integrable
+
 end HasCoreDeriv
 
 /-- **The derivation check: `f ∈ 𝒟` is exactly what `thm:signaling-form` asks of its signal.**
@@ -234,5 +406,24 @@ theorem causalL1_transL1 {r : ℝ} (hr : 0 ≤ r) {F : X} (hF : F ∈ causalL1) 
   filter_upwards [coeFn_transL1 r F, hsh] with t ht hsub htlt
   rw [ht]
   exact hsub (by linarith)
+
+/-- **`lem:delay-core`, invariance under `T_r` on `X`.** The function-level statement transported
+along `coeFn_transL1`; the two-layer model is doing exactly the work it was chosen for, since the
+content is all in `HasCoreDeriv.translate` and the transport is three lines. -/
+theorem hasCoreDerivL1_transL1 {r : ℝ} (hr : 0 ≤ r) {F G : X} (h : HasCoreDerivL1 F G) :
+    HasCoreDerivL1 (transL1 r F) (transL1 r G) := by
+  obtain ⟨f, g, hfg, hF, hG⟩ := h
+  exact ⟨fun t => f (t - r), fun t => g (t - r), hfg.translate hr,
+    (coeFn_transL1 r F).trans (translate_congr_ae r hF),
+    (coeFn_transL1 r G).trans (translate_congr_ae r hG)⟩
+
+/-- **`lem:delay-core`, invariance under `Φ_{x,y}` on `X`.** -/
+theorem hasCoreDerivL1_mconvL1 (μ : Measure ℝ) [IsProbabilityMeasure μ] (hμ : IsCausal μ)
+    {F G : X} (h : HasCoreDerivL1 F G) :
+    HasCoreDerivL1 (mconvL1 μ F) (mconvL1 μ G) := by
+  obtain ⟨f, g, hfg, hF, hG⟩ := h
+  exact ⟨mconv μ f, mconv μ g, hfg.conv hμ,
+    (coeFn_mconvL1 μ F).trans (mconv_congr_ae μ hF),
+    (coeFn_mconvL1 μ G).trans (mconv_congr_ae μ hG)⟩
 
 end Hemigroup

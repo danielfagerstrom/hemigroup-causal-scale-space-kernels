@@ -1422,3 +1422,44 @@ about a definition rather than a ledger entry.
 2. Clauses 2 and 3 are independent of those and cheaper.
 3. Unchanged and still not schedulable: the rest of chapter 10 (C₀-semigroups), chapter 12's
    ladder (Bessel `K`), `prop:scale-evolution` and `cor:exact-inversion` (distributions).
+
+## Two clauses proved, and both analytic inputs were already in the library — same day
+
+`hasCoreDerivL1_transL1` and `hasCoreDerivL1_mconvL1` are proved and have moved into
+`Hemigroup/DelayCore.lean`. Three clauses left, all `sorry` in `Skeleton/Chapter10.lean`.
+
+**The round's finding is a saving, and it runs opposite to this file's usual one.** The plan above
+priced clauses 1 and 4 on one input, continuity of translation in `L¹`, and expected to build it:
+Mathlib has no such lemma, and the classical `C_c`-approximation proof is not small. Both halves of
+that were checked and both are beside the point.
+
+* Mathlib *does* have it, as `Lp.compMeasurePreserving_continuous` — joint continuity of
+  `(g, φ) ↦ g ∘ φ` over measure-preserving `φ` varying in `C(ℝ,ℝ)`. Not findable by name: no
+  occurrence of "translation", no `eLpNorm` along a neighbourhood filter.
+* And **this development already proved it**, as `continuous_transL1` in
+  `Hemigroup/Representation.lean`, in 2026, for chapter 4's Wendel-style representation argument —
+  which needs `r ↦ τ_r g` strongly measurable and buys that with continuity.
+* The same file also already carries the *causal* mollifier, `approxId ε = ε⁻¹·1_{(0,ε)}`, together
+  with `ρ_ε * f → f` in `L¹` (`tendsto_bconv_approxId`). Chapter 4 needed it carried by `[0,ε]`
+  for an unrelated reason — its approximants must be causal probability densities for Prokhorov —
+  and causality is exactly what makes `ρ_ε * f` land in `𝒟` rather than merely near it. So the
+  density clause's one real input is not new work either.
+
+The usual finding in this file is that a node's *stated* prerequisite exceeds what the obligation
+needs. This is the mirror image: the obligation's genuine prerequisites were both already proved,
+six chapters earlier, inside an argument with no visible relation to this one. The move that
+located them is the same one — write the statement, ask what it consumes — but what it turned up
+was a **library** fact rather than a Mathlib one. **A survey of Mathlib would have missed both**,
+and the plan's cost estimate for clauses 1 and 4 was wrong by most of their size.
+
+Worth generalising: this repo now has fifty-odd files, and "does the development already have
+this?" has become a question worth asking with the same seriousness as "does Mathlib?".
+
+**One smaller thing, recorded because it is a direction to move in.**
+`mconv_eq_setIntegral_mconv` — `μ ∗ f` is the primitive of `μ ∗ g` whenever `f` is the primitive
+of `g` — is the analytic content of the `Φ`-invariance clause, and it is
+`delayedField_eq_setIntegral` with the law of `xT₁` replaced by an arbitrary causal probability
+measure. The chapter-11 lemma is the special case, proved first because chapter 11 was formalised
+first. Nothing is broken by the duplication and it is not worth a refactor today; but it is an
+instance of a general fact having been proved in the narrow form its first consumer needed, which
+is the shape `Hemigroup/Subordinator.lean` was created to avoid.

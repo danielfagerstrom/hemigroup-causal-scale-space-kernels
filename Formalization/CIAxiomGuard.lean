@@ -814,3 +814,24 @@ namespace without taking an `F`.
 #print axioms Hemigroup.memCore_iff_signaling_hypotheses
 #print axioms Hemigroup.coreL1_subset_causalL1
 #print axioms Hemigroup.causalL1_transL1
+
+/-! ### `lem:delay-core`, the two invariance clauses
+
+`𝒟` is invariant under `T_r` and under `Φ_{x,y}`, with the derivative tracked in each case —
+`(T_r f)' = T_r f'` and `(μ ∗ f)' = μ ∗ f'`, which is what the blueprint's proof establishes and
+what `def:phillips-generator` will consume. Stated for a causal probability measure, the level
+`lem:convolution-representation` supplies `Φ` at.
+
+`mconv_eq_setIntegral_mconv` is the analytic content and is worth its own line: it is
+`delayedField_eq_setIntegral` for a general causal measure rather than for the law of `xT₁`, which
+is the direction the chapter-11 lemma should have been stated in. Lean core throughout.
+-/
+
+#print axioms Hemigroup.setIntegral_Ioc_of_causal
+#print axioms Hemigroup.measurable_mconv
+#print axioms Hemigroup.mconv_eq_setIntegral_mconv
+#print axioms Hemigroup.HasCoreDeriv.translate
+#print axioms Hemigroup.HasCoreDeriv.conv
+#print axioms Hemigroup.hasCoreDerivL1_transL1
+#print axioms Hemigroup.hasCoreDerivL1_mconvL1
+#print axioms Hemigroup.tendsto_norm_transL1_sub

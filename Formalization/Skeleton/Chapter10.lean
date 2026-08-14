@@ -79,19 +79,8 @@ not dense in `X`, and `coreL1_subset_causalL1` is the half of that already prove
 theorem dense_coreL1 : causalL1 ⊆ closure coreL1 := by
   sorry
 
-/-- **Invariance under the delay semigroup**, with the derivative tracked: `(T_r f)' = T_r f'`. -/
-theorem hasCoreDerivL1_transL1 {r : ℝ} (hr : 0 ≤ r) {F G : X} (h : HasCoreDerivL1 F G) :
-    HasCoreDerivL1 (transL1 r F) (transL1 r G) := by
-  sorry
-
-/-- **Invariance under `Φ_{x,y}`**, with the derivative tracked: `(μ ∗ f)' = μ ∗ f'`.
-
-The blueprint's argument is `f = 1_{[0,∞)} ∗ f'`, hence `μ ∗ f = 1_{[0,∞)} ∗ (μ ∗ f')`; causality
-of `μ` is what keeps the primitive based at the origin. -/
-theorem hasCoreDerivL1_mconvL1 (μ : Measure ℝ) [IsProbabilityMeasure μ] (hμ : IsCausal μ)
-    {F G : X} (h : HasCoreDerivL1 F G) :
-    HasCoreDerivL1 (mconvL1 μ F) (mconvL1 μ G) := by
-  sorry
+/-! Clauses 2 and 3 — invariance under `T_r` and under `Φ_{x,y}` — are **proved**, and have moved
+to `Hemigroup/DelayCore.lean` as `hasCoreDerivL1_transL1` and `hasCoreDerivL1_mconvL1`. -/
 
 /-- **The difference quotient**: `h⁻¹(T_h f - f) → -f'` in `X₀` as `h ↓ 0`. -/
 theorem tendsto_differenceQuotient {F G : X} (h : HasCoreDerivL1 F G) :
