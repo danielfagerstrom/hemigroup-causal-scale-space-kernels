@@ -342,25 +342,46 @@ integral is $\gamma$.
 
 % additive: the density half of the former Proposition 8.9, separated on 2026-08-15. Numbered 8.9a
 % in the working record; the printed numbering follows the shared counter.
-\begin{proposition}[the Gamma family: the kernel density and the Sato reading]\label{prop:gamma-density}
-\uses{prop:gamma-kernels,prop:laplace-uniqueness-causal,rem:sato-reading}
-With $F$ as in \ref{prop:gamma-family},
+\begin{proposition}[the Gamma family: the kernel density]\label{prop:gamma-density}
+\uses{prop:gamma-kernels,prop:laplace-uniqueness-causal}
+\lean{Hemigroup.SelfDecomposableExponent.gammaExponent_kernel_eq_gammaMeasure}\leanok
+With $F$ as in \ref{prop:gamma-family} and $\gamma > 0$,
 \[
   \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
 \]
-the Gamma density of fixed shape $\gamma$ and scale $x$; and the increment measures $\mu_{a,b}$
-are the increments of the Gamma-type Sato subordinator.
-\statusT\quad\emph{(inverting $(1+xs)^{-\gamma}$ means computing the Gamma density's transform and
-appealing to \ref{prop:laplace-uniqueness-causal} --- available, and a separate piece of work. The
-Sato identification is \ref{rem:sato-reading} read at this family, and travels with the density
-because both say what the laws \emph{are} rather than what their transforms are.)}
+the Gamma density of fixed shape $\gamma$ and scale $x$.
+\statusT\quad\emph{(\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/GammaDensity.lean}, on
+\ledger{A17} alone --- through the constructed family, as every statement about $\mu_{0,x}$ is.
+Stated there as an identity of \emph{measures}, $\mu_{0,x} = \mathrm{gammaMeasure}(\gamma, 1/x)$,
+rather than of densities: it is the same assertion in the vocabulary Mathlib already has, and it
+is the form that makes Mathlib's Gamma API available to \ref{prop:gamma-moments}, which is the
+cheaper of the two ways to retire that node's ledger entry.
+\textbf{The Phase-0 cost estimate for this node was right}, which is worth recording because the
+estimates recorded in \texttt{PLAN} usually are not. It said inverting $(1+xs)^{-\gamma}$ ``means
+computing the Gamma density's transform and appealing to \ref{prop:laplace-uniqueness-causal} ---
+available, but a separate piece of work''. It is exactly that: \texttt{kernel\_unique} is the
+appeal, and the transform had to be computed here because Mathlib's Gamma file carries the
+density, the total mass and the CDF and stops --- no Laplace transform, no moment generating
+function, no characteristic function. The computation is the Gamma integral chapter~8 already used
+for the stable family's $F'$.)}
 \end{proposition}
 
 \begin{proof}
-$(1+xs)^{-\gamma}$ is the Laplace transform of the stated Gamma density, so
-\ref{prop:laplace-uniqueness-causal} identifies $\phi_x$; and \ref{rem:sato-reading} identifies the
-family as the marginals of a Sato subordinator.
+\leanok
+$(1+xs)^{-\gamma}$ is the Laplace transform of the stated Gamma density --- the Gamma integral
+$\int_0^\infty t^{\gamma-1}e^{-(1/x + s)t}\,dt = \Gamma(\gamma)/(1/x + s)^{\gamma}$ --- so
+\ref{prop:laplace-uniqueness-causal} identifies $\phi_x$.
 \end{proof}
+
+\begin{remark}[the Gamma family as a Sato subordinator]\label{rem:gamma-sato}
+\uses{prop:gamma-kernels,rem:sato-reading}
+The increment measures $\mu_{a,b}$ of this family are the increments of the Gamma-type Sato
+subordinator. This is \ref{rem:sato-reading} read at the Gamma exponent, and it is recorded as a
+remark rather than a proposition for that reason: the general statement is the one with content,
+and no separate argument is made here. It is also why it is not formalised --- the development has
+no notion of a stochastic process, and would need one to say anything a transform identity does
+not already say.
+\end{remark}
 
 % additive: the higher-moment half of the former Proposition 8.9, separated on 2026-08-15 when the
 % mean was proved and the rest was not.

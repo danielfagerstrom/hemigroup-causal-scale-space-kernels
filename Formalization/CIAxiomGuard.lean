@@ -1065,6 +1065,29 @@ every statement about the constructed family is. `gammaExponent_meanRate` is Lea
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_meanRate
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_lintegral_id_kernel
 
+/-! ### `prop:gamma-density`, proved
+
+The Gamma family's kernel **is** the Gamma law of shape `γ` and rate `1/x` — the blueprint's
+`φ_x(t) = t^{γ-1}e^{-t/x}/(Γ(γ)x^γ)`, stated as an identity of measures rather than of densities so
+that Mathlib's `gammaMeasure` API becomes available to the article.
+
+`kernel_unique` -- Laplace injectivity on causal measures, packaged -- plus the transform. **The
+transform had to be computed here**: `Probability/Distributions/Gamma.lean` carries the density,
+the total mass and the CDF and stops, with no Laplace transform, no moment generating function and
+no characteristic function. So `laplace_gammaMeasure` is new, from the Gamma integral chapter 8
+already used for the stable family's `F'`. That was the whole of the "separate piece of work" the
+node's status line predicted in Phase 0, and the prediction was accurate -- worth noting, since
+this file's usual finding is that such predictions are wrong.
+
+**A17 through `kernel`**, as every statement about the constructed family is;
+`laplace_gammaMeasure` and `isCausal_gammaMeasure` are Lean core and are about Mathlib's Gamma law
+alone.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.isCausal_gammaMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.laplace_gammaMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_kernel_eq_gammaMeasure
+
 /-! ### `prop:stable-moments` (8.10), narrowed and proved
 
 Every moment of the extremal stable delay is infinite. **A17 and nothing else** -- through
