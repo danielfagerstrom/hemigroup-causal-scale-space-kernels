@@ -70,10 +70,28 @@ so **the per-half `#print axioms` lines in `CIAxiomGuard.lean` are the load-bear
 Theorem 2′ they are what shows `(⇐)` on A17 and `(⇒)` on A18 with neither borrowing the other's.
 Do not replace them with the bundle's line.
 
-**Never write LaTeX or Lean through a non-raw Python string.** `"\begin"` is a backspace,
-`"\texttt"` a tab, `"\ref"` a carriage return; the diff looks almost right and `latexmk` fails
-hundreds of lines later naming the character rather than the cause. `scripts/check-control-chars.py`
-runs first in `scripts/build-blueprint.sh`. Use the Edit tool, a raw string, or `bytes([92])`.
+**Never write backslash-bearing content through a non-raw Python string.** `"\begin"` is a
+backspace, `"\texttt"` a tab, `"\ref"` a carriage return; the diff looks almost right and `latexmk`
+fails hundreds of lines later naming the character rather than the cause.
+`scripts/check-control-chars.py` runs first in `scripts/build-blueprint.sh`. Use the Edit tool, a
+raw string, or `bytes([92])`. **This is not only about `.tex` and `.lean`** — the Markdown that
+quotes them is the same trap, and `PLAN`/wishlist entries discussing `\leanok` or `\uses` have hit
+it repeatedly. The control-char check guards the sources, not the prose files.
+
+**A parallel session shares this repo — stage explicit paths, never `git add -A`.** Paper-writing
+runs in `.claude/worktrees/paper-writing` and pushes to `main`, and untracked files appear in the
+main worktree that are not yours; `git add -A` has swept them into unrelated commits. Name the
+files. And when `linkage` fails oddly — an undefined handler, a syntax error inside
+`linkage/checks.py` — that is usually `article-kit` mid-save from the other session, not a real
+defect: retry before diagnosing, and never edit `article-kit` to unblock yourself. Expect to rebase
+and re-run the build.
+
+**Run the axiom guard to completion and check its exit code**, `lake env lean CIAxiomGuard.lean`.
+Reading only the tail of its output hides a stale declaration name, which makes it exit non-zero
+while printing a screenful of correct lines — that went unnoticed for weeks once. Run it *before*
+writing "Lean core" into a node annotation or a docstring: a statement quantifying over the
+constructed family picks up **A17** however elementary its argument, and drafting the claim from
+the shape of the proof gets it wrong.
 
 **Two vocabularies, one class.** The paper argues in `BF₀` (derivative signs, Def. 2.2); the Lean
 development argues in `LE` (the Lévy representation, Def. 2.7) and never defines complete
