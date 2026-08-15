@@ -163,7 +163,15 @@ weaken the reason; it only stops the graph from understating what is done.}
 \emph{\textbf{One shape note.} \ref{thm:main-construction} is a \emph{definition} in Lean --- it
 exhibits the structure rather than asserting a property of it, which is the stronger reading. A
 conjunction needs a proposition, so $(\Leftarrow)$ appears in the bundle as the existence
-statement that definition witnesses, with the witness being \texttt{cascadeFamily} itself.)}
+statement that definition witnesses, with the witness being \texttt{cascadeFamily} itself.}
+
+\emph{\textbf{The round trip.} Since the fidelity review (finding R1) the $(\Rightarrow)$ conjunct
+of the bundle is \texttt{Hemigroup.CascadeCore.main\_analysis'}: it concludes in a gauge $\chi$
+with $\chi(0) = 0$, $\chi(1) = 1$, strictly increasing and onto $[0,\infty)$, and an $F$ of the
+form (7.1) with $F \not\equiv 0$ --- exactly the type the $(\Leftarrow)$ conjunct starts from ---
+with $\mu_{x,y} = \mu^F_{\chi(x),\chi(y)}$ and $\Phi_{x,y} f = \mu^F_{\chi(x),\chi(y)} * f$. So
+the two directions of the \textbf{iff} meet in one type, and the uniqueness conjunct, which
+hypothesises $\chi(1) = 1$, is reachable from the analysis conjunct's conclusion.)}
 \end{theorem}
 
 \begin{proof}
@@ -396,7 +404,19 @@ specification --- and that each axiom must carry its index restriction $0 \le x 
 explicitly, without which (A5) would be \emph{false} for the constructed family, $\mu_{x,y}$
 being the zero measure off the range. This is the one place in the development where an error is
 silent, a mis-stated axiom making the theorem vacuous rather than unprovable, and an instance is
-the only thing that catches it.)}
+the only thing that catches it.}
+
+\emph{\textbf{The general gauge.} \ref{thm:main-characterization} $(\Leftarrow)$ asks for the
+family in an \emph{arbitrary} gauge $\chi$, and this node, like the proof below, works in the
+canonical one. The general case is the reparametrisation
+$\Phi_{x,y} \mapsto \Phi_{\chi(x),\chi(y)}$, which transports (A1)--(A6) and (ND) verbatim, (A7)
+because an increasing bijection of $[0,\infty)$ is continuous, and (A8) with
+$\Sact_\sigma \mapsto \chi^{-1} \circ \Sact_\sigma \circ \chi$. Since the fidelity review (finding
+R8) that reparametrisation is machine-checked, \texttt{Hemigroup.CascadeFamily.reparam}, and
+\texttt{Hemigroup.SelfDecomposableExponent.cascadeFamily\_reparam} is this theorem in the gauge
+$\chi$: the family $\mu^F_{\chi(x),\chi(y)} * \cdot$ is a causal cascade measurement family with
+action $\Sact_\sigma x = \chi^{-1}(\sigma\,\chi(x))$. Lean core for the reparametrisation itself,
+\ledger{A17} for the corollary about $F$'s kernels, as here.)}
 \end{theorem}
 
 \begin{proof}
@@ -461,7 +481,21 @@ interface-free; \texttt{main\_analysis} carries \ledger{A18} and nothing else; a
 \ref{thm:main-construction} and \ref{prop:main-uniqueness} carry \ledger{A17} and \emph{not}
 \ledger{A18}. So the sentence this article has always written --- that the analysis direction
 crosses the boundary where the constructive one does not --- is now a fact
-\texttt{\#print axioms} reports rather than a claim the prose makes.)}
+\texttt{\#print axioms} reports rather than a claim the prose makes.}
+
+\emph{\textbf{The conclusion lands where \ref{thm:main-construction} starts.} The fidelity
+review (finding R1) found that \texttt{main\_analysis} concluded in the raw data $(\chi, b_0, k)$
+and a transform identity, without asserting that the exponent is finite or that the family's
+kernels \emph{are} those of \ref{thm:main-construction}. It now also exports the finiteness
+$F(s) < \infty$ (free from \ledger{A18}'s conclusion) and the normalisation $\chi(1) = 1$, and
+\texttt{Hemigroup.CascadeCore.main\_analysis'} packages the result as this statement reads: an
+$F$ of the form (7.1) with $F \not\equiv 0$ --- the same Lean structure
+\ref{thm:main-construction} takes as input --- with $\mu_{x,y} = \mu^F_{\chi(x),\chi(y)}$ and
+$\Phi_{x,y} = \mu^F_{\chi(x),\chi(y)} * \cdot$, the identification being Laplace injectivity
+(\ref{prop:laplace-uniqueness-causal}). Because it names $F$'s kernels, which \ledger{A17}
+constructs, \texttt{main\_analysis'} carries \ledger{A17} \emph{and} \ledger{A18};
+\texttt{main\_analysis} itself still carries \ledger{A18} alone, and both lines are in
+\texttt{CIAxiomGuard.lean}.)}
 \end{theorem}
 
 \begin{proof}

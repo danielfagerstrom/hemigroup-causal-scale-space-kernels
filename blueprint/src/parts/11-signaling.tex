@@ -245,8 +245,10 @@ states it with the absolute-convergence hypothesis that is exactly the one impos
 \uses{lem:mellin-data,lem:inversion-symbol,lem:symbol-rigidity,def:inversion-operator,lem:profile-eigenfunction}
 \lean{Hemigroup.SelfDecomposableExponent.eventuallyEq_inversionSymbol_of_realisesAction}\leanok
 If two operators of the form $x^{-1}B_1(\theta)$ and $x^{-1}B_2(\theta)$ both satisfy
-$A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is
-the unique inversion within the covariant Mellin class.
+$A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for some $s > 0$, at every height $c \in (0, z_* - 1)$ --- that
+is, at every such $c$ both are of that form on $H(s\,\cdot)$ at height $c$ and both send it to
+$s\,H(s\,\cdot)$ --- then $B_1 = B_2$ on the strip. Hence $A$ is the unique inversion within the
+covariant Mellin class.
 \statusT\quad\emph{(\textbf{Machine-checked}, both halves. Step~2 is
 \ref{lem:symbol-rigidity}; step~1 is
 \texttt{Hemigroup.SelfDecomposableExponent.sameSymbolAction\_of\_realisesAction}, and
@@ -268,19 +270,25 @@ in the ledger against just this possibility). Two operators agreeing on $H(s\,\c
 \emph{same} realising function there, since $x^{-1}h_1 = x^{-1}h_2$ on $(0,\infty)$ is $h_1 = h_2$;
 so their transforms agree at every point and the symbols are read off directly. And it needs only
 \emph{one} dilation, not all $s > 0$: the dilate contributes the factor $s^{-z}$, which never
-vanishes and cancels. The quantifier over $s$ in the statement is weaker information than it
-looks.)}
+vanishes and cancels --- which is why the statement asks for one $s$. What it does need is
+\emph{every height}: the hypothesis on the line $\operatorname{Re} z = c$ yields agreement on that
+line, and the lines fill the strip only as $c$ ranges over $(0, z_* - 1)$. A single height would
+suffice only if $B_1, B_2$ were assumed meromorphic on the strip, which the statement does not
+assume; the formal statement quantifies over the heights and assumes no meromorphy (fidelity
+review, finding R10).)}
 \end{lemma}
 
 \begin{proof}
 \leanok
 \uses{lem:symbol-rigidity,lem:profile-eigenfunction}
-Both operators send $H(s\,\cdot)$ to $s\,H(s\,\cdot)$, so on $(0,\infty)$ their realising functions
-agree; call the common value $h$. Then $B_1(-z)\,\tilde g(z) = \tilde h(z) = B_2(-z)\,\tilde g(z)$ at
-every point of the line where the identity holds, and $\tilde g(z) = s^{-z}\tilde H(z)$, so cancelling
-the nonvanishing factor $s^{-z}$ leaves the hypothesis of \ref{lem:symbol-rigidity}, which
-concludes. At a zero of $\tilde H$ both sides of that hypothesis vanish, so it holds on the strip
-outright.
+Fix a height $c \in (0, z_* - 1)$. Both operators send $H(s\,\cdot)$ to $s\,H(s\,\cdot)$, so on
+$(0,\infty)$ their realising functions at height $c$ agree; call the common value $h$. Then
+$B_1(-z)\,\tilde g(z) = \tilde h(z) = B_2(-z)\,\tilde g(z)$ at every point of the line
+$\operatorname{Re} z = c$ where the identity holds, and $\tilde g(z) = s^{-z}\tilde H(z)$, so
+cancelling the nonvanishing factor $s^{-z}$ gives $B_1(-z)\tilde H(z) = B_2(-z)\tilde H(z)$ at
+every point of the line where $\tilde H(z) \ne 0$, and trivially at its zeros, where both sides
+vanish. As $c$ ranges over $(0, z_* - 1)$ the lines fill the strip, which is the hypothesis of
+\ref{lem:symbol-rigidity}, and that lemma concludes.
 \end{proof}
 
 % draft: Lemma 11.5
@@ -385,14 +393,17 @@ $x \downarrow 0$, and
 \begin{itemize}
 \item Laplace form: for every $s > 0$, $A\bigl[\hat u(s, \cdot)\bigr] = s\,\hat u(s, \cdot)$,
 with $\hat u(s, \zp) = \hat f(s)$;
-\item time-domain (Mellin) form: for every $t > 0$ and $1 < \operatorname{Re} z < z_*$,
+\item time-domain (Mellin) form: for every $t > 0$ and every $z$ with
+$1 < \operatorname{Re} z < z_*$ and $\tilde H(z-1) \ne 0$ --- all of the strip off an isolated
+set, \ref{rem:poles} ---
 \[
   \widetilde{\partial_t u(t, \cdot)}(z) \;=\; B(1 - z)\;\widetilde{u(t, \cdot)}(z - 1),
 \]
-that is, $\partial_t u = A\,u$ read through the Mellin transform in $x$.
+both transforms absolutely convergent; that is, $\partial_t u = A\,u$ read through the Mellin
+transform in $x$.
 \end{itemize}
 \item \emph{(Uniqueness.)} $A$ is the unique operator in the covariant Mellin class with
-property (1), hence with property (2).
+property (1), at every height $c$, hence with property (2).
 \end{enumerate}
 \statusT\quad\emph{(the hemigroup analogue of \sscite{fagerstrom2005temporal}, Thm.~4, whose
 translation-invariant operator is recovered in \ref{ex:stable-signaling} as an accident of
@@ -402,19 +413,31 @@ homogeneity. Proved here, not cited.}
 \texttt{Hemigroup.SelfDecomposableExponent.mellin\_signaling\_form}; what is left of (2) is its
 causality and boundary clauses, which are (A3) and (A7), and its Laplace form, which is (1)
 applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$. Clause~(1) is \ref{lem:profile-eigenfunction},
-which is where its Lean tag also sits. All six conjuncts are now assembled into
+which is where its Lean tag also sits. All conjuncts are now assembled into
 \texttt{Hemigroup.SelfDecomposableExponent.signaling\_form}, which is what this node carries:
-clause~(1) is \ref{lem:profile-eigenfunction}, clause~(3) is \ref{lem:symbol-uniqueness}, and
-clause~(2) is four statements --- causality (\texttt{delayedField\_eq\_zero}), boundary attainment
-(\texttt{tendsto\_Phi\_zero}, i.e.\ (A7) with (A6)), the Laplace form
-(\texttt{laplaceFun\_delayedField} with \texttt{inversionOperator\_const\_mul\_profile}) and the
-Mellin form (\ref{lem:signaling-mellin-form}). Two side conditions the display leaves implicit are
-explicit in the formal statement and discussed at the nodes that introduce them: the Mellin form
-needs $\tilde H(z-1) \ne 0$ (\ref{rem:poles}), and ``operators of the form $x^{-1}B(\theta)$'' in
-clause~(3) is the hypothesis that $B(\theta)g$ exists (\ref{def:inversion-operator}) --- the theorem keeps its full statement and its number, on the pattern of
-\ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That clause is also what empties the
-article's use of \ledger{A12}: it \emph{exhibits} the realising function rather than inferring its
-existence, and the Laplace form of clause~(2) is clause~(1) applied to
+clause~(1) is \ref{lem:profile-eigenfunction} in both its halves --- the domain claim, that
+$H(s\,\cdot)$ lies in the domain of \ref{def:inversion-operator} at height $c$, is the conjunct
+\texttt{RealisesSymbolAction} (\texttt{realisesSymbolAction\_profile}), and the eigen-equation is
+\texttt{inversionOperator\_profile}; clause~(3) is \ref{lem:symbol-uniqueness}; and clause~(2) is
+causality (\texttt{delayedField\_eq\_zero}), boundary attainment (\texttt{tendsto\_Phi\_zero}, i.e.\
+(A7) with (A6), stated for every element of $\Xz$) together with the identification
+$u(\cdot,x) = \Phi_{0,x}f$ (\texttt{coeFn\_Phi\_zero}), the Laplace form
+(\texttt{laplaceFun\_delayedField} with \texttt{inversionOperator\_const\_mul\_profile}) together
+with the boundary value $\hat u(s,\zp) = \hat f(s)$ (\texttt{tendsto\_laplaceFun\_delayedField}),
+the $\Xz$-reading of $\partial_t u$ --- $u(\cdot,x)$ is the primitive of the field of $f'$, at
+every $t$ (\texttt{delayedField\_eq\_setIntegral'}) --- and the Mellin form
+(\ref{lem:signaling-mellin-form}) with the absolute convergence of both transforms
+(\texttt{mellinConvergent\_delayedField\_pair}). The domain claim, the boundary value, the
+identification, the derivative reading and the convergence were added as conjuncts by the fidelity
+review (findings R9, R11); before it they were proved as lemmas but not asserted by the theorem.
+Two side conditions are explicit in the statement and discussed at the nodes that introduce them:
+the Mellin form holds off the zeros of $\tilde H(z-1)$ (\ref{rem:poles}), which the display now
+says, and ``operators of the form $x^{-1}B(\theta)$'' in clause~(3) is the hypothesis that
+$B(\theta)g$ exists (\ref{def:inversion-operator}), asked at every height $c$ as
+\ref{lem:symbol-uniqueness} requires --- the theorem keeps its full statement and its number, on
+the pattern of \ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That clause is also what
+empties the article's use of \ledger{A12}: it \emph{exhibits} the realising function rather than
+inferring its existence, and the Laplace form of clause~(2) is clause~(1) applied to
 $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$, so no other shape of $g$ ever reaches $A$.)}
 \end{theorem}
 
@@ -442,9 +465,15 @@ $x^{-1}$ of \ref{def:inversion-operator} is exactly what cancels the weight $x$ 
 transform, so the exhibition of $h$ and the eigenfunction relation are one statement rather than
 two. This clause is \ref{lem:profile-eigenfunction}.
 
-(2) Causality and the boundary attainment are (A3) and (A7). The Laplace form is (1) applied
-to $\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$. The Mellin form combines
-\ref{lem:memory-fractional-integrals} with \ref{lem:mellin-data}:
+(2) Causality and the boundary attainment are (A3) and (A7), and $u(\cdot,x) = \Phi_{0,x}f$ is
+the convolution representation of \ref{thm:main-characterization} read in the canonical gauge,
+$\mu_{0,x}$ being the law of $xT_1$. The Laplace form is (1) applied to
+$\hat u(s, \cdot) = \hat f(s) H(s\,\cdot)$, and the boundary value $\hat u(s,\zp) = \hat f(s)$ is
+$H(sx) \to H(0) = 1$, the transform of a probability measure being continuous on $[0,\infty)$.
+The $\Xz$-reading of $\partial_t u$ is the derivative clause of
+\ref{lem:memory-fractional-integrals}: $u(\cdot,x)$ is the primitive of $\Ex[f'(\cdot - xT_1)]$.
+The Mellin form combines \ref{lem:memory-fractional-integrals} with \ref{lem:mellin-data}, both
+transforms converging absolutely on the stated strip by that lemma:
 \[
   B(1-z)\,\widetilde{u(t,\cdot)}(z-1)
   = \frac{\tilde H(z)}{\tilde H(z-1)}\cdot\tilde H(z-1)\,(I^{z-1}f)(t)

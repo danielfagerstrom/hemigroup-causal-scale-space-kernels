@@ -51,6 +51,7 @@ import Hemigroup.PositiveMaximumPrinciple
 import Hemigroup.PotentialKernel
 import Hemigroup.ProfileDeriv
 import Hemigroup.ProfileEuler
+import Hemigroup.Reparam
 import Hemigroup.Representation
 import Hemigroup.SelfDecomposable
 import Hemigroup.SemigroupCase

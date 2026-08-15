@@ -189,6 +189,47 @@ theorem deriv_toRealExponent_pos (hnd : F.Nondegenerate) {u : ℝ} (hu : 0 < u) 
 theorem symbol_pos (hnd : F.Nondegenerate) (hx : 0 < x) (hs : 0 < s) : 0 < F.symbol x s :=
   mul_pos hs (F.deriv_toRealExponent_pos hnd (mul_pos hx hs))
 
+/-! ## The two renderings of (ND) agree
+
+Chapter 9 states (ND) on the representation (`Nondegenerate`: the drift or the density is
+somewhere positive); the headline theorems state it on the exponent
+(`∃ s₀ > 0, F.exponent s₀ ≠ 0`, the article's `F ≢ 0`). Fidelity review finding R4: the two had
+no bridge. They are equivalent, and the lemma below is the bridge. -/
+
+/-- The exponent is strictly increasing on `(0,∞)` under (ND): its derivative is positive there
+(`deriv_toRealExponent_pos`) and it is continuous, being differentiable. -/
+theorem strictMonoOn_toRealExponent (hnd : F.Nondegenerate) :
+    StrictMonoOn F.toRealExponent (Ioi 0) := by
+  refine strictMonoOn_of_deriv_pos (convex_Ioi 0) ?_ ?_
+  · exact fun u hu => (F.hasDerivAt_toRealExponent (mem_Ioi.mp hu)).continuousAt.continuousWithinAt
+  · intro u hu
+    rw [interior_Ioi] at hu
+    exact F.deriv_toRealExponent_pos hnd (mem_Ioi.mp hu)
+
+/-- **The two readings of (ND) coincide.** `F ≢ 0` on `(0,∞)` iff the drift or the Lévy density
+is somewhere positive. (⇒): with `b₀ = 0` and `k = 0` on `(0,∞)` the exponent is `0`. (⇐): the
+exponent is then strictly increasing on `(0,∞)`, so `F(1) > F(1/2) ≥ 0`. -/
+theorem nondegenerate_iff_exists_exponent_ne_zero (F : SelfDecomposableExponent) :
+    F.Nondegenerate ↔ ∃ s₀ : ℝ, 0 < s₀ ∧ F.exponent s₀ ≠ 0 := by
+  constructor
+  · intro hnd
+    refine ⟨1, one_pos, fun h0 => ?_⟩
+    have hlt := F.strictMonoOn_toRealExponent hnd (mem_Ioi.mpr (by norm_num : (0:ℝ) < 1/2))
+      (mem_Ioi.mpr one_pos) (by norm_num)
+    have h1 : F.toRealExponent 1 = 0 := by simp [toRealExponent, h0]
+    have hnn : 0 ≤ F.toRealExponent (1/2) := ENNReal.toReal_nonneg
+    linarith
+  · rintro ⟨s₀, hs₀, hne⟩
+    by_contra hnd
+    simp only [Nondegenerate, not_or, not_lt, not_exists, not_and] at hnd
+    obtain ⟨hb, hk⟩ := hnd
+    have hb0 : F.b₀ = 0 := le_antisymm hb F.b₀_nonneg
+    apply hne
+    simp only [exponent, levyExponentD, hb0, zero_mul, ENNReal.ofReal_zero, zero_add, levyJump]
+    refine (setLIntegral_congr_fun measurableSet_Ioi (fun t ht => ?_)).trans lintegral_zero
+    have : F.k t = 0 := le_antisymm (hk t (mem_Ioi.mp ht)) (F.k_nonneg t ht)
+    simp [this]
+
 end SelfDecomposableExponent
 
 end Hemigroup

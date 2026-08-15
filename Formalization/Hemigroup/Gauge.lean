@@ -216,6 +216,14 @@ theorem gauge_orbit (hcov : IsScaleCovariant Fam (Ioi 0) S) {σ : ℝ} (hσ : 0 
     (mem_Ioi.mpr (gauge_pos hcov hpos)) (mem_Ioi.mpr hσ) ?_
   exact orbit_gauge hcov hpos
 
+/-- **The normalisation `χ(1) = 1`.** `1 = S_1 1` is the orbit point of parameter `1`, so the
+gauge sends it to `1`. This is the normalisation `prop:main-uniqueness` hypothesises, and
+exporting it from the analysis direction is what makes that clause reachable from
+`thm:main-analysis`'s conclusion. -/
+theorem gauge_one (hcov : IsScaleCovariant Fam (Ioi 0) S) : gauge S 1 = 1 := by
+  have h := gauge_orbit hcov one_pos
+  rwa [S_one hcov (mem_Ioi.mpr one_pos) zero_le_one] at h
+
 theorem strictMonoOn_gauge (hcov : IsScaleCovariant Fam (Ioi 0) S) :
     StrictMonoOn (gauge S) (Ici 0) := by
   intro a ha b _ hab

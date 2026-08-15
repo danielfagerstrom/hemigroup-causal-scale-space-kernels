@@ -15,20 +15,35 @@ recorded, faithful choice worth a sentence in the text of record).
 
 | # | tag | severity | where | finding | resolution |
 |---|---|---|---|---|---|
-| R1 | F3 | statement-tightening | `main_analysis` (⇒), `MainAnalysis.lean:100` | Concludes in `(χ, b₀, k)` with `(levyExponentD b₀ k _).toReal`; asserts neither `levyExponentD b₀ k s ≠ ⊤` nor an `F : SelfDecomposableExponent` nor `Fam.repr x y = F.kernel (χ x) (χ y)`. Finiteness is forced (see card T1.1, P2) but derived by the reader; the article's sentence is "F of the form (7.1)". | open — P2 decision: round-trip corollary |
-| R2 | F8/F3 | statement-tightening | `signaling_form` (2d), `SignalingForm.lean:80`; draft Thm 11.6(2) | Lean asserts the Mellin form off the zeros of `H̃(z−1)`; the draft asserts it on the strip and relegates the zero set to the proof. | open — P2 decision: which side moves |
-| R3 | F8 | note-only → draft edit | draft Def. 12.1 (line 635) vs blueprint `def:locality-pmp` | Blueprint's definition tests locality on `C_c^∞((0,∞))` **and on the profiles**; the draft still says `C_c^∞` only. The widening is recorded and justified in the blueprint; the draft lags. | draft edit (P5, F8 sweep) |
-| R4 | F5 | statement-tightening | `Nondegenerate` (`MemoryKernelTransform.lean:151`) vs `hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0` | Two renderings of "F ≢ 0 / (ND)" for a `SelfDecomposableExponent` — chapter 9 uses the first, the headline theorems the second — with no bridge lemma. Equivalent (k antitone ⇒ `k t₀ > 0` gives positive measure to `{k > 0}`), so a lemma `nondegenerate_iff_exists_exponent_ne_zero` closes it. | open — cheap Lean lemma |
+| R1 | F3 | statement-tightening | `main_analysis` (⇒), `MainAnalysis.lean:100` | Concludes in `(χ, b₀, k)` with `(levyExponentD b₀ k _).toReal`; asserts neither `levyExponentD b₀ k s ≠ ⊤` nor an `F : SelfDecomposableExponent` nor `Fam.repr x y = F.kernel (χ x) (χ y)`. Finiteness is forced (see card T1.1, P2) but derived by the reader; the article's sentence is "F of the form (7.1)". | **resolved (P2)** — `main_analysis'` (`MainAnalysis.lean`): `∃ χ F, χ 0 = 0 ∧ χ 1 = 1 ∧ … ∧ ∀ x ≤ y, Fam.repr x y = F.kernel (χ x) (χ y) ∧ Fam.Φ x y = mconvL1 (…)`; `main_analysis` now also exports finiteness (from A18's own conclusion) and `χ 1 = 1`; the bundle's (⇒) is the round-trip form |
+| R2 | F8/F3 | statement-tightening | `signaling_form` (2d), `SignalingForm.lean:80`; draft Thm 11.6(2) | Lean asserts the Mellin form off the zeros of `H̃(z−1)`; the draft asserts it on the strip and relegates the zero set to the proof. | **resolved (P2)** — blueprint `thm:signaling-form`(2) and draft Thm 11.6(2) state the Mellin form off the zeros of `H̃(z−1)`, with the meromorphic reading on the strip; Lean (2d) additionally asserts both `MellinConvergent`s |
+| R3 | F8 | note-only → draft edit | draft Def. 12.1 (line 635) vs blueprint `def:locality-pmp` | Blueprint's definition tests locality on `C_c^∞((0,∞))` **and on the profiles**; the draft still says `C_c^∞` only. The widening is recorded and justified in the blueprint; the draft lags. | **resolved (P2)** — draft Def. 12.1 and Lemma 12.2's (⇒) proof aligned with the blueprint (`10551df`) |
+| R4 | F5 | statement-tightening | `Nondegenerate` (`MemoryKernelTransform.lean:151`) vs `hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0` | Two renderings of "F ≢ 0 / (ND)" for a `SelfDecomposableExponent` — chapter 9 uses the first, the headline theorems the second — with no bridge lemma. Equivalent (k antitone ⇒ `k t₀ > 0` gives positive measure to `{k > 0}`), so a lemma `nondegenerate_iff_exists_exponent_ne_zero` closes it. | **resolved (P2)** — `nondegenerate_iff_exists_exponent_ne_zero` (`MemoryKernelTransform.lean`), Lean core, with `strictMonoOn_toRealExponent` |
 | R5 | F3 | note-only | `SatisfiesPMP` (`LocalOperator.lean:107`) | PMP rendered as `Re (Ag)(x₀) ≤ 0`; article says `(Ag)(x₀) ≤ 0` (a real number). Weaker as a *conclusion* (`lem:pmp-verification`), stronger-hypothesis-free as a *hypothesis*; blueprint annotation records the choice. Faithful once `A` preserves realness on real test functions — is that a lemma? | check in P4 |
 | R6 | F4 | note-only | `HasCoreDeriv.causal_deriv` (`DelayCore.lean`) | `g` causal *pointwise* (`∀ r < 0, g r = 0`), where `X₀` is an a.e. condition. Harmless — every causal `L¹` class has such a representative and the theorems quantify over functions — but the card records it. | none |
 | R7 | F4 | note-only | `semigroup_case` (`SemigroupCase.lean:233`) | The article's "after normalization `g_{0,1}(1) = 1`" is a *hypothesis* `hnorm : Fam.G 1 1 = 1`, not a reparametrisation performed. Faithful in content; the reparametrisation (rescale the scale axis) is a sentence in prose and is not in Lean. | none, or one-line blueprint note |
-| R8 | F3 | statement-tightening | `main_characterization` (⇐), `cascadeFamily` (`Instance.lean`) | Theorem 7.3 (⇐) is stated for an *arbitrary* gauge `χ`: the family `Φ_{x,y} = μ_{χ(x),χ(y)} ∗ ·` satisfies the axioms. The Lean witness is the canonical gauge only (`S σ x = σ x`, kernels `F.kernel x y`). The general case is the canonical one reparametrised by `χ` — (A1)–(A7), (ND) transport trivially, (A8) with `S_σ = χ⁻¹(σ χ(·))`, and (A7) needs `χ` continuous, which an increasing bijection of `[0,∞)` is — but that reparametrisation lemma is not in Lean, and the article's own proof says "work in the canonical gauge" without stating it either. Surfaced by blind restatement A (§3, item 7). | P2: add `CascadeFamily.reparam` or record in the blueprint that (⇐) is proved in the canonical gauge and the general gauge is a reparametrisation |
-| R9 | F3 | statement-tightening | `signaling_form` (1), `SignalingForm.lean:80` | Article's Thm 11.6(1) asserts two things: `H(s·)` *is in the domain of Def. 11.3* for every `c ∈ (0, z_*−1)`, and `A[H(s·)] = sH(s·)`. `A` being total in Lean, the domain claim is `RealisesSymbolAction c (H(s·)) (s·x·H(s·))`, proved as `realisesSymbolAction_profile` (`InversionOperator.lean:280`) but **not a conjunct of the assembled theorem**, which carries only the eigen-equation. Surfaced by blind restatement B (§11, items 3 and 5). | P2: add the conjunct |
-| R10 | F4/F8 | claim-shaping (article side) | `signaling_form` (3), Lemma 11.4 vs `eventuallyEq_inversionSymbol_of_realisesAction` (`SymbolUniqueness.lean`) | The Lean hypothesises `RealisesAction c' B …` for **every** height `c'` in the range and concludes germ-agreement on the strip **without assuming `B` meromorphic**. The article fixes one `c`, says "of the form `x⁻¹B_i(θ)`" (implicitly: `B_i` meromorphic on the strip), and its proof reaches agreement on the *line* `Re z = c` and then says "on the strip outright" — the step from line to strip is the identity theorem and needs the meromorphy it never states. Two faithful statements exist: (a) `B` meromorphic + one height, or (b) every height, no meromorphy. Lean has (b); the article's *statement* is closer to (a) and its *proof* is a gap for (a). Blind restatement B found this independently (§11, item 4). | P2: decide; likeliest fix is the article's statement says "at every height" (matching the Lean, and matching how (1) is stated — "for every `c`"), and the proof drops "outright" |
-| R11 | F3 | note-only | `signaling_form` (2c) | Article: "with `û(s,0+) = f̂(s)`". Lean has `û(s,x) = f̂(s) H(sx)` for `x > 0` and (2b) `Φ_{0,x} f → f` in `X`; the scalar limit follows (`H(sx) → H(0) = 1`, `profile` continuous) but is not a conjunct. | P2: add or note |
+| R8 | F3 | statement-tightening | `main_characterization` (⇐), `cascadeFamily` (`Instance.lean`) | Theorem 7.3 (⇐) is stated for an *arbitrary* gauge `χ`: the family `Φ_{x,y} = μ_{χ(x),χ(y)} ∗ ·` satisfies the axioms. The Lean witness is the canonical gauge only (`S σ x = σ x`, kernels `F.kernel x y`). The general case is the canonical one reparametrised by `χ` — (A1)–(A7), (ND) transport trivially, (A8) with `S_σ = χ⁻¹(σ χ(·))`, and (A7) needs `χ` continuous, which an increasing bijection of `[0,∞)` is — but that reparametrisation lemma is not in Lean, and the article's own proof says "work in the canonical gauge" without stating it either. Surfaced by blind restatement A (§3, item 7). | **resolved (P2), in Lean** — `CascadeFamily.reparam` (`Reparam.lean`): any `χ` with `χ 0 = 0`, `StrictMonoOn (Ici 0)`, `SurjOn (Ici 0) (Ici 0)` (hence continuous, `continuousOn_of_strictMonoOn_surjOn`) reparametrises a family, `S' = χ⁻¹ ∘ S ∘ χ`; `cascadeFamily_reparam` is (⇐) in an arbitrary gauge, `rfl` |
+| R9 | F3 | statement-tightening | `signaling_form` (1), `SignalingForm.lean:80` | Article's Thm 11.6(1) asserts two things: `H(s·)` *is in the domain of Def. 11.3* for every `c ∈ (0, z_*−1)`, and `A[H(s·)] = sH(s·)`. `A` being total in Lean, the domain claim is `RealisesSymbolAction c (H(s·)) (s·x·H(s·))`, proved as `realisesSymbolAction_profile` (`InversionOperator.lean:280`) but **not a conjunct of the assembled theorem**, which carries only the eigen-equation. Surfaced by blind restatement B (§11, items 3 and 5). | **resolved (P2)** — `signaling_form`(1) now `RealisesSymbolAction c (H(s·)) (s x H(sx)) ∧ A[H(s·)] = sH(s·)` |
+| R10 | F4/F8 | claim-shaping (article side) | `signaling_form` (3), Lemma 11.4 vs `eventuallyEq_inversionSymbol_of_realisesAction` (`SymbolUniqueness.lean`) | The Lean hypothesises `RealisesAction c' B …` for **every** height `c'` in the range and concludes germ-agreement on the strip **without assuming `B` meromorphic**. The article fixes one `c`, says "of the form `x⁻¹B_i(θ)`" (implicitly: `B_i` meromorphic on the strip), and its proof reaches agreement on the *line* `Re z = c` and then says "on the strip outright" — the step from line to strip is the identity theorem and needs the meromorphy it never states. Two faithful statements exist: (a) `B` meromorphic + one height, or (b) every height, no meromorphy. Lean has (b); the article's *statement* is closer to (a) and its *proof* is a gap for (a). Blind restatement B found this independently (§11, item 4). | **resolved (P2)** — blueprint `lem:symbol-uniqueness` hypothesis "for some `s > 0`, at every height `c ∈ (0, z_*−1)`", proof rewritten (lines fill the strip; no identity theorem, no meromorphy); `thm:signaling-form`(3) "at every height"; draft Lemma 11.4 likewise (`10551df`) |
+| R11 | F3 | note-only | `signaling_form` (2c) | Article: "with `û(s,0+) = f̂(s)`". Lean has `û(s,x) = f̂(s) H(sx)` for `x > 0` and (2b) `Φ_{0,x} f → f` in `X`; the scalar limit follows (`H(sx) → H(0) = 1`, `profile` continuous) but is not a conjunct. | **resolved (P2)** — `tendsto_laplaceFun_delayedField` (`SignalingForm.lean`), conjunct of (2c) |
 | R12 | F5 | note-only | `IsLocalOfOrder c n`, `SatisfiesPMP c` carry the height `c` | Def. 12.1 is stated `c`-free ("the inversion operator `A`"); Def. 11.3 fixes `c`. Lean is honest that `A = A_c`; no independence-of-`c` is claimed anywhere (article or Lean). Blind restatement C flagged three inequivalent readings (fixed / ∀ / ∃ `c`); Lean's is "fixed `c`, hypothesis on every theorem", the article's Def. 11.3 reading. | none; blueprint already carries `c` |
+| R13 | F3 | statement-tightening | `main_analysis` (⇒) | `χ 1 = 1` is not concluded, though true of `gauge S` (`gauge_orbit`, `S_one`); without it the (⇒) conjuncts pin `χ` only up to a positive scalar and the uniqueness clause's `χ(1) = 1` is not reachable from them. Vacuity pass, Theorem 2′. | **resolved (P2)** — `gauge_one` (`Gauge.lean`), exported by `similarity_form`, `main_analysis`, `main_analysis'` |
+| R14 | robustness | note-only | witnesses of (⇒)'s hypotheses | Every Lean witness of a `CascadeCore` + `IsScaleCovariant` passes through `kernel`, hence A17; a pure-delay core `Φ x y := transL1 (y − x)`, `S σ x = σx`, would certify nonemptiness of the hypothesis class in Lean core. Vacuity pass, Theorem 2′. | optional (P5) |
+| R15 | F3 | statement-tightening | `signaling_form` (2) | The theorem's "`u`" is two objects: (2a),(2c),(2d) are about `delayedField f`, (2b) about a free `q : X`; that `delayedField f · x` **is** `Φ_{0,x} f` (`coeFn_Phi_zero`, `MemoryFractional.lean:539`) and that `delayedField g` is its `X₀`-derivative (`delayedField_eq_setIntegral`, `:633`) are proved lemmas, not conjuncts — inside the theorem "`∂_t u`" is a comment. Vacuity pass, Theorem 4′. | **resolved (P2)** — conjuncts `Φ 0 x (toL1 f) =ᵐ delayedField f · x` (`coeFn_Phi_zero`) and `delayedField f t x = ∫_{Ioc 0 t} delayedField g` (`delayedField_eq_setIntegral'`, all `t`) |
+| R16 | F3 | note-only | `signaling_form` (2d) | Lemma 11.5's "absolutely convergent" has no Lean clause: the two `mellin`s in (2d) are convergent inside the proof (`integrable_delayed`, `integrableOn_pastIntegrand_of_bounded`) but not asserted, so the honest form would carry `MellinConvergent` conjuncts. Not junk-true (both sides equal `H̃(z)(I^{z−1}f)(t) ≠ 0` generically). | **resolved (P2)** — `mellinConvergent_delayedField_pair`, conjunct of (2d) |
 
 Ledger entries are added as cards are written; a resolved entry keeps its row with the commit.
+
+**State after P2 (2026-08-15).** All claim-shaping and statement-tightening findings on the two
+headline theorems are resolved: Theorem 2′'s (⇒) concludes in `SelfDecomposableExponent` with
+`χ 1 = 1` and identifies the kernels, (⇐) holds in an arbitrary gauge, and Theorem 4′ carries
+its domain claim, its boundary value, the identification `u = Φ_{0,x}f`, the `X₀`-derivative,
+and the convergence of its Mellin transforms as conjuncts; the two places where the article's
+*statement* outran its proof (the Mellin form on the whole strip, the symbol uniqueness at one
+height) are corrected in the text of record and the draft. Open: R14 (optional Lean-core
+witness), R5 (P4 check), and the note-only rows. **Hub/paper action:** `linkage check` reports
+two `[shared]` drift advisories — the paper's copies of `lem:symbol-uniqueness` and
+`thm:signaling-form` must be re-synced to the blueprint by the paper-writing session.
 
 ---
 
@@ -426,7 +441,189 @@ exponent (see A17 card). **faithful.**
 
 ---
 
-## Tier 1 — (P2/P3, not started)
+## Tier 1 — headline claims (P2)
+
+### T1.1 `thm:main-characterization` · Theorem 7.3 = Theorem 2′ · `main_characterization` (`MainTheorem.lean`), through `cascadeFamily` (`Instance.lean`), `main_analysis` (`MainAnalysis.lean:100`), `gauge_and_exponent_unique` (`Uniqueness.lean`)
+
+**Draft says.** A family satisfies (A1)–(A8), (ND) **iff** there exist an increasing bijection
+`χ` of `[0,∞)` and `F` of the form (7.1), `F ≢ 0`, with `Φ_{x,y} f = μ_{x,y} ∗ f`,
+`μ̂_{x,y}(s) = exp[−(F(χ(y)s) − F(χ(x)s))]`; in the canonical gauge the kernels are
+`L⁻¹[e^{−F(xs)}]`; `(χ, F)` unique up to `χ(1) = 1`.
+
+**Blueprint says.** The same at `thm:main-characterization` (a collation), split into
+`thm:main-construction` (F ≢ 0 ⇒ the kernels *are* a `def:cascade-family` with `S_σ x = σx`),
+`thm:main-analysis` (verbatim the draft's ⇒), and `prop:main-uniqueness` — already refined to
+the Lean's shape: `F, F'` of the form (7.1), `F ≢ 0`, `χ` nondecreasing, positive on `(0,∞)`,
+`χ(0+) = 0`, `χ(1) = 1`, `μ'_{χ(x),χ(y)} = μ_{x,y}` for `0 < x ≤ y` ⇒ `χ = Id`, `F' = F`.
+
+**Lean says (unfolded, at `e3249b3`).**
+* (⇐) `∀ F, hF → ∃ Fam : CascadeFamily, ∀ 0 ≤ x ≤ y, Fam.Φ x y = mconvL1 (F.kernel x y)`,
+  witnessed by `F.cascadeFamily hF` whose `S σ x = σ * x` (`cascadeFamily_S`, `rfl`); `kernel x y`
+  is the causal probability measure with `laplace = exp(−(increment x y s).toReal)`
+  (`kernel_spec`) and `increment x y s + exponent (xs) = exponent (ys)` — i.e. the article's
+  `μ_{x,y}` in the canonical gauge.
+* (⇒) `∀ S Fam, IsScaleCovariant Fam (Ioi 0) S → ∃ χ b₀ k, χ 0 = 0 ∧ StrictMonoOn χ (Ici 0) ∧
+  SurjOn χ (Ici 0) (Ici 0) ∧ (∀ σ > 0, x ≥ 0, χ (S σ x) = σ χ x) ∧ 0 ≤ b₀ ∧ AntitoneOn k (Ioi 0)
+  ∧ (∀ t > 0, 0 ≤ k t) ∧ (∀ x ≤ y, Fam.Φ x y = mconvL1 (Fam.repr x y)) ∧ (∀ x ≤ y, s ≥ 0,
+  laplace (Fam.repr x y) s = exp(−((levyExponentD b₀ k (χ y s)).toReal − (… (χ x s)).toReal)))
+  ∧ ∃ s > 0, levyExponentD b₀ k s ≠ 0`. `Fam.repr x y` is *the* causal probability measure
+  with `Φ x y = mconvL1 (repr x y)` (`existsUnique_repr`).
+* (uniqueness) `∀ F F' χ, (χ > 0 on (0,∞)) → (χ monotone on (0,∞)) → (χ → 0 at 0+) →
+  (∀ 0 < u ≤ v, F'.kernel (χ u) (χ v) = F.kernel u v) → χ 1 = 1 → hF → (∀ u > 0, χ u = u) ∧
+  (∀ t ≥ 0, F'.exponent t = F.exponent t)`.
+
+**Hypotheses/clauses.**
+| article | Lean | class |
+|---|---|---|
+| (⇐) hypothesis: `F` of the form (7.1), `F ≢ 0` | `F : SelfDecomposableExponent`, `hF` | same (T0.2) |
+| (⇐) hypothesis: *arbitrary* gauge `χ` | canonical gauge only | **weaker — R8** (the general gauge is a reparametrisation; not in Lean at `e3249b3`) |
+| (⇐) conclusion: axioms hold, `S_σ x = σx` | `CascadeFamily` instance; `S = (σ, x) ↦ σx` | same, and stronger than "properties hold": the structure is inhabited |
+| (⇒) hypothesis: (A1)–(A8), (ND) | `CascadeCore` + `IsScaleCovariant _ (Ioi 0) S` | same (T0.1) |
+| (⇒) conclusion: `χ` increasing bijection of `[0,∞)` | `χ 0 = 0`, `StrictMonoOn (Ici 0)`, `SurjOn (Ici 0) (Ici 0)`; `MapsTo` follows from `χ 0 = 0` + strict mono | same; plus the extra `χ (S σ x) = σ χ x` (Prop. 6.3), stronger |
+| (⇒) conclusion: `F` of the form (7.1) | `(b₀, k)` with sign/monotonicity; **finiteness not stated**; not packaged | **R1** — weaker in form; finiteness *is* forced (see junk audit) |
+| (⇒) conclusion: `Φ_{x,y} f = μ_{x,y} ∗ f`, `μ̂ = e^{−(F(χ(y)s) − F(χ(x)s))}` | `Φ = mconvL1 (repr)`, transform identity in `toReal` form | same, given finiteness |
+| (⇒) conclusion: `F ≢ 0` | `∃ s > 0, levyExponentD b₀ k s ≠ 0` | same, given finiteness (else `⊤ ≠ 0` would satisfy it vacuously — see audit) |
+| "in particular … `L⁻¹[e^{−F(xs)}]`" | the measure `kernel 0 x` with transform `e^{−F(xs)}` | same in content; the article's density notation is loose (drift/delay kernels have no density) — note-only |
+| uniqueness: `χ` increasing bijection, `χ(1) = 1`, same family | `χ` positive, monotone, `→ 0`, `χ 1 = 1`, equal *kernels* | **weaker hypotheses (stronger theorem)** on `χ`; "same family" ⇔ equal kernels by `mconvL1_injective` (`Representation.lean`) — the bridge exists |
+| uniqueness conclusion: `χ = Id`, `F' = F` | `χ u = u` on `(0,∞)`; `F'.exponent = F.exponent` on `[0,∞)` | same (as functions, which is the right reading — data `(b₀,k)` are unique only a.e.) |
+| trust boundary | (⇐), uniqueness: A17; (⇒): A18 | per-half `#print axioms` in `CIAxiomGuard.lean` |
+
+**Junk-value audit.** (a) `(levyExponentD b₀ k u).toReal` with `u = χ y · s`: could `⊤` hide
+here? If `levyExponentD b₀ k u = ⊤` for some `u > 0` then (monotone in `u`, and `SurjOn χ`) pick
+`y` with `χ y = u/s`; the identity at `(0, y)` reads `laplace (repr 0 y) s = exp(−(⊤.toReal −
+0)) = 1`, so `repr 0 y` is a causal probability measure with transform `1` at `s > 0`, hence
+`δ₀`, hence `Φ 0 y = id`, contradicting `nondegenerate` (`y > 0` since `χ y > 0`). So finiteness
+on `(0,∞)` is **forced by the conclusion + (ND)**, and at `u = 0` it is `0`. This is the reader's
+derivation R1 asks to be replaced by a stated clause. (b) `∃ s, levyExponentD ≠ 0`: by (a) not
+satisfied by `⊤`. (c) `Real.log`, `laplace` inside `repr`/`exponent`: T0.3. (d) `mconvL1 (kernel x
+y)`: `IsFiniteMeasure` instance for all `x y` (junk `0` off the wedge, never read). (e)
+`Classical.choose` in `kernel`, `repr`: all use through `_spec`/`existsUnique_repr`.
+
+**Witness.** `witness_main_characterization_{drift,gamma,stable}` (P1): every hypothesis of
+all three conjuncts, jointly.
+
+**Blind restatement (agent A, §3 item 3).** Wrote (⇒) as `∃ γ E, F ≢ 0 ∧ ∀ x y, ∃ μ,
+HasExponent μ (incr χ E x y) ∧ Φ x y = conv μ` — i.e. *packaged* in the exponent structure,
+which is R1's point; (⇐) as a constructor `ofExponent (γ E hF)` for an **arbitrary** gauge
+(R8); uniqueness as functions on `Ici 0` (✓); and warned against stating `E = E'` as structures
+(the Lean does not) and against operator-norm continuity in (A7) (the Lean has SOT).
+
+**Adversarial vacuity (agent, read-only, at `e3249b3`).** *No vacuous or junk attack.* Checked:
+`dilL1` is a genuine isometry (`dilL1_dilL1_inv`, `dilL1_surjective`), `MapsTo` in
+`IsScaleCovariant` is not redundant and is used (`S_zero`); (ND) real at drift; uniqueness's
+`heq` cannot be met by junk since its RHS `F.kernel u v` is a probability measure (so `heq`
+silently forces `0 ≤ χ u ≤ χ v`). Junk: finiteness of `levyExponentD b₀ k` is derivable as in
+the audit above and, more to the point, is `htoReal` *inside* the proof (`MainAnalysis.lean:122`)
+— available and not exported; `laplace` guarded by `integrable_exp_of_causal`; `Real.log` absent
+from all three headline statements; `mconvL1` carries `IsFiniteMeasure` everywhere. Weakened
+conclusion, new: **`χ 1 = 1` is not concluded (R13)**. Cosmetic: `MapsTo χ`, "repr is a causal
+probability measure", the `μ̂` identity and `S = σ·` are def-level facts not in the bundle.
+Strengthened hypotheses: none; uniqueness's are strictly weaker than the article's. Robustness:
+every witness of the (⇒) hypotheses is A17-dependent (R14).
+
+**Verdict (at `e3249b3`).** **faithful-with-tightenings (R1, R8, R13)**: the proved statement is the
+article's; (⇒) should conclude in `SelfDecomposableExponent` and identify `repr` with `kernel`
+(R1), and (⇐) is the canonical-gauge case (R8). Neither is claim-changing.
+
+**Post-P2 verdict.** **faithful.** R1, R8, R13 resolved in Lean (`main_analysis'`,
+`CascadeFamily.reparam`, `gauge_one`); the bundle's (⇒) is the round-trip form. Remaining:
+R14 (optional).
+
+---
+
+### T1.2 `thm:signaling-form` · Theorem 11.6 = Theorem 4′ · `signaling_form` (`SignalingForm.lean:80`)
+
+**Draft says.** Assume (H), canonical gauge. (1) for every `s > 0`, `H(s·)` is in the domain of
+Def. 11.3 for every `c ∈ (0, z_*−1)` and `A[H(s·)](x) = sH(sx)`, `x > 0`. (2) for `f ∈ 𝒟`,
+`u(·,x) = Φ_{0,x} f`: `u` causal in `t`; `u(·,x) → f` in `X₀` as `x ↓ 0`; Laplace form
+`A[û(s,·)] = s û(s,·)` with `û(s,0+) = f̂(s)`; Mellin form for `t > 0`, `1 < Re z < z_*`:
+`(∂_t u(t,·))~(z) = B(1−z) ũ(t,·)(z−1)`. (3) `A` is the unique operator in the covariant Mellin
+class with property (1), hence with (2).
+
+**Blueprint says.** Same statement; the annotation records that the Mellin form needs
+`H̃(z−1) ≠ 0` (`rem:poles`) and that "of the form `x⁻¹B(θ)`" is the hypothesis that the
+realising function exists.
+
+**Lean says (unfolded, at `e3249b3`).** Hypotheses: `hH : StandingHypothesis` (T0.4), `hF`,
+`0 < c`, `ofReal (c+1) < zStar`, `Measurable g`, `Integrable g`, `∀ r < 0, g r = 0`, `Measurable
+f`, `Integrable f`, `∀ r, f r = ∫_{Ioc 0 r} g` — i.e. `HasCoreDeriv f g` unbundled (T0.8), the
+article's `f ∈ 𝒟`. `delayedField f t x := ∫ τ, f (t − xτ) ∂lawT₁` = `E[f(t − xT₁)]` =
+`(μ_{0,x} ∗ f)(t)` pointwise; `laplaceFun f s = ∫_{t>0} e^{−st} f t`. Conjuncts: (1) `∀ s > 0, x
+> 0, inversionOperator c (H(s·)) x = s H(sx)`; (2a) `∀ x > 0, t < 0, delayedField f t x = 0`;
+(2b) `∀ q : X, Φ 0 x q → q` as `x → 0⁺` in `X` (for the constructed family); (2c) `∀ s > 0, x
+> 0, laplaceFun (delayedField f · x) s = H(sx) laplaceFun f s ∧ inversionOperator c (f̂(s) H(s·))
+x = s (f̂(s) H(sx))`; (2d) `∀ z, 1 < Re z, ofReal (Re z) < zStar, t > 0, mellin H (z−1) ≠ 0 →
+mellin (delayedField g t ·) z = inversionSymbol (z−1) · mellin (delayedField f t ·) (z−1)`; (3)
+`∀ s > 0, B, (∀ c' ∈ (0, z_*−1), RealisesAction c' B (H(s·)) (s x H(sx))) → ∀ z ∈ strip(0,
+z_*−1), inversionSymbol =ᶠ[𝓝[≠] z] B`.
+
+**Hypotheses/clauses.**
+| article | Lean | class |
+|---|---|---|
+| (H), canonical gauge | `hH`; the family is `F.cascadeFamily` | same |
+| `f ∈ 𝒟` | `HasCoreDeriv f g` unbundled; `g` causal pointwise | same (R6 note) |
+| `c ∈ (0, z_*−1)` | `0 < c`, `ofReal (c+1) < zStar` | same |
+| (1) domain claim | **absent** (proved separately: `realisesSymbolAction_profile`) | **R9** |
+| (1) eigen-equation | conjunct (1) | same |
+| (2) `u = Φ_{0,x} f` | `delayedField f · x` — pointwise `E[f(t − xT₁)]`; its `L¹` class is `mconvL1 (kernel 0 x) f` — the identification lemma is named below (vacuity pass) | same if identified |
+| (2) causal in `t` | (2a), pointwise for `t < 0` | same (stronger: pointwise) |
+| (2) `u(·,x) → f` in `X₀` | (2b) for every `q : X`, in `X` | same (stronger: all of `X`; `X₀ ⊂ X` closed, so the same limit) |
+| (2) Laplace form + `û(s,0+) = f̂(s)` | (2c) first half is `û(s,x) = f̂(s)H(sx)`, second is the eigen-equation for `f̂(s)H(s·)`; **the limit is absent** | **R11** (note-only; follows from `H(0)=1` and continuity) |
+| (2) Mellin form on `1 < Re z < z_*` | (2d) **off the zeros of `H̃(z−1)`** | **R2**: article statement is stronger than provable pointwise (with `B(1−z)` a quotient) — the article's *own* proof and `rem:poles` say off the zeros; statement to be made explicit |
+| (2) `∂_t u` = the `X₀`-derivative | `delayedField g t x`, i.e. `E[g(t − xT₁)]` with `g = f'` | same by definition of `𝒟`'s derivative |
+| (3) uniqueness "in the covariant Mellin class with property (1)" | one `s`, every height, no meromorphy on `B`; germ agreement on the strip | **R10** — Lean is *stronger* than the draft's Lemma 11.4 (one `s` suffices) and *differently shaped* (every height instead of meromorphy + one height); article's proof has the line-to-strip gap |
+| (3) "hence with property (2)" | absent | note-only: (2)'s Laplace form at one `f` with `f̂(s) ≠ 0` is (1) at that `s`; the Lean's (3) already needs only one `s` |
+
+**Junk-value audit.** (a) `mellin` in (2d), both sides: convergent on the strip
+(`lem:delayed-average-mellin`, `lem:memory-fractional-integrals` — `mellin_delayedField_deriv`,
+`MemoryFractional.lean`); the identity is therefore not `0 = B·0`, though a `MellinConvergent`
+conjunct would be the honest form (vacuity pass below). (b) `inversionSymbol (z−1)` at zeros of
+`H̃(z−1)`: excluded by hypothesis. (c) `inversionOperator c g x`: `mellinInv` of a vertically
+integrable function (`RealisesAction.verticalIntegrable`, `lem:mellin-vertical`) — genuine; and
+(1)'s RHS `s H(sx) > 0` so no junk-truth. (d) `laplaceFun`: Bochner of `e^{−st} f` with `f ∈ L¹`,
+`s ≥ 0` — integrable. (e) `zStar − 1` in `ℝ≥0∞`: `zStar > 1` under (H). (f) (3): the hypothesis
+is satisfiable (by `inversionSymbol` itself, `realisesSymbolAction_profile`), so (3) is not
+vacuous; and `inversionSymbol` is not `0` on any open subset of the strip (`inversionSymbol_eq`:
+`z · m(z+1)/m(z)` with `m > 0` on the real axis and analytic) — so the conclusion is not trivial.
+
+**Witness.** `witness_signaling_form_{drift,gamma}` (P1): all ten hypotheses jointly.
+
+**Blind restatement (agent B, §11 item 5).** Same six-conjunct shape; demanded the domain
+conjunct in (1) (R9), `MellinConvergent` conjuncts in (2d), the `H̃(z−1) ≠ 0` hypothesis in (2d)
+("the whole-strip statement is false with junk division; the draft's *statement* is imprecise
+here"), (2b) at `𝓝[>] 0` (✓), `f ∈ X₀` as a separate demand (✓), and read (3) as Lemma 11.4
+instantiated (✓, modulo R10).
+
+**Adversarial vacuity (agent, read-only, at `e3249b3`).** *No vacuous or junk attack.*
+`zStar` is the article's `z_*` in both directions (`negMoment_ne_top_of_lt_zStar`,
+`le_zStar_of_negMoment_ne_top`); the drift witness's `zStar = ⊤` is an honest
+`zStar_eq_top_of_forall_negMoment_ne_top`, the Gamma witness's negative moments are computed
+against Mathlib's `gammaMeasure`. (1)/(2c): `inversionOperator_eq` rewrites the integrand a.e. to
+`mellin h` and applies Mathlib's `mellinInv_mellin_eq` with genuine `MellinConvergent` and
+`VerticalIntegrable` (`realisesSymbolAction_profile`); RHS `> 0`. (2d): no `MellinConvergent …
+delayedField` lemma exists, but the proof forces convergence (`mellin_delayed_average` via
+`integral_integral_swap (integrable_delayed …)`; RHS via `integrableOn_pastIntegrand_of_bounded`)
+— **R16**. (3): hypothesis satisfiable by `inversionSymbol` itself and, since only `mellin_eq`
+depends on `B`, *equivalent* to "`B = inversionSymbol` off the zeros of `H̃` on the strip" — thin
+by the article's own design (Lemma 11.4's "no injectivity needed"), not vacuous; `zStar − 1`
+strip nonempty under (H) (`ofReal_lt_sub_one_iff`). Weakened conclusion, new: **the theorem's
+`u` is two objects — `delayedField f` in (2a),(2c),(2d) and a free `q` in (2b) — and neither
+`u = Φ_{0,x} f` (`coeFn_Phi_zero`) nor "`∂_t u` is the derivative" (`delayedField_eq_setIntegral`)
+is a conjunct (R15)**; (2c-ii) is stated on `f̂(s)H(s·)` rather than on `û(s,·)` (coincide since
+`mellin` reads `Ioi 0` — cosmetic). Redundant hypotheses: `hF` (implied by `hH.1`), `hfm`
+(`hf` makes `f` continuous). Definitions: `inversionSymbol (z−1) = B(1−z)`, `inversionOperator`
+= Def. 11.3, `profile`, `lawT₁ = μ_{0,1}`, `kernel_zero_eq_map_lawT₁` (canonical gauge),
+`laplaceFun`, `mellin` — all ✓.
+
+**Verdict (at `e3249b3`).** **faithful-with-tightenings (R2, R9, R10, R11, R15, R16)**: (2d) and (3) are the article's
+claims *as the article's own proofs establish them*, and the article's statements should say so
+(R2, R10 — text of record); (1) and (2c) each drop a conjunct that is proved elsewhere (R9, R11).
+Nothing is vacuous and nothing proved is weaker than what the article's proofs prove.
+
+**Post-P2 verdict.** **faithful.** R9, R11, R15, R16 resolved as conjuncts of `signaling_form`
+(guard: A17 only, unchanged); R2, R10 resolved in the text of record and the draft. Remaining:
+the paper's mirror of the two statements (hub/paper session).
+
 
 ## Witnesses (P1) — `Formalization/Hemigroup/Witnesses.lean`
 

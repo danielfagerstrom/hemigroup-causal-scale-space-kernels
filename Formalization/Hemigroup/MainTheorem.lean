@@ -52,7 +52,10 @@ exponent, read through a gauge; and the pair (gauge, exponent) is unique up to `
 1. *(⇐, the construction.)* Every admissible `F` gives a cascade family whose operators are
    convolution by `F`'s kernels — `thm:main-construction`, witnessed by `cascadeFamily`.
 2. *(⇒, the analysis.)* Every scale-covariant cascade family arises that way, with a gauge `χ`
-   conjugating the scaling action into multiplication — `thm:main-analysis`.
+   conjugating the scaling action into multiplication — `thm:main-analysis`, in its round-trip
+   form `main_analysis'`: the conclusion is a `SelfDecomposableExponent` and the identification
+   `μ_{x,y} = μ^F_{χ(x),χ(y)}`, i.e. exactly the type conjunct 1 starts from, with `χ 1 = 1` so
+   that conjunct 3 applies to it. (The `(b₀, k)` data of `main_analysis` are `F.b₀`, `F.k`.)
 3. *(Uniqueness.)* The gauge and the exponent are pinned by the kernels, given `χ(1) = 1` —
    `prop:main-uniqueness`.
 
@@ -63,18 +66,17 @@ theorem main_characterization :
     (∀ (F : SelfDecomposableExponent), (∃ s₀ : ℝ, 0 < s₀ ∧ F.exponent s₀ ≠ 0) →
         ∃ Fam : CascadeFamily, ∀ x y : ℝ, 0 ≤ x → x ≤ y →
           Fam.Φ x y = mconvL1 (F.kernel x y)) ∧
-    -- (⇒) every scale-covariant cascade family is of that form
+    -- (⇒) every scale-covariant cascade family is of that form: there are a normalised gauge
+    -- `χ` and an admissible exponent `F` (nonzero, of the form (7.1)) whose kernels, read
+    -- through `χ`, are the family's
     (∀ (S : ℝ → ℝ → ℝ) (Fam : CascadeCore), IsScaleCovariant Fam (Ioi 0) S →
-        ∃ χ : ℝ → ℝ, ∃ b₀ : ℝ, ∃ k : ℝ → ℝ,
-          χ 0 = 0 ∧ StrictMonoOn χ (Ici 0) ∧ SurjOn χ (Ici 0) (Ici 0) ∧
+        ∃ χ : ℝ → ℝ, ∃ F : SelfDecomposableExponent,
+          χ 0 = 0 ∧ χ 1 = 1 ∧ StrictMonoOn χ (Ici 0) ∧ SurjOn χ (Ici 0) (Ici 0) ∧
           (∀ σ x : ℝ, 0 < σ → 0 ≤ x → χ (S σ x) = σ * χ x) ∧
-          0 ≤ b₀ ∧ AntitoneOn k (Ioi 0) ∧ (∀ t : ℝ, 0 < t → 0 ≤ k t) ∧
-          (∀ x y : ℝ, 0 ≤ x → x ≤ y → Fam.Φ x y = mconvL1 (Fam.repr x y)) ∧
-          (∀ x y s : ℝ, 0 ≤ x → x ≤ y → 0 ≤ s →
-            laplace (Fam.repr x y) s
-              = Real.exp (-((levyExponentD b₀ k (χ y * s)).toReal
-                  - (levyExponentD b₀ k (χ x * s)).toReal))) ∧
-          (∃ s : ℝ, 0 < s ∧ levyExponentD b₀ k s ≠ 0)) ∧
+          (∃ s₀ : ℝ, 0 < s₀ ∧ F.exponent s₀ ≠ 0) ∧
+          ∀ x y : ℝ, 0 ≤ x → x ≤ y →
+            Fam.repr x y = F.kernel (χ x) (χ y) ∧
+            Fam.Φ x y = mconvL1 (F.kernel (χ x) (χ y))) ∧
     -- uniqueness of the gauge and the exponent
     (∀ (F F' : SelfDecomposableExponent) (χ : ℝ → ℝ),
         (∀ u : ℝ, 0 < u → 0 < χ u) →
@@ -84,7 +86,7 @@ theorem main_characterization :
         χ 1 = 1 → (∃ s₀ : ℝ, 0 < s₀ ∧ F.exponent s₀ ≠ 0) →
         (∀ u : ℝ, 0 < u → χ u = u) ∧ (∀ t : ℝ, 0 ≤ t → F'.exponent t = F.exponent t)) :=
   ⟨fun F hF => ⟨F.cascadeFamily hF, fun _ _ _ _ => rfl⟩,
-   fun _ _ hcov => CascadeCore.main_analysis _ hcov,
+   fun _ _ hcov => CascadeCore.main_analysis' _ hcov,
    fun _ _ _ hpos hmono hzero heq hχ1 hne =>
      gauge_and_exponent_unique hpos hmono hzero heq hχ1 hne⟩
 

@@ -1325,3 +1325,54 @@ A17 through `kernel`; the signal (`signal_hypotheses`) is Lean core.
 #print axioms Hemigroup.SelfDecomposableExponent.witness_local_polynomial_symbol_gamma
 #print axioms Hemigroup.SelfDecomposableExponent.witness_hF_stable
 #print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_stable
+
+/-! ### Fidelity review (P2)
+
+The lines the P2 fixes of `PLAN-fidelity-review.md` added. Each is a statement-tightening: the
+theorem was already proved and already the article's; what changed is that the Lean statement now
+says so in the article's terms.
+
+**R4** — the two renderings of (ND), `Nondegenerate` (chapter 9, on the representation) and
+`∃ s₀ > 0, F.exponent s₀ ≠ 0` (the headline theorems, on the exponent), are one condition.
+Lean core: nothing here mentions a kernel.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.strictMonoOn_toRealExponent
+#print axioms Hemigroup.SelfDecomposableExponent.nondegenerate_iff_exists_exponent_ne_zero
+
+/-! **R1** — the round trip. `main_analysis` now also exports `χ 1 = 1` (`gauge_one`, Lean core)
+and the finiteness `levyExponentD b₀ k s ≠ ⊤` it always had inside its proof, and stays on
+**A18 alone** (its line above is unchanged and is what checks that). `main_analysis'` packages it
+into a `SelfDecomposableExponent` and identifies `Fam.repr x y = F.kernel (χ x) (χ y)`, so it
+prints **A18 and A17** — A17 through `kernel`, exactly as `prop:main-uniqueness` does, and not
+because the analysis uses the construction. `main_characterization`'s (⇒) conjunct is now the
+round-trip form; its own line above prints both names as before.
+-/
+
+#print axioms Hemigroup.CascadeCore.gauge_one
+#print axioms Hemigroup.CascadeCore.main_analysis'
+
+/-! **R9, R11, and the adversarial pass on Theorem 4′.** `signaling_form` gained five conjuncts:
+the domain half of (1) (`realisesSymbolAction_profile`, already listed), the identification
+`u(·,x) = Φ_{0,x}f` (`coeFn_Phi_zero`, already listed), the boundary value `û(s,0+) = f̂(s)`,
+the `X₀`-reading of `∂_t u` at every `t`, and the convergence of both Mellin transforms in (2d).
+The three new lemmas below print **A17 and nothing else**, through `lawT₁`/`kernel` as everything
+about the field does; `signaling_form`'s own line above is unchanged and still prints A17 alone.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_laplaceFun_delayedField
+#print axioms Hemigroup.SelfDecomposableExponent.delayedField_eq_setIntegral'
+#print axioms Hemigroup.SelfDecomposableExponent.mellinConvergent_delayedField
+#print axioms Hemigroup.SelfDecomposableExponent.mellinConvergent_delayedField_pair
+
+/-! **R8** — `thm:main-construction` in an arbitrary gauge. `CascadeFamily.reparam` transports a
+family along an increasing bijection `χ` of `[0,∞)` — (A1)–(A6), (ND) verbatim, (A7) through the
+continuity of `χ` (`continuousOn_of_strictMonoOn_surjOn`, Lean core), (A8) with
+`S_σ ↦ χ⁻¹ ∘ S_σ ∘ χ` — and `cascadeFamily_reparam` is Theorem 7.3 (⇐) in the gauge `χ`.
+The two general lemmas print **Lean core**; the corollary about `F`'s kernels prints **A17**,
+through `kernel`, exactly as `cascadeFamily` does.
+-/
+
+#print axioms Hemigroup.continuousOn_of_strictMonoOn_surjOn
+#print axioms Hemigroup.CascadeFamily.reparam
+#print axioms Hemigroup.SelfDecomposableExponent.cascadeFamily_reparam

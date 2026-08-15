@@ -894,6 +894,64 @@ theorem laplaceFun_delayedField (hH : F.StandingHypothesis) {f : ℝ → ℝ} (h
     _ = F.profile (s * x) * laplaceFun f s := by
         rw [integral_mul_const, profile, laplace]
 
+/-! ### Two conjuncts the fidelity review added to `thm:signaling-form`
+
+Each is a consequence of a lemma above, stated in the form the theorem needs (the
+adversarial-vacuity pass, `PLAN-fidelity-review.md` P2). The third addition, the boundary value
+`û(s,0+) = f̂(s)` (finding R11), lives in `SignalingForm.lean`, which has the transform's
+continuity in scope. -/
+
+/-- **`thm:signaling-form`(2), the time derivative**: at every scale `x > 0` and every time `t`,
+the field of `f ∈ 𝒟` is the primitive of the field of `f'`. `delayedField_eq_setIntegral` for
+`t ≥ 0`; for `t < 0` both sides vanish, by causality on the left and by the empty interval on the
+right. This is the `X₀`-reading of `∂_t u` under which the Mellin form (2d) is stated. -/
+theorem delayedField_eq_setIntegral' {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ)
+    (hH : F.StandingHypothesis) {x : ℝ} (hx : 0 < x) (t : ℝ) :
+    F.delayedField f t x = ∫ s in Ioc (0 : ℝ) t, F.delayedField g s x := by
+  rcases le_or_gt 0 t with ht | ht
+  · exact F.delayedField_eq_setIntegral hgm hg hgc hf hH hx ht
+  · have hfc : ∀ r : ℝ, r < 0 → f r = 0 := fun r hr => by
+      rw [hf r, Ioc_eq_empty (not_lt.mpr hr.le), Measure.restrict_empty, integral_zero_measure]
+    rw [F.delayedField_eq_zero hH hfc hx ht, Ioc_eq_empty (not_lt.mpr ht.le),
+      Measure.restrict_empty, integral_zero_measure]
+
+/-- **The Mellin transform of the field converges** wherever `lem:memory-fractional-integrals`
+computes it: the joint integrability `integrable_delayed` gives, by Fubini, integrability of the
+`x`-marginal, which is `MellinConvergent` for the field. This is what makes the identity in
+`thm:signaling-form`(2d) an identity between convergent transforms rather than between Mathlib's
+junk value `0` on both sides. -/
+theorem mellinConvergent_delayedField (hH : F.StandingHypothesis) {z : ℂ} (hz : 0 < z.re)
+    (hz' : ENNReal.ofReal z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) {t : ℝ}
+    (hpast : IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0)) :
+    MellinConvergent (fun x : ℝ => (F.delayedField f t x : ℂ)) z := by
+  have h := (integrable_delayed hH hz hz' hfm hpast).integral_prod_left
+  simp only [MellinConvergent, smul_eq_mul]
+  refine h.congr (Filter.Eventually.of_forall fun x => ?_)
+  simp only [delayedField, Function.uncurry_apply_pair, integral_const_mul]
+  congr 1
+  exact integral_ofReal (𝕜 := ℂ)
+
+/-- The two convergence clauses `thm:signaling-form`(2d) carries: the field of `f'` at `z`, and
+the field of `f` at `z - 1`, on the strip `1 < Re z < z_*`. -/
+theorem mellinConvergent_delayedField_pair (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
+    (hz' : ENNReal.ofReal z.re < F.zStar) {g f : ℝ → ℝ} (hgm : Measurable g) (hg : Integrable g)
+    (hgc : ∀ r : ℝ, r < 0 → g r = 0) (hfm : Measurable f)
+    (hf : ∀ r : ℝ, f r = ∫ ρ in Ioc (0 : ℝ) r, g ρ) {t : ℝ} (ht : 0 < t) :
+    MellinConvergent (fun x : ℝ => (F.delayedField g t x : ℂ)) z ∧
+      MellinConvergent (fun x : ℝ => (F.delayedField f t x : ℂ)) (z - 1) := by
+  have hfc : ∀ r : ℝ, r < 0 → f r = 0 := fun r hr => by
+    rw [hf r, Ioc_eq_empty (not_lt.mpr hr.le), Measure.restrict_empty, integral_zero_measure]
+  have hbdd : ∀ y : ℝ, |f y| ≤ ∫ w, |g w| := fun y => by rw [hf y]; exact abs_primitive_le hg y
+  have hre : (z - 1).re = z.re - 1 := by simp
+  have hz1 : 0 < (z - 1).re := by rw [hre]; linarith
+  have hz1' : ENNReal.ofReal (z - 1).re < F.zStar := by
+    rw [hre]; exact F.ofReal_lt_zStar_of_le (by linarith) hz'
+  exact ⟨F.mellinConvergent_delayedField hH (by linarith) hz' hgm
+      (integrableOn_pastIntegrand (z := z) hz hg hgc ht),
+    F.mellinConvergent_delayedField hH hz1 hz1' hfm
+      (integrableOn_pastIntegrand_of_bounded (z := z - 1) hz1 hfm hbdd hfc ht)⟩
+
 end SelfDecomposableExponent
 
 end Hemigroup
