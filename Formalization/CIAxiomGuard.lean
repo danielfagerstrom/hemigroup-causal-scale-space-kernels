@@ -1299,3 +1299,29 @@ to exclude exactly the case the proposition's second clause exists to describe.
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_ofReal_inv_mul_exponent
 #print axioms Hemigroup.SelfDecomposableExponent.lintegral_id_lawT₁
 #print axioms Hemigroup.moments
+
+/-! ### Witnesses (PLAN-fidelity-review P1)
+
+Not blueprint nodes. `Hemigroup/Witnesses.lean` shows the hypotheses of the headline theorems are
+jointly satisfiable at concrete models (pure drift, Gamma, stable); the lines below record what
+those witnesses themselves rest on. Everything quantifying over the constructed kernels picks up
+A17 through `kernel`; the signal (`signal_hypotheses`) is Lean core.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.signal_hypotheses
+#print axioms Hemigroup.SelfDecomposableExponent.hasCoreDeriv_tent
+#print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_covariant
+#print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_uniqueness
+#print axioms Hemigroup.SelfDecomposableExponent.witness_hF_drift
+#print axioms Hemigroup.SelfDecomposableExponent.witness_standingHypothesis_drift
+#print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_drift
+#print axioms Hemigroup.SelfDecomposableExponent.witness_signaling_form_drift
+#print axioms Hemigroup.SelfDecomposableExponent.witness_local_polynomial_symbol_drift
+#print axioms Hemigroup.SelfDecomposableExponent.witness_semigroup_case_drift
+#print axioms Hemigroup.SelfDecomposableExponent.witness_hF_gamma
+#print axioms Hemigroup.SelfDecomposableExponent.witness_standingHypothesis_gamma
+#print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_gamma
+#print axioms Hemigroup.SelfDecomposableExponent.witness_signaling_form_gamma
+#print axioms Hemigroup.SelfDecomposableExponent.witness_local_polynomial_symbol_gamma
+#print axioms Hemigroup.SelfDecomposableExponent.witness_hF_stable
+#print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_stable

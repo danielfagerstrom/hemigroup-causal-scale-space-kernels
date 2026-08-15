@@ -61,4 +61,5 @@ import Hemigroup.SymbolUniqueness
 import Hemigroup.TransformContinuity
 import Hemigroup.Uniqueness
 import Hemigroup.WeakConvergence
+import Hemigroup.Witnesses
 import Hemigroup.Volterra

@@ -428,6 +428,44 @@ exponent (see A17 card). **faithful.**
 
 ## Tier 1 — (P2/P3, not started)
 
-## Witnesses (P1)
+## Witnesses (P1) — `Formalization/Hemigroup/Witnesses.lean`
 
-*(pending — agent report and `Formalization/Hemigroup/Witnesses.lean`)*
+Named theorems, `#print axioms`-guarded in `CIAxiomGuard.lean` (17 lines under
+`### Witnesses (PLAN-fidelity-review P1)`), nothing importing the file. Every witness prints
+Lean core, or Lean core + A17 where it quantifies over the constructed kernels; **none reaches
+A18**. Verified 2026-08-15: `lake build` clean, guard exit code 0.
+
+| target | model | hypotheses discharged | theorem |
+|---|---|---|---|
+| `main_characterization` (⇐) `hF` | drift `b₀ > 0`; Gamma `γ > 0`; stable all `α` | all | `witness_hF_{drift,gamma,stable}` |
+| `main_characterization` (⇒) `IsScaleCovariant` | any `F` with `hF`, at `(F.cascadeFamily hF).toCascadeCore`, `S σ x = σ x` (`cascadeFamily_S`, `rfl`) | all | `witness_main_characterization_covariant` |
+| `main_characterization` uniqueness | `χ = id`, `F' = F` | all six | `witness_main_characterization_uniqueness` |
+| all three conjuncts jointly | drift / Gamma / stable | all | `witness_main_characterization_{drift,gamma,stable}` |
+| `signaling_form` | drift (any `c > 0`, `z_* = ∞`); Gamma `γ > 1`, `c = (γ−1)/2` | **all ten**: (H), `hF`, `hc`, `hc'`, and the six signal clauses at the tent `f = ∫₀^· (box − box(·−1))` | `witness_signaling_form_{drift,gamma}` |
+| `semigroup_case` | drift `b₀ = 1` | `IsScaleCovariant`, `IsOneParameter`, `G 1 1 = 1` | `witness_semigroup_case_drift` |
+| `lem:local-polynomial-symbol` | drift (+ `AllNegMomentsFinite`); Gamma `γ > 1` | (H), `0 < c < z_* − 1` | `witness_local_polynomial_symbol_{drift,gamma}` |
+
+New supporting facts proved on the way (all Lean core or A17): `driftExponent b₀` as a
+`SelfDecomposableExponent` with `kernel a b = δ_{b₀(b−a)}`, `lawT₁ = δ_{b₀}`, all negative
+moments finite; `gammaExponent γ` has `lawT₁ = gammaMeasure γ 1` and `negMoment ζ ≠ ⊤` for
+`ζ < γ`, hence `StandingHypothesis` for `γ > 1`; `repr_cascadeFamily : repr = kernel`;
+`hasCoreDeriv_tent : HasCoreDeriv tent tentDeriv`.
+
+**Findings from P1.**
+* **No hypothesis is unsatisfiable, and none needs a restriction the article does not state.**
+  In particular the plan's worry that `hc'` might force `γ > 2` for Gamma does not arise:
+  `hc' : c + 1 < z_*` leaves room for `c = (γ−1)/2` at every `γ > 1`, so (H)'s own boundary is
+  the only one.
+* The `f ∈ L¹` clause of `signaling_form` is a real constraint on the signal (the clipped ramp
+  from `g = box` fails it; a `g` with `∫ g = 0` is needed) — as the `SignalingForm.lean`
+  docstring says, and as the article's `f ∈ 𝒟 ⊆ X₀` imposes. Confirms T0.8's reading.
+* Not shown: `StandingHypothesis` for the stable family (needs a negative moment of the positive
+  stable law past the first; no closed form for its density in the development). Not a finding
+  about the theorem — the drift and Gamma witnesses already show the hypotheses are jointly
+  satisfiable — but a gap in the model coverage: the stable family is the article's Example 8.1
+  and satisfies (H) with `z_* = ∞`; a witness would need `E[T₁^{−ζ}] < ∞` from the Laplace
+  transform alone (`E[T^{−ζ}] = Γ(ζ)⁻¹ ∫ s^{ζ−1} e^{−s^α} ds`, which is Lemma 11.2's own
+  computation run without (H) — a possible route, left open).
+* `IsOneParameter` fails for Gamma and stable *in the canonical gauge*, correctly: the
+  one-parameter stable semigroups with `α < 1` are those cores reparametrised by `x ↦ x^{1/α}`.
+  That reparametrisation is exactly the lemma **R8** asks for, so R8 has a second consumer.
