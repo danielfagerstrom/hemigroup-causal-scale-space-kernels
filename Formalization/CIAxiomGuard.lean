@@ -1065,6 +1065,39 @@ every statement about the constructed family is. `gammaExponent_meanRate` is Lea
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_meanRate
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_lintegral_id_kernel
 
+/-! ### `prop:volterra` (9.8), the identity clause
+
+`t μ_x(dt) = (θ_x ∗ μ_x)(dt)`. **A17 through `kernel`**; the three general lemmas beneath it are
+Lean core and are about an arbitrary causal finite measure.
+
+Two things the chapter already had, and one that was new.
+
+`θ_x` is **`x` times the memory kernel** -- the atom scales from `b₀` to `b₀x` and the density from
+`k(t/x)/x` to `k(t/x)` -- so the blueprint's `θ̂_x(s) = b₀x + ∫e^{-st}k(t/x)dt = xF'(xs)` is
+`laplaceL_memoryKernel` scaled, and no new computation was needed on that side. And
+`laplaceL_injective_of_ne_top` separates the two measures, which is what the blueprint's proof
+names.
+
+What was new is `hasDerivAt_laplace`: `Lap[μ]'(s) = -∫ t e^{-st}dμ`. Mathlib has `hasDerivAt_mgf`,
+but it asks for membership of the interior of the integrability set; going directly through
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` is easier here because the dominating function
+is a **constant** -- `t e^{-xt} <= e^{-1}/x` uniformly in `t`, the maximum of `u e^{-u}` -- and a
+finite measure integrates a constant with no side condition at all. That estimate turns out to
+need no hypothesis on `t` either: to the left of the origin the left-hand side is negative.
+
+The uniqueness half of the node is separated as `prop:volterra-uniqueness` and is not proved: it
+is a scalar linear ODE in the Laplace variable, and needs the transform of an arbitrary competitor
+to be differentiable, which is `hasDerivAt_laplace` again, plus an antiderivative-uniqueness step
+of the shape `eq_of_hasDerivAt_of_tendsto_zero` already used for the closed forms.
+-/
+
+#print axioms Hemigroup.mul_exp_neg_le
+#print axioms Hemigroup.hasDerivAt_laplace
+#print axioms Hemigroup.laplaceL_withDensity_id
+#print axioms Hemigroup.SelfDecomposableExponent.volterraKernel
+#print axioms Hemigroup.SelfDecomposableExponent.laplaceL_volterraKernel
+#print axioms Hemigroup.SelfDecomposableExponent.volterra
+
 /-! ### `prop:gamma-density`, proved
 
 The Gamma family's kernel **is** the Gamma law of shape `γ` and rate `1/x` — the blueprint's

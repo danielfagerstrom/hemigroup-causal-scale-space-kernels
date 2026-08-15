@@ -40,7 +40,7 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
-Sixty-two nodes carry `\lean{...}\leanok`:
+Sixty-three nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
@@ -51,7 +51,7 @@ Sixty-two nodes carry `\lean{...}\leanok`:
 | 6 Scale covariance | `lem:covariance-laplace`, `lem:action-rigidity`, `prop:canonical-gauge` — chapter complete |
 | 7 Main theorem | `lem:selfdecomposable-increment`, `thm:main-construction` (⇐), `thm:main-analysis` (⇒), `prop:main-uniqueness` — all three halves; and `lem:admissible-cone`, `lem:dickman-superposition` — the two clauses of `prop:extreme-rays` that need neither uniqueness of the Lévy–Khintchine triple nor a Choquet argument, so that the cone and the `Ein` superposition are machine-checked and only the bijection and the extreme rays are not; and `cor:semigroup-case` — the one-parameter case, recovering the 2005 stable kernels `F(s) = s^α`, `0 < α ≤ 1`, together with the pure delay at `α = 1` |
 | 8 Examples and moments | `prop:admissibility-criterion`, `lem:criterion-converse`, `prop:stable-family`, `prop:gamma-family`, `prop:gamma-kernels` — the Gamma family's kernel and increment transforms and its mean delay `E T_x = γx`; `prop:gamma-density` — its kernel *is* Mathlib's Gamma law of shape `γ` and rate `1/x`, whose Laplace transform had to be computed here because Mathlib carries none; `prop:stable-moments` — every moment of the extremal stable delay is infinite, which came off ledger A7 once the mean was proved; `prop:moments` — the mean delay `E T_x = xF'(0+)` in `[0,∞]`, with no finiteness hypothesis on either side: monotone convergence twice and a squeeze, in place of the differentiation at the origin the blueprint's proof performs |
-| 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists` — the chapter's `[T]` line, complete |
+| 9 Memory kernels | `lem:memory-kernel`, `lem:memory-kernel-transform`, `thm:sonine-conservation`, `lem:potential-kernel`, `prop:sonine-pair-exists`, `prop:volterra` — the Volterra identity `t μ_x(dt) = (θ_x ∗ μ_x)(dt)`, whose one new step is that the Laplace transform differentiates under the integral against a *constant* bound |
 | 10 The scale-Cauchy problem | `lem:delay-core` — the core `𝒟`, dense in `X₀` and invariant under the delay semigroup and under every `Φ`, with the `L¹` difference quotient and the two-sided delay estimate; and `def:phillips-generator` — the per-scale generator `φ_x(∂_t)f = b₀f' + ∫(f - T_rf)ν_x(dr)`, an `X₀`-valued Bochner integral that needed no theory the development did not have. `lem:generator-properties` — all five clauses, Lean core: absolute convergence with the two-sided bound, the symbol `φ_x(s) = sF'(xs)`, commutation with every `Φ`, continuity in the scale, and agreement with chapter 9's memory-kernel operator. The chapter is now everything but the Cauchy problem |
 | 11 The signaling form | `lem:mellin-data`, `lem:mellin-vertical`, `lem:inversion-symbol`, `lem:symbol-rigidity`, `def:inversion-operator`, `lem:inversion-operator-action`, `lem:profile-eigenfunction`, `lem:symbol-uniqueness`, `lem:delayed-average-mellin` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation `A[H(s·)] = s·H(s·)` (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), `lem:signaling-mellin-form`, `lem:fractional-integral-derivative`, `lem:memory-fractional-integrals`, `thm:signaling-form` — Theorem 4$'$'s Mellin data, the symbol `B`, the inversion operator, its eigenfunction relation (Theorem 4$'$(1)), the uniqueness that earns the definite article in *the* inversion (Theorem 4$'$(3)), and Theorem 4$'$(2)'s Mellin form up to its derivative clause |
 | 12 Locality | `lem:log-convexity`, `def:locality-pmp`, `lem:local-polynomial-symbol`, `lem:symbol-vanishes-at-origin`, `lem:moment-recursion-quotient`, `lem:pmp-verification`, `lem:local-moment-classification`, `lem:gamma-recursion-uniqueness` — the chapter's classification step, as an equivalence: `A` is local of order `n` iff its symbol is the corresponding polynomial, read off the zeros of `H̃`; the moment recursion `m(z+1) = Q(z)m(z)` on the range that needs no A13; the maximum principle verified where `thm:locality` exhibits its operators; ledger **A15** (Krull–Webster) discharged in the order-two case it is applied to, from Mathlib's Bohr–Mollerup. What is left in the chapter is `[A]`: A13 (`z_* = ∞`), A14 (the *order bound* — the opposite use of the maximum principle), A16 |
@@ -68,8 +68,8 @@ that proof reduces to Lean core.
 Where the work stands. `blueprint/PLAN-chapters-8-12.md` carries the reasoning; the
 distinction that matters is between a **queue** and a **dependency**, because only the first is
 schedulable. What is schedulable today is the row `PLAN` calls *available, nothing depends on
-them* — `prop:volterra`, `lem:potential-kernel-scaling`.
-Everything else:
+them* — `lem:potential-kernel-scaling`, and the uniqueness halves split off this week
+(`prop:volterra-uniqueness`, `prop:gamma-moments`). Everything else:
 
 0. **`prop:moments` (8.4) is done.** The mean rate `F'(0+) = b₀ + ∫₀^∞ k` is `[0,∞]`-valued — the proposition's second
    clause is about when it is infinite — so `meanRate_ne_top_iff` carries no finiteness

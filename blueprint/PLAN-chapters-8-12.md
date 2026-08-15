@@ -2460,3 +2460,68 @@ done first makes the other cheap.
 `PLAN`'s *available, nothing depends on them* row, down to two: `prop:volterra`,
 `lem:potential-kernel-scaling`. Then the newly-created `prop:gamma-density`, which is the cheaper
 of the two ways to retire `prop:gamma-moments`'s ledger entry.
+
+---
+
+# `prop:gamma-density` and `prop:volterra`, proved — 2026-08-15
+
+`Hemigroup/GammaDensity.lean` and `Hemigroup/Volterra.lean`. **63 nodes `\leanok`**, 87 statement
+nodes. Both on A17 through `kernel` and nothing else; the general lemmas beneath them are Lean
+core. Trust boundary unchanged.
+
+## A Phase-0 estimate that was right, for once
+
+`prop:gamma-density`'s status line said inverting `(1+xs)^{-γ}` "means computing the Gamma
+density's transform and appealing to `prop:laplace-uniqueness-causal` — available, but a separate
+piece of work". That is exactly what it was. `kernel_unique` is the appeal, and the transform had
+to be computed here because **Mathlib's Gamma file has none**: `Probability/Distributions/Gamma.lean`
+carries the density, the total mass and the CDF and stops — no Laplace transform, no moment
+generating function, no characteristic function. The computation is the Gamma integral chapter 8
+already used for the stable family's `F'`.
+
+Worth recording because this file mostly records estimates that were wrong. The pattern holds:
+the accurate ones name a *tool* ("compute the transform, appeal to uniqueness"); the inaccurate
+ones name an *obstruction* ("`Lap` is not bounded on `L¹`").
+
+The statement is an identity of measures, `μ_{0,x} = gammaMeasure γ (1/x)`, not of densities. That
+is the same assertion in vocabulary Mathlib already has, and it hands `prop:gamma-moments` the
+whole Gamma API — the cheaper of the two routes off that node's ledger entry.
+
+## `prop:volterra`: `θ_x` was already in the chapter, and the derivative was the only new thing
+
+`θ_x = b₀xδ₀ + k(t/x)dt` is **`x` times the memory kernel** — atom `b₀ → b₀x`, density
+`k(t/x)/x → k(t/x)` — so `θ̂_x(s) = xF'(xs)` is `laplaceL_memoryKernel` scaled and needed no
+computation. Fifth time this chapter has found the object it needed already built one node over.
+
+The one new step is `Lap[tμ](s) = -Lap[μ]'(s)`. Mathlib has `hasDerivAt_mgf`, but it asks for
+membership of the interior of the integrability set; going straight to
+`hasDerivAt_integral_of_dominated_loc_of_deriv_le` is easier, because **the dominating function is
+a constant**: `te^{-xt} ≤ e^{-1}/x` uniformly in `t`, the maximum of `ue^{-u}`, and a finite
+measure integrates a constant with no side condition. Compare `hasDerivAt_toRealExponent` in
+chapter 9, which needed `integrableOn_exp_mul_k` for its bound — the same tool, and the easier
+instance of it, because there the measure was Lebesgue and here it is a probability measure.
+
+Small thing found on the way: `ue^{-u} ≤ e^{-1}` needs **no hypothesis on `u`**. It is normally
+quoted on the half-line; to the left of the origin the left side is negative and the bound is
+free. Stating it unconditionally removed a hypothesis from two call sites.
+
+## Two uniqueness halves now separated, and both are cheap-looking
+
+`prop:volterra-uniqueness` and `prop:gamma-moments` are the two nodes this week's splits created
+and did not close. Neither is blocked:
+
+* **`prop:volterra-uniqueness`** is a scalar linear ODE. `hasDerivAt_laplace` was deliberately
+  stated for an *arbitrary* causal finite measure so a competitor `ν` can use it, and the
+  remaining step is `eq_of_hasDerivAt_of_tendsto_zero`, the antiderivative-uniqueness lemma
+  chapter 8's closed forms already run on. The extra ingredient is `ν̂ > 0`, which is
+  `laplace_pos`.
+* **`prop:gamma-moments`** now has `prop:gamma-density` beneath it, so its moments are a Gamma
+  computation rather than a ledger appeal.
+
+Both were priced in their own annotations at the moment of splitting, which is the discipline this
+file has been arguing for all week: **the estimate is worth writing when the statement is written,
+because that is when it is accurate.**
+
+## Next
+
+`PLAN`'s *available* row: `lem:potential-kernel-scaling`, plus the two uniqueness halves above.

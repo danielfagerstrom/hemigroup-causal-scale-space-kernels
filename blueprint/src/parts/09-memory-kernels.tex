@@ -375,33 +375,63 @@ locality corner of the memory-line realization. For general admissible $F$ the p
 
 % draft: Proposition 9.8
 \begin{proposition}[Volterra equation for the kernels]\label{prop:volterra}
-\uses{lem:memory-kernel,lem:memory-kernel-transform,thm:main-characterization,rem:sato-reading,prop:laplace-uniqueness}
+\uses{lem:memory-kernel,lem:memory-kernel-transform,thm:main-characterization,prop:laplace-uniqueness}
+\lean{Hemigroup.SelfDecomposableExponent.volterra}\leanok
 Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. Then, as measures on
 $[0,\infty)$,
 \[
   t\,\mu_x(dt) \;=\; \bigl(\theta_x * \mu_x\bigr)(dt),
-  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt, \tag{9.1}
+  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt. \tag{9.1}
 \]
-and $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
-\statusT\quad\emph{(a transform computation and a scalar linear ODE in the Laplace variable ---
-no citation is needed and none is made. The descent from this measure identity to the density
-equation (9.2), which is what needs \ledger{A10}, was split off as \ref{prop:volterra-density};
-before the split this node reported that entry's cost for two results that do not incur it.)}
+\statusT\quad\emph{(a transform computation --- no citation is needed and none is made. The
+descent from this measure identity to the density equation (9.2), which is what needs
+\ledger{A10}, was split off as \ref{prop:volterra-density}; before the split this node reported
+that entry's cost for results that do not incur it. The uniqueness clause, which is the scalar
+linear ODE rather than the transform computation, was split off on 2026-08-15 as
+\ref{prop:volterra-uniqueness}.
+\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/Volterra.lean}, on \ledger{A17} alone.
+\textbf{$\theta_x$ is $x$ times the memory kernel} --- the atom scales from $b_0$ to $b_0x$ and
+the density from $k(t/x)/x$ to $k(t/x)$ --- so $\widehat{\theta_x}(s) = xF'(xs)$ is
+\ref{lem:memory-kernel-transform} scaled and needs no computation of its own. The one new step is
+$\Lap[t\mu](s) = -\Lap[\mu]'(s)$, and it is dominated convergence with a \emph{constant} bound:
+$te^{-xt} \le e^{-1}/x$ uniformly in $t$, the maximum of $ue^{-u}$, which a finite measure
+integrates with no side condition. That estimate turns out to need no hypothesis on $t$ at all,
+being free to the left of the origin where its left-hand side is negative.)}
 \end{proposition}
 
 \begin{proof}
-\emph{The identity (9.1).} Taking Laplace transforms,
-$\Lap[t\,\mu_x](s) = -\tfrac{d}{ds} e^{-F(xs)} = x F'(xs)\, e^{-F(xs)}$, while by
-\ref{lem:memory-kernel} with the substitution $\tau = t/x$,
+\leanok
+Taking Laplace transforms, $\Lap[t\,\mu_x](s) = -\tfrac{d}{ds} e^{-F(xs)} = x F'(xs)\, e^{-F(xs)}$,
+while by \ref{lem:memory-kernel} with the substitution $\tau = t/x$,
 $\widehat{\theta_x}(s) = b_0 x + \int_0^\infty e^{-st} k(t/x)\,dt = x F'(xs)$. So both sides of
 (9.1) have the finite transform $x F'(xs)e^{-F(xs)}$ and coincide by
 \ref{prop:laplace-uniqueness}.
+\end{proof}
 
-\emph{Uniqueness.} If $\nu$ is a probability measure on $[0,\infty)$ with
-$t\,\nu(dt) = \theta_x * \nu$, then $\hat\nu$ is differentiable on $(0,\infty)$ with
+% additive: the uniqueness half of Proposition 9.8, separated on 2026-08-15 when the identity was
+% proved and this was not. The two halves use different machinery -- a transform computation and
+% an ODE -- which is the usual reason to split.
+\begin{proposition}[the Volterra equation determines the kernel]\label{prop:volterra-uniqueness}
+\uses{prop:volterra,prop:laplace-uniqueness}
+$\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
+\statusT\quad\emph{(a scalar linear ODE in the Laplace variable, and no citation. Separated from
+\ref{prop:volterra} because the two halves use different machinery: that one is a transform
+identity, this one solves a differential equation, and only the first was proved on 2026-08-15.
+\textbf{The pieces are in place.} If $\nu$ satisfies (9.1) then $\hat\nu$ is differentiable on
+$(0,\infty)$ --- which is \texttt{hasDerivAt\_laplace}, proved with \ref{prop:volterra} and stated
+for an arbitrary causal finite measure precisely so that a competitor can use it --- with
+$-\hat\nu'(s) = xF'(xs)\hat\nu(s)$. What remains is to solve that, and the shape is the one
+\texttt{eq\_of\_hasDerivAt\_of\_tendsto\_zero} already handles for the closed forms of chapter 8:
+$(\log\hat\nu)' = -xF'(x\cdot)$ with $\hat\nu(\zp) = 1$, so $\log\hat\nu(s) = -F(xs)$. The one
+extra step is $\hat\nu > 0$, which is \texttt{laplace\_pos} for a nonzero causal measure.)}
+\end{proposition}
+
+\begin{proof}
+If $\nu$ is a probability measure on $[0,\infty)$ with $t\,\nu(dt) = \theta_x * \nu$, then
+$\hat\nu$ is differentiable on $(0,\infty)$ with
 $-\hat\nu'(s) = \Lap[t\nu](s) = xF'(xs)\,\hat\nu(s)$. Solving this linear ODE with
-$\hat\nu(\zp) = 1$ gives $\hat\nu(s) = e^{-F(xs)}$, hence $\nu = \mu_x$.
-
+$\hat\nu(\zp) = 1$ gives $\hat\nu(s) = e^{-F(xs)}$, hence $\nu = \mu_x$ by
+\ref{prop:laplace-uniqueness}.
 \end{proof}
 
 \bigskip
