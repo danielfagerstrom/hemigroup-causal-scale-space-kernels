@@ -605,20 +605,31 @@ $b_0\delta_0$, which is constant in $s$.
 % to be chosen before the scaling law can be said about it.
 \begin{lemma}[the potential kernel scales]\label{lem:potential-kernel-scaling}
 \uses{lem:potential-kernel}
+\lean{Hemigroup.SelfDecomposableExponent.potential_kernel_scaling}\leanok
 For $x > 0$, $\ell^{(x)}$ is $x$ times the pushforward of $\ell^{(1)}$ under $t \mapsto xt$; in
 density form, $\ell^{(x)}(t) = \ell^{(1)}(t/x)$.
 \statusT\quad\emph{(a comparison of transforms and nothing else:
 $\widehat{\ell^{(x)}}(s) = 1/(sF'(xs)) = x/\varphi_1(xs) = x\,\widehat{\ell^{(1)}}(xs)$, and
-\ref{lem:potential-kernel}'s uniqueness clause does the rest. Split off because it is the one
-clause of 9.4 that presupposes a \emph{named} $\ell^{(x)}$: the Lean statement asserts existence
-and uniqueness, so the object must be chosen before a scaling law can be predicated of it, and
-that choice is a definition this development has not needed for anything else --- \ref{thm:sonine-conservation}
-and \ref{prop:sonine-pair-exists} both quantify over an arbitrary $\ell$ meeting the
-specification.)}
+\ref{lem:potential-kernel}'s uniqueness clause does the rest.
+\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/PotentialScaling.lean}, and \textbf{Lean
+core} --- it does not even reach \ledger{A17}, being about measures meeting a specification rather
+than about the constructed family.
+\textbf{The blocker this node recorded was not one.} It had said the clause presupposes a
+\emph{named} $\ell^{(x)}$, since the existence-and-uniqueness statement means the object must be
+chosen before a scaling law can be predicated of it, and that choice is a definition the
+development has not needed elsewhere. It need not be chosen: the law is stated against \emph{any
+two} measures meeting the specification --- exactly as \ref{thm:sonine-conservation} and
+\ref{prop:sonine-pair-exists} already quantify over their $\ell$, and as chapter~10 quantifies
+over $\nu_1$. The uniqueness half of \ref{lem:potential-kernel} is what makes the hypothesis pin
+the objects down, so quantifying over them loses nothing and introduces no definition without a
+consumer. \emph{A specification is a hypothesis, and a hypothesis can be quantified over}; what
+cannot be is a construction, which is why chapter~9 built one for the tail measure and needs none
+here.)}
 \end{lemma}
 
 \begin{proof}
 \uses{lem:potential-kernel}
+\leanok
 Both measures are causal and locally finite, and their transforms agree on $(0,\infty)$; apply the
 uniqueness clause of \ref{lem:potential-kernel}.
 \end{proof}

@@ -35,6 +35,7 @@ import Hemigroup.MellinEuler
 import Hemigroup.MemoryFractional
 import Hemigroup.MomentRecursion
 import Hemigroup.PhillipsGenerator
+import Hemigroup.PotentialScaling
 import Hemigroup.SignalingForm
 import Hemigroup.StableMoments
 import Hemigroup.MellinVertical

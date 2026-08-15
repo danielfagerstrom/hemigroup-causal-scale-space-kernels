@@ -2525,3 +2525,55 @@ because that is when it is accurate.**
 ## Next
 
 `PLAN`'s *available* row: `lem:potential-kernel-scaling`, plus the two uniqueness halves above.
+
+---
+
+# `lem:potential-kernel-scaling`, proved — and its recorded blocker was not one — 2026-08-15
+
+`Hemigroup/PotentialScaling.lean`. **64 nodes `\leanok`**. **Lean core** — it does not even reach
+A17, being about measures meeting a specification rather than about the constructed family. That
+empties `PLAN`'s original *available, nothing depends on them* row.
+
+## "We would have to name the object first" — three times this week, three times wrong
+
+The node's status line said the clause "presupposes a *named* `ℓ^{(x)}`: the Lean statement asserts
+existence and uniqueness, so the object must be chosen before a scaling law can be predicated of
+it, and that choice is a definition this development has not needed for anything else".
+
+It does not have to be chosen. State the law against **any two** measures meeting the potential-
+kernel specification. That is what `sonine_conservation` and `exists_sonine_pair` already do with
+their `ℓ`, and what chapter 10 does with `ν₁` through `HasLevyTail`. The uniqueness half of
+`lem:potential-kernel` is precisely what makes the hypothesis pin the objects down, so quantifying
+over them loses nothing — and no definition without a consumer gets introduced.
+
+Three instances this week, all of the same shape:
+
+| node | recorded as needing | actually needed |
+|---|---|---|
+| `def:phillips-generator` | a constructed `ν₁` | `HasLevyTail` as a hypothesis |
+| `prop:gamma-density` | the density written out | Mathlib's `gammaMeasure`, named |
+| `lem:potential-kernel-scaling` | a named `ℓ^{(x)}` | the specification, quantified over |
+
+**A specification is a hypothesis, and a hypothesis can be quantified over.** What cannot be is a
+*construction* — which is exactly why chapter 9 built one for the tail measure (`exists_tailMeasure`,
+because `StieltjesFunction` did not apply) and needs none here. The distinction is easy to lose
+because in prose both read as "we need `ℓ^{(x)}`".
+
+## The audit script is now in the gate, after catching me a third time
+
+Writing this node I again put `\leanok` on the statement and not on the proof, and the audit
+script written this morning caught it before the commit. That is three occurrences by one author
+in one day, which retires any argument that care suffices.
+
+`scripts/audit-leanok.py --check` now runs in `scripts/build-blueprint.sh`, next to the
+control-character check and for the same reason: cheap to detect, expensive to notice. Both
+directions are tested — it fails when a proof flag is missing and passes when it is restored. It
+stays local until article-kit's `WISHLIST` entry lands, at which point this can be deleted rather
+than maintained in parallel.
+
+## Next
+
+The two halves split off this week, `prop:volterra-uniqueness` and `prop:gamma-moments`. Each was
+priced in its own annotation at the moment of splitting, which is the practice this file has been
+arguing for: **the estimate is accurate when it is written next to the statement**, and both of
+these should now be checkable against that.

@@ -1065,6 +1065,35 @@ every statement about the constructed family is. `gammaExponent_meanRate` is Lea
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_meanRate
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_lintegral_id_kernel
 
+/-! ### `lem:potential-kernel-scaling` (9.16), proved
+
+`ℓ^{(x)}` is `x` times the dilate of `ℓ^{(1)}`. **Lean core** -- the statement quantifies over
+measures meeting the potential-kernel specification rather than over the constructed family, so it
+does not even reach A17.
+
+**The node's recorded blocker was not one.** Its status line said the clause "presupposes a
+*named* `ℓ^{(x)}`: the Lean statement asserts existence and uniqueness, so the object must be
+chosen before a scaling law can be predicated of it, and that choice is a definition this
+development has not needed for anything else". It does not have to be chosen: state the law
+against *any two* measures meeting the specification, which is what `sonine_conservation` and
+`exists_sonine_pair` already do with their `ℓ`, and what chapter 10 does with `ν₁`. The uniqueness
+half of `lem:potential-kernel` is what makes the hypothesis pin the objects down, so quantifying
+over them loses nothing and introduces no definition without a consumer.
+
+Third time this week that "we would have to name the object first" was avoidable, and the reason
+is the same each time: **a specification is a hypothesis, and a hypothesis can be quantified over.**
+What cannot be is a *construction* -- which is why chapter 9 built one for the tail measure and
+needs none here.
+
+`laplaceL_map_const_mul` is the `ℝ≥0∞` twin of chapter 2's `laplace_map_const_mul`, needed
+separately because the potential kernel is not finite and its transform has no real-valued
+reading.
+-/
+
+#print axioms Hemigroup.laplaceL_map_const_mul
+#print axioms Hemigroup.isCausal_map_const_mul
+#print axioms Hemigroup.SelfDecomposableExponent.potential_kernel_scaling
+
 /-! ### `prop:volterra` (9.8), the identity clause
 
 `t μ_x(dt) = (θ_x ∗ μ_x)(dt)`. **A17 through `kernel`**; the three general lemmas beneath it are

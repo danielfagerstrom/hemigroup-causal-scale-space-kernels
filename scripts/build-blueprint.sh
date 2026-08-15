@@ -48,6 +48,15 @@ if [ "$DO_CHECK" = 1 ]; then
 
   step "linkage check"
   linkage check
+
+  # `linkage check` counts statement-level \leanok only, and leanblueprint colours the graph from
+  # two flags: statement \leanok gives a green border, proof \leanok a green background. A node
+  # with the first and not the second paints as "proof ready, not done" while the check passes.
+  # Six nodes were wrong that way before a reader noticed a blue box; two of the six were
+  # introduced by the author who had just fixed the other four. Local until article-kit's
+  # WISHLIST entry lands.
+  step "leanok statement/proof agreement"
+  python scripts/audit-leanok.py --check
 fi
 
 if [ "$DO_PRINT" = 1 ]; then
