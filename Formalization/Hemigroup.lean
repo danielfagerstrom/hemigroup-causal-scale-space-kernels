@@ -12,6 +12,7 @@ import Hemigroup.Examples
 import Hemigroup.ExponentDerivative
 import Hemigroup.Family
 import Hemigroup.GammaRecursion
+import Hemigroup.GammaKernels
 import Hemigroup.Gauge
 import Hemigroup.Injectivity
 import Hemigroup.Instance

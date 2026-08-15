@@ -1042,6 +1042,29 @@ measures where any finite measure will do, and clause (5) `a.e.` where equality 
 #print axioms Hemigroup.SelfDecomposableExponent.mconv_memoryKernel_eq_setIntegral
 #print axioms Hemigroup.generator_properties
 
+/-! ### `prop:gamma-kernels` (8.9), narrowed and proved
+
+The Gamma family's two transforms and its mean. Split from a node that also asserted the explicit
+density and the higher moments, which cost more; those are now `prop:gamma-density` and
+`prop:gamma-moments`.
+
+**The two families split along different lines, and the asymmetry is the interesting part.**
+`prop:stable-moments` came *off* ledger A7 this week because its mean *diverges* and divergence
+propagates upward: `n = 1` settles every `n`. The Gamma family's mean converges, and convergence
+does **not** propagate downward, so its higher moments genuinely need the criterion (or the
+density). Two nodes of the same shape, one cheap and one not, for a reason visible only once the
+`n = 1` case was proved and asked to carry the rest.
+
+**A17 and nothing else** on the three clauses that mention `T_x` or `μ_{a,b}`, through `kernel`, as
+every statement about the constructed family is. `gammaExponent_meanRate` is Lean core, being about
+`k` alone.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_laplace_kernel
+#print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_laplace_increment
+#print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_meanRate
+#print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_lintegral_id_kernel
+
 /-! ### `prop:stable-moments` (8.10), narrowed and proved
 
 Every moment of the extremal stable delay is infinite. **A17 and nothing else** -- through

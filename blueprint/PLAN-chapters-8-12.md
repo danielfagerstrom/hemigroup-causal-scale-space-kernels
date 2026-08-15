@@ -2412,3 +2412,51 @@ together.
 
 `PLAN`'s *available, nothing depends on them* row, down to three: `prop:gamma-kernels`,
 `prop:volterra`, `lem:potential-kernel-scaling`.
+
+---
+
+# `prop:gamma-kernels`, narrowed and proved — and the two example families split differently — 2026-08-15
+
+`Hemigroup/GammaKernels.lean`. **61 nodes `\leanok`**, 86 statement nodes (the node split into
+three). A17 through `kernel`, as every statement about the constructed family is;
+`gammaExponent_meanRate` alone is Lean core. Trust boundary unchanged.
+
+## Three clauses proved, two separated, and the separation is the finding
+
+The node asserted four things at three prices: the kernel and increment transforms (one
+computation), the explicit density `φ_x` (Laplace inversion), the mean (`prop:moments`), all
+moments finite and the variance (ledger **A7**). Its own annotation from 2026-08-11 already said
+"a node reporting the maximum cost of its clauses misreports its cheap ones" — and then reported
+A7 for three clauses that do not incur it. Second time this chapter has had to split the same node
+for the same reason.
+
+Now: `prop:gamma-kernels` is the two transforms and the mean, proved; `prop:gamma-density` is the
+density and the Sato reading; `prop:gamma-moments` is the higher moments and the variance, on A7.
+
+## Why this family kept A7 and the stable family shed it
+
+Worth recording as a pair, because the two nodes had the same shape and came apart differently.
+
+* **`prop:stable-moments`** (yesterday): the mean **diverges**, and divergence propagates upward —
+  `t ≤ 1 + tⁿ` gives `E T ≤ 1 + E Tⁿ`, so `E T = ∞` forces every `E Tⁿ = ∞`. The `n = 1` case,
+  which `prop:moments` supplies free, settles every `n`, and A7 came off the node.
+* **`prop:gamma-kernels`** (today): the mean **converges**, and convergence does *not* propagate
+  downward. `E T < ∞` says nothing about `E T²`. So the higher moments genuinely need the
+  criterion — or the density, which is the other route and is what `prop:gamma-density` would
+  supply.
+
+**The asymmetry is in the direction of the implication, not in the difficulty of the families.**
+It is invisible until the `n = 1` case exists and is asked to carry the rest, which is why both
+nodes carried A7 for a week: the Phase-0 split that isolated the mean was made for a different
+reason (to keep `prop:moments` off the ledger) and nobody went back to ask which consumers it
+newly made cheap. One did; one did not.
+
+`prop:gamma-moments`'s annotation records the escape route, so the next reader does not treat A7 as
+forced: with the density in hand the moments are a Gamma computation. Whichever of the two nodes is
+done first makes the other cheap.
+
+## Next
+
+`PLAN`'s *available, nothing depends on them* row, down to two: `prop:volterra`,
+`lem:potential-kernel-scaling`. Then the newly-created `prop:gamma-density`, which is the cheaper
+of the two ways to retire `prop:gamma-moments`'s ledger entry.

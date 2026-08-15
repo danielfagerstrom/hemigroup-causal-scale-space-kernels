@@ -307,34 +307,79 @@ $k(t)/2$, and on $(1,\infty)$ it is at least $k(t)/(2t)$; both claims follow.
 
 % additive: not in the draft. The clauses split out of Example 8.2 on 2026-08-11, when the
 % exponent was proved and these were not. Numbered 8.9, a number the draft does not use.
-\begin{proposition}[the Gamma family: kernels, moments, and the Sato reading]\label{prop:gamma-kernels}
-\uses{prop:gamma-family,thm:main-characterization,rem:sato-reading,prop:moment-criterion}
-With $F$ as in \ref{prop:gamma-family}, the kernels are
+\begin{proposition}[the Gamma family: the transforms and the mean]\label{prop:gamma-kernels}
+\uses{prop:gamma-family,thm:main-characterization,prop:moments}
+\lean{Hemigroup.SelfDecomposableExponent.gammaExponent_laplace_kernel}\leanok
+With $F$ as in \ref{prop:gamma-family}, the kernels and the increment measures have transforms
 \[
   e^{-F(xs)} = (1 + x s)^{-\gamma}, \qquad
-  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
+  e^{-g_{a,b}(s)} = \Bigl(\tfrac{1 + as}{1 + bs}\Bigr)^{\gamma},
 \]
-the Gamma density of fixed shape $\gamma$ and scale $x$. All moments are finite, with
-$\Ex\,T_x = \gamma x$ and $\operatorname{Var} T_x = \gamma x^2$. The increment measures
-$\mu_{a,b}$ have Laplace transform $\bigl(\tfrac{1 + as}{1 + bs}\bigr)^{\gamma}$ and are the
-increments of the Gamma-type Sato subordinator.
+and the mean delay is $\Ex\,T_x = \gamma x$.
 \statusT\quad\emph{(split from \ref{prop:gamma-family} because the costs differ and a node
-reporting the maximum cost of its clauses misreports its cheap ones. The exponent is an
-antiderivative computation and is proved; identifying $\phi_x$ requires inverting
-$(1+xs)^{-\gamma}$, which in this development means computing the Gamma density's transform and
-appealing to \ref{prop:laplace-uniqueness-causal} --- available, but a separate piece of work ---
-and the moment clause runs through \ref{prop:moment-criterion} and so through \ledger{A7}.
-The mean and variance are the only clauses here that are elementary: $\Ex\,T_x = \gamma x$ is
-\ref{prop:moments} applied to $\int_0^\infty \gamma e^{-t}dt = \gamma$.)}
+reporting the maximum cost of its clauses misreports its cheap ones; split again on 2026-08-15 for
+the same reason, the density and the higher moments leaving as \ref{prop:gamma-density} and
+\ref{prop:gamma-moments}. \textbf{Proved in Lean} (2026-08-15),
+\texttt{Hemigroup/GammaKernels.lean}, on \ledger{A17} alone --- through the constructed family, as
+every statement about $T_x$ and $\mu_{a,b}$ is. All three clauses are one computation from the
+exponent $\gamma\log(1+s)$; the mean is \ref{prop:moments} applied to
+$\int_0^\infty \gamma e^{-t}dt = \gamma$, and that step is Lean core.
+\textbf{Note the contrast with \ref{prop:stable-moments}}, which came \emph{off} \ledger{A7} this
+week. There the mean diverges, and divergence propagates upward, so the $n = 1$ case settles every
+$n$. Here the mean converges, and convergence does not propagate downward --- so the Gamma family's
+higher moments genuinely need the criterion. Two nodes of the same shape splitting along different
+lines, for a reason that became visible only once $n = 1$ was proved and asked to carry the rest.)}
 \end{proposition}
 
 \begin{proof}
-$e^{-F(xs)} = (1+xs)^{-\gamma}$ by \ref{prop:gamma-family}, and this is the Laplace transform of
-the stated Gamma density, so \ref{prop:laplace-uniqueness-causal} identifies $\phi_x$. The
-moments are those of a Gamma law, and all are finite because
-$\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$ (\ref{prop:moment-criterion}). The
-increment transform is the ratio $e^{-F(bs)}/e^{-F(as)}$, and \ref{rem:sato-reading} identifies
-the family as the marginals of a Sato subordinator.
+\leanok
+$F(s) = \gamma\log(1+s)$ by \ref{prop:gamma-family}, so $e^{-F(xs)} = (1+xs)^{-\gamma}$; and
+$g_{a,b} = F(b\cdot) - F(a\cdot)$, so the increment transform is the ratio
+$e^{-F(bs)}/e^{-F(as)}$, which is the stated one. For the mean, \ref{prop:moments} gives
+$\Ex\,T_x = x\bigl(b_0 + \int_0^\infty k\bigr)$ with $b_0 = 0$ and $k(t) = \gamma e^{-t}$, whose
+integral is $\gamma$.
+\end{proof}
+
+% additive: the density half of the former Proposition 8.9, separated on 2026-08-15. Numbered 8.9a
+% in the working record; the printed numbering follows the shared counter.
+\begin{proposition}[the Gamma family: the kernel density and the Sato reading]\label{prop:gamma-density}
+\uses{prop:gamma-kernels,prop:laplace-uniqueness-causal,rem:sato-reading}
+With $F$ as in \ref{prop:gamma-family},
+\[
+  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
+\]
+the Gamma density of fixed shape $\gamma$ and scale $x$; and the increment measures $\mu_{a,b}$
+are the increments of the Gamma-type Sato subordinator.
+\statusT\quad\emph{(inverting $(1+xs)^{-\gamma}$ means computing the Gamma density's transform and
+appealing to \ref{prop:laplace-uniqueness-causal} --- available, and a separate piece of work. The
+Sato identification is \ref{rem:sato-reading} read at this family, and travels with the density
+because both say what the laws \emph{are} rather than what their transforms are.)}
+\end{proposition}
+
+\begin{proof}
+$(1+xs)^{-\gamma}$ is the Laplace transform of the stated Gamma density, so
+\ref{prop:laplace-uniqueness-causal} identifies $\phi_x$; and \ref{rem:sato-reading} identifies the
+family as the marginals of a Sato subordinator.
+\end{proof}
+
+% additive: the higher-moment half of the former Proposition 8.9, separated on 2026-08-15 when the
+% mean was proved and the rest was not.
+\begin{proposition}[the Gamma family: the higher moments]\label{prop:gamma-moments}
+\uses{prop:gamma-family,prop:moment-criterion}
+With $F$ as in \ref{prop:gamma-family}, every moment of $T_x$ is finite, and
+$\operatorname{Var} T_x = \gamma x^2$.
+\statusT\quad\emph{(\ledger{A7} through \ref{prop:moment-criterion}, and unavoidably so on this
+route: the mean, which \ref{prop:gamma-kernels} now proves, does not imply the higher moments,
+because convergence does not propagate downward the way divergence propagates upward --- see that
+node's annotation. The alternative route is through \ref{prop:gamma-density}: with the density in
+hand the moments are a Gamma computation and the ledger entry is not needed. Whichever is done
+first makes the other cheap.)}
+\end{proposition}
+
+\begin{proof}
+The moments are those of a Gamma law, and all are finite because
+$\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$ (\ref{prop:moment-criterion}); the variance
+is the Gamma law's, $\gamma x^2$.
 \end{proof}
 
 % additive: not in the draft. The clauses split out of Example 8.1 on 2026-08-11, when the
