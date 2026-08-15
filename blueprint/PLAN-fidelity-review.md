@@ -4,6 +4,9 @@
 `REVIEW-fidelity.md`; this file is the plan they followed. Short answer: yes — no proved conjunct
 is vacuous, junk-valued or weaker than the article's proof; eleven statement-tightenings and two
 article-side corrections were landed on the way (commits `65505a5` … `0bee0a6` and after).
+The method is packaged for other articles as article-kit's `fidelity-review` skill
+(`article-kit/.claude/skills/fidelity-review/`, from `4ab8e7c`): this plan, generalised, plus
+the card and review templates, the six agent prompts, and the F7 sweep script.
 
 Written 2026-08-15, at the point where the formalisation is closed to what Mathlib allows.
 Companion to `PLAN-chapters-8-12.md` (what is proved and why the rest is not) and

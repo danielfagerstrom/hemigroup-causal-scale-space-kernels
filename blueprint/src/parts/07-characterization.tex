@@ -194,7 +194,13 @@ i.e.\ the kernels are exactly the extremal stable densities of
 pure delay $\mu_{0,x} = \delta_x$.
 \statusT\quad\emph{(\textbf{Machine-checked}, \texttt{\#print axioms} reducing to Lean core: the
 corollary spends no ledger entry, every input being chapters 4--6 or
-\ref{thm:increments-bernstein}. Two things the formalisation says that the proof below does not.
+\ref{thm:increments-bernstein}. The normalization $g_{0,1}(1) = 1$ is a \emph{hypothesis} of the
+Lean statement (\texttt{hnorm : Fam.G 1 1 = 1}), not a reparametrisation performed --- rescaling
+the scale axis achieves it and is a sentence in prose; and it does not compete with
+\ref{thm:main-characterization}'s $\chi(1) = 1$: since $g_{0,1}(s) = F(\chi(1)s)$, the two
+normalizations are one, and the one-parameter hypothesis is on the family \emph{as given}, where
+$G(x,s) = x\,s^\alpha$ and the canonical gauge is $\chi(x) = x^{1/\alpha}$ (fidelity review R7).
+Two things the formalisation says that the proof below does not.
 \textbf{The multiplier of the action \emph{is} $F$.} The proof introduces $c$ with
 $\Sact_\sigma x = c(\sigma)x$ and $c(\sigma)g(s) = g(\sigma s)$, and treats them as two unknown
 functions until Cauchy identifies both. Under the stated normalization they are the same function:
