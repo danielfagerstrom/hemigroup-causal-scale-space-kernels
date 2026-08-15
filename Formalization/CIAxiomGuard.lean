@@ -1305,7 +1305,11 @@ to exclude exactly the case the proposition's second clause exists to describe.
 Not blueprint nodes. `Hemigroup/Witnesses.lean` shows the hypotheses of the headline theorems are
 jointly satisfiable at concrete models (pure drift, Gamma, stable); the lines below record what
 those witnesses themselves rest on. Everything quantifying over the constructed kernels picks up
-A17 through `kernel`; the signal (`signal_hypotheses`) is Lean core.
+A17 through `kernel`; the signal (`signal_hypotheses`) is Lean core. So is
+`witness_main_characterization_delayCore` (R14): the pure-delay core `Φ_{x,y} = τ_{y-x}` witnesses
+`main_characterization`'s (⇒) hypotheses without going through `kernel` at all, so it prints Lean
+core alone — the hypothesis class is nonempty independently of the construction that proves the
+theorem, not merely because the construction happens to populate it.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.signal_hypotheses
@@ -1325,8 +1329,9 @@ A17 through `kernel`; the signal (`signal_hypotheses`) is Lean core.
 #print axioms Hemigroup.SelfDecomposableExponent.witness_local_polynomial_symbol_gamma
 #print axioms Hemigroup.SelfDecomposableExponent.witness_hF_stable
 #print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_stable
+#print axioms Hemigroup.witness_main_characterization_delayCore
 
-/-! ### Fidelity review (P2–P4)
+/-! ### Fidelity review (P2–P5)
 
 The lines the P2 fixes of `PLAN-fidelity-review.md` added. Each is a statement-tightening: the
 theorem was already proved and already the article's; what changed is that the Lean statement now
@@ -1387,3 +1392,13 @@ measures is causal, the right by construction), so restricting to `[0,∞)`, whe
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.sonine_conservation'
+
+/-! **R18** — the converse of `covariance_laplace`. `isScaleCovariant_of_repr_map` takes the
+`S`-shape fields of `IsScaleCovariant` together with the measure identity
+`(Fam.repr x y).map (σ ·) = Fam.repr (S σ x) (S σ y)` and derives (A8), completing Lemma 6.1's
+"is equivalent to" as a Lean lemma under its own name (previously only exercised inline at
+`Instance.lean:221–225`). Lean core: it is a rewrite through `Phi_eq_mconvL1_repr`,
+`dilL1_comp_mconvL1` and `mconvL1_congr`, none of which touches a kernel.
+-/
+
+#print axioms Hemigroup.CascadeCore.isScaleCovariant_of_repr_map

@@ -28,17 +28,21 @@ recorded, faithful choice worth a sentence in the text of record).
 | R11 | F3 | note-only | `signaling_form` (2c) | Article: "with `û(s,0+) = f̂(s)`". Lean has `û(s,x) = f̂(s) H(sx)` for `x > 0` and (2b) `Φ_{0,x} f → f` in `X`; the scalar limit follows (`H(sx) → H(0) = 1`, `profile` continuous) but is not a conjunct. | **resolved (P2)** — `tendsto_laplaceFun_delayedField` (`SignalingForm.lean`), conjunct of (2c) |
 | R12 | F5 | note-only | `IsLocalOfOrder c n`, `SatisfiesPMP c` carry the height `c` | Def. 12.1 is stated `c`-free ("the inversion operator `A`"); Def. 11.3 fixes `c`. Lean is honest that `A = A_c`; no independence-of-`c` is claimed anywhere (article or Lean). Blind restatement C flagged three inequivalent readings (fixed / ∀ / ∃ `c`); Lean's is "fixed `c`, hypothesis on every theorem", the article's Def. 11.3 reading. | none; blueprint already carries `c` |
 | R13 | F3 | statement-tightening | `main_analysis` (⇒) | `χ 1 = 1` is not concluded, though true of `gauge S` (`gauge_orbit`, `S_one`); without it the (⇒) conjuncts pin `χ` only up to a positive scalar and the uniqueness clause's `χ(1) = 1` is not reachable from them. Vacuity pass, Theorem 2′. | **resolved (P2)** — `gauge_one` (`Gauge.lean`), exported by `similarity_form`, `main_analysis`, `main_analysis'` |
-| R14 | robustness | note-only | witnesses of (⇒)'s hypotheses | Every Lean witness of a `CascadeCore` + `IsScaleCovariant` passes through `kernel`, hence A17; a pure-delay core `Φ x y := transL1 (y − x)`, `S σ x = σx`, would certify nonemptiness of the hypothesis class in Lean core. Vacuity pass, Theorem 2′. | optional (P5) |
+| R14 | robustness | note-only | witnesses of (⇒)'s hypotheses | Every Lean witness of a `CascadeCore` + `IsScaleCovariant` passes through `kernel`, hence A17; a pure-delay core `Φ x y := transL1 (y − x)`, `S σ x = σx`, would certify nonemptiness of the hypothesis class in Lean core. Vacuity pass, Theorem 2′. | **resolved (P5)** — `delayCore` (`Φ x y = transL1 (y − x)`) with `witness_main_characterization_delayCore : IsScaleCovariant delayCore (Ioi 0) (σ·)`, Lean core: the (⇒) hypothesis class is nonempty independently of A17 |
 | R15 | F3 | statement-tightening | `signaling_form` (2) | The theorem's "`u`" is two objects: (2a),(2c),(2d) are about `delayedField f`, (2b) about a free `q : X`; that `delayedField f · x` **is** `Φ_{0,x} f` (`coeFn_Phi_zero`, `MemoryFractional.lean:539`) and that `delayedField g` is its `X₀`-derivative (`delayedField_eq_setIntegral`, `:633`) are proved lemmas, not conjuncts — inside the theorem "`∂_t u`" is a comment. Vacuity pass, Theorem 4′. | **resolved (P2)** — conjuncts `Φ 0 x (toL1 f) =ᵐ delayedField f · x` (`coeFn_Phi_zero`) and `delayedField f t x = ∫_{Ioc 0 t} delayedField g` (`delayedField_eq_setIntegral'`, all `t`) |
 | R16 | F3 | note-only | `signaling_form` (2d) | Lemma 11.5's "absolutely convergent" has no Lean clause: the two `mellin`s in (2d) are convergent inside the proof (`integrable_delayed`, `integrableOn_pastIntegrand_of_bounded`) but not asserted, so the honest form would carry `MellinConvergent` conjuncts. Not junk-true (both sides equal `H̃(z)(I^{z−1}f)(t) ≠ 0` generically). | **resolved (P2)** — `mellinConvergent_delayedField_pair`, conjunct of (2d) |
 | R17 | F6 | note-only | A18 anchor (`AXIOMS.md`) | Independent as Lean axioms, A17 and A18 are entangled as *anchors*: reading A18's hypothesis as SSV Def. 5.14 passes through Thm 5.2's converse, which is A17's anchor. Not a strengthening (SSV's own proof does the same). | **resolved (P3)** — cross-reference paragraph added to A18's entry |
-| R18 | F3 | note-only | `covariance_laplace` (`Covariance.lean:195`) vs Lemma 6.1 "is equivalent to" | Only (A8) ⇒ identities is under the tagged name; the converse is `dilL1_comp_mconvL1` + `mconvL1_congr`, used in `Instance.lean:221–225`. Elementary, available, not packaged. | open, optional: a converse lemma for literal iff-fidelity |
+| R18 | F3 | note-only | `covariance_laplace` (`Covariance.lean:195`) vs Lemma 6.1 "is equivalent to" | Only (A8) ⇒ identities is under the tagged name; the converse is `dilL1_comp_mconvL1` + `mconvL1_congr`, used in `Instance.lean:221–225`. Elementary, available, not packaged. | **resolved (P5)** — `isScaleCovariant_of_repr_map` (`Covariance.lean`), Lean core; annotation names both directions |
 | R19 | cosmetic | note-only | `Covariance.lean` module docstring | Said clause (3) of `lem:action-rigidity` and `prop:canonical-gauge` were in `Skeleton/`; both proved. | **resolved (P3)** — docstring fixed |
 | R20 | F8 | note-only | `lem:potential-kernel` annotation (`09-memory-kernels.tex`) | Said "Stated in Lean and decomposed, as `Skeleton.existsUnique_potentialKernel`… two sub-lemmas open"; the tag already pointed at the proved `Hemigroup` declaration. | **resolved (P4)** — annotation rewritten |
 | R21 | F3 | note-only | `lem:potential-kernel` / `existsUnique_potentialKernel` | "`φ_x` is a nonzero Bernstein function, positive on `(0,∞)`" is not a conjunct of the `∃!`; carried by `exists_levyTriple_symbol`, `exists_subordinatorFamily`, `symbol_pos`. | **resolved (P4)** — said in the annotation |
 | R22 | F3 | note-only | `lem:memory-kernel` first display | `∂_x F(xs) = sF'(xs)` has no standalone declaration; `symbol` defines the right side, chain rule inline where used. | accepted (note) |
 | R23 | F3 | statement-tightening, trivial | `sonine_conservation` (`Sonine.lean:65`) | Restricted to `Ici 0` on both sides; unrestricted equality follows from causality of both factors. | **resolved (P4)** — `sonine_conservation'` |
 | R5 | — | — | (update) | Checked in P4: no realness lemma for `A` on real test functions exists; the `Re` reading of `SatisfiesPMP` is a documented deliberate weakening. | **accepted with note** (T2.3f) |
+| R24 | tag | note-only | `prop:gamma-kernels` `\lean` tag | Named only `gammaExponent_laplace_kernel`; the node's other two clauses are `gammaExponent_laplace_increment`, `gammaExponent_lintegral_id_kernel` (proved, guarded). | **resolved (P5)** — tag lists all three |
+| R25 | F3 | note-only | `lem:transform-tightness` second sentence | "a family with `sup(1 − μ̂_n(s)) → 0` is tight" exists only specialised to the constructed kernels (`exists_kernel_tail_le`, `isTightMeasureSet_kernel`). | accepted (note) |
+| R26 | F7 | note-only | downstream `\uses{prop:laplace-uniqueness}` | Several `\leanok` nodes cited the `[A]` parent where the Lean invokes a `[T]` refinement directly. | **resolved (P5)** — Sonine, Volterra → `-sigma-finite`, Volterra uniqueness → `-causal`; others kept with reasons (`mconvL1_injective`, no uniqueness used, or node unproved) |
+| R27 | F8 | note-only | draft Thm 11.6(2); blueprint `ex:gamma-signaling` | Draft lacked the P2 "both transforms absolutely convergent" clause; blueprint example dropped `∂_t u = −x⁻¹θw = −∂_x w`. | **resolved (P5)** — both edited |
 
 Ledger entries are added as cards are written; a resolved entry keeps its row with the commit.
 
@@ -62,8 +66,13 @@ finding anywhere in Tier 1. P4 done — see below.
 chapter 12 (eight) — every statement faithful; the one blind-restatement risk that mattered
 (Lemma 10.3(1) as a norm bound only) does not arise, `Integrable` being an explicit conjunct.
 Four note-only findings (R20–R23), two fixed in the text of record, one by a two-line Lean
-strengthening; R5 accepted with note. Next: P5 (Tier 3, the F7 sweep, the draft↔blueprint
-diff), then P6.
+strengthening; R5 accepted with note. P5 done — see below.
+
+**State after P5 (2026-08-15).** Tier 3 complete (sixteen cards, all faithful); the F7 sweep
+finds no proof-route divergence beyond the two deliberate patterns (setting citations,
+specification instead of citation) plus the recorded `[A]`-parent/`[T]`-refinement pattern, three
+`\uses` edges retargeted (R26); the F8 sweep finds the draft and the blueprint aligned in every
+chapter after two small edits (R27). Findings R24–R27 added. Next: P6, closing the ledger.
 
 ---
 
@@ -888,6 +897,84 @@ conclusion the pure-power / shifted-Gamma dichotomy on `Ioi 0`; guard prints A17
 **T2.3h `thm:locality` (Thm 12.5).** No `\lean` tag (`[A]` on A14; A13 transitively; A15
 discharged; A16 belongs to `prop:local-ladder`). Machine-checked beneath it: the four `[T]`
 nodes above. **faithful as an `[A]` collation.**
+
+## Tier 3 and the sweeps (P5)
+
+### T3.1 Chapter 8 — examples and moments (nine cards, abbreviated)
+
+`prop:admissibility-criterion` · `levyExponentD_ne_top_of_integrableOn` (`Examples.lean:99`):
+`k ≥ 0` on `Ioi 0`, `∫⁻_{Ioc 0 1} k ≠ ⊤`, `∫⁻_{Ioi 1} k/t ≠ ⊤` ⇒ `levyExponentD b₀ k s ≠ ⊤`;
+monotonicity of `k` is *not* needed (hypothesis weaker than stated — harmless). **faithful.**
+`lem:criterion-converse` · `integrableOn_of_ne_top` (`ExponentDerivative.lean:184`): both
+integrals finite for any `SelfDecomposableExponent`, spending only `ne_top 1`. **faithful.**
+`prop:stable-family` · `stableExponent_toRealExponent`: `F(s) = s^α`, `Γ(1−α) > 0` guards the
+division, `rpow` on `t > 0`. **faithful.** `prop:gamma-family` · `gammaExponent_toRealExponent`:
+`γ log(1+s)`. **faithful.** `prop:gamma-kernels`: three clauses proved by three declarations
+(`gammaExponent_laplace_kernel`, `_laplace_increment`, `_lintegral_id_kernel`) but the tag named
+only the first — **R24, fixed** (tag now lists all three; the guard already printed them).
+`prop:gamma-density` · `gammaExponent_kernel_eq_gammaMeasure`: `kernel 0 x = gammaMeasure γ x⁻¹`
+as measures. **faithful.** `prop:gamma-moments` · `gammaExponent_moments`: `Integrable (t^n)` for
+all `n` and `variance = γx²`, off A7. **faithful.** `prop:stable-moments` ·
+`stableExponent_lintegral_pow_kernel`: `∫⁻ t^n = ⊤` (lintegral, not a junk Bochner `0`).
+**faithful.** `prop:moments` · `moments` (`MeanDelay.lean:313`): `∫⁻ t ∂kernel 0 x = ofReal x ·
+meanRate ∧ (meanRate ≠ ⊤ ↔ IntegrableOn k (Ioi 1))`, `meanRate : ℝ≥0∞`, no finiteness hypothesis;
+higher moments correctly absent (split to `prop:moment-criterion`, A7); linearity of the
+influence curve independent (`lintegral_id_kernel_zero`). **faithful.**
+
+### T3.2 Chapter 2 — the Laplace refinements (seven cards, abbreviated)
+
+`def:levy-exponent`, `lem:vanishing` (`levyExponent_eq_zero_of_eq_zero`: needs `IsCausal ν`,
+implicit in the article's `BF₀`) — **faithful.** `prop:laplace-uniqueness-causal` ·
+`laplace_injective`: finite causal measures, transforms equal on all `s ≥ 0` — the case the
+article's proofs use; consumers cite it (`prop:gamma-density`, `prop:volterra-uniqueness`).
+`prop:laplace-uniqueness-sigma-finite` · `laplaceL_injective_of_ne_top`: no finiteness on the
+measures, `laplaceL` finite at one `s₀` and equal for `s ≥ s₀`; `lem:laplace-local-finiteness`
+makes local finiteness a *conclusion*. `prop:laplace-continuity-causal` ·
+`tendsto_integral_of_tendsto_laplace`: probability causal measures, tightness as a hypothesis,
+conclusion = convergence against every bounded continuous `f` (weak convergence exactly).
+`lem:transform-tightness` · `measureReal_Ioi_mul_le`: the Markov bound as displayed; the
+"consequently, a family with `sup(1 − μ̂_n(s)) → 0` is tight" sentence exists only in the
+specialised form for the constructed kernels (`exists_kernel_tail_le`, `isTightMeasureSet_kernel`)
+— **R25**, note-only. All **faithful.**
+
+### F7 sweep — proof routes (scripted, `scratchpad/f7sweep.py`)
+
+For each of the 66 `\leanok` nodes: the `\uses` ingredients (statement and proof) versus the
+transitive imports of the Lean file that proves it. Every "used but not imported" edge is one of
+two deliberate patterns, and there is no third kind:
+1. **Setting citations.** Nodes about the constructed family cite `thm:main-characterization`
+   (`cor:semigroup-case`, `lem:admissible-cone`, `prop:moments`, `prop:gamma-kernels`,
+   `prop:volterra`, `def:standing-hypothesis`, `lem:mellin-data`,
+   `lem:memory-fractional-integrals`, `thm:signaling-form`); the Lean imports
+   `Construction`/`Instance` (the (⇐) half it needs), not the bundle file. Content-correct.
+2. **Specification instead of citation.** The Lean states a hypothesis abstractly where the text
+   cites the node that supplies it: `thm:sonine-conservation` and `lem:potential-kernel-scaling`
+   over any `ℓ` meeting the spec (not importing `PotentialKernel`); `lem:pmp-verification` over
+   the symbol equality (not `ProfileEuler`); `lem:gamma-recursion-uniqueness` over log-convexity
+   (not `Locality`); `lem:memory-fractional-integrals` over `𝒟`'s six clauses (not `DelayCore` —
+   which is why `memCore_iff_signaling_hypotheses` exists); `prop:main-uniqueness` uses the
+   exponent-level `exponent_strictMono` rather than the family-level Cor. 5.3.
+And every "uses an `[A]`/untagged node" edge is the recorded pattern: the text's proof cites the
+parent (`prop:bernstein-toolbox`, `prop:laplace-uniqueness`, `lem:selfdecomposable-exponents`,
+`def:bernstein-function`) while the Lean uses the `[T]` refinement or the `LE` vocabulary; README
+and the node annotations say so. **R26**: where a `\leanok` node's Lean proof invokes a
+refinement directly, the `\uses` edge now points at it (Sonine, Volterra → `-sigma-finite`;
+Volterra uniqueness → `-causal`); where the Lean uses `mconvL1_injective` or no uniqueness at all,
+or the node is unproved, the parent edge is kept, with the reason recorded.
+
+### F8 sweep — draft ↔ blueprint statements (six chapter passes)
+
+Chapters 3, 5, 6, 8, 9, 10, 12: **no differences.** Every split of a draft item into several
+nodes was checked to add up to the draft's statement, and every additive node is self-declared
+(`% additive: not in the draft`) with its origin. Chapter 2: the `[A]` toolbox node states more
+than the draft's Prop. 2.3 (general-measure Bernstein–Widder with uniqueness; the three-way CM
+equivalence) — self-acknowledged, blueprint stronger, needed by the ledger anchors. Chapter 4:
+none. Chapter 7: `rem:extreme-rays` drops the draft's cross-reference to "the third open problem
+of §15" (the blueprint carries no §15) — scholarly, not mathematical. Chapter 11: the blueprint's
+`thm:signaling-form`(2) carried "both transforms absolutely convergent" (P2) that the draft did
+not — **fixed** in the draft; `ex:gamma-signaling` had dropped the closing identity `∂_t u =
+−x⁻¹θw = −∂_x w` — **restored** in the blueprint (and the draft's garbled `· 1/1` artefact
+cleaned). Def. 12.1 / Lemma 11.4 / Thm 11.6(2) re-verified after `10551df`: aligned.
 
 ## Witnesses (P1) — `Formalization/Hemigroup/Witnesses.lean`
 

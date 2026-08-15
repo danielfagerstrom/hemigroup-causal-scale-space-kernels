@@ -547,6 +547,9 @@ $w := (\theta + \gamma - 1)^{-1} u$ solves $x\,w_x + (\gamma-1)w = u$, with the 
 solution
 \[
   w(t, x) = x^{-(\gamma-1)}\int_0^x y^{\gamma - 2}\, u(t, y)\,dy,
+  \qquad
+  \partial_t u \;=\; -\tfrac{1}{x}\,\theta\, w \;=\; -\,\partial_x w
+  \quad\text{(one scale-Volterra step)},
 \]
 so the time evolution at scale $x$ is computed from the field at \emph{finer} scales by a
 single weighted average --- scale-recursive, one-sided from the boundary, matching the causal

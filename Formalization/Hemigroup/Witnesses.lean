@@ -69,6 +69,19 @@ hypothesis) and at Gamma (`γ > 1`, `c = (γ-1)/2`).
 
 The *conclusions* of the targets at the models — e.g. that `main_analysis` returns `χ = id` at
 drift — are not checked; that is the business of the fidelity cards, not of a witness file.
+
+## R14: a Lean-core witness
+
+Every model above passes through `kernel`, so every witness of `main_characterization`'s (⇒)
+hypotheses so far is A17-dependent however elementary the model — `driftExponent` included, since
+`witness_main_characterization_covariant` is stated at `(F.cascadeFamily hF).toCascadeCore`, and
+`cascadeFamily` is built on `kernel`. `delayCore`, below, is a second, independent witness that
+does not: `Φ_{x,y} = τ_{y-x}` is literal translation by the increment, and its `CascadeCore` and
+`IsScaleCovariant` fields are all facts about `transL1`/`dilL1` (chapter 4's isometries), so
+`witness_main_characterization_delayCore` prints Lean core alone. That the hypothesis class is
+nonempty independently of the construction that proves the theorem is the fact the P1 vacuity
+pass exists to check; the drift/Gamma/stable models check it only up to A17, and `delayCore`
+closes that gap.
 -/
 
 namespace Hemigroup
@@ -76,6 +89,159 @@ namespace Hemigroup
 open MeasureTheory Set Filter
 
 open scoped Topology ENNReal
+
+/-! ## The pure-delay core (R14)
+
+Built to witness that the (⇒) hypotheses of `main_characterization` — a `CascadeCore` together
+with `IsScaleCovariant` at the multiplicative action — are satisfiable at a model resting on
+nothing beyond Lean core: no kernel, hence no ledger axiom A17. Everything below rests on facts
+about `transL1`/`dilL1` already proved for chapter 4's Wendel argument (`Symmetries.lean`,
+`Representation.lean`); `transL1_add` (composition) and `dilL1_comp_transL1` (the
+dilation/translation intertwining) are the two the development did not already need and this
+file does.
+-/
+
+/-- **Translations compose additively.** `τ_a ∘ τ_b = τ_{a+b}`, the one composition fact about
+`transL1` chapter 4's Wendel argument did not need. -/
+theorem transL1_add (a b : ℝ) (f : X) : transL1 a (transL1 b f) = transL1 (a + b) f := by
+  refine Lp.ext ?_
+  have ha : (transL1 a (transL1 b f) : ℝ → ℝ) =ᵐ[volume] fun t => (transL1 b f : ℝ → ℝ) (t - a) :=
+    coeFn_transL1 a (transL1 b f)
+  have hpull : (fun t : ℝ => (transL1 b f : ℝ → ℝ) (t - a))
+      =ᵐ[volume] fun t => (f : ℝ → ℝ) (t - a - b) :=
+    (measurePreserving_sub_const a).quasiMeasurePreserving.ae (coeFn_transL1 b f)
+  have heq : (fun t : ℝ => (f : ℝ → ℝ) (t - a - b)) = fun t => (f : ℝ → ℝ) (t - (a + b)) := by
+    funext t; rw [sub_sub]
+  rw [heq] at hpull
+  exact (ha.trans hpull).trans (coeFn_transL1 (a + b) f).symm
+
+/-- **(A2) for `delayCore`.** Translation commutes with translation. -/
+theorem delayCore_translation (x y a : ℝ) (f : X) :
+    transL1 (y - x) (transL1 a f) = transL1 a (transL1 (y - x) f) := by
+  rw [transL1_add, transL1_add, add_comm]
+
+/-- **(A3) for `delayCore`.** Translating forward by `r ≥ 0` cannot move mass earlier than `t₀`:
+if `f` vanishes before `t₀`, its translate does too (in fact before `t₀ + r`, but the weaker
+statement is all (A3) asks). -/
+theorem vanishesBefore_transL1 {r : ℝ} (hr : 0 ≤ r) {t₀ : ℝ} {f : X}
+    (hf : VanishesBefore t₀ f) : VanishesBefore t₀ (transL1 r f) := by
+  have hpull : ∀ᵐ t : ℝ, t - r < t₀ → (f : ℝ → ℝ) (t - r) = 0 :=
+    (measurePreserving_sub_const r).quasiMeasurePreserving.ae hf
+  filter_upwards [coeFn_transL1 r f, hpull] with t ht hsub htlt
+  rw [ht]
+  exact hsub (by linarith)
+
+/-- **(A4) for `delayCore`.** Translation preserves the positive cone. -/
+theorem isNonneg_transL1 (r : ℝ) {f : X} (hf : IsNonneg f) : IsNonneg (transL1 r f) := by
+  have hpull : 0 ≤ᵐ[volume] fun t => (f : ℝ → ℝ) (t - r) :=
+    (measurePreserving_sub_const r).quasiMeasurePreserving.ae hf
+  filter_upwards [coeFn_transL1 r f, hpull] with t ht h0
+  rw [Pi.zero_apply, ht]
+  exact h0
+
+/-- **(A5) for `delayCore`.** Translation preserves the integral — Lebesgue measure is
+translation invariant. -/
+theorem integral_transL1 (r : ℝ) (f : X) :
+    ∫ t, ((transL1 r f : X) : ℝ → ℝ) t = ∫ t, (f : ℝ → ℝ) t := by
+  rw [integral_congr_ae (coeFn_transL1 r f)]
+  exact integral_sub_right_eq_self (f : ℝ → ℝ) r
+
+/-- **(A6), the cascade clause, for `delayCore`.** `τ_{z-y} ∘ τ_{y-x} = τ_{z-x}`. -/
+theorem delayCore_cascade (x y z : ℝ) :
+    (transL1 (z - y)).comp (transL1 (y - x)) = transL1 (z - x) := by
+  refine ContinuousLinearMap.ext fun f => ?_
+  rw [ContinuousLinearMap.comp_apply, transL1_add, show z - y + (y - x) = z - x by ring]
+
+/-- **(A7) for `delayCore`.** `(x,y) ↦ τ_{y-x} f` is continuous everywhere: `continuous_transL1`
+composed with the continuous map `(x,y) ↦ y - x`. -/
+theorem delayCore_continuous (f : X) :
+    ContinuousOn (fun p : ℝ × ℝ => transL1 (p.2 - p.1) f) {p : ℝ × ℝ | 0 ≤ p.1 ∧ p.1 ≤ p.2} :=
+  ((continuous_transL1 f).comp (continuous_snd.sub continuous_fst)).continuousOn
+
+/-- The box does not agree a.e. with its own shift by `r > 0`: on `(0, min(r,1))`, which has
+positive measure, the box is `1` and the shift is `0`. The fact behind (ND) for `delayCore`. -/
+theorem box_ne_ae_shift {r : ℝ} (hr : 0 < r) :
+    ¬ ((box : ℝ → ℝ) =ᵐ[volume] fun t => box (t - r)) := by
+  intro hae
+  have hSpos : 0 < volume (Ioo (0 : ℝ) (min r 1)) := by
+    rw [Real.volume_Ioo, sub_zero]
+    exact ENNReal.ofReal_pos.mpr (lt_min hr one_pos)
+  have hSsub : Ioo (0 : ℝ) (min r 1) ⊆ {t | box t ≠ box (t - r)} := by
+    intro t ht
+    have ht1 : t ∈ Ioo (0 : ℝ) 1 := ⟨ht.1, ht.2.trans_le (min_le_right r 1)⟩
+    have ht2 : t - r < 0 := by linarith [ht.2.trans_le (min_le_left r 1)]
+    have hb1 : box t = 1 := indicator_of_mem ht1 _
+    have hb0 : box (t - r) = 0 :=
+      indicator_of_notMem (fun h => absurd h.1 (not_lt.mpr ht2.le)) _
+    show box t ≠ box (t - r)
+    rw [hb1, hb0]
+    norm_num
+  have hnull : volume {t : ℝ | box t ≠ box (t - r)} = 0 := ae_iff.mp hae
+  exact absurd (hnull ▸ measure_mono hSsub) (not_le.mpr hSpos)
+
+/-- **(ND) for `delayCore`.** `τ_r ≠ \Id` for `r > 0`, witnessed by the box. -/
+theorem transL1_ne_id {r : ℝ} (hr : 0 < r) : transL1 r ≠ ContinuousLinearMap.id ℝ X := by
+  intro h
+  have h2 : transL1 r boxL1 = boxL1 := by rw [h, ContinuousLinearMap.id_apply]
+  have h1 : (transL1 r boxL1 : ℝ → ℝ) =ᵐ[volume] fun t => (boxL1 : ℝ → ℝ) (t - r) :=
+    coeFn_transL1 r boxL1
+  rw [h2] at h1
+  exact box_ne_ae_shift hr
+    (coeFn_boxL1.symm.trans (h1.trans
+      ((measurePreserving_sub_const r).quasiMeasurePreserving.ae coeFn_boxL1)))
+
+/-- **The pure-delay core**: `Φ_{x,y} = τ_{y-x}`. Every field is a fact about `transL1` proved
+above, none of them going through a kernel. -/
+noncomputable def delayCore : CascadeCore where
+  Φ x y := transL1 (y - x)
+  translation x y _ _ a f := delayCore_translation x y a f
+  causal x y hx hxy t₀ f hf := vanishesBefore_transL1 (by linarith) hf
+  positive x y _ _ f hf := isNonneg_transL1 (y - x) hf
+  unit_area x y _ _ f _ := integral_transL1 (y - x) f
+  refl x _ := ContinuousLinearMap.ext fun f => by
+    rw [ContinuousLinearMap.id_apply, sub_self, transL1_zero]
+  cascade x y z _ _ _ := delayCore_cascade x y z
+  continuous f := delayCore_continuous f
+  nondegenerate x y _ hxy := transL1_ne_id (by linarith)
+
+/-- **The intertwining of `dilL1` and `transL1`**: `D_σ τ_r = τ_{σr} D_σ`. Pointwise this is
+`σ⁻¹ f(σ⁻¹(t - σr)) = σ⁻¹ f(σ⁻¹t - r)`, then lifted to `L¹` along the two isometries. -/
+theorem dilL1_comp_transL1 {σ : ℝ} (hσ : 0 < σ) (r : ℝ) (f : X) :
+    dilL1 hσ (transL1 r f) = transL1 (σ * r) (dilL1 hσ f) := by
+  refine Lp.ext ?_
+  have h1 : (dilL1 hσ (transL1 r f) : ℝ → ℝ) =ᵐ[volume] dilate σ (transL1 r f : ℝ → ℝ) :=
+    coeFn_dilL1 hσ (transL1 r f)
+  have h2 : dilate σ (transL1 r f : ℝ → ℝ) =ᵐ[volume] dilate σ (fun t => (f : ℝ → ℝ) (t - r)) :=
+    dilate_congr_ae hσ.ne' (coeFn_transL1 r f)
+  have h3 : dilate σ (fun t => (f : ℝ → ℝ) (t - r))
+      = fun t => (dilate σ (f : ℝ → ℝ)) (t - σ * r) := by
+    funext t
+    have harg : σ⁻¹ * t - r = σ⁻¹ * (t - σ * r) := by
+      rw [mul_sub, ← mul_assoc, inv_mul_cancel₀ hσ.ne', one_mul]
+    simp only [dilate, harg]
+  have h4 : (fun t => (dilate σ (f : ℝ → ℝ)) (t - σ * r))
+      =ᵐ[volume] fun t => (dilL1 hσ f : ℝ → ℝ) (t - σ * r) :=
+    (measurePreserving_sub_const (σ * r)).quasiMeasurePreserving.ae (coeFn_dilL1 hσ f).symm
+  have h5 : (fun t => (dilL1 hσ f : ℝ → ℝ) (t - σ * r))
+      =ᵐ[volume] (transL1 (σ * r) (dilL1 hσ f) : ℝ → ℝ) :=
+    (coeFn_transL1 (σ * r) (dilL1 hσ f)).symm
+  rw [h3] at h2
+  exact h1.trans (h2.trans (h4.trans h5))
+
+/-- **`witness_main_characterization_delayCore`.** `delayCore` is scale-covariant at the
+multiplicative action — the (⇒) hypotheses of `main_characterization`, jointly satisfiable at a
+model resting on Lean core alone. -/
+theorem witness_main_characterization_delayCore :
+    IsScaleCovariant delayCore (Ioi 0) (fun σ x => σ * x) where
+  S_mapsTo σ hσ _ x hx := by simpa using mul_nonneg hσ.le hx
+  S_strictMonoOn σ hσ _ x _ y _ hxy := by simpa using mul_lt_mul_of_pos_left hxy hσ
+  S_surjOn σ hσ _ x hx := ⟨σ⁻¹ * x, by
+      simp only [mem_Ici] at hx ⊢
+      exact mul_nonneg (inv_nonneg.mpr hσ.le) hx, by field_simp⟩
+  scale σ hσ _ x y _ _ := by
+    show (dilL1 hσ).comp (transL1 (y - x)) = (transL1 (σ * y - σ * x)).comp (dilL1 hσ)
+    rw [show σ * y - σ * x = σ * (y - x) by ring]
+    exact ContinuousLinearMap.ext fun f => dilL1_comp_transL1 hσ (y - x) f
 
 namespace SelfDecomposableExponent
 

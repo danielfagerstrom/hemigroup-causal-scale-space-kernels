@@ -203,6 +203,32 @@ theorem covariance_laplace (hcov : IsScaleCovariant Fam Gs S) :
     fun _ hσ hmem _ _ _ hx hxy => exponent_scale hcov hσ hmem hx hxy _,
     fun _ hσ hmem _ _ hx => G_scale hcov hσ hmem hx _⟩
 
+/-- **The converse of `lem:covariance-laplace`'s measure identity.** Given the `S`-shape fields of
+`IsScaleCovariant` and, for `σ ∈ Gs`, `σ > 0`, `0 ≤ x ≤ y`, the measure identity
+`(Fam.repr x y).map (σ ·) = Fam.repr (S σ x) (S σ y)`, (A8) follows: cancel the dilation from the
+kernel factorisation `Φ = mconvL1 ∘ repr` (`Phi_eq_mconvL1_repr`), push it through
+`dilL1_comp_mconvL1`, and rewrite the dilated measure by hypothesis (`mconvL1_congr`) — the same
+three lemmas `Instance.lean:221–225` uses for the multiplicative witness. This is Lemma 6.1's
+"is equivalent to" direction not carried by `covariance_laplace` (fidelity review R18). -/
+theorem isScaleCovariant_of_repr_map
+    (hmapsTo : ∀ σ, 0 < σ → σ ∈ Gs → MapsTo (S σ) (Ici 0) (Ici 0))
+    (hmono : ∀ σ, 0 < σ → σ ∈ Gs → StrictMonoOn (S σ) (Ici 0))
+    (hsurj : ∀ σ, 0 < σ → σ ∈ Gs → SurjOn (S σ) (Ici 0) (Ici 0))
+    (hid : ∀ σ : ℝ, 0 < σ → σ ∈ Gs → ∀ x y : ℝ, 0 ≤ x → x ≤ y →
+        (Fam.repr x y).map (fun t => σ * t) = Fam.repr (S σ x) (S σ y)) :
+    IsScaleCovariant Fam Gs S where
+  S_mapsTo := hmapsTo
+  S_strictMonoOn := hmono
+  S_surjOn := hsurj
+  scale := fun σ hσ hmem x y hx hxy => by
+    have hSx : 0 ≤ S σ x := hmapsTo σ hσ hmem (mem_Ici.mpr hx)
+    have hSxy : S σ x ≤ S σ y :=
+      (hmono σ hσ hmem).monotoneOn (mem_Ici.mpr hx) (mem_Ici.mpr (hx.trans hxy)) hxy
+    haveI : IsProbabilityMeasure ((Fam.repr x y).map (fun t => σ * t)) :=
+      Measure.isProbabilityMeasure_map (measurable_const_mul σ).aemeasurable
+    rw [Phi_eq_mconvL1_repr hx hxy, Phi_eq_mconvL1_repr hSx hSxy,
+      dilL1_comp_mconvL1 hσ (Fam.repr x y), mconvL1_congr (hid σ hσ hmem x y hx hxy)]
+
 /-! ## `lem:action-rigidity`, the order clauses
 
 `G(\cdot, s)` is strictly increasing (`cor:strict-monotonicity`), hence injective on `[0,∞)`,

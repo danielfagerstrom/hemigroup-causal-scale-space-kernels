@@ -236,7 +236,7 @@ $\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$.
 
 % draft: Theorem 9.5
 \begin{theorem}[Sonine conservation]\label{thm:sonine-conservation}
-\uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,prop:laplace-uniqueness}
+\uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,prop:laplace-uniqueness-sigma-finite}
 \lean{Hemigroup.SelfDecomposableExponent.sonine_conservation}\leanok
 For every $x > 0$,
 \[
@@ -384,7 +384,7 @@ locality corner of the memory-line realization. For general admissible $F$ the p
 
 % draft: Proposition 9.8
 \begin{proposition}[Volterra equation for the kernels]\label{prop:volterra}
-\uses{lem:memory-kernel,lem:memory-kernel-transform,thm:main-characterization,prop:laplace-uniqueness}
+\uses{lem:memory-kernel,lem:memory-kernel-transform,thm:main-characterization,prop:laplace-uniqueness-sigma-finite}
 \lean{Hemigroup.SelfDecomposableExponent.volterra}\leanok
 Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. Then, as measures on
 $[0,\infty)$,
@@ -421,7 +421,7 @@ $\widehat{\theta_x}(s) = b_0 x + \int_0^\infty e^{-st} k(t/x)\,dt = x F'(xs)$. S
 % proved and this was not. The two halves use different machinery -- a transform computation and
 % an ODE -- which is the usual reason to split.
 \begin{proposition}[the Volterra equation determines the kernel]\label{prop:volterra-uniqueness}
-\uses{prop:volterra,prop:laplace-uniqueness}
+\uses{prop:volterra,prop:laplace-uniqueness-causal}
 \lean{Hemigroup.SelfDecomposableExponent.volterra_unique}\leanok
 $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
 \statusT\quad\emph{(a scalar linear ODE in the Laplace variable, and no citation. Separated from

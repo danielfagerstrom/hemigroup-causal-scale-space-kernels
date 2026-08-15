@@ -574,7 +574,7 @@ $$A\big[H(s\,\cdot)\big](x) \;=\; s\, H(sx), \qquad x > 0 .$$
 
 2. *(The field solves the signaling problem.)* Let $f \in \mathcal{D}$ and $u(\cdot, x) := \Phi_{0,x} f$. Then $u$ is causal in $t$ with $u(\cdot, x) \to f$ in $X_0$ as $x \downarrow 0$, and:
    - Laplace form: for every $s > 0$, $\ A\big[\hat u(s, \cdot)\big] = s\,\hat u(s, \cdot)$, with $\hat u(s, 0{+}) = \hat f(s)$;
-   - time-domain (Mellin) form: for every $t > 0$ and every $z$ with $1 < \operatorname{Re} z < z_*$ and $\tilde H(z-1) \ne 0$ — all of the strip off an isolated set, the poles of $B(1-z)$; as an identity of meromorphic functions it holds on the whole strip, both sides being $\tilde H(z)\,(I^{z-1}f)(t)$ —
+   - time-domain (Mellin) form: for every $t > 0$ and every $z$ with $1 < \operatorname{Re} z < z_*$ and $\tilde H(z-1) \ne 0$ — all of the strip off an isolated set, the poles of $B(1-z)$; as an identity of meromorphic functions it holds on the whole strip, both sides being $\tilde H(z)\,(I^{z-1}f)(t)$; both transforms absolutely convergent —
 
 $$\widetilde{\partial_t u(t, \cdot)}(z) \;=\; B(1 - z)\;\widetilde{u(t, \cdot)}(z - 1), \qquad \text{i.e.} \qquad \partial_t u \;=\; A\,u \ \text{ read through the Mellin transform in } x .$$
 
@@ -616,7 +616,7 @@ $$B(\theta) = -\,\theta\,\big(\theta + \gamma - 1\big)^{-1}, \qquad A = -\,\frac
 
 a *rational* Mellin symbol — the memory-line mirror of the time-side resolvent $\gamma\,\partial_t(1 + x\partial_t)^{-1}$ of Example 10.6. Explicitly, $w := (\theta + \gamma - 1)^{-1} u$ solves $x\,w_x + (\gamma-1)w = u$ with the regular-at-$0$ solution
 
-$$w(t, x) = x^{-(\gamma-1)}\int_0^x y^{\gamma - 2}\, u(t, y)\,dy, \qquad \partial_t u = -\tfrac{1}{x}\,\theta\, w = -\,\partial_x w \cdot 1 \big/ 1 \;\; \text{(one scale-Volterra step)},$$
+$$w(t, x) = x^{-(\gamma-1)}\int_0^x y^{\gamma - 2}\, u(t, y)\,dy, \qquad \partial_t u = -\tfrac{1}{x}\,\theta\, w = -\,\partial_x w \;\; \text{(one scale-Volterra step)},$$
 
 so the time evolution at scale $x$ is computed from the field at *finer* scales by a single weighted average — scale-recursive, one-sided from the boundary, matching the causal architecture of the time side.
 
