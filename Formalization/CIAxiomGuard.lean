@@ -1114,10 +1114,13 @@ is a **constant** -- `t e^{-xt} <= e^{-1}/x` uniformly in `t`, the maximum of `u
 finite measure integrates a constant with no side condition at all. That estimate turns out to
 need no hypothesis on `t` either: to the left of the origin the left-hand side is negative.
 
-The uniqueness half of the node is separated as `prop:volterra-uniqueness` and is not proved: it
-is a scalar linear ODE in the Laplace variable, and needs the transform of an arbitrary competitor
-to be differentiable, which is `hasDerivAt_laplace` again, plus an antiderivative-uniqueness step
-of the shape `eq_of_hasDerivAt_of_tendsto_zero` already used for the closed forms.
+The uniqueness half, `prop:volterra-uniqueness`, is proved too, and the estimate written when it
+was split off held: `hasDerivAt_laplace` was stated for an *arbitrary* causal finite measure so a
+competitor could use it, and what remained was the antiderivative-uniqueness step. That step is
+`eq_of_hasDerivAt_of_tendsto_zero_pair` -- chapter 9's `eq_of_hasDerivAt_of_tendsto_zero`
+generalised from "an exponent versus a candidate" to two arbitrary functions, because this is its
+second consumer and `-log(nu-hat)` versus `F(x . )` is not an instance of the first. The extra
+ingredient the estimate named, `nu-hat > 0`, is `laplace_pos_of_prob`.
 -/
 
 #print axioms Hemigroup.mul_exp_neg_le
@@ -1126,6 +1129,8 @@ of the shape `eq_of_hasDerivAt_of_tendsto_zero` already used for the closed form
 #print axioms Hemigroup.SelfDecomposableExponent.volterraKernel
 #print axioms Hemigroup.SelfDecomposableExponent.laplaceL_volterraKernel
 #print axioms Hemigroup.SelfDecomposableExponent.volterra
+#print axioms Hemigroup.eq_of_hasDerivAt_of_tendsto_zero_pair
+#print axioms Hemigroup.SelfDecomposableExponent.volterra_unique
 
 /-! ### `prop:gamma-density`, proved
 

@@ -5,6 +5,7 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.MemoryKernelTransform
 import Hemigroup.MeanDelay
+import Hemigroup.TransformContinuity
 
 /-!
 # `prop:volterra`: the Volterra equation for the kernels
@@ -33,9 +34,9 @@ easier instance of it.
 
 namespace Hemigroup
 
-open MeasureTheory Set
+open MeasureTheory Set Filter
 
-open scoped ENNReal
+open scoped ENNReal Topology
 
 /-- `u e^{-u} ≤ e^{-1}`: the maximum of the profile, from `1 + v ≤ e^v` at `v = u - 1`.
 
@@ -191,6 +192,86 @@ theorem volterra {x : ℝ} (hx : 0 < x) :
     rw [laplaceL_withDensity_id hcaus hspos, laplaceL_conv,
       F.laplaceL_volterraKernel hx hspos, hsize s hspos, hk,
       ← ENNReal.ofReal_mul (mul_nonneg hx.le hderiv_nn)]
+
+/-- **`prop:volterra-uniqueness`**: `μ_{0,x}` is the *only* probability measure on `[0,∞)`
+satisfying (9.1).
+
+The scalar linear ODE the blueprint names, and it needs no new analysis: `hasDerivAt_laplace` was
+stated for an arbitrary causal finite measure precisely so a competitor `ν` could use it, and what
+is left is `(\log\hat\nu)' = -xF'(x\cdot)` against `F(x\cdot)' = xF'(x\cdot)` with both sides
+vanishing at `0+` — `eq_of_hasDerivAt_of_tendsto_zero_pair`, the antiderivative-uniqueness lemma
+chapter 8's closed forms already run on, generalised to two arbitrary functions when this became
+its second consumer. The one extra ingredient is `\hat\nu > 0`, which is `laplace_pos_of_prob`. -/
+theorem volterra_unique {x : ℝ} (hx : 0 < x) {ν : Measure ℝ} [IsProbabilityMeasure ν]
+    (hνc : IsCausal ν)
+    (h : ν.withDensity (fun t => ENNReal.ofReal t) = F.volterraKernel x ∗ ν) :
+    ν = F.kernel 0 x := by
+  haveI := isProbabilityMeasure_kernel (F := F) le_rfl hx.le
+  have hcaus : IsCausal (F.kernel 0 x) := isCausal_kernel le_rfl hx.le
+  have hpos : ∀ s : ℝ, 0 < s → 0 < laplace ν s := fun s hs => laplace_pos_of_prob hνc hs.le
+  -- (9.1) read through the transform: the ODE `-\hat\nu'(s) = xF'(xs)\hat\nu(s)`
+  have hode : ∀ s : ℝ, 0 < s → (∫ t, t * Real.exp (-(s * t)) ∂ν)
+      = x * deriv F.toRealExponent (x * s) * laplace ν s := by
+    intro s hs
+    have hL := congrArg (fun μ => laplaceL μ s) h
+    have hk : laplaceL ν s = ENNReal.ofReal (laplace ν s) := by
+      rw [laplace_eq_toReal_laplaceL,
+        ENNReal.ofReal_toReal (laplaceL_ne_top_of_causal hνc hs.le)]
+    rw [laplaceL_withDensity_id hνc hs, laplaceL_conv, F.laplaceL_volterraKernel hx hs,
+      hk] at hL
+    have hderiv_nn : 0 ≤ deriv F.toRealExponent (x * s) := by
+      rw [(F.hasDerivAt_toRealExponent (by positivity : (0 : ℝ) < x * s)).deriv]
+      have hI : 0 ≤ ∫ t in Ioi (0 : ℝ), Real.exp (-(x * s * t)) * F.k t :=
+        integral_nonneg_of_ae ((ae_restrict_iff' measurableSet_Ioi).mpr (.of_forall fun t ht =>
+          mul_nonneg (Real.exp_pos _).le (F.k_nonneg t ht)))
+      linarith [F.b₀_nonneg]
+    rw [← ENNReal.ofReal_mul (mul_nonneg hx.le hderiv_nn)] at hL
+    have hnn : 0 ≤ ∫ t, t * Real.exp (-(s * t)) ∂ν :=
+      integral_nonneg_of_ae (hνc.ae_nonneg.mono fun t ht => mul_nonneg ht (Real.exp_pos _).le)
+    exact (ENNReal.ofReal_eq_ofReal_iff hnn
+      (mul_nonneg (mul_nonneg hx.le hderiv_nn) (hpos s hs).le)).mp hL
+  -- `-\log\hat\nu` and `F(x\cdot)` have the same derivative and both vanish at the origin
+  have hlog : ∀ y : ℝ, 0 < y → HasDerivAt (fun z => -Real.log (laplace ν z))
+      (x * deriv F.toRealExponent (x * y)) y := by
+    intro y hy
+    have hd := hasDerivAt_laplace hνc hy
+    rw [hode y hy] at hd
+    have hL0 : laplace ν y ≠ 0 := (hpos y hy).ne'
+    have hlogd := (hd.log hL0).neg
+    rwa [show -(-(x * deriv F.toRealExponent (x * y) * laplace ν y) / laplace ν y)
+      = x * deriv F.toRealExponent (x * y) from by field_simp] at hlogd
+  have hFx : ∀ y : ℝ, 0 < y → HasDerivAt (fun z => F.toRealExponent (x * z))
+      (x * deriv F.toRealExponent (x * y)) y := by
+    intro y hy
+    have hxy : HasDerivAt (fun z : ℝ => x * z) x y := by
+      simpa using (hasDerivAt_id y).const_mul x
+    have hFd := F.hasDerivAt_toRealExponent (by positivity : (0 : ℝ) < x * y)
+    have hc := hFd.comp y hxy
+    rw [hFd.deriv]
+    simpa [Function.comp_def, mul_comm] using hc
+  have hlog0 : Tendsto (fun z => -Real.log (laplace ν z)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    have hc : Tendsto (laplace ν) (𝓝[>] (0 : ℝ)) (𝓝 1) := by
+      have h0 := ((continuousOn_laplace hνc) 0 Set.self_mem_Ici).tendsto
+      rw [laplace_zero_prob] at h0
+      exact h0.mono_left (nhdsWithin_mono _ Ioi_subset_Ici_self)
+    simpa using ((Real.continuousAt_log one_ne_zero).tendsto.comp hc).neg
+  have hFx0 : Tendsto (fun z => F.toRealExponent (x * z)) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    refine F.tendsto_toRealExponent_nhdsGT_zero.comp ?_
+    have hzero : Tendsto (fun z : ℝ => x * z) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+      have hm : Tendsto (fun z : ℝ => x * z) (𝓝 (0 : ℝ)) (𝓝 (x * 0)) :=
+        tendsto_const_nhds.mul tendsto_id
+      simpa using hm.mono_left nhdsWithin_le_nhds
+    refine tendsto_nhdsWithin_of_tendsto_nhds_of_eventually_within _ hzero ?_
+    filter_upwards [self_mem_nhdsWithin] with z hz
+    exact mem_Ioi.mpr (mul_pos hx (mem_Ioi.mp hz))
+  -- the transforms agree, so the measures do
+  refine laplace_injective hνc hcaus fun s hs => ?_
+  rcases hs.eq_or_lt with rfl | hspos
+  · rw [laplace_zero_prob, laplace_zero_prob]
+  · have heq := eq_of_hasDerivAt_of_tendsto_zero_pair hlog hFx hlog0 hFx0 hspos
+    rw [laplace_kernel le_rfl hx.le hspos.le, increment_zero_left hx.le,
+      show ((F.exponent (x * s)).toReal) = F.toRealExponent (x * s) from rfl, ← heq, neg_neg,
+      Real.exp_log (hpos s hspos)]
 
 end SelfDecomposableExponent
 

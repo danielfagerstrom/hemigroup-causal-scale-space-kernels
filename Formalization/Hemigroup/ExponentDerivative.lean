@@ -56,6 +56,41 @@ theorem integrableOn_of_lintegral_ofReal_ne_top {f : ℝ → ℝ} {S : Set ℝ}
   filter_upwards [hnn] with t ht
   rw [Real.enorm_eq_ofReal ht]
 
+/-- **Two functions with the same derivative on `(0,∞)`, both vanishing at `0+`, agree there.**
+
+The constant of integration, pinned at the origin. Stated for two arbitrary functions because it
+has two consumers of different shapes and neither is the other's special case:
+`eq_of_hasDerivAt_of_tendsto_zero` below compares an exponent with a candidate antiderivative, and
+`prop:volterra-uniqueness` compares `-log(nu-hat)` with `F(x . )`. It was written in the first
+of those forms and generalised when the second appeared, which is the sequence
+`Hemigroup/Subordinator.lean` exists to make routine. -/
+theorem eq_of_hasDerivAt_of_tendsto_zero_pair {f g d : ℝ → ℝ}
+    (hf : ∀ y : ℝ, 0 < y → HasDerivAt f (d y) y)
+    (hg : ∀ y : ℝ, 0 < y → HasDerivAt g (d y) y)
+    (hf0 : Filter.Tendsto f (𝓝[>] (0 : ℝ)) (𝓝 0))
+    (hg0 : Filter.Tendsto g (𝓝[>] (0 : ℝ)) (𝓝 0)) {s : ℝ} (hs : 0 < s) : f s = g s := by
+  have hconst : ∀ u : ℝ, 0 < u → u ≤ s → f u - g u = f s - g s := by
+    intro u hu hus
+    have hd : ∀ x ∈ Ico u s, HasDerivWithinAt (fun y => f y - g y) 0 (Ici x) x := by
+      intro x hx
+      have hxpos : (0 : ℝ) < x := lt_of_lt_of_le hu hx.1
+      have hsub := (hf x hxpos).sub (hg x hxpos)
+      rw [sub_self] at hsub
+      exact hsub.hasDerivWithinAt
+    have hcont : ContinuousOn (fun y => f y - g y) (Icc u s) := by
+      intro x hx
+      have hxpos : (0 : ℝ) < x := lt_of_lt_of_le hu hx.1
+      exact (((hf x hxpos).sub (hg x hxpos)).continuousAt).continuousWithinAt
+    exact (constant_of_has_deriv_right_zero hcont hd s (right_mem_Icc.mpr hus)).symm
+  have hlim : Filter.Tendsto (fun y => f y - g y) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
+    simpa using hf0.sub hg0
+  have heq : (fun y => f y - g y) =ᶠ[𝓝[>] (0 : ℝ)] fun _ => f s - g s := by
+    filter_upwards [self_mem_nhdsWithin, Ioc_mem_nhdsGT hs] with x hx hx'
+    exact hconst x (mem_Ioi.mp hx) hx'.2
+  have hzero : f s - g s = 0 :=
+    tendsto_nhds_unique tendsto_const_nhds (hlim.congr' heq)
+  linarith
+
 /-! ## Every exponent is integrable where its own analysis needs it -/
 
 namespace SelfDecomposableExponent
@@ -355,35 +390,9 @@ theorem eq_of_hasDerivAt_of_tendsto_zero {g : ℝ → ℝ}
     (hderiv : ∀ x : ℝ, 0 < x → HasDerivAt g
       (F.b₀ + ∫ t in Ioi (0 : ℝ), Real.exp (-(x * t)) * F.k t) x)
     (hg : Filter.Tendsto g (𝓝[>] (0 : ℝ)) (𝓝 0)) {s : ℝ} (hs : 0 < s) :
-    F.toRealExponent s = g s := by
-  -- the difference has vanishing derivative on `(0,∞)`, hence is constant there
-  have hconst : ∀ u : ℝ, 0 < u → u ≤ s →
-      F.toRealExponent u - g u = F.toRealExponent s - g s := by
-    intro u hu hus
-    have hd : ∀ x ∈ Ico u s,
-        HasDerivWithinAt (fun y => F.toRealExponent y - g y) 0 (Ici x) x := by
-      intro x hx
-      have hxpos : (0 : ℝ) < x := lt_of_lt_of_le hu hx.1
-      have hsub := (F.hasDerivAt_toRealExponent hxpos).sub (hderiv x hxpos)
-      rw [sub_self] at hsub
-      exact hsub.hasDerivWithinAt
-    have hcont : ContinuousOn (fun y => F.toRealExponent y - g y) (Icc u s) := by
-      intro x hx
-      have hxpos : (0 : ℝ) < x := lt_of_lt_of_le hu hx.1
-      exact (((F.hasDerivAt_toRealExponent hxpos).sub
-        (hderiv x hxpos)).continuousAt).continuousWithinAt
-    exact (constant_of_has_deriv_right_zero hcont hd s (right_mem_Icc.mpr hus)).symm
-  -- and its limit at `0+` is `0`
-  have hlim : Filter.Tendsto (fun y => F.toRealExponent y - g y) (𝓝[>] (0 : ℝ)) (𝓝 0) := by
-    simpa using F.tendsto_toRealExponent_nhdsGT_zero.sub hg
-  have heq : (fun y => F.toRealExponent y - g y)
-      =ᶠ[𝓝[>] (0 : ℝ)] fun _ => F.toRealExponent s - g s := by
-    filter_upwards [self_mem_nhdsWithin, Ioc_mem_nhdsGT hs] with x hx hx'
-    exact hconst x (mem_Ioi.mp hx) hx'.2
-  have hc : Filter.Tendsto (fun _ : ℝ => F.toRealExponent s - g s) (𝓝[>] (0 : ℝ)) (𝓝 0) :=
-    hlim.congr' heq
-  have hzero : F.toRealExponent s - g s = 0 := tendsto_nhds_unique tendsto_const_nhds hc
-  linarith
+    F.toRealExponent s = g s :=
+  eq_of_hasDerivAt_of_tendsto_zero_pair (fun _y hy => F.hasDerivAt_toRealExponent hy) hderiv
+    F.tendsto_toRealExponent_nhdsGT_zero hg hs
 
 end SelfDecomposableExponent
 

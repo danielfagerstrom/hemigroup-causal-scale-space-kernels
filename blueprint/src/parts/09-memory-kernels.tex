@@ -413,20 +413,27 @@ $\widehat{\theta_x}(s) = b_0 x + \int_0^\infty e^{-st} k(t/x)\,dt = x F'(xs)$. S
 % an ODE -- which is the usual reason to split.
 \begin{proposition}[the Volterra equation determines the kernel]\label{prop:volterra-uniqueness}
 \uses{prop:volterra,prop:laplace-uniqueness}
+\lean{Hemigroup.SelfDecomposableExponent.volterra_unique}\leanok
 $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
 \statusT\quad\emph{(a scalar linear ODE in the Laplace variable, and no citation. Separated from
 \ref{prop:volterra} because the two halves use different machinery: that one is a transform
-identity, this one solves a differential equation, and only the first was proved on 2026-08-15.
-\textbf{The pieces are in place.} If $\nu$ satisfies (9.1) then $\hat\nu$ is differentiable on
-$(0,\infty)$ --- which is \texttt{hasDerivAt\_laplace}, proved with \ref{prop:volterra} and stated
-for an arbitrary causal finite measure precisely so that a competitor can use it --- with
-$-\hat\nu'(s) = xF'(xs)\hat\nu(s)$. What remains is to solve that, and the shape is the one
-\texttt{eq\_of\_hasDerivAt\_of\_tendsto\_zero} already handles for the closed forms of chapter 8:
-$(\log\hat\nu)' = -xF'(x\cdot)$ with $\hat\nu(\zp) = 1$, so $\log\hat\nu(s) = -F(xs)$. The one
-extra step is $\hat\nu > 0$, which is \texttt{laplace\_pos} for a nonzero causal measure.)}
+identity, this one solves a differential equation.
+\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/Volterra.lean}, on \ledger{A17} alone
+--- and \textbf{the estimate written when the two were separated held exactly}. It said the
+pieces were in place: $\hat\nu$ differentiable on $(0,\infty)$ is
+\texttt{hasDerivAt\_laplace}, which had been stated for an \emph{arbitrary} causal finite measure
+precisely so a competitor could use it; the remaining step is antiderivative uniqueness, the shape
+chapter~8's closed forms already run on; the one extra ingredient is $\hat\nu > 0$. All three were
+what the proof needed and no more.
+The one thing the estimate did not foresee is that the antiderivative-uniqueness lemma had been
+written in the narrow form its first consumer needed --- comparing an exponent with a candidate
+--- and $-\log\hat\nu$ versus $F(x\cdot)$ is not an instance of that. Generalising it to two
+arbitrary functions is four lines and made the old statement a corollary, which is the sequence
+this development treats as routine when a second consumer appears.)}
 \end{proposition}
 
 \begin{proof}
+\leanok
 If $\nu$ is a probability measure on $[0,\infty)$ with $t\,\nu(dt) = \theta_x * \nu$, then
 $\hat\nu$ is differentiable on $(0,\infty)$ with
 $-\hat\nu'(s) = \Lap[t\nu](s) = xF'(xs)\,\hat\nu(s)$. Solving this linear ODE with

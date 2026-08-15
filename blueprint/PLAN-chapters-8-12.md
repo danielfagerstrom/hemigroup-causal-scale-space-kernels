@@ -2577,3 +2577,56 @@ The two halves split off this week, `prop:volterra-uniqueness` and `prop:gamma-m
 priced in its own annotation at the moment of splitting, which is the practice this file has been
 arguing for: **the estimate is accurate when it is written next to the statement**, and both of
 these should now be checkable against that.
+
+---
+
+# `prop:volterra-uniqueness`, proved — and the estimate written at the split held exactly — 2026-08-15
+
+`Hemigroup/Volterra.lean`. **65 nodes `\leanok`**, 87 statement nodes. A17 through `kernel`.
+Trust boundary unchanged.
+
+## The practice this file has been arguing for, tested
+
+When the node was split off this morning its annotation named three things and claimed they were
+all that was needed:
+
+1. `ν̂` differentiable on `(0,∞)` — "`hasDerivAt_laplace`, stated for an arbitrary causal finite
+   measure precisely so that a competitor can use it";
+2. the remaining step is antiderivative uniqueness, "the shape
+   `eq_of_hasDerivAt_of_tendsto_zero` already handles for the closed forms of chapter 8";
+3. "the one extra step is `ν̂ > 0`, which is `laplace_pos`".
+
+All three were what the proof needed, and nothing else was. **The estimate was written next to the
+statement, and it was accurate** — which is the whole of what this file has been claiming about
+when estimates are worth trusting. Set against `prop:volterra`'s own `(2)`-style misprice from two
+days ago, made from the mathematics-as-prose and wrong about an obstruction that did not exist,
+the contrast is now sharp enough to state as a rule:
+
+> An estimate made from the Lean statement is reliable. An estimate made from the prose is a guess
+> about a proof, and the prose was not written to be executed.
+
+## What it did not foresee, and the shape of that miss
+
+The antiderivative-uniqueness lemma had been written in **the narrow form its first consumer
+needed** — `F.toRealExponent s = g s`, an exponent against a candidate — and `-log ν̂` against
+`F(x·)` is not an instance of that. Generalising to `eq_of_hasDerivAt_of_tendsto_zero_pair`, two
+arbitrary functions with a common derivative, is four lines, and the old statement becomes a
+one-line corollary.
+
+Note the difference from the `mconv_eq_setIntegral_mconv` case, where a generalisation was deferred
+twice and then its second consumer *disappeared*. Here the second consumer arrived, so the
+generalisation was made. Both decisions were right, and the rule that produced them is the same:
+**generalise when a second consumer exists, not when one is imagined.**
+
+## Chapter 9 is now closed to what its ledger allows
+
+`prop:volterra` and `prop:volterra-uniqueness` were the chapter's last two schedulable `[T]` nodes.
+What remains there is `[A]` (`prop:pair-regularity` on A9, `prop:volterra-density` on A10) or
+distributional (`prop:scale-evolution`, `cor:exact-inversion`) — the same sentence the README has
+carried since the Route B round, now true of the whole chapter rather than most of it.
+
+## Next
+
+`prop:gamma-moments`, the last node on the *available* row, and the one whose ledger entry
+`prop:gamma-density` has since made avoidable: with the kernel identified as Mathlib's
+`gammaMeasure`, its moments are a Gamma computation rather than an appeal to A7.
