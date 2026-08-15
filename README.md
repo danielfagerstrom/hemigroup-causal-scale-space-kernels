@@ -40,6 +40,19 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
+**Fidelity-reviewed 2026-08-15** (`blueprint/PLAN-fidelity-review.md`, executed in
+`blueprint/REVIEW-fidelity.md`): every `\leanok` node was audited statement-by-statement against
+the article and the blueprint — definitions unfolded to Mathlib primitives, partial functions'
+junk values audited, blind restatements from the draft alone, adversarial-vacuity passes on the
+headline theorems, the two axioms compared row by row with image-verified source pages, and
+`Formalization/Hemigroup/Witnesses.lean` showing the headline hypotheses jointly satisfiable at
+named models (the pure-delay `delayCore` in Lean core). Verdict: the Lean proves what the article
+states — no proved conjunct is vacuous, junk-valued or weaker than the article's proof. Eleven
+statement-tightenings were landed as conjuncts (Theorem 2′'s analysis direction now concludes in
+`SelfDecomposableExponent` and the construction holds in an arbitrary gauge; Theorem 4′ carries
+its domain claim, `u = Φ_{0,x}f`, boundary value, derivative reading and Mellin convergence), and
+two places where the article's statement outran its proof were corrected in the text of record.
+
 Sixty-six nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |

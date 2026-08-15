@@ -1,5 +1,10 @@
 # Fidelity review: does the Lean prove what the article claims?
 
+**Status: executed, P0–P6, 2026-08-15.** The cards, the findings ledger and the verdict are in
+`REVIEW-fidelity.md`; this file is the plan they followed. Short answer: yes — no proved conjunct
+is vacuous, junk-valued or weaker than the article's proof; eleven statement-tightenings and two
+article-side corrections were landed on the way (commits `65505a5` … `0bee0a6` and after).
+
 Written 2026-08-15, at the point where the formalisation is closed to what Mathlib allows.
 Companion to `PLAN-chapters-8-12.md` (what is proved and why the rest is not) and
 `DESIGN-formalization-strategy.md` (the `BF₀`/`LE` vocabulary decision). This plan is about a
