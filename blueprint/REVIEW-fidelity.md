@@ -45,8 +45,9 @@ restriction the article does not state.
 
 **Owed elsewhere.** The paper's transclusions of `lem:symbol-uniqueness` and `thm:signaling-form`
 must be re-synced to the blueprint (linkage `[shared]` advisories; paper-writing session).
-Optional Lean, not owed: a realness lemma for `A` on real test functions (R5), a standalone
-"transform → 0 ⇒ tight" (R25), a stable-family witness of (H).
+The three optional Lean items listed here at P6 (a realness lemma for `A` on real test
+functions, R5; a standalone "transform → 0 ⇒ tight", R25; a stable-family witness of (H)) were
+subsequently done; nothing is owed.
 
 ## Findings ledger
 
@@ -56,7 +57,7 @@ Optional Lean, not owed: a realness lemma for `A` on real test functions (R5), a
 | R2 | F8/F3 | statement-tightening | `signaling_form` (2d), `SignalingForm.lean:80`; draft Thm 11.6(2) | Lean asserts the Mellin form off the zeros of `H̃(z−1)`; the draft asserts it on the strip and relegates the zero set to the proof. | **resolved (P2)** — blueprint `thm:signaling-form`(2) and draft Thm 11.6(2) state the Mellin form off the zeros of `H̃(z−1)`, with the meromorphic reading on the strip; Lean (2d) additionally asserts both `MellinConvergent`s |
 | R3 | F8 | note-only → draft edit | draft Def. 12.1 (line 635) vs blueprint `def:locality-pmp` | Blueprint's definition tests locality on `C_c^∞((0,∞))` **and on the profiles**; the draft still says `C_c^∞` only. The widening is recorded and justified in the blueprint; the draft lags. | **resolved (P2)** — draft Def. 12.1 and Lemma 12.2's (⇒) proof aligned with the blueprint (`10551df`) |
 | R4 | F5 | statement-tightening | `Nondegenerate` (`MemoryKernelTransform.lean:151`) vs `hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0` | Two renderings of "F ≢ 0 / (ND)" for a `SelfDecomposableExponent` — chapter 9 uses the first, the headline theorems the second — with no bridge lemma. Equivalent (k antitone ⇒ `k t₀ > 0` gives positive measure to `{k > 0}`), so a lemma `nondegenerate_iff_exists_exponent_ne_zero` closes it. | **resolved (P2)** — `nondegenerate_iff_exists_exponent_ne_zero` (`MemoryKernelTransform.lean`), Lean core, with `strictMonoOn_toRealExponent` |
-| R5 | F3 | note-only | `SatisfiesPMP` (`LocalOperator.lean:107`) | PMP rendered as `Re (Ag)(x₀) ≤ 0`; article says `(Ag)(x₀) ≤ 0` (a real number). Weaker as a *conclusion* (`lem:pmp-verification`), stronger-hypothesis-free as a *hypothesis*; blueprint annotation records the choice. Faithful once `A` preserves realness on real test functions — is that a lemma? | accepted with note (T2.3f) — no realness lemma; `Re` reading deliberate |
+| R5 | F3 | note-only | `SatisfiesPMP` (`LocalOperator.lean:107`) | PMP rendered as `Re (Ag)(x₀) ≤ 0`; article says `(Ag)(x₀) ≤ 0` (a real number). Weaker as a *conclusion* (`lem:pmp-verification`), stronger-hypothesis-free as a *hypothesis*; blueprint annotation records the choice. Faithful once `A` preserves realness on real test functions — is that a lemma? | **resolved (P6+)** — `im_inversionOperator_eq_zero_of_symbol_eq` / `eq_ofReal_re_inversionOperator_of_symbol_eq` (`PositiveMaximumPrinciple.lean`): under the polynomial-symbol hypothesis with real coefficients (`∀ j, (γ j).im = 0`), `A g x` is real on real test functions, so the PMP conclusion reads as the article's real inequality; the real-coefficient hypothesis is genuinely extra (the symbol lemma quantifies over `γ : ℕ → ℂ`) |
 | R6 | F4 | note-only | `HasCoreDeriv.causal_deriv` (`DelayCore.lean`) | `g` causal *pointwise* (`∀ r < 0, g r = 0`), where `X₀` is an a.e. condition. Harmless — every causal `L¹` class has such a representative and the theorems quantify over functions — but the card records it. | accepted (note) |
 | R7 | F4 | note-only | `semigroup_case` (`SemigroupCase.lean:233`) | The article's "after normalization `g_{0,1}(1) = 1`" is a *hypothesis* `hnorm : Fam.G 1 1 = 1`, not a reparametrisation performed. Faithful in content; the reparametrisation (rescale the scale axis) is a sentence in prose and is not in Lean. | **resolved (P6+)** — one-clause remark in `cor:semigroup-case`'s annotation: normalisation as a hypothesis, no clash with `χ(1) = 1`, one-parameter in the given parametrisation |
 | R8 | F3 | statement-tightening | `main_characterization` (⇐), `cascadeFamily` (`Instance.lean`) | Theorem 7.3 (⇐) is stated for an *arbitrary* gauge `χ`: the family `Φ_{x,y} = μ_{χ(x),χ(y)} ∗ ·` satisfies the axioms. The Lean witness is the canonical gauge only (`S σ x = σ x`, kernels `F.kernel x y`). The general case is the canonical one reparametrised by `χ` — (A1)–(A7), (ND) transport trivially, (A8) with `S_σ = χ⁻¹(σ χ(·))`, and (A7) needs `χ` continuous, which an increasing bijection of `[0,∞)` is — but that reparametrisation lemma is not in Lean, and the article's own proof says "work in the canonical gauge" without stating it either. Surfaced by blind restatement A (§3, item 7). | **resolved (P2), in Lean** — `CascadeFamily.reparam` (`Reparam.lean`): any `χ` with `χ 0 = 0`, `StrictMonoOn (Ici 0)`, `SurjOn (Ici 0) (Ici 0)` (hence continuous, `continuousOn_of_strictMonoOn_surjOn`) reparametrises a family, `S' = χ⁻¹ ∘ S ∘ χ`; `cascadeFamily_reparam` is (⇐) in an arbitrary gauge, `rfl` |
@@ -76,7 +77,7 @@ Optional Lean, not owed: a realness lemma for `A` on real test functions (R5), a
 | R22 | F3 | note-only | `lem:memory-kernel` first display | `∂_x F(xs) = sF'(xs)` has no standalone declaration; `symbol` defines the right side, chain rule inline where used. | accepted (note) |
 | R23 | F3 | statement-tightening, trivial | `sonine_conservation` (`Sonine.lean:65`) | Restricted to `Ici 0` on both sides; unrestricted equality follows from causality of both factors. | **resolved (P4)** — `sonine_conservation'` |
 | R24 | tag | note-only | `prop:gamma-kernels` `\lean` tag | Named only `gammaExponent_laplace_kernel`; the node's other two clauses are `gammaExponent_laplace_increment`, `gammaExponent_lintegral_id_kernel` (proved, guarded). | **resolved (P5)** — tag lists all three |
-| R25 | F3 | note-only | `lem:transform-tightness` second sentence | "a family with `sup(1 − μ̂_n(s)) → 0` is tight" exists only specialised to the constructed kernels (`exists_kernel_tail_le`, `isTightMeasureSet_kernel`). | accepted (note) |
+| R25 | F3 | note-only | `lem:transform-tightness` second sentence | "a family with `sup(1 − μ̂_n(s)) → 0` is tight" exists only specialised to the constructed kernels (`exists_kernel_tail_le`, `isTightMeasureSet_kernel`). | **resolved (P6+)** — `exists_tail_le_of_forall_laplace`, `isTightMeasureSet_of_forall_laplace` (`Continuity.lean`), Lean core: the general "transform uniformly → 1 at 0⁺ ⇒ tight" statement |
 | R26 | F7 | note-only | downstream `\uses{prop:laplace-uniqueness}` | Several `\leanok` nodes cited the `[A]` parent where the Lean invokes a `[T]` refinement directly. | **resolved (P5)** — Sonine, Volterra → `-sigma-finite`, Volterra uniqueness → `-causal`; others kept with reasons (`mconvL1_injective`, no uniqueness used, or node unproved) |
 | R27 | F8 | note-only | draft Thm 11.6(2); blueprint `ex:gamma-signaling` | Draft lacked the P2 "both transforms absolutely convergent" clause; blueprint example dropped `∂_t u = −x⁻¹θw = −∂_x w`. | **resolved (P5)** — both edited |
 
@@ -1043,13 +1044,11 @@ moments finite; `gammaExponent γ` has `lawT₁ = gammaMeasure γ 1` and `negMom
 * The `f ∈ L¹` clause of `signaling_form` is a real constraint on the signal (the clipped ramp
   from `g = box` fails it; a `g` with `∫ g = 0` is needed) — as the `SignalingForm.lean`
   docstring says, and as the article's `f ∈ 𝒟 ⊆ X₀` imposes. Confirms T0.8's reading.
-* Not shown: `StandingHypothesis` for the stable family (needs a negative moment of the positive
-  stable law past the first; no closed form for its density in the development). Not a finding
-  about the theorem — the drift and Gamma witnesses already show the hypotheses are jointly
-  satisfiable — but a gap in the model coverage: the stable family is the article's Example 8.1
-  and satisfies (H) with `z_* = ∞`; a witness would need `E[T₁^{−ζ}] < ∞` from the Laplace
-  transform alone (`E[T^{−ζ}] = Γ(ζ)⁻¹ ∫ s^{ζ−1} e^{−s^α} ds`, which is Lemma 11.2's own
-  computation run without (H) — a possible route, left open).
+* The stable family's (H) was left open in P1 and closed in P6+: `stableExponent_negMoment_ne_top`
+  gives `E[T₁^{−ζ}] < ∞` for every `ζ > 0` by the density-free route (Lemma 11.2's Tonelli
+  computation run without (H), then Mathlib's `integral_rpow_mul_exp_neg_rpow`), so
+  `witness_standingHypothesis_stable` and `witness_signaling_form_stable` exist and all three
+  named models satisfy every hypothesis of Theorem 4′.
 * `IsOneParameter` fails for Gamma and stable *in the canonical gauge*, correctly: the
   one-parameter stable semigroups with `α < 1` are those cores reparametrised by `x ↦ x^{1/α}`.
   That reparametrisation is exactly the lemma **R8** asks for, so R8 has a second consumer.

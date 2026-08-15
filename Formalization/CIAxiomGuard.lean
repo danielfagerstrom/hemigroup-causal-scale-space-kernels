@@ -1331,7 +1331,7 @@ theorem, not merely because the construction happens to populate it.
 #print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_stable
 #print axioms Hemigroup.witness_main_characterization_delayCore
 
-/-! ### Fidelity review (P2–P5)
+/-! ### Fidelity review (P2–P6)
 
 The lines the P2 fixes of `PLAN-fidelity-review.md` added. Each is a statement-tightening: the
 theorem was already proved and already the article's; what changed is that the Lean statement now
@@ -1402,3 +1402,46 @@ measures is causal, the right by construction), so restricting to `[0,∞)`, whe
 -/
 
 #print axioms Hemigroup.CascadeCore.isScaleCovariant_of_repr_map
+
+/-! **R25** — `lem:transform-tightness`'s consequential sentence, for an arbitrary family of
+causal probability measures rather than only the constructed kernels
+(`exists_kernel_tail_le`/`isTightMeasureSet_kernel`, listed against that node above and
+unchanged). Same `s`-then-`T` argument, read off the hypothesis
+`∀ ε > 0, ∃ s > 0, ∀ i, 1 - laplace(μ i) s ≤ ε` directly instead of through an `F.exponent`. Lean
+core: neither mentions a kernel.
+-/
+
+#print axioms Hemigroup.exists_tail_le_of_forall_laplace
+#print axioms Hemigroup.isTightMeasureSet_of_forall_laplace
+
+/-! **R5** — closed under an extra hypothesis. `lem:pmp-verification`'s Lean form asserts
+`Re (Ag)(x₀) ≤ 0`; under `isLocalOfOrderCoreOfSymbolEq`'s own hypotheses plus reality of the
+symbol's witness coefficients `γ_j`, `im_inversionOperator_eq_zero_of_symbol_eq` shows `(Ag)(x₀)`
+has zero imaginary part on a real test function, and
+`eq_ofReal_re_inversionOperator_of_symbol_eq` packages that as `(Ag)(x₀)` being equal to its own
+real part cast back — so under that extra hypothesis this lemma's inequality and the article's
+`(Ag)(x₀) ≤ 0` are the same statement. Both print A17 through `inversionOperator`, same as
+`satisfiesPMP_of_symbol_eq` above.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.im_inversionOperator_eq_zero_of_symbol_eq
+#print axioms Hemigroup.SelfDecomposableExponent.eq_ofReal_re_inversionOperator_of_symbol_eq
+
+/-! **The stable family's (H)** (`PLAN-fidelity-review.md` P1's "not shown"). A density-free
+route through the transform: `stableExponent_negMoment_ne_top` reads `Γ(ζ)·E[T₁^{-ζ}]` as a
+double integral over `(t,s)` against `lawT₁ × volume` (`lintegral_lintegral_gamma_of_ae_mem_Ioi`,
+listed against `lem:mellin-data` above and unchanged), swaps the order
+(`lintegral_lintegral_swap`), and evaluates the inner `t`-integral as the Laplace transform
+`laplaceL_lawT₁`, which *is* `e^{-s^α}` at the stable exponent — landing on
+`∫₀^∞ s^{ζ-1}e^{-s^α}ds`, finite by Mathlib's Gamma-integral formula for every `ζ, α > 0`. No
+closed form for the stable law is needed, only for its transform, which is the exponent itself.
+A17 through `lawT₁`, as every statement about `T₁` carries; nothing else — in particular no new
+interface, and the `s`-integral itself is Lean core.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.stableExponent_tendsto
+#print axioms Hemigroup.SelfDecomposableExponent.integrableOn_rpow_mul_exp_neg_rpow_of_pos
+#print axioms Hemigroup.SelfDecomposableExponent.stableExponent_negMoment_ne_top
+#print axioms Hemigroup.SelfDecomposableExponent.stableExponent_allNegMomentsFinite
+#print axioms Hemigroup.SelfDecomposableExponent.witness_standingHypothesis_stable
+#print axioms Hemigroup.SelfDecomposableExponent.witness_signaling_form_stable

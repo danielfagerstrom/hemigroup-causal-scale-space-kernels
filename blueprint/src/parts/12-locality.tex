@@ -827,7 +827,20 @@ $\operatorname{Re}(Ag)(x_0) \le 0$, $A$ being $\mathbb{C}$-valued, so the differ
 has to be pushed through $\operatorname{Re}$ and the derivatives of $x \mapsto (g(x):\mathbb{C})$
 identified with those of $g$. That identification is \texttt{iteratedDeriv\_ofReal\_comp}, proved
 for the profile in chapter 12's differentiation step and reused here on all of $\mathbb{R}$, where
-a test function is smooth. It is the one place this argument is longer than two lines.)}
+a test function is smooth. It is the one place this argument is longer than two lines.
+\textbf{R5, closed.} Under \texttt{isLocalOfOrderCoreOfSymbolEq}'s own hypotheses --- the ones
+this lemma is stated from, via \texttt{satisfiesPMP\_of\_symbol\_eq} --- plus reality of the
+symbol's witness coefficients $\gamma_j$ (an extra hypothesis \texttt{hsymbol}'s $\gamma$ does not
+itself carry), \texttt{Hemigroup.SelfDecomposableExponent.im\_inversionOperator\_eq\_zero\_of\_symbol\_eq}
+shows $(Ag)(x_0)$ has zero imaginary part on a real test function, and
+\texttt{eq\_ofReal\_re\_inversionOperator\_of\_symbol\_eq} packages that as $(Ag)(x_0) = ((Ag)(x_0)$'s
+real part, cast back$)$ --- so under that extra hypothesis the article's real-number reading
+$(Ag)(x_0) \le 0$ and this lemma's $\operatorname{Re}(Ag)(x_0) \le 0$ are the same statement, not
+merely the second weaker than the first. Both print A17 through \texttt{inversionOperator}, plus
+nothing else. Not folded into \texttt{satisfiesPMP\_of\_symbol\_eq} itself, because that lemma's
+own $\gamma$ is exactly \ref{thm:locality}'s two cases' coefficients (real by inspection at each
+use) and the general statement is honest that realness of $\gamma$ is not free at the level this
+lemma is stated.)}
 \end{lemma}
 
 \begin{proof}

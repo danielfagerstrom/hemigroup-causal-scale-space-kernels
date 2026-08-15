@@ -361,6 +361,73 @@ theorem isTightMeasureSet_kernel (F : SelfDecomposableExponent) {u v : ℕ → �
   refine hle.trans ((ENNReal.toReal_le_toReal (measure_ne_top _ _) hεtop).mp ?_)
   exact hT _ _ (hu0 n) (huv n) (hvB n)
 
+end SelfDecomposableExponent
+
+/-! ## The general statement: tightness from a uniform transform bound (R25)
+
+`lem:transform-tightness`'s second sentence, for an *arbitrary* family of causal probability
+measures — not only the kernel family `exists_kernel_tail_le`/`isTightMeasureSet_kernel` above
+specialise to. Nothing in the Markov-bound argument is about a kernel: `measureReal_Ioi_le_div` is
+already stated for a bare causal probability measure, and the `s`-then-`T` choice that turns the
+bound into a uniform tail estimate only needs the hypothesis `sup_i (1 - laplace(μ i) s) → 0` (here
+in the equivalent "for every ε" form, matching how the specialised proof consumes it) — not that
+`s` and `T` come from an `F.exponent`. -/
+
+/-- **The general tail bound**: a family of causal probability measures whose transforms satisfy
+`∀ ε > 0, ∃ s > 0, ∀ i, 1 - μ̂ᵢ(s) ≤ ε` has a uniform tail estimate, for every `η > 0`. Same
+`s`-then-`T` choice as `exists_kernel_tail_le`, read off the hypothesis directly instead of
+through `F.exponent`. -/
+theorem exists_tail_le_of_forall_laplace {ι : Type*} {μ : ι → Measure ℝ}
+    (hprob : ∀ i, IsProbabilityMeasure (μ i)) (hcausal : ∀ i, IsCausal (μ i))
+    (hunif : ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ ∀ i, 1 - laplace (μ i) s ≤ ε) {η : ℝ} (hη : 0 < η) :
+    ∃ T : ℝ, 0 < T ∧ ∀ i, (μ i (Ioi T)).toReal ≤ η := by
+  obtain ⟨s, hs, hs'⟩ := hunif (η / 2) (by linarith)
+  have hlog2 : 0 < Real.log 2 := Real.log_pos one_lt_two
+  set T : ℝ := (Real.log 2 + 1) / s with hT_def
+  have hT0 : 0 < T := by positivity
+  have hsT : s * T = Real.log 2 + 1 := by rw [hT_def]; field_simp
+  have hhalf : (1 : ℝ) / 2 ≤ 1 - Real.exp (-(s * T)) := by
+    have h1 : Real.exp (-(s * T)) ≤ 1 / 2 := by
+      rw [hsT]
+      calc Real.exp (-(Real.log 2 + 1)) ≤ Real.exp (-Real.log 2) :=
+            Real.exp_le_exp.mpr (by linarith)
+        _ = 1 / 2 := by rw [Real.exp_neg, Real.exp_log two_pos]; norm_num
+    linarith
+  refine ⟨T, hT0, fun i => ?_⟩
+  haveI := hprob i
+  have hden : (0 : ℝ) < 1 - Real.exp (-(s * T)) := by linarith
+  refine (measureReal_Ioi_le_div (hcausal i) hs hT0).trans ?_
+  rw [div_le_iff₀ hden]
+  nlinarith [hs' i, mul_le_mul_of_nonneg_left hhalf hη.le]
+
+/-- **The general statement, in Mathlib's own vocabulary**: `Set.range μ` is tight. The compact
+set is `[0,T]` exactly as in `isTightMeasureSet_kernel`, for the same reason — causality kills the
+left tail outright. -/
+theorem isTightMeasureSet_of_forall_laplace {ι : Type*} {μ : ι → Measure ℝ}
+    (hprob : ∀ i, IsProbabilityMeasure (μ i)) (hcausal : ∀ i, IsCausal (μ i))
+    (hunif : ∀ ε : ℝ, 0 < ε → ∃ s : ℝ, 0 < s ∧ ∀ i, 1 - laplace (μ i) s ≤ ε) :
+    IsTightMeasureSet (Set.range μ) := by
+  rw [isTightMeasureSet_iff_exists_isCompact_measure_compl_le]
+  intro ε hε
+  rcases eq_or_ne ε ⊤ with rfl | hεtop
+  · exact ⟨∅, isCompact_empty, fun ν _ => le_top⟩
+  have he0 : 0 < ε.toReal := ENNReal.toReal_pos hε.ne' hεtop
+  obtain ⟨T, hT0, hT⟩ := exists_tail_le_of_forall_laplace hprob hcausal hunif he0
+  refine ⟨Icc 0 T, isCompact_Icc, ?_⟩
+  rintro ν ⟨i, rfl⟩
+  haveI := hprob i
+  have hsub : (Icc (0 : ℝ) T)ᶜ ⊆ Iio 0 ∪ Ioi T := by
+    intro x hx
+    simp only [mem_compl_iff, mem_Icc, not_and_or, not_le] at hx
+    exact hx.imp id id
+  have hle : (μ i) ((Icc (0 : ℝ) T)ᶜ) ≤ (μ i) (Ioi T) := by
+    refine (measure_mono hsub).trans ((measure_union_le _ _).trans ?_)
+    rw [hcausal i, zero_add]
+  refine hle.trans ((ENNReal.toReal_le_toReal (measure_ne_top _ _) hεtop).mp ?_)
+  exact hT i
+
+namespace SelfDecomposableExponent
+
 /-! ## Strict monotonicity of `F`
 
 The last analytic ingredient of `thm:main-characterization` (⇐): its uniqueness clause recovers

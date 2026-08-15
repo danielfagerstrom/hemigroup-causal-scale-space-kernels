@@ -393,7 +393,16 @@ sign that $T \ge 0$ would have. Its use in \ref{thm:main-construction} is
 \texttt{kernel\_tail\_le}, which makes the bound uniform over the family as
 $\mu_{a,b}\bigl((T,\infty)\bigr) \le F(Bs)/(1 - e^{-sT})$ for $b \le B$, and what makes that
 bite is $F(\zp) = 0$; \texttt{isTightMeasureSet\_kernel} repackages it in Mathlib's own
-vocabulary, which nothing here now consumes but any other consumer would.)}
+vocabulary, which nothing here now consumes but any other consumer would.
+\emph{The consequential sentence, for an arbitrary family rather than only the constructed
+kernels}, is \texttt{Hemigroup.exists\_tail\_le\_of\_forall\_laplace} (the tail bound, in the
+``for every $\eta$'' form \texttt{tendsto\_integral\_of\_tendsto\_laplace} consumes) and
+\texttt{Hemigroup.isTightMeasureSet\_of\_forall\_laplace} (the same, in Mathlib's
+\texttt{IsTightMeasureSet} vocabulary) --- same $s$-then-$T$ argument, read off the hypothesis
+\texttt{$\forall \varepsilon > 0,\, \exists s > 0,\, \forall i,\, 1 - \hat\mu_i(s) \le
+\varepsilon$} directly instead of through $F(Bs)$. Both reduce to Lean core; the kernel-family
+lines above are not re-derived from them, since doing so would just restate
+\texttt{exists\_kernel\_tail\_le}'s own proof of the hypothesis rather than shorten it.)}
 \end{lemma}
 
 \begin{proof}

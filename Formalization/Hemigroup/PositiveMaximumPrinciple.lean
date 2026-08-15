@@ -191,6 +191,62 @@ theorem satisfiesPMP_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 
     rw [hre]
     exact mul_nonneg (h2 hn2) hx.le
 
+/-! ## R5: realness of `A` on real test functions, when the symbol's coefficients are real
+
+`SatisfiesPMP` reads `Re (Ag)(x₀) ≤ 0` because `inversionOperator` is `ℂ`-valued in general; the
+article's `(Ag)(x₀) ≤ 0` is a statement about a real number. Under `isLocalOfOrderCoreOfSymbolEq`'s
+hypotheses, `Ag(x) = ∑_j γ_j x^{j-1} g^{(j)}(x)` on a real test function `g` and real `x > 0`
+(`eq_sum_iteratedDeriv`, `iteratedDeriv_ofReal_comp`): every factor of every term is a *real*
+number cast into `ℂ` --- `γ_j` by `hγre`, `x^{j-1}` because `x` is real and the exponent is an
+integer (`Complex.ofReal_zpow`), `g^{(j)}(x)` because `g` is real-valued --- so the sum is too.
+This is not automatic from `satisfiesPMP_of_isLocalOfOrderCore`'s hypotheses alone: those bound
+only the *real parts* of `coeff 0` and `coeff 2`, which say nothing about `coeff 1`'s imaginary
+part or, for the general `n`, any coefficient's. What closes it here is that *every* `γ_j` is
+real, which is `hsymbol`'s witness `γ`, not a consequence already in scope. -/
+
+/-- **`A` is real-valued on real test functions**, under `isLocalOfOrderCoreOfSymbolEq`'s
+hypotheses plus reality of the symbol's coefficients `γ_j`. -/
+theorem im_inversionOperator_eq_zero_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
+      mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
+      F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z)
+    (hγre : ∀ j, (γ j).im = 0) {g : ℝ → ℝ} (hg : IsTestFunction fun x => (g x : ℂ)) {x : ℝ}
+    (hx : 0 < x) :
+    (F.inversionOperator c (fun x => (g x : ℂ)) x).im = 0 := by
+  have hgr : ContDiff ℝ (⊤ : ℕ∞) g := contDiff_of_isTestFunction_ofReal hg
+  have hdiff : ∀ k : ℕ, Differentiable ℝ (iteratedDeriv k g) := fun k =>
+    hgr.differentiable_iteratedDeriv k (by exact_mod_cast (by simp : (k : ℕ∞) < ⊤))
+  have hcast : ∀ j : ℕ, iteratedDeriv j (fun x : ℝ => (g x : ℂ)) x
+      = ((iteratedDeriv j g x : ℝ) : ℂ) :=
+    fun j => iteratedDeriv_ofReal_comp (f := g) isOpen_univ (fun k y _ => (hdiff k) y) j
+      (mem_univ x)
+  rw [(F.isLocalOfOrderCoreOfSymbolEq hH hc hc' γ hγ hsymbol).eq_sum_iteratedDeriv hg hx,
+    Complex.im_sum]
+  refine Finset.sum_eq_zero fun j _ => ?_
+  rw [F.coeff_isLocalOfOrderCoreOfSymbolEq hH hc hc' γ hγ hsymbol j x, hcast j]
+  have hxim : ((x : ℂ) ^ ((j : ℤ) - 1)).im = 0 := by
+    rw [← Complex.ofReal_zpow]; exact Complex.ofReal_im _
+  have himA : (γ j * (x : ℂ) ^ ((j : ℤ) - 1)).im = 0 := by
+    rw [Complex.mul_im, hγre j, hxim]; ring
+  rw [Complex.mul_im, himA, Complex.ofReal_im]; ring
+
+/-- **The article's real-number reading of the PMP conclusion**: `A g x₀` is not merely a complex
+number with nonpositive real part but genuinely equal to that real part, cast back --- so
+`satisfiesPMP_of_symbol_eq`'s inequality *is* `(Ag)(x₀) ≤ 0` in `ℝ`, not only `Re (Ag)(x₀) ≤ 0`. -/
+theorem eq_ofReal_re_inversionOperator_of_symbol_eq (hH : F.StandingHypothesis) {c : ℝ}
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (γ : ℕ → ℂ) (hγ : γ n ≠ 0)
+    (hsymbol : ∀ z : ℂ, 0 < z.re → ENNReal.ofReal z.re < F.zStar - 1 →
+      mellin (fun s => (F.profile s : ℂ)) z ≠ 0 →
+      F.inversionSymbol z = ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z)
+    (hγre : ∀ j, (γ j).im = 0) {g : ℝ → ℝ} (hg : IsTestFunction fun x => (g x : ℂ)) {x : ℝ}
+    (hx : 0 < x) :
+    F.inversionOperator c (fun x => (g x : ℂ)) x
+      = ((F.inversionOperator c (fun x => (g x : ℂ)) x).re : ℂ) :=
+  Complex.ext (Complex.ofReal_re _).symm
+    (by rw [F.im_inversionOperator_eq_zero_of_symbol_eq hH hc hc' γ hγ hsymbol hγre hg hx,
+        Complex.ofReal_im])
+
 end SelfDecomposableExponent
 
 end Hemigroup

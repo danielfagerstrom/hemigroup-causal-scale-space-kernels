@@ -10,6 +10,7 @@ import Hemigroup.LocalityClassification
 import Hemigroup.GammaDensity
 import Hemigroup.ClosedForms
 import Hemigroup.DelayCore
+import Mathlib.MeasureTheory.Integral.Gamma
 
 /-!
 # Witnesses: the headline hypotheses are jointly satisfiable
@@ -641,10 +642,15 @@ theorem witness_local_polynomial_symbol_gamma (hγ : 1 < γ) :
 
 /-! ## Model 3: the stable family
 
-Only (ND) and covariance. (H) is not shown: `1 < z_*` needs `E[T₁^{-ζ}] < ∞` for some `ζ > 1`,
-which is true (every negative moment of the positive stable law is finite) but the development
-has no closed form for the stable density, and the moment cannot be read off the exponent
-`s^α` without the Mellin machinery of chapter 9, which presupposes (H). -/
+(ND), covariance, and — the density-free route the plan records — (H): every negative moment of
+`T₁` is finite, so `z_* = ∞`, so (H) holds outright. The moment cannot be read off the exponent
+`s^α` through a closed form for the stable density (the development has none), but it can be read
+off the exponent through its *Laplace transform*, which is exactly `s^α`: the hinge
+`lintegral_lintegral_gamma_of_ae_mem_Ioi` turns `E[T₁^{-ζ}]` into an outer integral over `t`
+against `lawT₁`, and swapping it (`lintegral_lintegral_swap`) into an outer integral over `s`
+against Lebesgue measure lands on `∫₀^∞ s^{ζ-1}e^{-s^α}ds`, finite by the Gamma-integral formula
+`integral_rpow_mul_exp_neg_rpow` for every `ζ > 0` and every `α ∈ (0,1)` — no closed form for the
+law is needed, only for its transform, which is the exponent itself. -/
 
 variable {α : ℝ}
 
@@ -653,6 +659,98 @@ theorem witness_hF_stable (hα : 0 < α) (hα1 : α < 1) :
     ∃ s₀ : ℝ, 0 < s₀ ∧ (stableExponent α hα hα1).exponent s₀ ≠ 0 :=
   ⟨1, zero_lt_one, exponent_ne_zero_of_toRealExponent_ne_zero (by
     rw [stableExponent_toRealExponent hα hα1 zero_lt_one, Real.one_rpow]; exact one_ne_zero)⟩
+
+/-- **`F(∞) = ∞` at stable.** `toRealExponent s = s^α → ∞` as `s → ∞`, since `α > 0`. -/
+theorem stableExponent_tendsto (hα : 0 < α) (hα1 : α < 1) :
+    Tendsto (stableExponent α hα hα1).toRealExponent atTop atTop := by
+  refine (tendsto_rpow_atTop hα).congr' ?_
+  filter_upwards [eventually_gt_atTop (0 : ℝ)] with s hs
+  exact (stableExponent_toRealExponent hα hα1 hs).symm
+
+/-- **`s^{ζ-1}e^{-s^α}` is integrable on `(0,∞)`, for every `ζ, α > 0`.**
+
+Mathlib's own Gamma-integral formula (`integral_rpow_mul_exp_neg_rpow`) needs no restriction
+`α ≥ 1`, unlike the paired `IntegrableOn` lemma in the same file — and integrability follows from
+the formula itself: the Bochner integral of a non-integrable function is `0` by convention, and
+the formula's right side, `Γ(ζ/α)/α`, is not. -/
+theorem integrableOn_rpow_mul_exp_neg_rpow_of_pos {ζ α : ℝ} (hα : 0 < α) (hζ : 0 < ζ) :
+    IntegrableOn (fun s : ℝ => s ^ (ζ - 1) * Real.exp (-(s ^ α))) (Ioi 0) := by
+  by_contra hni
+  have heq := integral_rpow_mul_exp_neg_rpow hα (show (-1 : ℝ) < ζ - 1 by linarith)
+  rw [integral_undef hni] at heq
+  have hΓpos : (0 : ℝ) < 1 / α * Real.Gamma ((ζ - 1 + 1) / α) := by
+    have h1 : (0 : ℝ) < (ζ - 1 + 1) / α := by
+      rw [show ζ - 1 + 1 = ζ by ring]; positivity
+    exact mul_pos (by positivity) (Real.Gamma_pos_of_pos h1)
+  linarith
+
+/-- **Every negative moment of the stable law is finite** (the plan's density-free route): the
+Tonelli hinge `lintegral_lintegral_gamma_of_ae_mem_Ioi` reads `Γ(ζ) · E[T₁^{-ζ}]` as the double
+integral `∫∫ s^{ζ-1}e^{-ts} ds dlawT₁(t)`; swapping the order of integration
+(`lintegral_lintegral_swap`) and evaluating the inner `t`-integral pointwise as the Laplace
+transform (`laplaceL_lawT₁`, which *is* `e^{-s^α}` here) turns it into
+`∫₀^∞ s^{ζ-1}e^{-s^α} ds`, finite by `integrableOn_rpow_mul_exp_neg_rpow_of_pos`. -/
+theorem stableExponent_negMoment_ne_top (hα : 0 < α) (hα1 : α < 1) {ζ : ℝ} (hζ : 0 < ζ) :
+    (stableExponent α hα hα1).negMoment ζ ≠ ⊤ := by
+  have h0 : (stableExponent α hα hα1).lawT₁ {(0 : ℝ)} = 0 :=
+    (stableExponent α hα hα1).lawT₁_singleton_zero (stableExponent_tendsto hα hα1)
+  have hν : ∀ᵐ t ∂(stableExponent α hα hα1).lawT₁, t ∈ Ioi (0 : ℝ) :=
+    (stableExponent α hα hα1).ae_mem_Ioi_lawT₁ h0
+  have hmeas : Measurable (Function.uncurry fun t s : ℝ =>
+      ENNReal.ofReal (s ^ (ζ - 1) * Real.exp (-(t * s)))) := by fun_prop
+  have hswap := lintegral_lintegral_swap
+    (μ := (stableExponent α hα hα1).lawT₁) (ν := volume.restrict (Ioi (0 : ℝ)))
+    hmeas.aemeasurable
+  have hhinge := lintegral_lintegral_gamma_of_ae_mem_Ioi hν hζ
+  have hinner : ∀ s ∈ Ioi (0 : ℝ),
+      (∫⁻ t, ENNReal.ofReal (s ^ (ζ - 1) * Real.exp (-(t * s)))
+        ∂(stableExponent α hα hα1).lawT₁)
+        = ENNReal.ofReal (s ^ (ζ - 1) * Real.exp (-(s ^ α))) := by
+    intro s hs
+    have hs' : (0 : ℝ) < s := hs
+    have hcongr : (fun t : ℝ => ENNReal.ofReal (s ^ (ζ - 1) * Real.exp (-(t * s))))
+        = fun t : ℝ => ENNReal.ofReal (s ^ (ζ - 1)) * ENNReal.ofReal (Real.exp (-(s * t))) := by
+      funext t
+      rw [← ENNReal.ofReal_mul (Real.rpow_nonneg hs'.le _), show t * s = s * t from mul_comm t s]
+    rw [hcongr, lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
+    show ENNReal.ofReal (s ^ (ζ - 1)) * laplaceL (stableExponent α hα hα1).lawT₁ s = _
+    rw [(stableExponent α hα hα1).laplaceL_lawT₁ hs'.le, stableExponent_toRealExponent hα hα1 hs',
+      ← ENNReal.ofReal_mul (Real.rpow_nonneg hs'.le _)]
+  have hswap' : (∫⁻ s in Ioi (0 : ℝ), ∫⁻ t,
+        ENNReal.ofReal (s ^ (ζ - 1) * Real.exp (-(t * s))) ∂(stableExponent α hα hα1).lawT₁)
+      = ∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (s ^ (ζ - 1) * Real.exp (-(s ^ α))) :=
+    setLIntegral_congr_fun measurableSet_Ioi hinner
+  have hfin : (∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (s ^ (ζ - 1) * Real.exp (-(s ^ α)))) ≠ ⊤ :=
+    lintegral_ofReal_ne_top_of_integrableOn (integrableOn_rpow_mul_exp_neg_rpow_of_pos hα hζ)
+  rw [← hswap', ← hswap, hhinge, ← (stableExponent α hα hα1).negMoment_eq_lintegral h0] at hfin
+  intro hcontra
+  exact hfin (by
+    rw [hcontra, ENNReal.mul_top (ENNReal.ofReal_pos.mpr (Real.Gamma_pos_of_pos hζ)).ne'])
+
+/-- **`AllNegMomentsFinite` at stable** (ledger A13's conclusion, for free): every negative
+moment, not only one past `1`. -/
+theorem stableExponent_allNegMomentsFinite (hα : 0 < α) (hα1 : α < 1) :
+    (stableExponent α hα hα1).AllNegMomentsFinite := fun _ζ hζ =>
+  stableExponent_negMoment_ne_top hα hα1 hζ
+
+/-- **(H) at stable, for every `α ∈ (0,1)`.** `z_* = ∞`, exactly as at drift. -/
+theorem witness_standingHypothesis_stable (hα : 0 < α) (hα1 : α < 1) :
+    (stableExponent α hα hα1).StandingHypothesis :=
+  ⟨stableExponent_tendsto hα hα1,
+   by rw [(stableExponent α hα hα1).zStar_eq_top (stableExponent_allNegMomentsFinite hα hα1)]
+      exact ENNReal.one_lt_top⟩
+
+/-- **`signaling_form` at stable**: (H), (ND), any `c > 0` (since `z_* = ∞`), and the tent. -/
+theorem witness_signaling_form_stable (hα : 0 < α) (hα1 : α < 1) {c : ℝ} (hc : 0 < c) :
+    (stableExponent α hα hα1).StandingHypothesis ∧
+    (∃ s₀ : ℝ, 0 < s₀ ∧ (stableExponent α hα hα1).exponent s₀ ≠ 0) ∧
+    0 < c ∧ ENNReal.ofReal (c + 1) < (stableExponent α hα hα1).zStar ∧
+    Measurable tentDeriv ∧ Integrable tentDeriv ∧ (∀ r : ℝ, r < 0 → tentDeriv r = 0) ∧
+    Measurable tent ∧ Integrable tent ∧
+    (∀ r : ℝ, tent r = ∫ ρ in Ioc (0 : ℝ) r, tentDeriv ρ) :=
+  ⟨witness_standingHypothesis_stable hα hα1, witness_hF_stable hα hα1, hc,
+   (stableExponent α hα hα1).ofReal_lt_zStar_of_all (stableExponent_allNegMomentsFinite hα hα1) _,
+   signal_hypotheses⟩
 
 /-- **`main_characterization` at stable**: (⇐)'s `hF`; (⇒)'s covariant core; uniqueness's `χ`. -/
 theorem witness_main_characterization_stable (hα : 0 < α) (hα1 : α < 1) :
