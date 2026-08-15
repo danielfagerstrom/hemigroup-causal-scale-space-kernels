@@ -1002,29 +1002,45 @@ qualifier is consumed and found free.
 #print axioms Hemigroup.SelfDecomposableExponent.integral_one_sub_exp_dilatedTail
 #print axioms Hemigroup.SelfDecomposableExponent.laplaceFun_phillipsGenerator
 
-/-! ### `lem:generator-properties` (10.3), clause (5) — three steps of four
+/-! ### `lem:generator-properties` (10.3), clause (5), and the node
 
-The clause itself is **open**, in `Skeleton/Chapter10.lean`. What is listed here is the part of its
-route that is proved and sits in the library ahead of its consumer, so this list is again the only
-check that it is interface-free. It is.
+`κ^{(x)} * f` is the primitive of `φ_x(∂_t)f`. **Lean core**, and **at every `t`** rather than
+almost every.
 
-**The route no longer goes through a uniqueness theorem.** The blueprint separates the two
-operators by their transforms and cites `prop:laplace-uniqueness`; but `setIntegralCLM (Ioc 0 t)`
-is a bounded functional — the third this chapter pushes through the Bochner integral, after
+**The route does not go through a uniqueness theorem.** The blueprint separates the two operators
+by their transforms and cites `prop:laplace-uniqueness`; but `setIntegralCLM (Ioc 0 t)` is a
+bounded functional — the third this chapter pushes through the Bochner integral, after
 `mconvL1 μ` and `laplaceCLM` — so the primitive of `φ_x(∂_t)f` can be *evaluated* instead of
-characterised, and the conclusion is equality at every `t` rather than almost every. Two things
-follow: the ledger appeal the blueprint's route would have made is not made, and the reduction to
-`f' ≥ 0` recorded earlier as the way round signed-measure Laplace injectivity is not needed, that
-obstruction having been an artefact of the transform route.
+characterised. Two things follow: the ledger appeal the blueprint's route would have made is not
+made, and the reduction to `f' ≥ 0` recorded earlier as the way round signed-measure Laplace
+injectivity is not needed — that obstruction was an artefact of the transform route. Note also
+that the reduction would not have worked: the primitive of `(f')⁺` is nondecreasing and so
+generally not in `L¹`, hence not in `𝒟`, which is the `integrable` field `DelayCore`'s docstring
+calls "genuinely a separate demand".
 
-What is left is one signed Fubini — whose integrability side condition is clause (1)'s convergence
-once more, `|∫₀^r f(t-u)du| ≤ min(‖f‖₁, Mr)` — and the unfolding of `mconv` against
-`memoryKernel = b₀δ₀ + k(·/x)/x`.
+What replaces it is one signed exchange, `integral_intervalIntegral_eq_tail`, got from the
+nonnegative layer cake by splitting the *integrand* at zero. Its integrability side condition is
+clause (1)'s convergence once more — `|∫₀^r f(t-u)du| ≤ min(‖f‖₁, Mr)` is
+`integrable_min_const_mul_of_min_one`'s integrand — so the whole of 10.3 rests on the single
+convergence fact `∫(1∧r)ν₁(dr) < ∞`.
+
+`generator_properties` is the node: a **bundle**, in the sense `delay_core` and `thm:signaling-form`
+are, so the per-clause lines above it are the load-bearing ones. It states two things more weakly
+than they were proved, to keep it the blueprint's statement — commutation for causal probability
+measures where any finite measure will do, and clause (5) `a.e.` where equality holds everywhere.
 -/
 
 #print axioms Hemigroup.lintegral_intervalIntegral_eq_tail
+#print axioms Hemigroup.integrable_min_const_mul_of_min_one
+#print axioms Hemigroup.integral_intervalIntegral_eq_tail_of_nonneg
+#print axioms Hemigroup.integral_intervalIntegral_eq_tail
+#print axioms Hemigroup.intervalIntegral_comp_sub_left_eq
 #print axioms Hemigroup.SelfDecomposableExponent.setIntegral_phillipsGenerator
 #print axioms Hemigroup.SelfDecomposableExponent.setIntegral_sub_transL1
+#print axioms Hemigroup.SelfDecomposableExponent.dilatedTail_Ioi_toReal
+#print axioms Hemigroup.SelfDecomposableExponent.mconv_memoryKernel_apply
+#print axioms Hemigroup.SelfDecomposableExponent.mconv_memoryKernel_eq_setIntegral
+#print axioms Hemigroup.generator_properties
 
 /-! ### `Ein`, the entire exponential integral
 

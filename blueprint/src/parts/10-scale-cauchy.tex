@@ -124,7 +124,7 @@ one change of variables apart (\texttt{phillipsGenerator\_eq\_smul\_integral}).)
 % draft: Lemma 10.3
 \begin{lemma}[properties of the generator]\label{lem:generator-properties}
 \uses{def:phillips-generator,lem:delay-core,lem:memory-kernel,prop:laplace-uniqueness}
-\lean{Skeleton.generator_properties}\notready
+\lean{Hemigroup.generator_properties}\leanok
 For $f \in \core$ and $x > 0$:
 \begin{enumerate}
 \item The integral converges absolutely in $\Xz$, with
@@ -137,69 +137,49 @@ $\varphi_x(s) = s F'(xs)$.
 $\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
 coincides on $\core$ with the memory-kernel operator of Chapter~9.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Stated in Lean, clauses (1)--(4) proved} (2026-08-14):
-\texttt{Skeleton/Chapter10.lean} carries the one open clause, (5), as a named sub-lemma with a
-\texttt{sorry}-free collation above it, which is the decomposition gate's middle state and not a
-claim; the four proved clauses have moved into \texttt{Hemigroup/PhillipsGenerator.lean} and are
-Lean core, the statements quantifying over any $\nu_1$ meeting the tail specification rather than
-over the constructed family.
-\textbf{Clause (2) is where the transform is a bounded functional, which is not obvious and was
-first got wrong here.} $\Lap$ is unbounded on $L^1(\RR)$ --- $e^{-st}$ grows to the left of the
-origin --- but the article's transform integrates over $(0,\infty)$ only, so its weight
-$\mathbf{1}_{(0,\infty)}(t)e^{-st}$ is bounded by $1$ on all of $\RR$ for $s \ge 0$, and it is
-therefore an element of $X \to_L \RR$. So the Fubini step of (2) is the same one-line
-pass-through as (3)'s, and it holds for every element of $X$, so the Phillips integral never has
-to be shown causal. Two further steps of (2) also cost less than the proof above suggests:
-$\Lap[f'] = s\hat f$ is \emph{not} an integration by parts --- $f(0)=0$ is already inside the
-definition of $\core$, so what remains is to apply the (continuous) transform to
-\ref{lem:delay-core}'s difference-quotient limit and read $(e^{-sh}-1)/h \to -s$ off the
-derivative of $h \mapsto e^{-sh}$ at the origin, with no boundary term to make vanish; and the
-scalar identity $b_0s + \int(1-e^{-sr})\nu_x(dr) = sF'(xs)$ is the layer cake of
-\ref{lem:potential-kernel} verbatim, with the tail identity substituted under the integral in $r$.
-\textbf{Clause (3) uses neither causality nor normalisation of $\Phi$} --- it holds for any finite
-measure, being (A2) for the $L^1$ convolution plus linearity, so ``commutes with every
-$\Phi_{y,z}$'' is proved off the constructed family entirely. And (3) and (4) are the two ways an
-operator meets the Bochner integral: (3) pulls a continuous linear map through it, needing only the
-integrability (1) supplies, while (4) pulls nothing through and is dominated convergence in the
-parameter, re-using (1)'s bound. That the bound can be re-used is what the dilated form of the
-definition is for: there the scale sits in the integrand rather than in the measure, and
-$\min(2\|f\|_1, xr\|f'\|_1)$ increases in $x$, so one bound at the top of a neighbourhood covers
-the neighbourhood --- ``for $x$ in a compact subset of $(0,\infty)$'' discharged without forming a
-compact set. \textbf{The convergence
-$\int (1 \wedge r)\,\nu_1(dr) < \infty$ is one layer cake and not the integration by parts the
-proof above names}: $\int (1\wedge r)\nu_1 = \int_0^1 \nu_1\bigl((u,\infty)\bigr)du = \int_0^1 k$,
-so the $k(1) < \infty$ half of that argument's hypothesis is unused, and the tail identity is
-consumed under an integral in $u$ --- which is where $\nu_1$'s almost-everywhere specification is
-paid for and found free. Worth noting where $f \in \core$ is spent: $\|T_rf-f\|_1 \le r\|f'\|_1$
-is what makes the integrand small at the origin, while $\|T_rf-f\|_1 \le 2\|f\|_1$ holds for every
-$f \in X$; the core hypothesis buys only the first, which is the half $\nu_1$'s mass at the origin
-needs. \textbf{Not blocked by generation theory}: no clause mentions a generator's domain, a
+\statusT\quad\emph{(\textbf{Proved in Lean} (2026-08-15), all five clauses, and \textbf{Lean
+core} --- the whole of this lemma is interface-free, and the chapter-level ``blocked on
+C$_0$-semigroup theory'' under which it sat was wrong: no clause mentions a generator's domain, a
 resolvent, or a generation theorem, and the ``strong continuity of $T$'' that (4) invokes is
-\texttt{continuous\_transL1}, proved in chapter~4. Clause by clause
-the inputs are (1) \ref{lem:delay-core}'s estimate, (2) Fubini and \ref{lem:memory-kernel},
-(3) that $\Phi_{y,z}$ is a continuous linear map, so it passes through a Bochner integral,
-(4) dominated convergence, (5) \texttt{laplaceL\_memoryKernel} and
-\ref{prop:laplace-uniqueness}. The C$_0$-semigroup reason that filed all of chapter~10 as blocked
-attaches to \ref{thm:scale-cauchy} and \ref{prop:fixed-scale-semigroup}, and not here.
-Two departures the statements make, neither changing the content. The commutation clause is
-stated for an \emph{arbitrary} causal probability measure rather than for the family's own
-$\Phi_{y,z}$: that is what its proof uses, and it keeps the clause off the ledger entry
-quantifying over the constructed family would have put it on. And (5) is stated in the primitive
-vocabulary $\core$ is defined in --- $\kappa^{(x)} * f$ agrees a.e.\ with the \emph{primitive} of
-$\varphi_x(\partial_t)f$ --- which is the same assertion as ``absolutely continuous with that
-derivative'' and carries the trailing $(\kappa^{(x)}*f)(\zp) = 0$ for free.
-Two things the re-reading found, both the pattern this article keeps meeting --- the classical
-derivation asking for more than the statement does. The convergence
-$\int (1 \wedge r)\,\nu_x(dr) < \infty$ is \emph{one layer cake},
-$\int_0^1 \nu_1\bigl((u,\infty)\bigr)\,du = \int_0^1 k$, and not the integration by parts the
-proof above names; the $k(1) < \infty$ half of that argument's hypothesis is unused. And the
-uniqueness step of (5) is about a \emph{signed} function where the available injectivity is about
-measures --- but $\varphi_x(\partial_t)$ and $\kappa^{(x)} * \cdot$ are both linear in $f$, so it
-is enough to treat $f' \ge 0$, where $f$ is nondecreasing, $f - T_rf \ge 0$, and both sides are
-measures.
-What is left is (5), whose transform half is now supplied by (2) and whose uniqueness half needs
-Laplace injectivity for a locally finite measure --- $\kappa^{(x)}$ has total mass $F'(\zp)$,
-which \ref{prop:moments} shows may be infinite.)}
+chapter~4's continuity of translation. \texttt{Hemigroup/PhillipsGenerator.lean}; the statements
+quantify over any $\nu_1$ meeting the tail specification rather than over the constructed family,
+which is what keeps them off the ledger.
+\textbf{The whole lemma rests on one convergence fact}, $\int(1 \wedge r)\,\nu_1(dr) < \infty$: it
+bounds the Bochner integral in (1), dominates the limit in (4), and justifies the exchange in (5).
+And that fact is \emph{one layer cake},
+$\int(1\wedge r)\nu_1 = \int_0^1 \nu_1\bigl((u,\infty)\bigr)du = \int_0^1 k$, not the integration
+by parts the proof above names --- the $k(1) < \infty$ half of that argument's hypothesis is
+unused, and the tail identity is consumed under an integral in $u$, which is where $\nu_1$'s
+almost-everywhere specification is paid for and found free. Worth noting where $f \in \core$ is
+spent: $\|T_rf-f\|_1 \le r\|f'\|_1$ makes the integrand small at the origin, while
+$\|T_rf-f\|_1 \le 2\|f\|_1$ holds for every $f \in X$, so the core hypothesis buys only the first
+--- the half $\nu_1$'s mass at the origin needs.
+\textbf{Three of the five clauses are pass-throughs of a bounded functional}: (3) pushes
+$\Phi_{y,z}$ through the Bochner integral, (2) pushes $\Lap$, and (5) pushes
+$g \mapsto \int_0^t g$, each turning a statement about the vector-valued integral into one about
+scalars. That $\Lap$ is available this way is not obvious and was first got wrong here: it is
+unbounded on $L^1(\RR)$, but the article's transform integrates over $(0,\infty)$ only, so its
+weight $\mathbf{1}_{(0,\infty)}(t)e^{-st}$ is bounded by $1$ and the functional exists. There is
+no Fubini--Tonelli argument in (2) at all, and none of the three needs the Phillips integral to be
+shown causal.
+\textbf{Four departures from the proof above, none changing the content.} (2)'s
+$\Lap[f'] = s\hat f$ is not an integration by parts: $f(0)=0$ is already inside the definition of
+$\core$, so applying the transform to \ref{lem:delay-core}'s difference-quotient limit and reading
+$(e^{-sh}-1)/h \to -s$ off a derivative at the origin suffices, with no boundary term to make
+vanish. (3) needs neither causality nor normalisation of $\Phi$ --- it holds for any finite
+measure, being (A2) for the $L^1$ convolution plus linearity. (4) forms no compact set:
+$\min(2\|f\|_1, xr\|f'\|_1)$ increases in $x$, so one bound at the top of a neighbourhood covers
+it, compactness having stood in for monotonicity. And \textbf{(5) needs no uniqueness theorem}:
+the primitive of $\varphi_x(\partial_t)f$ is \emph{evaluated} rather than characterised, so
+\ref{prop:laplace-uniqueness} is not spent, and the conclusion is equality at every $t$ rather
+than almost every --- with the trailing $(\kappa^{(x)}*f)(\zp)=0$ free, a primitive vanishing at
+the origin by construction. What replaces the uniqueness step is one signed exchange, got from the
+layer cake by splitting the integrand at zero; splitting $f'$ instead, which an earlier reading
+proposed, would not work, the primitive of $(f')^+$ being nondecreasing and so generally not in
+$L^1$.
+Finally, (5) is stated in the primitive vocabulary $\core$ is defined in, and the Lean $\nu_1$
+meets an \emph{almost-everywhere} tail specification, a $k$ that is only nonincreasing having no
+right-continuous representative nameable there.)}
 \end{lemma}
 
 \begin{proof}

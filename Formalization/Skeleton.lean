@@ -5,7 +5,6 @@ Authors: Daniel Fagerström
 -/
 import Skeleton.Chapter7
 import Skeleton.Chapter9
-import Skeleton.Chapter10
 import Skeleton.Chapter11
 
 /-!
@@ -24,9 +23,10 @@ entry this library has carried has left that way: `thm:increments-bernstein` to
 `Skeleton/Chapter12.lean` entirely, so that file is gone --- and `prop:moments` to
 `Hemigroup/MeanDelay.lean`, which emptied `Skeleton/Chapter8.lean` the same way.
 
-`Skeleton/Chapter10.lean` is the first file here to be **reopened**: it was emptied by
-`lem:delay-core` and now carries the five clauses of `lem:generator-properties`. That is the
-library working as intended --- proving 10.1 built the setting (`𝒟`, `T_r`) that made 10.2 and
-10.3 stateable, and a chapter-level "blocked on C₀-semigroup theory" that had been written before
-the setting existed turned out, on re-reading the nodes, to apply to neither.
+`Skeleton/Chapter10.lean` was the first file here to be **reopened** and then emptied a second
+time, both within two days: `lem:delay-core` emptied it, `lem:generator-properties` reopened it
+with five clauses, and all five were proved. That is the library working as intended --- proving
+10.1 built the setting (`𝒟`, `T_r`) that made 10.2 and 10.3 stateable, and a chapter-level
+"blocked on C₀-semigroup theory", written before the setting existed, turned out on re-reading the
+nodes to apply to neither. The file is gone.
 -/

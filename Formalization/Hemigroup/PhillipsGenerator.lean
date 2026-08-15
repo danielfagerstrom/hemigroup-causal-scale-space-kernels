@@ -254,6 +254,148 @@ theorem lintegral_intervalIntegral_eq_tail {ν : Measure ℝ} (hν : IsCausal ν
   lintegral_comp_eq_lintegral_meas_lt_mul (f := fun r : ℝ => r) (g := h) ν hν.ae_nonneg
     aemeasurable_id (fun r _ => hhi r) (.of_forall hhnn)
 
+/-- `min(c, dr) ≤ max(c,d)·(1 ∧ r)` on the half-line, so one convergence fact about `ν` covers
+every pair of constants. Stated against `Integrable (1 ∧ ·)` rather than against a `HasLevyTail`,
+because the signed exchange of `lem:generator-properties`(5) needs it for constants that have
+nothing to do with `F`. -/
+theorem integrable_min_const_mul_of_min_one {ν : Measure ℝ} (hν : IsCausal ν)
+    (hmin : Integrable (fun r : ℝ => min 1 r) ν) {c d : ℝ} (hc : 0 ≤ c) (hd : 0 ≤ d) :
+    Integrable (fun r : ℝ => min c (d * r)) ν := by
+  have hcont : Continuous fun r : ℝ => min c (d * r) := by fun_prop
+  refine Integrable.mono' (hmin.const_mul (max c d)) hcont.aestronglyMeasurable ?_
+  filter_upwards [hν.ae_nonneg] with r hr
+  have hminnn : 0 ≤ min c (d * r) := le_min hc (mul_nonneg hd hr)
+  rw [Real.norm_eq_abs, abs_of_nonneg hminnn]
+  rcases le_total r 1 with h1 | h1
+  · calc min c (d * r) ≤ d * r := min_le_right _ _
+      _ ≤ max c d * min 1 r := by
+          rw [min_eq_right h1]
+          exact mul_le_mul_of_nonneg_right (le_max_right c d) hr
+  · calc min c (d * r) ≤ c := min_le_left _ _
+      _ = c * 1 := (mul_one c).symm
+      _ ≤ max c d * min 1 r := by
+          rw [min_eq_left h1]
+          exact mul_le_mul_of_nonneg_right (le_max_left c d) zero_le_one
+
+/-- The nonnegative half of the exchange, with the integrability it needs.
+
+The bound is clause (1)'s: `∫₀^r p ≤ min(∫p, Mr)` for `0 ≤ p ≤ M`, which is
+`integrable_min_const_mul_of_min_one`'s integrand — so the Fubini of (5) is justified by exactly
+the convergence that justifies the Bochner integral of (1). -/
+theorem integral_intervalIntegral_eq_tail_of_nonneg {ν : Measure ℝ} (hν : IsCausal ν)
+    (hmin : Integrable (fun r : ℝ => min 1 r) ν) {p : ℝ → ℝ} (hpi : Integrable p)
+    (hpnn : ∀ u, 0 ≤ p u) {M : ℝ} (hpM : ∀ u, p u ≤ M)
+    (hτ : ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))), ν (Ioi u) ≠ ⊤) :
+    Integrable (fun r : ℝ => ∫ u in (0 : ℝ)..r, p u) ν ∧
+      Integrable (fun u : ℝ => p u * (ν (Ioi u)).toReal) (volume.restrict (Ioi 0)) ∧
+      (∫ r, (∫ u in (0 : ℝ)..r, p u) ∂ν)
+        = ∫ u in Ioi (0 : ℝ), p u * (ν (Ioi u)).toReal := by
+  have hMnn : 0 ≤ M := le_trans (hpnn 0) (hpM 0)
+  have hτmeas : Measurable fun u : ℝ => (ν (Ioi u)).toReal :=
+    (Antitone.measurable fun a b hab => measure_mono (Ioi_subset_Ioi hab)).ennreal_toReal
+  have hpii : ∀ r : ℝ, IntervalIntegrable p volume 0 r := fun r => hpi.intervalIntegrable
+  have hQcont : Continuous fun r : ℝ => ∫ u in (0 : ℝ)..r, p u := hpi.continuous_primitive 0
+  have hQnn : ∀ r : ℝ, 0 ≤ r → 0 ≤ ∫ u in (0 : ℝ)..r, p u := fun r hr =>
+    intervalIntegral.integral_nonneg hr fun u _ => hpnn u
+  have hQle : ∀ r : ℝ, 0 ≤ r →
+      (∫ u in (0 : ℝ)..r, p u) ≤ min (∫ u, p u) (M * r) := by
+    intro r hr
+    refine le_min ?_ ?_
+    · rw [intervalIntegral.integral_of_le hr]
+      exact setIntegral_le_integral hpi (.of_forall hpnn)
+    · calc (∫ u in (0 : ℝ)..r, p u) ≤ ∫ _u in (0 : ℝ)..r, M :=
+            intervalIntegral.integral_mono_on hr (hpii r)
+              (intervalIntegrable_const) fun u _ => hpM u
+        _ = M * r := by simp [mul_comm]
+  -- the layer cake, and the finiteness clause (1) supplies
+  have hlayer := lintegral_intervalIntegral_eq_tail hν hpnn hpii
+  have hdom : Integrable (fun r : ℝ => min (∫ u, p u) (M * r)) ν :=
+    integrable_min_const_mul_of_min_one hν hmin (integral_nonneg hpnn) hMnn
+  have hfin : (∫⁻ r, ENNReal.ofReal (∫ u in (0 : ℝ)..r, p u) ∂ν) ≠ ⊤ := by
+    have hle : (∫⁻ r, ENNReal.ofReal (∫ u in (0 : ℝ)..r, p u) ∂ν)
+        ≤ ∫⁻ r, ‖min (∫ u, p u) (M * r)‖ₑ ∂ν := by
+      refine lintegral_mono_ae ?_
+      filter_upwards [hν.ae_nonneg] with r hr
+      rw [Real.enorm_eq_ofReal (le_min (integral_nonneg hpnn) (mul_nonneg hMnn hr))]
+      exact ENNReal.ofReal_le_ofReal (hQle r hr)
+    have h2 := hdom.2
+    rw [hasFiniteIntegral_iff_enorm] at h2
+    exact ne_of_lt (lt_of_le_of_lt hle h2)
+  have hQint : Integrable (fun r : ℝ => ∫ u in (0 : ℝ)..r, p u) ν := by
+    refine ⟨hQcont.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm]
+    refine lt_of_le_of_lt (lintegral_mono_ae ?_) (lt_top_iff_ne_top.mpr hfin)
+    filter_upwards [hν.ae_nonneg] with r hr
+    rw [Real.enorm_eq_ofReal (hQnn r hr)]
+  have hQnn' : ∀ᵐ r ∂ν, 0 ≤ ∫ u in (0 : ℝ)..r, p u := by
+    filter_upwards [hν.ae_nonneg] with r hr using hQnn r hr
+  have hprod : ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      ENNReal.ofReal (p u * (ν (Ioi u)).toReal) = ν (Ioi u) * ENNReal.ofReal (p u) := by
+    filter_upwards [hτ] with u hu
+    rw [ENNReal.ofReal_mul (hpnn u), ENNReal.ofReal_toReal hu, mul_comm]
+  have hrnn : ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))), 0 ≤ p u * (ν (Ioi u)).toReal :=
+    (ae_restrict_iff' measurableSet_Ioi).mpr (.of_forall fun u _ =>
+      mul_nonneg (hpnn u) ENNReal.toReal_nonneg)
+  have hrmeas : AEStronglyMeasurable (fun u : ℝ => p u * (ν (Ioi u)).toReal)
+      (volume.restrict (Ioi 0)) :=
+    hpi.aestronglyMeasurable.restrict.mul hτmeas.aestronglyMeasurable
+  have hrfin : (∫⁻ u in Ioi (0 : ℝ), ENNReal.ofReal (p u * (ν (Ioi u)).toReal)) ≠ ⊤ := by
+    rw [lintegral_congr_ae hprod, ← hlayer]
+    exact hfin
+  refine ⟨hQint, ⟨hrmeas, ?_⟩, ?_⟩
+  · rw [hasFiniteIntegral_iff_enorm]
+    refine lt_of_le_of_lt (lintegral_mono_ae ?_) (lt_top_iff_ne_top.mpr hrfin)
+    filter_upwards [hrnn] with u hu
+    rw [Real.enorm_eq_ofReal hu]
+  · rw [integral_eq_lintegral_of_nonneg_ae hQnn' hQcont.aestronglyMeasurable, hlayer,
+      integral_eq_lintegral_of_nonneg_ae hrnn hrmeas, lintegral_congr_ae hprod]
+
+/-- **The exchange of `lem:generator-properties`(5)**, for a signed integrand:
+`∫ν(dr)∫₀^r h = ∫₀^∞ h(u)ν((u,∞))du`.
+
+Got from the nonnegative case by splitting `h` at zero — *not* by splitting `f'`, which was the
+earlier plan and does not work: the primitive of `(f')⁺` is nondecreasing and so generally not in
+`L¹`, hence not in `𝒟`. The obstruction is the `integrable` field of `HasCoreDeriv`, the one the
+module docstring of `DelayCore` records as "genuinely a separate demand". -/
+theorem integral_intervalIntegral_eq_tail {ν : Measure ℝ} (hν : IsCausal ν)
+    (hmin : Integrable (fun r : ℝ => min 1 r) ν) {h : ℝ → ℝ} (hhi : Integrable h) {M : ℝ}
+    (hM : ∀ u, |h u| ≤ M) (hτ : ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))), ν (Ioi u) ≠ ⊤) :
+    (∫ r, (∫ u in (0 : ℝ)..r, h u) ∂ν) = ∫ u in Ioi (0 : ℝ), h u * (ν (Ioi u)).toReal := by
+  have hpos := integral_intervalIntegral_eq_tail_of_nonneg hν hmin hhi.pos_part
+    (fun u => le_max_right _ _) (fun u => max_le ((le_abs_self _).trans (hM u)) (by
+      have := (abs_nonneg (h u)).trans (hM u); linarith)) hτ
+  have hneg := integral_intervalIntegral_eq_tail_of_nonneg hν hmin hhi.neg_part
+    (fun u => le_max_right _ _) (fun u => max_le ((neg_le_abs _).trans (hM u)) (by
+      have := (abs_nonneg (h u)).trans (hM u); linarith)) hτ
+  have hsplit : ∀ r : ℝ, (∫ u in (0 : ℝ)..r, h u)
+      = (∫ u in (0 : ℝ)..r, max (h u) 0) - ∫ u in (0 : ℝ)..r, max (-h u) 0 := by
+    intro r
+    rw [← intervalIntegral.integral_sub hhi.pos_part.intervalIntegrable
+      hhi.neg_part.intervalIntegrable]
+    refine intervalIntegral.integral_congr fun u _ => ?_
+    rcases le_total 0 (h u) with hu | hu
+    · rw [max_eq_left hu, max_eq_right (by linarith), sub_zero]
+    · rw [max_eq_right hu, max_eq_left (by linarith), zero_sub, neg_neg]
+  simp only [hsplit]
+  rw [integral_sub hpos.1 hneg.1, hpos.2.2, hneg.2.2, ← integral_sub hpos.2.1 hneg.2.1]
+  refine setIntegral_congr_fun measurableSet_Ioi fun u _ => ?_
+  rcases le_total 0 (h u) with hu | hu
+  · rw [max_eq_left hu, max_eq_right (by linarith)]; ring
+  · rw [max_eq_right hu, max_eq_left (by linarith)]; ring
+
+/-- The reflected primitive: `∫₀^r f(t-u)du = ∫₀^t f - ∫₀^{t-r} f`, for causal `f`. Chasles and
+one reflection, and it is what matches `setIntegral_sub_transL1` to the exchange above. -/
+theorem intervalIntegral_comp_sub_left_eq {f : ℝ → ℝ} (hfi : Integrable f)
+    (hfc : ∀ u : ℝ, u < 0 → f u = 0) (t r : ℝ) :
+    (∫ u in (0 : ℝ)..r, f (t - u))
+      = (∫ ρ in Ioc (0 : ℝ) t, f ρ) - ∫ ρ in Ioc (0 : ℝ) (t - r), f ρ := by
+  rw [intervalIntegral.integral_comp_sub_left f t,
+    setIntegral_Ioc_eq_intervalIntegral_of_causal hfi hfc t,
+    setIntegral_Ioc_eq_intervalIntegral_of_causal hfi hfc (t - r), sub_zero,
+    eq_sub_iff_add_eq, add_comm]
+  exact intervalIntegral.integral_add_adjacent_intervals hfi.intervalIntegrable
+    hfi.intervalIntegrable
+
 namespace SelfDecomposableExponent
 
 variable (F : SelfDecomposableExponent)
@@ -359,23 +501,8 @@ theorem integrable_min_one_id {ν : Measure ℝ} (hν : F.HasLevyTail ν) :
 `min(c, xr·d) ≤ max(c, xd)·(1 ∧ r)` on the half-line, so one convergence fact covers every core
 element and every scale. -/
 theorem integrable_min_const_mul {ν : Measure ℝ} (hν : F.HasLevyTail ν) {c d : ℝ} (hc : 0 ≤ c)
-    (hd : 0 ≤ d) : Integrable (fun r : ℝ => min c (d * r)) ν := by
-  have hcont : Continuous fun r : ℝ => min c (d * r) := by fun_prop
-  refine Integrable.mono' ((F.integrable_min_one_id hν).const_mul (max c d))
-    hcont.aestronglyMeasurable ?_
-  filter_upwards [hν.1.ae_nonneg] with r hr
-  have hmin : 0 ≤ min c (d * r) := le_min hc (mul_nonneg hd hr)
-  rw [Real.norm_eq_abs, abs_of_nonneg hmin]
-  rcases le_total r 1 with h1 | h1
-  · calc min c (d * r) ≤ d * r := min_le_right _ _
-      _ ≤ max c d * min 1 r := by
-          rw [min_eq_right h1]
-          exact mul_le_mul_of_nonneg_right (le_max_right c d) hr
-  · calc min c (d * r) ≤ c := min_le_left _ _
-      _ = c * 1 := (mul_one c).symm
-      _ ≤ max c d * min 1 r := by
-          rw [min_eq_left h1]
-          exact mul_le_mul_of_nonneg_right (le_max_left c d) zero_le_one
+    (hd : 0 ≤ d) : Integrable (fun r : ℝ => min c (d * r)) ν :=
+  integrable_min_const_mul_of_min_one hν.1 (F.integrable_min_one_id hν) hc hd
 
 /-- **`lem:generator-properties`(1), convergence**: the Phillips integral converges absolutely in
 `X₀`.
@@ -628,6 +755,171 @@ theorem setIntegral_sub_transL1 {A : X} {f : ℝ → ℝ} (hA : ((A : X) : ℝ �
   rw [setIntegral_congr_ae measurableSet_Ioc (hrep.mono fun ρ hρ _ => hρ),
     integral_sub hfi.integrableOn ((hfi.comp_sub_right r).integrableOn), hshift]
 
+/-- **The blueprint's "i.e." completed**: `ν_x((u,∞)) = k(u/x)/x`, almost everywhere.
+
+`dilatedTail_Ioi` is the measure algebra and `HasLevyTail` the tail; the `ae` qualifier is
+transported along `u ↦ u/x`, which scales Lebesgue measure and so preserves null sets. -/
+theorem dilatedTail_Ioi_toReal {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ} (hx : 0 < x) :
+    ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))),
+      (dilatedTail ν x (Ioi u)).toReal = F.k (u / x) / x := by
+  have hqmp : Measure.QuasiMeasurePreserving (fun u : ℝ => u / x) volume volume := by
+    simpa [div_eq_inv_mul] using quasiMeasurePreserving_const_mul (inv_ne_zero hx.ne')
+  have hshift : ∀ᵐ u ∂volume, u / x ∈ Ioi (0 : ℝ) →
+      ν (Ioi (u / x)) = ENNReal.ofReal (F.k (u / x)) :=
+    hqmp.ae ((ae_restrict_iff' measurableSet_Ioi).mp hν.2)
+  refine (ae_restrict_iff' measurableSet_Ioi).mpr ?_
+  filter_upwards [hshift] with u hu hupos
+  have hdiv : u / x ∈ Ioi (0 : ℝ) := mem_Ioi.mpr (div_pos (mem_Ioi.mp hupos) hx)
+  have hknn : 0 ≤ F.k (u / x) := F.k_nonneg _ hdiv
+  rw [dilatedTail_Ioi hx ν u, hu hdiv, ← ENNReal.ofReal_mul (inv_pos.mpr hx).le,
+    ENNReal.toReal_ofReal (mul_nonneg (inv_pos.mpr hx).le hknn)]
+  exact (div_eq_inv_mul (F.k (u / x)) x).symm
+
+/-- The dilated tail is finite above every positive `u` — what the exchange needs in order to read
+`ν_x((u,∞))` as a real number. -/
+theorem dilatedTail_Ioi_ne_top {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ} (hx : 0 < x) :
+    ∀ᵐ u ∂(volume.restrict (Ioi (0 : ℝ))), dilatedTail ν x (Ioi u) ≠ ⊤ := by
+  have hqmp : Measure.QuasiMeasurePreserving (fun u : ℝ => u / x) volume volume := by
+    simpa [div_eq_inv_mul] using quasiMeasurePreserving_const_mul (inv_ne_zero hx.ne')
+  have hshift : ∀ᵐ u ∂volume, u / x ∈ Ioi (0 : ℝ) →
+      ν (Ioi (u / x)) = ENNReal.ofReal (F.k (u / x)) :=
+    hqmp.ae ((ae_restrict_iff' measurableSet_Ioi).mp hν.2)
+  refine (ae_restrict_iff' measurableSet_Ioi).mpr ?_
+  filter_upwards [hshift] with u hu hupos
+  rw [dilatedTail_Ioi hx ν u, hu (mem_Ioi.mpr (div_pos (mem_Ioi.mp hupos) hx))]
+  exact ENNReal.mul_ne_top ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top
+
+/-- `1 ∧ r` is `ν_x`-integrable when it is `ν`-integrable: the dilation only rescales. -/
+theorem integrable_min_one_id_dilatedTail {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ}
+    (hx : 0 < x) : Integrable (fun r : ℝ => min 1 r) (dilatedTail ν x) := by
+  refine (integrable_dilatedTail_iff hx ν
+    (by fun_prop : Continuous fun r : ℝ => min 1 r).aestronglyMeasurable).mpr ?_
+  exact integrable_min_const_mul_of_min_one hν.1 (F.integrable_min_one_id hν) zero_le_one hx.le
+
+/-- `κ^{(x)} * f`, unfolded: the drift atom plus the dilated density.
+
+Integrability comes from local finiteness of `κ^{(x)}`, which chapter 9 derives from the transform
+converging rather than assuming — the point being that `κ^{(x)}` has total mass `F'(0+)`, which
+`prop:moments` shows may be infinite, so a finite-measure argument is not available. -/
+theorem mconv_memoryKernel_apply {x : ℝ} (hx : 0 < x) {f : ℝ → ℝ} (hfm : Measurable f)
+    (hfc : ∀ u : ℝ, u < 0 → f u = 0) {M : ℝ} (hM : ∀ u, |f u| ≤ M) (t : ℝ) :
+    mconv (F.memoryKernel x) f t
+      = F.b₀ * f t + ∫ u in Ioi (0 : ℝ), F.k (u / x) / x * f (t - u) := by
+  have hMnn : 0 ≤ M := le_trans (abs_nonneg _) (hM 0)
+  have hmeas : Measurable fun r : ℝ => f (t - r) := hfm.comp (measurable_const_sub t)
+  -- the integrand is carried by `[0,t]`, where `κ^{(x)}` is finite
+  have hzero : ∀ r : ℝ, t < r → f (t - r) = 0 := fun r hr => hfc _ (by linarith)
+  have hIcc : F.memoryKernel x (Icc 0 t) ≠ ⊤ :=
+    measure_Icc_ne_top_of_laplaceL_ne_top F.isCausal_memoryKernel zero_lt_one
+      (F.laplaceL_memoryKernel_ne_top hx zero_lt_one) t
+  have hint : Integrable (fun r : ℝ => f (t - r)) (F.memoryKernel x) := by
+    refine ⟨hmeas.aestronglyMeasurable, ?_⟩
+    rw [hasFiniteIntegral_iff_enorm]
+    have hle : (∫⁻ r, ‖f (t - r)‖ₑ ∂(F.memoryKernel x))
+        ≤ ∫⁻ r, (Icc (0 : ℝ) t).indicator (fun _ => ENNReal.ofReal M) r
+            ∂(F.memoryKernel x) := by
+      refine lintegral_mono_ae ?_
+      filter_upwards [F.isCausal_memoryKernel.ae_nonneg] with r hr
+      by_cases hrt : r ∈ Icc (0 : ℝ) t
+      · rw [indicator_of_mem hrt, Real.enorm_eq_ofReal_abs]
+        exact ENNReal.ofReal_le_ofReal (hM _)
+      · rw [indicator_of_notMem hrt, hzero r (by
+          rcases not_and_or.mp hrt with h | h
+          · exact absurd hr h
+          · exact lt_of_not_ge h)]
+        simp
+    rw [lintegral_indicator measurableSet_Icc, setLIntegral_const] at hle
+    exact lt_of_le_of_lt hle (ENNReal.mul_lt_top ENNReal.ofReal_lt_top
+      (lt_top_iff_ne_top.mpr hIcc))
+  rw [mconv_apply]
+  rw [memoryKernel] at hint ⊢
+  obtain ⟨h1, h2⟩ := integrable_add_measure.mp hint
+  have hdens : AEMeasurable (fun u : ℝ => ENNReal.ofReal (F.k (u / x) / x))
+      (volume.restrict (Ioi 0)) :=
+    ((aemeasurable_k_comp_div (F := F) hx.le).div_const x).ennreal_ofReal
+  rw [integral_add_measure h1 h2, integral_smul_measure, integral_dirac,
+    integral_withDensity_eq_integral_toReal_smul₀ hdens
+      (.of_forall fun _ => ENNReal.ofReal_lt_top)]
+  congr 1
+  · rw [ENNReal.toReal_ofReal F.b₀_nonneg, smul_eq_mul, sub_zero]
+  · refine setIntegral_congr_fun measurableSet_Ioi fun u hu => ?_
+    rw [smul_eq_mul, ENNReal.toReal_ofReal
+      (div_nonneg (F.k_nonneg _ (mem_Ioi.mpr (div_pos (mem_Ioi.mp hu) hx))) hx.le)]
+
+/-- **`lem:generator-properties`(5), the memory-kernel form**: `κ^{(x)} * f` is the primitive of
+`φ_x(∂_t)f`, so the Phillips form coincides on `𝒟` with chapter 9's memory-kernel operator.
+
+**At every `t`, and with no uniqueness theorem.** The blueprint compares the two through their
+transforms and separates them with `prop:laplace-uniqueness`; here `setIntegralCLM (Ioc 0 t)` — a
+bounded functional, the third this chapter pushes through the Bochner integral — *evaluates* the
+primitive instead, and one signed exchange finishes it. The blueprint's trailing remark
+`(κ^{(x)}*f)(0+) = 0` comes for free: a primitive vanishes at the origin by construction. -/
+theorem mconv_memoryKernel_eq_setIntegral {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ}
+    (hx : 0 < x) {A B : X} (hAB : HasCoreDerivL1 A B) {f g : ℝ → ℝ} (hfg : HasCoreDeriv f g)
+    (hA : ((A : X) : ℝ → ℝ) =ᵐ[volume] f) (hB : ((B : X) : ℝ → ℝ) =ᵐ[volume] g) (t : ℝ) :
+    mconv (F.memoryKernel x) f t
+      = ∫ ρ in Ioc (0 : ℝ) t, ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) ρ := by
+  set M := ∫ w, |g w| with hMdef
+  have hM : ∀ u, |f u| ≤ M := fun u => hfg.abs_le u
+  have hfi : Integrable f := hfg.integrable
+  have hfc : ∀ u : ℝ, u < 0 → f u = 0 := hfg.causal
+  -- the drift term
+  have hdrift : (∫ ρ in Ioc (0 : ℝ) t, ((B : X) : ℝ → ℝ) ρ) = f t := by
+    rw [setIntegral_congr_ae measurableSet_Ioc (hB.mono fun ρ hρ _ => hρ)]
+    exact (hfg.primitive t).symm
+  -- the jump term, evaluated and exchanged
+  have hjump : (∫ r, (∫ ρ in Ioc (0 : ℝ) t, ((A - transL1 r A : X) : ℝ → ℝ) ρ)
+        ∂(dilatedTail ν x))
+      = ∫ u in Ioi (0 : ℝ), F.k (u / x) / x * f (t - u) := by
+    have hcongr : (∫ r, (∫ ρ in Ioc (0 : ℝ) t, ((A - transL1 r A : X) : ℝ → ℝ) ρ)
+          ∂(dilatedTail ν x))
+        = ∫ r, (∫ u in (0 : ℝ)..r, f (t - u)) ∂(dilatedTail ν x) := by
+      refine integral_congr_ae ?_
+      filter_upwards [(isCausal_dilatedTail hx hν.1).ae_nonneg] with r hr
+      rw [setIntegral_sub_transL1 hA hfi hfc hr t, ← intervalIntegral_comp_sub_left_eq hfi hfc t r]
+    rw [hcongr, integral_intervalIntegral_eq_tail (isCausal_dilatedTail hx hν.1)
+      (F.integrable_min_one_id_dilatedTail hν hx) (hfi.comp_sub_left t) (fun u => hM (t - u))
+      (F.dilatedTail_Ioi_ne_top hν hx)]
+    refine setIntegral_congr_ae measurableSet_Ioi ?_
+    filter_upwards [(ae_restrict_iff' measurableSet_Ioi).mp
+      (F.dilatedTail_Ioi_toReal hν hx)] with u hu humem
+    rw [hu humem, mul_comm]
+  rw [F.setIntegral_phillipsGenerator hν hx hAB, hdrift, hjump,
+    F.mconv_memoryKernel_apply hx hfg.measurable hfc hM t]
+
 end SelfDecomposableExponent
+
+/-- **`lem:generator-properties` (Lemma 10.3).** The five properties of the Phillips form on the
+core: absolute convergence with the two-sided bound, the symbol `φ_x(s) = sF'(xs)`, commutation
+with every `Φ`, continuity in the scale, and agreement with chapter 9's memory-kernel operator.
+
+The collation the node carries, assembled from the five lemmas above. Two things it states more
+weakly than they prove, both to keep it the blueprint's statement: the commutation clause is
+restricted to causal probability measures where `mconvL1_phillipsGenerator` holds for any finite
+one, and clause (5) is stated `a.e.` where `mconv_memoryKernel_eq_setIntegral` holds at every
+`t`. -/
+theorem generator_properties (F : SelfDecomposableExponent) {ν : Measure ℝ}
+    (hν : F.HasLevyTail ν) {x : ℝ} (hx : 0 < x) {A B : X} (hAB : HasCoreDerivL1 A B) :
+    (Integrable (fun r : ℝ => A - transL1 r A) (dilatedTail ν x) ∧
+        ‖F.phillipsGenerator ν x A B‖
+          ≤ F.b₀ * ‖B‖ + x⁻¹ * ∫ r, min (2 * ‖A‖) (x * r * ‖B‖) ∂ν) ∧
+      (∀ s : ℝ, 0 < s →
+        laplaceFun ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) s
+          = F.symbol x s * laplaceFun ((A : X) : ℝ → ℝ) s) ∧
+      (∀ (μ : Measure ℝ) [IsProbabilityMeasure μ], IsCausal μ →
+        mconvL1 μ (F.phillipsGenerator ν x A B)
+          = F.phillipsGenerator ν x (mconvL1 μ A) (mconvL1 μ B)) ∧
+      ContinuousOn (fun y : ℝ => F.phillipsGenerator ν y A B) (Ioi 0) ∧
+      (∀ f g : ℝ → ℝ, HasCoreDeriv f g → ((A : X) : ℝ → ℝ) =ᵐ[volume] f →
+        ((B : X) : ℝ → ℝ) =ᵐ[volume] g →
+        mconv (F.memoryKernel x) f
+          =ᵐ[volume] fun t => ∫ ρ in Ioc (0 : ℝ) t,
+            ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) ρ) :=
+  ⟨⟨F.integrable_sub_transL1 hν hx hAB, F.norm_phillipsGenerator_le hν hx hAB⟩,
+   fun _ hs => F.laplaceFun_phillipsGenerator hν hx hAB hs,
+   fun μ _ _ => F.mconvL1_phillipsGenerator hν hx hAB μ,
+   F.continuousOn_phillipsGenerator hν hAB,
+   fun _ _ hfg hA hB =>
+     .of_forall fun t => F.mconv_memoryKernel_eq_setIntegral hν hx hAB hfg hA hB t⟩
 
 end Hemigroup

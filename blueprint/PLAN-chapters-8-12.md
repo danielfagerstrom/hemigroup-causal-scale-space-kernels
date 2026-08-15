@@ -2279,3 +2279,77 @@ route improved — the improvement removed a ledger appeal and a case reduction,
 
 (5): the signed Fubini, then the `mconv` unfolding, then assembly. Otherwise `PLAN`'s *available*
 row: `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.
+
+---
+
+# `lem:generator-properties`(5), proved — chapter 10 is everything but the Cauchy problem — 2026-08-15
+
+`Hemigroup/PhillipsGenerator.lean`. **All five clauses, and the node is `\leanok` and Lean core** —
+the whole of Lemma 10.3 is interface-free. `Skeleton/Chapter10.lean` is gone for the second time in
+two days, and the skeleton is down to `Chapter7` (a record), `Chapter9` (ledger A9 by design) and
+`Chapter11` (a record). **59 nodes `\leanok`**, one `\notready` (`prop:pair-regularity`). Trust
+boundary unchanged at two entries.
+
+## The uniqueness theorem was never needed, and the way round it would not have worked
+
+The previous entry already recorded that `setIntegralCLM (Ioc 0 t)` evaluates the primitive, so
+`prop:laplace-uniqueness` is not spent. Proving it turned up something sharper about the *earlier*
+plan. Two entries ago this file proposed getting the signed case by splitting `f'` into positive
+and negative parts, "each in `X₀`, each primitive in `𝒟`". **The second half is false.** The
+primitive of `(f')⁺` is nondecreasing, so it tends to `∫(f')⁺ ≠ 0` and is not in `L¹` — it fails
+the `integrable` field of `HasCoreDeriv`, the one `DelayCore`'s docstring calls "genuinely a
+separate demand" and which was put there because assembling the other clauses had shown it was not
+implied. The field earned its keep a second time by refuting a plan.
+
+What works is splitting the *integrand* of the exchange at zero rather than the element of `𝒟`.
+`integral_intervalIntegral_eq_tail` does that, over `integral_intervalIntegral_eq_tail_of_nonneg`,
+which is the layer cake.
+
+## One convergence fact carries the whole lemma
+
+Worth stating plainly, because it is the shape the chapter turned out to have:
+`∫(1∧r)ν₁(dr) < ∞` bounds the Bochner integral in (1), dominates the limit in (4), and justifies
+the exchange in (5). Three clauses, one fact — and that fact is one layer cake, not the
+integration by parts the blueprint's proof names.
+
+The `(5)` case is the one that was not visible in advance. Its integrability side condition is
+`|∫₀^r f(t-u)du| ≤ min(‖f‖₁, Mr)` with `M = sup|f|` from `HasCoreDeriv.abs_le` — which is
+`integrable_min_const_mul`'s integrand exactly. Generalising that lemma off `HasLevyTail` (to
+`integrable_min_const_mul_of_min_one`) was the only refactor the clause needed.
+
+## Three functionals, and a pattern worth naming
+
+(3) pushes `Φ_{y,z}` through the Bochner integral, (2) pushes `Lap`, (5) pushes `g ↦ ∫₀^t g`. Each
+turns a statement about the vector-valued integral into one about scalars, and each is
+`ContinuousLinearMap.integral_comp_comm`.
+
+That is **not** the pattern this file keeps recording. "The classical derivation asks for more than
+the obligation" is about a *proof step* being cheaper than its citation. This is about the
+*model*: `X = L¹(ℝ)` has more continuous functionals on it than the prose notices, and each one
+that can be found converts a hard step into an easy one. The prose has no reason to notice them,
+because on paper one simply writes the integral out.
+
+The cost of not noticing is on record: (2) was priced as the bulk on the grounds that `Lap` is not
+one of them, which was true of the two-sided transform and false of the article's.
+
+## The chapter, and what it took
+
+| node | state |
+|---|---|
+| `lem:delay-core` (10.1) | `\leanok`, Lean core |
+| `def:phillips-generator` (10.2) | `\leanok`, Lean core |
+| `lem:generator-properties` (10.3) | `\leanok`, Lean core |
+| `thm:scale-cauchy` (10.4) | blocked — C₀ theory, *and* `prop:scale-evolution` |
+| `prop:fixed-scale-semigroup` (10.5) | `[A]`, ledger A11, by design |
+
+Six days ago the whole chapter was filed "blocked on upstream Mathlib". The reclassification that
+started this took one afternoon of reading the nodes; the formalisation took three. **The
+chapter-level status line was the expensive error, not any of the mathematics** — and it was
+expensive precisely because it was written before the objects it quantified over existed, and
+never re-read after `lem:delay-core` created them.
+
+## Next
+
+`PLAN`'s *available, nothing depends on them* row, now down to four: `prop:stable-moments`,
+`prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`. Re-check each against its
+node before starting.
