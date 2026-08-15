@@ -60,13 +60,16 @@ $-sF'(xs)e^{-F(xs)}$; multiply by the constant $\hat f(s)$.
 Let $(\Phi_{x,y})$ be as in Theorem~\ref{thm:main-characterization}, in the canonical gauge,
 let $f \in X$ be causal, and set $u(\cdot, x) := \Phi_{0,x} f = \mu_{0,x} * f$. Then, with the
 transform equation $\partial_x \hat u = -sF'(xs)\hat u$ of Lemma~\ref{lem:transform-ode} in
-hand: for each $x > 0$ the causal function $w(\cdot, x) := \kappa^{(x)} * u(\cdot, x)$ lies in
+hand:
+\begin{enumerate}
+\item[] For each $x > 0$ the causal function $w(\cdot, x) := \kappa^{(x)} * u(\cdot, x)$ lies in
 $L^1_{\mathrm{loc}}$, and for all $0 \le a \le b$,
 \[
   u(\cdot, b) - u(\cdot, a)
   \;=\; -\,\partial_t \int_a^b \bigl(\kappa^{(x)} * u(\cdot, x)\bigr)\,dx
   \qquad \text{in } \Distr(\RR).
 \]
+\end{enumerate}
 Differentiating in $x$, $u$ satisfies, in the distributional sense on
 $\RR_t \times (0,\infty)_x$ and with boundary value $u(\cdot, 0) = f$,
 \[
@@ -278,23 +281,29 @@ Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. Then, as meas
 $[0,\infty)$,
 \[
   t\,\mu_x(dt) \;=\; \bigl(\theta_x * \mu_x\bigr)(dt),
-  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt, \tag{9.1}
+  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt. \tag{9.1}
 \]
-and $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
 \end{proposition}
 
 \begin{proof}
-\emph{The identity (9.1).} Taking Laplace transforms,
-$\Lap[t\,\mu_x](s) = -\tfrac{d}{ds} e^{-F(xs)} = x F'(xs)\, e^{-F(xs)}$, while by
-Lemma~\ref{lem:memory-kernel} with the substitution $\tau = t/x$,
+Taking Laplace transforms, $\Lap[t\,\mu_x](s) = -\tfrac{d}{ds} e^{-F(xs)} = x F'(xs)\,
+e^{-F(xs)}$, while by Lemma~\ref{lem:memory-kernel} with the substitution $\tau = t/x$,
 $\widehat{\theta_x}(s) = b_0 x + \int_0^\infty e^{-st} k(t/x)\,dt = x F'(xs)$. So both sides
 of (9.1) have the finite transform $x F'(xs)e^{-F(xs)}$ and coincide by
 Proposition~\ref{prop:laplace-uniqueness}.
+\end{proof}
 
-\emph{Uniqueness.} If $\nu$ is a probability measure on $[0,\infty)$ with
-$t\,\nu(dt) = \theta_x * \nu$, then $\hat\nu$ is differentiable on $(0,\infty)$ with
+% shared with blueprint prop:volterra-uniqueness
+\begin{proposition}[the Volterra equation determines the kernel]\label{prop:volterra-uniqueness}
+$\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
+\end{proposition}
+
+\begin{proof}
+If $\nu$ is a probability measure on $[0,\infty)$ with $t\,\nu(dt) = \theta_x * \nu$, then
+$\hat\nu$ is differentiable on $(0,\infty)$ with
 $-\hat\nu'(s) = \Lap[t\nu](s) = xF'(xs)\,\hat\nu(s)$. Solving this linear ODE with
-$\hat\nu(\zp) = 1$ gives $\hat\nu(s) = e^{-F(xs)}$, hence $\nu = \mu_x$.
+$\hat\nu(\zp) = 1$ gives $\hat\nu(s) = e^{-F(xs)}$, hence $\nu = \mu_x$ by
+Proposition~\ref{prop:laplace-uniqueness}.
 \end{proof}
 
 % shared with blueprint prop:volterra-density
@@ -425,7 +434,7 @@ $\varphi_x(s) = s F'(xs)$.
 \item $x \mapsto \varphi_x(\partial_t) f$ is continuous from $(0,\infty)$ to $\Xz$.
 \item $\kappa^{(x)} * f$ is a.e.\ equal to an absolutely continuous function with
 $\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phillips form
-coincides on $\core$ with the memory-kernel operator of \S\ref{sec:appendix-sonine}.
+coincides on $\core$ with the memory-kernel operator of Lemma~\ref{lem:memory-kernel-transform}.
 \end{enumerate}
 \end{lemma}
 

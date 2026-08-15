@@ -205,24 +205,72 @@ for $x > 0$, or the requirement $\lim_{s\to\infty} F(s)/s = 0$, which says there
 deterministic front.
 \end{remark}
 
+% shared with blueprint lem:admissible-cone
+\begin{lemma}[the admissible exponents form a convex cone]\label{lem:admissible-cone}
+If $F_1, F_2$ are admissible in the sense of Theorem~\ref{thm:main-characterization} --- of the
+form (7.1) with drift $b_0 \ge 0$ and $k \ge 0$ nonincreasing --- then so are $F_1 + F_2$, with
+data $(b_0^1 + b_0^2,\, k_1 + k_2)$, and $c\,F_1$ for $c \ge 0$, with data $(c\,b_0^1,\, c\,k_1)$.
+So the admissible exponents form a convex cone in the pointwise order, and the correspondence
+with the pairs $(b_0,k)$ is linear.
+\end{lemma}
+
+\begin{proof}
+Each of the six defining conditions is stable: nonnegativity and monotonicity of $k$ are
+preserved by sums and by nonnegative multiples, the drift stays nonnegative, and the exponent of
+a sum is the sum of the exponents by additivity of the integral --- so finiteness is inherited.
+Linearity of $(b_0,k) \mapsto F$ is the same computation read forwards.
+\end{proof}
+
+% shared with blueprint lem:dickman-superposition
+\begin{lemma}[Dickman superposition]\label{lem:dickman-superposition}
+Write $\mathrm{Ein}(z) := \int_0^z \bigl(1 - e^{-u}\bigr)\,u^{-1}du$.
+\begin{enumerate}
+\item \emph{(The rays.)} For $\tau > 0$ the density $k = \mathbf{1}_{(0,\tau)}$ is admissible,
+with drift $0$, and its exponent is $s \mapsto \mathrm{Ein}(\tau s)$.
+\item \emph{(The superposition.)} Every admissible $F$, with drift $b_0$ and density $k$,
+satisfies
+\[
+  F(s) \;=\; b_0\, s \;+\; \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau)
+  \qquad (s \ge 0),
+\]
+where $\rho$ is any positive measure on $(0,\infty)$ with $\rho\bigl((t,\infty)\bigr) = k(t)$ for
+almost every $t > 0$; such a $\rho$ exists.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) is the substitution $u = st$ in $\int_0^\tau (1 - e^{-st})\,t^{-1}dt$; admissibility is the
+integrability criterion of Proposition~\ref{prop:admissibility-criterion}, both halves being
+immediate for a bounded, compactly supported $k$.
+
+(2) $k$ is nonincreasing and nonnegative and $k(\infty) = 0$, the last forced by
+$\int^\infty k(t)\,t^{-1}dt < \infty$; so a positive measure with tail $k$ exists. Then Tonelli
+over the region $\{0 < t < \tau\}$ gives
+\[
+  \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\frac{k(t)}{t}\,dt
+  = \int_{(0,\infty)} \rho(d\tau) \int_0^\tau \bigl(1 - e^{-st}\bigr)\,\frac{dt}{t}
+  = \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
+\]
+the inner integral being $\mathrm{Ein}(\tau s)$ by (1).
+\end{proof}
+
 % shared with blueprint prop:extreme-rays
 \begin{proposition}[Choquet structure of the admissible cone]\label{prop:extreme-rays}
-The admissible exponents of Theorem~\ref{thm:main-characterization} form a convex cone, and
-the map
+The superposition map of Lemma~\ref{lem:dickman-superposition},
 \[
   (b_0, \rho) \;\mapsto\; F, \qquad
   F(s) = b_0\,s + \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
-  \qquad \mathrm{Ein}(z) := \int_0^z \frac{1 - e^{-u}}{u}\,du,
 \]
-is a linear bijection from
+is a linear \emph{bijection} from
 $\bigl\{(b_0, \rho) : b_0 \ge 0,\ \rho \in \Mplus(0,\infty),\
 \int \bigl[\tau \wedge (1 + \log_+ \tau)\bigr]\,\rho(d\tau) < \infty \bigr\}$
-onto that cone, with inverse $\rho = -dk$, $k(t) = \rho\bigl((t,\infty)\bigr)$. Consequently the
+onto the cone of Lemma~\ref{lem:admissible-cone}, with inverse $\rho = -dk$,
+$k(t) = \rho\bigl((t,\infty)\bigr)$. Consequently the
 extreme rays of the cone are the pure delay $s \mapsto s$ together with the one-parameter family
 $\mathrm{Ein}(\tau\,\cdot)$, $\tau > 0$ --- the Laplace exponents, with L\'evy density
 $t^{-1}\mathbf{1}_{(0,\tau)}(t)$, of the \emph{dilated Dickman subordinators}
-(\sscite{caravenna2019dickman}, (1.1)--(1.2), p.~1) --- and every admissible family is a unique
-superposition of Dickman rays and drift.
+(\sscite{caravenna2019dickman}, (1.1)--(1.2), p.~1) --- and every admissible family is a
+\emph{unique} superposition of Dickman rays and drift.
 \end{proposition}
 
 \begin{proof}

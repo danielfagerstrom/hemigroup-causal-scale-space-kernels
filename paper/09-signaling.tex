@@ -1,11 +1,11 @@
 % §9 The signaling form (Theorem 4′) — statements verbatim from blueprint part 11.
 % The blueprint splits the draft's items into per-clause nodes; the paper includes the
 % split lemmas that aid reading (mellin-vertical, inversion-symbol, operator-action,
-% symbol-rigidity) and folds the remaining splits back into the nodes they came from
-% (profile-eigenfunction → Theorem (1); delayed-average-mellin, signaling-mellin-form,
+% symbol-rigidity, profile-eigenfunction — def:inversion-operator's statement cites it
+% directly, matching the blueprint) and folds the remaining splits back into the nodes
+% they came from (delayed-average-mellin, signaling-mellin-form,
 % fractional-integral-derivative → the proofs that contain them).
-% Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10;
-% def:inversion-operator's pointer to the split eigenfunction node → Theorem (1).
+% Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10.
 
 \section{The signaling form}\label{sec:signaling}
 
@@ -137,12 +137,12 @@ explicit about what it asserts: $B(\theta)$ is a functional calculus for a symbo
 what the display says is that there \emph{exists} a function $h$ on $(0,\infty)$ whose Mellin
 transform is $B(-z)\tilde g(z)$ on the line, and that the contour integral computes $h(x)/x$.
 Absolute integrability on the line is exactly the hypothesis under which the inversion integral
-recovers such an $h$ (\sscite{widder1941laplace}, Ch.~VI, \S9, Thm.~9a). Given $h$, the rest is
+recovers such an $h$. Given $h$, the rest is
 elementary and is Lemma~\ref{lem:inversion-operator-action}; in particular the transform-level
 form is $\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$, wherever the identity defining $h$
 holds pointwise. Every application below \emph{exhibits} its $h$ rather than inferring it ---
 for the profiles $g = H(s\,\cdot)$ it is $h(x) = s\,x\,H(sx)$,
-Theorem~\ref{thm:signaling-form}(1) --- so the cited inversion theorem is available but never
+Lemma~\ref{lem:profile-eigenfunction} --- so the cited inversion theorem is available but never
 spent. Note finally the covariant scaling: $A$ commutes with dilations up to the weight
 $x^{-1}$, i.e.\ it scales like $\partial_t$ under $(t, x) \mapsto (\sigma t, \sigma x)$, as
 (A8) requires of any inversion.
@@ -174,6 +174,26 @@ argument shifted by one. (That the identity on the line can only be asked for al
 everywhere is forced: where $\tilde H$ vanishes the product $B(-z)\tilde g(z)$ has no value
 while $\tilde h(z)$ does; the zeros are isolated by Lemma~\ref{lem:inversion-symbol}, hence
 meet the line in a null set, and the inversion integral does not see them.)
+\end{proof}
+
+% shared with blueprint lem:profile-eigenfunction
+\begin{lemma}[the profiles are eigenfunctions]\label{lem:profile-eigenfunction}
+Assume (H), let $c \in (0, z_*-1)$ and $s > 0$. Then the dilate $H(s\,\cdot)$ lies in the domain of
+Definition~\ref{def:inversion-operator} --- its realising function is $h(x) = s\,x\,H(sx)$,
+exhibited --- and
+\[
+  A\bigl[H(s\,\cdot)\bigr](x) \;=\; s\,H(sx), \qquad x > 0 .
+\]
+\end{lemma}
+
+\begin{proof}
+$\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z)$ and $\widetilde{s\,x\,H(sx)}(z) = s^{-z}\tilde
+H(z+1)$, the second because the weight $x$ shifts the Mellin argument by one. Their ratio is
+$B(-z)$ wherever $\tilde H(z) \ne 0$, which is almost every point of the line. The transform of
+$h$ converges there by Lemma~\ref{lem:mellin-data} and its inversion integral by
+Lemma~\ref{lem:mellin-vertical}, both at height $c+1 \in (1, z_*)$, so
+Lemma~\ref{lem:inversion-operator-action} applies and gives $A[H(s\cdot)](x) = h(x)/x =
+s\,H(sx)$.
 \end{proof}
 
 % shared with blueprint lem:symbol-rigidity
@@ -225,7 +245,7 @@ information that injectivity would otherwise have to recover; and a single dilat
 all $s > 0$, the dilate contributing only the factor $s^{-z}$, which never vanishes.
 \end{proof}
 
-% shared with blueprint lem:memory-fractional-integrals — "§10" adapted to the appendix.
+% shared with blueprint lem:memory-fractional-integrals — "§10" now a \ref to the node it meant.
 \begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
 Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
 and $1 < \operatorname{Re} z < z_*$,
@@ -234,7 +254,7 @@ and $1 < \operatorname{Re} z < z_*$,
   \;=\; \tilde H(z)\,\bigl(I^{z} f\bigr)(t),
 \]
 absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ --- the
-$\Xz$-derivative of Appendix~\ref{sec:appendix-memory}, i.e.\ $u(\cdot, x)$ is the primitive of
+$\Xz$-derivative of Lemma~\ref{lem:delay-core}, i.e.\ $u(\cdot, x)$ is the primitive of
 $\Ex[f'(\cdot - xT_1)]$ --- with $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the
 identity extends to the wider strip $0 < \operatorname{Re} z < z_*$, since $f \in \core$ is
 bounded ($f(0) = 0$ and $f' \in \Xz$ give $\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$

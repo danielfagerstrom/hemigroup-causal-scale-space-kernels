@@ -302,7 +302,8 @@ and $1 < \operatorname{Re} z < z_*$,
   \;=\; \tilde H(z)\,\bigl(I^{z} f\bigr)(t),
 \]
 absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ --- the
-$\Xz$-derivative of \S10, i.e.\ $u(\cdot, x)$ is the primitive of $\Ex[f'(\cdot - xT_1)]$ --- with
+$\Xz$-derivative of \ref{lem:delay-core}, i.e.\ $u(\cdot, x)$ is the primitive of
+$\Ex[f'(\cdot - xT_1)]$ --- with
 $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the identity extends to the wider strip
 $0 < \operatorname{Re} z < z_*$, since $f \in \core$ is bounded ($f(0) = 0$ and $f' \in \Xz$ give
 $\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$ is then integrable at the origin on its own.
@@ -817,8 +818,7 @@ Assume (H), let $c \in (0, z_*-1)$ and $s > 0$. Then the dilate $H(s\,\cdot)$ li
 \texttt{realisesSymbolAction\_profile} carrying the domain clause;
 \texttt{\#print axioms} gives \ledger{A17} and nothing else. Clause~(1) of
 \ref{thm:signaling-form}, split off when proved, on the pattern of \ref{lem:symbol-rigidity}
-and 
-ef{lem:symbol-uniqueness}: 11.6 keeps its full statement, and the Lean tag sits on the
+and \ref{lem:symbol-uniqueness}: 11.6 keeps its full statement, and the Lean tag sits on the
 clause that carries it.}
 
 \emph{\textbf{This is what settles \ledger{A12}, and it settles it by never using it.} That entry is
@@ -826,11 +826,9 @@ left carrying one step --- that absolute integrability of $B(-z)\tilde g(z)$ on 
 the function $B(\theta)g$. Here the function is produced by exhibition instead, and the exhibition is
 free: $\tilde h(w) = s^{-w}\tilde H(w+1)$ against $\tilde g(w) = s^{-w}\tilde H(w)$ are one Mellin shift
 apart, and their ratio is $B$ by \ref{lem:inversion-symbol}. Since this dilate is the \emph{only}
-shape in which $A$ is ever applied --- 
-ef{thm:signaling-form}(2)'s Laplace form is this clause
+shape in which $A$ is ever applied --- \ref{thm:signaling-form}(2)'s Laplace form is this clause
 applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$ --- the article's use of \ledger{A12} is empty. The
-entry keeps its \textbf{[A]} tag on 
-ef{def:inversion-operator} because that is the \emph{paper's}
+entry keeps its \textbf{[A]} tag on \ref{def:inversion-operator} because that is the \emph{paper's}
 stance, as \ledger{A5} and \ledger{A6} do in Chapter~2; what is machine-checked is recorded here.}
 
 \emph{\textbf{One line of the draft's proof does not survive transcription, and it is instructive.}
@@ -848,11 +846,8 @@ formalisation has to do it on functions, and that is exactly where the gap betwe
 $\widetilde{H(s\cdot)}(z) = s^{-z}\tilde H(z)$ and $\widetilde{s\,x\,H(sx)}(z) = s^{-z}\tilde H(z+1)$, the
 second because the weight $x$ shifts the Mellin argument by one. Their ratio is $B(-z)$ wherever
 $\tilde H(z) \ne 0$, which is almost every point of the line. The transform of $h$ converges there
-by 
-ef{lem:mellin-data} and its inversion integral by 
-ef{lem:mellin-vertical}, both at height
-$c+1 \in (1, z_*)$, so 
-ef{lem:inversion-operator-action} applies and gives
+by \ref{lem:mellin-data} and its inversion integral by \ref{lem:mellin-vertical}, both at height
+$c+1 \in (1, z_*)$, so \ref{lem:inversion-operator-action} applies and gives
 $A[H(s\cdot)](x) = h(x)/x = s\,H(sx)$.
 \end{proof}
 

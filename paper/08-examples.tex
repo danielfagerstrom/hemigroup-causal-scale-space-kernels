@@ -26,8 +26,10 @@ Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing with
 Then $F(s) = b_0 s + \int_0^\infty (1 - e^{-st})\,k(t)\,\frac{dt}{t}$ is finite for every
 $s \ge 0$.
 
-Consequently $F$ is of the form (7.1) and Theorem~\ref{thm:main-characterization} applies to
-it.
+Consequently $F$ is of the form (7.1) and Theorem~\ref{thm:main-characterization} applies to it
+--- a consequence and not part of the statement, which is why this node's dependency list records
+only Definition~\ref{def:levy-exponent}: convergence is all the estimates below establish, and
+admissibility is what Lemma~\ref{lem:selfdecomposable-exponents} then reads off it.
 \end{proposition}
 
 \begin{proof}
@@ -104,16 +106,28 @@ nonincreasing.
 \end{proof}
 
 % shared with blueprint prop:stable-moments
-\begin{proposition}[the extremal stable family: moments and the mode]\label{prop:stable-moments}
-With $F$ as in Proposition~\ref{prop:stable-family}, every moment of $T_x$ is infinite, so the
-delay cannot be measured by the mean; measured by the mode it scales as $x^{1/\alpha}$.
+\begin{proposition}[the extremal stable family: every moment is infinite]\label{prop:stable-moments}
+With $F$ as in Proposition~\ref{prop:stable-family}, $\Ex\,T_x^{\,n} = \infty$ for every $n \ge 1$
+and every $x > 0$, so the delay of the 2005 stable kernels cannot be measured by any moment.
 \end{proposition}
 
 \begin{proof}
-Since $\int_1^\infty t^{n-1}k(t)\,dt = \infty$ already for $n = 1$, all moments are infinite by
-Proposition~\ref{prop:moment-criterion}. The mode scaling is the self-similarity
-$T_x \stackrel{d}{=} x^{1/\alpha} T_1$ of the $\alpha$-stable subordinator, which is the case
-$\chi(x) = x^{1/\alpha}$ of Corollary~\ref{cor:semigroup-case}.
+By Proposition~\ref{prop:moments} the mean delay is $\Ex\,T_x = x\bigl(b_0 + \int_0^\infty
+k\bigr)$, finite exactly when $k$ is integrable at infinity; here $b_0 = 0$ and
+$k(t) = \alpha t^{-\alpha}/\Gamma(1 - \alpha)$, which is not integrable at infinity for
+$\alpha < 1$. So $\Ex\,T_x = \infty$. Every higher moment follows without a further criterion:
+$t \le 1 + t^{\,n}$ for $t \ge 0$ and $n \ge 1$, so on the probability measure $\mu_{0,x}$ we get
+$\Ex\,T_x \le 1 + \Ex\,T_x^{\,n}$, and a divergent mean forces $\Ex\,T_x^{\,n} = \infty$.
+\end{proof}
+
+% shared with blueprint prop:stable-mode
+\begin{proposition}[the extremal stable family: the mode]\label{prop:stable-mode}
+With $F$ as in Proposition~\ref{prop:stable-family}, the mode of $T_x$ scales as $x^{1/\alpha}$.
+\end{proposition}
+
+\begin{proof}
+The self-similarity is the case $\chi(x) = x^{1/\alpha}$ of Corollary~\ref{cor:semigroup-case},
+and the mode of $x^{1/\alpha}T_1$ is $x^{1/\alpha}$ times the mode of $T_1$.
 \end{proof}
 
 % shared with blueprint prop:gamma-family
@@ -130,30 +144,60 @@ Lemma~\ref{lem:selfdecomposable-exponents}.
 \end{proof}
 
 % shared with blueprint prop:gamma-kernels
-\begin{proposition}[the Gamma family: kernels, moments, and the Sato reading]\label{prop:gamma-kernels}
-With $F$ as in Proposition~\ref{prop:gamma-family}, the kernels are
+\begin{proposition}[the Gamma family: the transforms and the mean]\label{prop:gamma-kernels}
+With $F$ as in Proposition~\ref{prop:gamma-family}, the kernels and the increment measures have
+transforms
 \[
   e^{-F(xs)} = (1 + x s)^{-\gamma}, \qquad
-  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
+  e^{-g_{a,b}(s)} = \Bigl(\tfrac{1 + as}{1 + bs}\Bigr)^{\gamma},
 \]
-the Gamma density of fixed shape $\gamma$ and scale $x$. All moments are finite, with
-$\Ex\,T_x = \gamma x$ and $\operatorname{Var} T_x = \gamma x^2$. The increment measures
-$\mu_{a,b}$ have Laplace transform $\bigl(\tfrac{1 + as}{1 + bs}\bigr)^{\gamma}$ and are the
-increments of the Gamma-type Sato subordinator.
+and the mean delay is $\Ex\,T_x = \gamma x$.
 \end{proposition}
 
 \begin{proof}
-$e^{-F(xs)} = (1+xs)^{-\gamma}$ by Proposition~\ref{prop:gamma-family}, and this is the Laplace
-transform of the stated Gamma density, so Proposition~\ref{prop:laplace-uniqueness} identifies
-$\phi_x$. The moments are those of a Gamma law, and all are finite because
-$\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$
-(Proposition~\ref{prop:moment-criterion}). The increment transform is the ratio
-$e^{-F(bs)}/e^{-F(as)}$, and Remark~\ref{rem:sato-reading} identifies the family as the
-marginals of a Sato subordinator.
+$F(s) = \gamma\log(1+s)$ by Proposition~\ref{prop:gamma-family}, so $e^{-F(xs)} =
+(1+xs)^{-\gamma}$; and $g_{a,b} = F(b\cdot) - F(a\cdot)$, so the increment transform is the ratio
+$e^{-F(bs)}/e^{-F(as)}$, which is the stated one. For the mean, Proposition~\ref{prop:moments}
+gives $\Ex\,T_x = x\bigl(b_0 + \int_0^\infty k\bigr)$ with $b_0 = 0$ and $k(t) = \gamma e^{-t}$,
+whose integral is $\gamma$.
 \end{proof}
 
-% shared with blueprint prop:bessel-family — closing cross-reference adapted from the
-% draft's theorem numbers (10.4, 11.6, 12.5) to the paper's placement.
+% shared with blueprint prop:gamma-density
+\begin{proposition}[the Gamma family: the kernel density]\label{prop:gamma-density}
+With $F$ as in Proposition~\ref{prop:gamma-family} and $\gamma > 0$,
+\[
+  \phi_x(t) = \frac{t^{\gamma - 1} e^{-t/x}}{\Gamma(\gamma)\, x^{\gamma}},
+\]
+the Gamma density of fixed shape $\gamma$ and scale $x$.
+\end{proposition}
+
+\begin{proof}
+$(1+xs)^{-\gamma}$ is the Laplace transform of the stated Gamma density --- the Gamma integral
+$\int_0^\infty t^{\gamma-1}e^{-(1/x + s)t}\,dt = \Gamma(\gamma)/(1/x + s)^{\gamma}$ --- so
+Proposition~\ref{prop:laplace-uniqueness} identifies $\phi_x$.
+\end{proof}
+
+% Verbatim from the blueprint's rem:gamma-sato; not shared, since remarks are not shareable.
+\begin{remark}[the Gamma family as a Sato subordinator]\label{rem:gamma-sato}
+The increment measures $\mu_{a,b}$ of this family are the increments of the Gamma-type Sato
+subordinator. This is Remark~\ref{rem:sato-reading} read at the Gamma exponent.
+\end{remark}
+
+% shared with blueprint prop:gamma-moments
+\begin{proposition}[the Gamma family: the higher moments]\label{prop:gamma-moments}
+With $F$ as in Proposition~\ref{prop:gamma-family}, every moment of $T_x$ is finite, and
+$\operatorname{Var} T_x = \gamma x^2$.
+\end{proposition}
+
+\begin{proof}
+By Proposition~\ref{prop:gamma-density} the law of $T_x$ is the Gamma law of shape $\gamma$ and
+rate $1/x$, so $\Ex\,T_x^{\,n} = \Gamma(\gamma+n)x^{n}/\Gamma(\gamma)$, finite for every $n$. In
+particular $\Ex\,T_x = \gamma x$ and $\Ex\,T_x^{2} = \gamma(\gamma+1)x^2$, so
+$\operatorname{Var} T_x = \gamma(\gamma+1)x^2 - \gamma^2x^2 = \gamma x^2$.
+\end{proof}
+
+% shared with blueprint prop:bessel-family — closing cross-reference now a \ref to the
+% node the blueprint's hard-coded theorem numbers (10.4, 11.6, 12.5) meant.
 \begin{proposition}[the Bessel-K family; preview of the memory line]\label{prop:bessel-family}
 For $a > 0$ let $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ be the scaled inverse-gamma law, where
 $\gamma_a$ has the Gamma density of shape $a$, and let $F$ be its Laplace exponent. Then
@@ -164,9 +208,8 @@ and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is ad
 the parabolic gauge $\tilde x = x^2/2$ these are the boundary-hitting kernels of the
 Bessel-type media $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with $a = \tfrac12 -
 \beta$, and the moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$. This family is
-the subject of the memory-line development
-(Theorems \ref{thm:signaling-form} and \ref{thm:locality}, and
-Appendix~\ref{sec:appendix-memory}).
+the subject of the memory-line development, \ref{thm:scale-cauchy}, \ref{thm:signaling-form} and
+\ref{thm:locality}.
 \end{proposition}
 
 \begin{proof}
