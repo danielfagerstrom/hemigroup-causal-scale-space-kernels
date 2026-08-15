@@ -199,24 +199,30 @@ neighbourhood determines the value there and the agreement extends to it.
 % shared with blueprint lem:symbol-uniqueness
 \begin{lemma}[uniqueness of the symbol]\label{lem:symbol-uniqueness}
 If two operators of the form $x^{-1}B_1(\theta)$ and $x^{-1}B_2(\theta)$ both satisfy
-$A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for all $s > 0$, then $B_1 = B_2$ on the strip. Hence $A$ is
-the unique inversion within the covariant Mellin class.
+$A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for some $s > 0$, at every height $c \in (0, z_* - 1)$ --- that
+is, at every such $c$ both are of that form on $H(s\,\cdot)$ at height $c$ and both send it to
+$s\,H(s\,\cdot)$ --- then $B_1 = B_2$ on the strip. Hence $A$ is the unique inversion within the
+covariant Mellin class.
 \end{lemma}
 
 \begin{proof}
 ``Of the form $x^{-1}B_i(\theta)$'' is the hypothesis that each operator has a realising
-function in the sense of Definition~\ref{def:inversion-operator}. Both operators send
-$H(s\,\cdot)$ to $s\,H(s\,\cdot)$, so on $(0,\infty)$ their realising functions agree, since
-$x^{-1}h_1 = x^{-1}h_2$ on $(0,\infty)$ is $h_1 = h_2$; call the common value $h$. Then
-$B_1(-z)\,\tilde g(z) = \tilde h(z) = B_2(-z)\,\tilde g(z)$ at every point of the line where
-the realising identity holds, and $\tilde g(z) = s^{-z}\tilde H(z)$, so cancelling the
-nonvanishing factor $s^{-z}$ leaves the hypothesis of Lemma~\ref{lem:symbol-rigidity}, which
-concludes; at a zero of $\tilde H$ both sides of that hypothesis vanish, so it holds on the
-strip outright. Two economies are worth recording, since both tools are natural to reach for
-and neither is needed: no injectivity of the inverse Mellin transform, the shared realising
-function carrying the information that injectivity would otherwise have to recover; and a
-single dilation rather than all $s > 0$, the dilate contributing only the factor $s^{-z}$,
-which never vanishes.
+function in the sense of Definition~\ref{def:inversion-operator}. Fix a height
+$c \in (0, z_* - 1)$. Both operators send $H(s\,\cdot)$ to $s\,H(s\,\cdot)$, so on $(0,\infty)$
+their realising functions at height $c$ agree, since $x^{-1}h_1 = x^{-1}h_2$ on $(0,\infty)$ is
+$h_1 = h_2$; call the common value $h$. Then
+$B_1(-z)\,\tilde g(z) = \tilde h(z) = B_2(-z)\,\tilde g(z)$ at every point of the line
+$\operatorname{Re} z = c$ where the identity holds, and $\tilde g(z) = s^{-z}\tilde H(z)$, so
+cancelling the nonvanishing factor $s^{-z}$ gives $B_1(-z)\tilde H(z) = B_2(-z)\tilde H(z)$ at
+every point of the line where $\tilde H(z) \ne 0$, and trivially at its zeros, where both sides
+vanish. As $c$ ranges over $(0, z_* - 1)$ the lines fill the strip, which is the hypothesis of
+Lemma~\ref{lem:symbol-rigidity}, and that lemma concludes. (This is where the hypothesis at
+every height is spent: with the identity on a single line one would need $B_1, B_2$ meromorphic
+on the strip and the identity theorem to reach the rest of it, and neither is assumed.) Two
+economies are worth recording, since both tools are natural to reach for and neither is needed:
+no injectivity of the inverse Mellin transform, the shared realising function carrying the
+information that injectivity would otherwise have to recover; and a single dilation rather than
+all $s > 0$, the dilate contributing only the factor $s^{-z}$, which never vanishes.
 \end{proof}
 
 % shared with blueprint lem:memory-fractional-integrals — "§10" adapted to the appendix.
@@ -279,14 +285,17 @@ $x \downarrow 0$, and
 \begin{itemize}
 \item Laplace form: for every $s > 0$, $A\bigl[\hat u(s, \cdot)\bigr] = s\,\hat u(s, \cdot)$,
 with $\hat u(s, \zp) = \hat f(s)$;
-\item time-domain (Mellin) form: for every $t > 0$ and $1 < \operatorname{Re} z < z_*$,
+\item time-domain (Mellin) form: for every $t > 0$ and every $z$ with
+$1 < \operatorname{Re} z < z_*$ and $\tilde H(z-1) \ne 0$ --- all of the strip off an isolated
+set, Remark~\ref{rem:poles} ---
 \[
   \widetilde{\partial_t u(t, \cdot)}(z) \;=\; B(1 - z)\;\widetilde{u(t, \cdot)}(z - 1),
 \]
-that is, $\partial_t u = A\,u$ read through the Mellin transform in $x$.
+both transforms absolutely convergent; that is, $\partial_t u = A\,u$ read through the Mellin
+transform in $x$.
 \end{itemize}
 \item \emph{(Uniqueness.)} $A$ is the unique operator in the covariant Mellin class with
-property (1), hence with property (2).
+property (1), at every height $c$, hence with property (2).
 \end{enumerate}
 \end{theorem}
 
