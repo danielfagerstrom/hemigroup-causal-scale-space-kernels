@@ -240,6 +240,20 @@ theorem laplaceCLM_of_hasCoreDerivL1 {s : ℝ} (hs : 0 < s) {A B : X}
   rw [map_neg] at this
   linarith
 
+/-- **The layer cake, a fifth time**: `∫ν(dr)∫₀^r h = ∫₀^∞ h(u)ν((u,∞))du` for `h ≥ 0` and `ν`
+causal.
+
+`lintegral_comp_eq_lintegral_meas_lt_mul` at `f = id`, exactly as chapter 9 used it for the
+potential kernel and chapter 7 for the Dickman superposition; only the integrand changes. It is
+the exchange `lem:generator-properties`(5) runs on, and stating it for a general nonnegative `h`
+is what lets the signed case be got by domination rather than by splitting. -/
+theorem lintegral_intervalIntegral_eq_tail {ν : Measure ℝ} (hν : IsCausal ν) {h : ℝ → ℝ}
+    (hhnn : ∀ u, 0 ≤ h u) (hhi : ∀ r : ℝ, IntervalIntegrable h volume 0 r) :
+    (∫⁻ r, ENNReal.ofReal (∫ u in (0 : ℝ)..r, h u) ∂ν)
+      = ∫⁻ u in Ioi (0 : ℝ), ν (Ioi u) * ENNReal.ofReal (h u) :=
+  lintegral_comp_eq_lintegral_meas_lt_mul (f := fun r : ℝ => r) (g := h) ν hν.ae_nonneg
+    aemeasurable_id (fun r _ => hhi r) (.of_forall hhnn)
+
 namespace SelfDecomposableExponent
 
 variable (F : SelfDecomposableExponent)
@@ -564,6 +578,55 @@ theorem laplaceFun_phillipsGenerator {ν : Measure ℝ} (hν : F.HasLevyTail ν)
     laplaceCLM_of_hasCoreDerivL1 hs hAB, smul_eq_mul, symbol,
     (F.hasDerivAt_toRealExponent (by positivity : (0 : ℝ) < x * s)).deriv]
   ring
+
+/-! ## `lem:generator-properties`(5): the memory-kernel form
+
+The blueprint compares the two operators through their transforms and separates them with
+`prop:laplace-uniqueness`. **The Lean proof does not, and needs no uniqueness theorem at all.**
+`setIntegralCLM (Ioc 0 t)` is a bounded functional — the third one this chapter pushes through the
+Bochner integral, after `mconvL1 μ` and `laplaceCLM` — so the primitive of `φ_x(∂_t)f` can be
+*evaluated* rather than characterised:
+
+  `∫₀^t φ_x(∂_t)f = b₀f(t) + ∫ ν_x(dr) ∫_{(t-r,t]} f`,
+
+and what is left is one scalar Fubini turning `∫ν_x(dr)∫_{(0,r)}f(t-u)du` into
+`∫₀^∞ f(t-u)ν_x((u,∞))du`, which the tail identity reads as `κ^{(x)} * f` minus its drift atom.
+Equality then holds at **every** `t`, not almost every, and the ledger entry the blueprint's route
+would have spent is not spent.
+-/
+
+/-- The primitive of `φ_x(∂_t)f`, evaluated: `setIntegralCLM` through the Bochner integral. -/
+theorem setIntegral_phillipsGenerator {ν : Measure ℝ} (hν : F.HasLevyTail ν) {x : ℝ} (hx : 0 < x)
+    {A B : X} (hAB : HasCoreDerivL1 A B) (S : Set ℝ) :
+    (∫ ρ in S, ((F.phillipsGenerator ν x A B : X) : ℝ → ℝ) ρ)
+      = F.b₀ * (∫ ρ in S, ((B : X) : ℝ → ℝ) ρ)
+        + ∫ r, (∫ ρ in S, ((A - transL1 r A : X) : ℝ → ℝ) ρ) ∂(dilatedTail ν x) := by
+  rw [← setIntegralCLM_apply, phillipsGenerator, map_add, map_smul, smul_eq_mul,
+    ← ContinuousLinearMap.integral_comp_comm _ (F.integrable_sub_transL1 hν hx hAB)]
+  simp only [setIntegralCLM_apply]
+
+/-- Each term of that evaluation, on a core representative: `∫₀^t (f - T_rf) = ∫_{(t-r,t]} f`. -/
+theorem setIntegral_sub_transL1 {A : X} {f : ℝ → ℝ} (hA : ((A : X) : ℝ → ℝ) =ᵐ[volume] f)
+    (hfi : Integrable f) (hfc : ∀ u : ℝ, u < 0 → f u = 0) {r : ℝ} (hr : 0 ≤ r) (t : ℝ) :
+    (∫ ρ in Ioc (0 : ℝ) t, ((A - transL1 r A : X) : ℝ → ℝ) ρ)
+      = (∫ ρ in Ioc (0 : ℝ) t, f ρ) - ∫ ρ in Ioc (0 : ℝ) (t - r), f ρ := by
+  have hrep : ((A - transL1 r A : X) : ℝ → ℝ)
+      =ᵐ[volume] fun ρ => f ρ - f (ρ - r) := by
+    filter_upwards [Lp.coeFn_sub A (transL1 r A), coeFn_transL1 r A, hA,
+      (measurePreserving_sub_const r).quasiMeasurePreserving.ae hA] with ρ h1 h2 h3 h4
+    rw [h1, Pi.sub_apply, h2, h3, h4]
+  have hshift : (∫ ρ in Ioc (0 : ℝ) t, f (ρ - r)) = ∫ ρ in Ioc (0 : ℝ) (t - r), f ρ := by
+    rcases le_or_gt 0 t with ht | ht
+    · rw [setIntegral_Ioc_eq_intervalIntegral_of_causal (hfi.comp_sub_right r)
+          (fun u hu => hfc (u - r) (by linarith)) t,
+        intervalIntegral.integral_comp_sub_right f r, zero_sub,
+        intervalIntegral.integral_of_le (by linarith : -r ≤ t - r),
+        setIntegral_Ioc_of_causal hfi hfc (by linarith : -r ≤ (0 : ℝ)) (t - r)]
+    · rw [Ioc_eq_empty (not_lt.mpr ht.le),
+        Ioc_eq_empty (not_lt.mpr (by linarith : t - r ≤ 0))]
+      simp
+  rw [setIntegral_congr_ae measurableSet_Ioc (hrep.mono fun ρ hρ _ => hρ),
+    integral_sub hfi.integrableOn ((hfi.comp_sub_right r).integrableOn), hshift]
 
 end SelfDecomposableExponent
 

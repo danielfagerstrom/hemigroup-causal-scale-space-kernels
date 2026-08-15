@@ -1002,6 +1002,30 @@ qualifier is consumed and found free.
 #print axioms Hemigroup.SelfDecomposableExponent.integral_one_sub_exp_dilatedTail
 #print axioms Hemigroup.SelfDecomposableExponent.laplaceFun_phillipsGenerator
 
+/-! ### `lem:generator-properties` (10.3), clause (5) — three steps of four
+
+The clause itself is **open**, in `Skeleton/Chapter10.lean`. What is listed here is the part of its
+route that is proved and sits in the library ahead of its consumer, so this list is again the only
+check that it is interface-free. It is.
+
+**The route no longer goes through a uniqueness theorem.** The blueprint separates the two
+operators by their transforms and cites `prop:laplace-uniqueness`; but `setIntegralCLM (Ioc 0 t)`
+is a bounded functional — the third this chapter pushes through the Bochner integral, after
+`mconvL1 μ` and `laplaceCLM` — so the primitive of `φ_x(∂_t)f` can be *evaluated* instead of
+characterised, and the conclusion is equality at every `t` rather than almost every. Two things
+follow: the ledger appeal the blueprint's route would have made is not made, and the reduction to
+`f' ≥ 0` recorded earlier as the way round signed-measure Laplace injectivity is not needed, that
+obstruction having been an artefact of the transform route.
+
+What is left is one signed Fubini — whose integrability side condition is clause (1)'s convergence
+once more, `|∫₀^r f(t-u)du| ≤ min(‖f‖₁, Mr)` — and the unfolding of `mconv` against
+`memoryKernel = b₀δ₀ + k(·/x)/x`.
+-/
+
+#print axioms Hemigroup.lintegral_intervalIntegral_eq_tail
+#print axioms Hemigroup.SelfDecomposableExponent.setIntegral_phillipsGenerator
+#print axioms Hemigroup.SelfDecomposableExponent.setIntegral_sub_transL1
+
 /-! ### `Ein`, the entire exponential integral
 
 Mathlib has no exponential integral of any kind — no `Ein`, no `Ei`, no `E₁` — so `ein` is

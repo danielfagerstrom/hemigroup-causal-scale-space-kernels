@@ -74,15 +74,37 @@ free. Two further steps also came in under: `Lap[f'] = s\hat f` is the differenc
 `lem:delay-core` under a *continuous* functional rather than an integration by parts, and the
 scalar identity is chapter 9's `lintegral_one_sub_exp_eq_tail` verbatim.
 
-5. (5) wants `mconv_eq_setIntegral_mconv` for a **locally finite** causal measure: `κ^{(x)}` has
-   total mass `F'(0+)`, which `prop:moments` has just finished proving may be `⊤`, and the
-   existing lemma assumes `IsFiniteMeasure`. Generalising it is the refactor the plan flagged as
-   worth making and not yet worth making; this is the consumer that makes it worth making.
-   The uniqueness step then looks blocked on signed-measure Laplace injectivity, the development
-   having `laplaceL_injective_of_ne_top` for measures — until linearity is used: both operators
-   are linear in `f`, and splitting `f'` into positive and negative parts (each in `X₀`, each
-   primitive in `𝒟`) reduces to `f' ≥ 0`, where `f` is nondecreasing, `f - T_rf ≥ 0`, and both
-   sides of the identity are measures.
+### (5), open — the route is settled and three of its four steps are proved
+
+**The route changed, and it no longer goes through a uniqueness theorem.** The blueprint compares
+the two operators through their transforms and separates them with `prop:laplace-uniqueness`. That
+is not needed: `setIntegralCLM (Ioc 0 t)` is a *bounded functional* — the third one this chapter
+pushes through the Bochner integral, after `mconvL1 μ` and `laplaceCLM` — so the primitive of
+`φ_x(∂_t)f` can be **evaluated** rather than characterised. The identity then holds at every `t`
+rather than almost every, and the earlier plan to reduce to `f' ≥ 0` so that both sides become
+measures is not needed either; it was an artefact of the transform route.
+
+Proved and in `Hemigroup/PhillipsGenerator.lean`, with no consumer yet:
+
+| step | declaration |
+|---|---|
+| the primitive, evaluated | `setIntegral_phillipsGenerator` |
+| each term of it | `setIntegral_sub_transL1` — `∫₀^t (f - T_rf) = ∫₀^t f - ∫₀^{t-r} f` |
+| the exchange, for `h ≥ 0` | `lintegral_intervalIntegral_eq_tail` — the layer cake, a fifth time |
+
+**What is left is one signed Fubini and one unfolding.** The Fubini is
+`∫ν_x(dr)∫₀^r f(t-u)du = ∫₀^∞ f(t-u)ν_x((u,∞))du`; its integrability side condition is *clause
+(1)'s convergence again*, because `|∫₀^r f(t-u)du| ≤ min(‖f‖₁, Mr)` with `M = sup|f|`
+(`HasCoreDeriv.abs_le`), which is `integrable_min_const_mul`'s integrand. Two ways to get the
+signed case from the nonnegative one, and the second looks cheaper: split `f(t-·)` into positive
+and negative parts and add, or split `f'` and use that both operators are linear in `f`, which
+makes `f` nondecreasing and the integrand nonnegative outright. The unfolding is
+`mconv (memoryKernel x) f t = b₀f(t) + ∫₀^∞ f(t-u)k(u/x)/x du`, against
+`memoryKernel = b₀δ₀ + ...`, after which the tail identity closes the gap.
+
+Note what the change of route costs elsewhere: `mconv_eq_setIntegral_mconv` no longer needs
+generalising to a locally finite measure. That refactor was flagged twice as "worth making when a
+second consumer appears"; the second consumer has now gone away.
 
 ## `lem:delay-core`, discharged
 

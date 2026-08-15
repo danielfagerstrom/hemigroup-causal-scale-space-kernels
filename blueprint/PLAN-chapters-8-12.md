@@ -2209,3 +2209,73 @@ and that is the whole of the difference.
 locally finite causal measure — `κ^{(x)}` has total mass `F'(0+)`, which `prop:moments` shows may
 be `⊤` — and then Laplace uniqueness, reduced to the case `f' ≥ 0` by linearity so that both sides
 are measures. Its transform half is now (2).
+
+---
+
+# `lem:generator-properties`(5): route settled, three steps of four proved — 2026-08-15
+
+**The clause is not proved.** `Skeleton/Chapter10.lean` still carries it. What this round
+established is the *route*, and it is not the blueprint's; three of its four steps are proved and
+sit in `Hemigroup/PhillipsGenerator.lean` ahead of their consumer. Lean core. Trust boundary
+unchanged.
+
+## The uniqueness theorem is not needed, and neither is the reduction planned to get round it
+
+The blueprint compares `κ^{(x)} * f` with the primitive of `φ_x(∂_t)f` through their transforms
+and separates them with `prop:laplace-uniqueness`. Two entries ago this plan recorded the
+consequent obstruction — the available injectivity is for *measures* and the difference is a
+signed function — and the way round it: split `f'` into positive and negative parts, so that `f`
+is nondecreasing and both sides become measures.
+
+Neither is needed. `setIntegralCLM (Ioc 0 t)` is a **bounded functional**, so it passes through
+the Bochner integral exactly as `mconvL1 μ` does in (3) and `laplaceCLM` in (2), and the primitive
+of `φ_x(∂_t)f` can therefore be *evaluated*:
+
+    ∫₀^t φ_x(∂_t)f = b₀f(t) + ∫ ν_x(dr) ∫_{(t-r,t]} f.
+
+That is `setIntegral_phillipsGenerator` and `setIntegral_sub_transL1`, both proved. The conclusion
+it leads to is equality at **every** `t` rather than almost every, and no ledger entry is spent.
+
+**Third time in this chapter that pushing a bounded functional through the Bochner integral has
+replaced something heavier**: `Φ`-commutation (3) instead of a computation with representatives,
+the transform identity (2) instead of Tonelli, and now the memory-kernel form (5) instead of a
+uniqueness theorem. The pattern is worth naming, because it is not the one the plan keeps
+recording. It is not "the classical derivation asks for more than the obligation" — it is *the
+`L¹` model has more continuous functionals on it than the prose notices*, and each one converts a
+statement about the Bochner integral into a statement about scalars.
+
+## What is left, and its cost
+
+One signed Fubini and one unfolding.
+
+* **The Fubini** is `∫ν_x(dr)∫₀^r f(t-u)du = ∫₀^∞ f(t-u)ν_x((u,∞))du`. Its nonnegative case is
+  `lintegral_intervalIntegral_eq_tail`, proved this round — `lintegral_comp_eq_lintegral_meas_lt_mul`
+  at `f = id`, the **fifth** appearance of the layer cake in this article and the same shape
+  chapter 9 used for the potential kernel. Its integrability side condition is *clause (1)'s
+  convergence again*: `|∫₀^r f(t-u)du| ≤ min(‖f‖₁, Mr)` with `M = sup|f|` from
+  `HasCoreDeriv.abs_le`, which is exactly `integrable_min_const_mul`'s integrand. Two routes from
+  the nonnegative case to the signed one — split `f(t-·)`, or split `f'` and use linearity of both
+  operators in `f` — and the second looks cheaper because it makes the integrand nonnegative
+  outright rather than after a recombination.
+* **The unfolding** is `mconv (memoryKernel x) f t = b₀f(t) + ∫₀^∞ f(t-u)k(u/x)/x du`, against
+  `memoryKernel = b₀δ₀ + k(·/x)/x dt`, after which the tail identity closes the gap.
+
+## A refactor that has gone away
+
+`mconv_eq_setIntegral_mconv` for a locally finite causal measure was flagged twice — once as
+"worth making and not worth making today", once as "this is the consumer that makes it worth
+making". It is not, any more: the transform route wanted it and the direct route does not. Worth
+recording as the counter-case to the `Subordinator.lean` lesson: a generalisation deferred until a
+second consumer appears is sometimes deferred until the second consumer *disappears*, and
+deferring was right both times.
+
+## Honest accounting of this round
+
+Four clauses of five were proved in the previous three rounds; this round produced three lemmas
+and no clause. The estimate that (5) is the bulk was correct, and it remains the bulk after the
+route improved — the improvement removed a ledger appeal and a case reduction, not the Fubini.
+
+## Next
+
+(5): the signed Fubini, then the `mconv` unfolding, then assembly. Otherwise `PLAN`'s *available*
+row: `prop:stable-moments`, `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`.
