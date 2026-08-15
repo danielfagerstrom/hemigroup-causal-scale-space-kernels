@@ -61,7 +61,9 @@ theorem isCausal_memoryKernel : IsCausal (F.memoryKernel x) := by
   simp
 
 /-- **`thm:sonine-conservation`.** Stated against an arbitrary `ℓ` meeting the potential-kernel
-specification, so that it does not wait on `lem:potential-kernel`'s existence half. -/
+specification, so that it does not wait on `lem:potential-kernel`'s existence half. The identity
+here is restricted to `[0,∞)`; `sonine_conservation'` below is the unrestricted equality of
+measures on `ℝ` that the article states. -/
 theorem sonine_conservation (hnd : F.Nondegenerate) (hx : 0 < x) (ℓ : Measure ℝ) [SFinite ℓ]
     (hcaus : IsCausal ℓ)
     (hℓ : ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹) :
@@ -84,6 +86,23 @@ theorem sonine_conservation (hnd : F.Nondegenerate) (hx : 0 < x) (ℓ : Measure 
     · intro s hs
       exact hkey s (lt_of_lt_of_le zero_lt_one hs)
   rw [heq, Measure.restrict_restrict measurableSet_Ici, inter_self]
+
+/-- **`thm:sonine-conservation`, unrestricted.** `κ^{(x)} ∗ ℓ^{(x)} = \mathrm{Leb}_{[0,∞)}` as
+measures on all of `ℝ`, which is the identity the article states (Theorem 9.5): both sides vanish
+on `Iio 0` — the left because a convolution of causal measures is causal, the right by
+construction — so restricting to `[0,∞)`, where `sonine_conservation` already identifies them,
+loses no information. -/
+theorem sonine_conservation' (hnd : F.Nondegenerate) (hx : 0 < x) (ℓ : Measure ℝ) [SFinite ℓ]
+    (hcaus : IsCausal ℓ)
+    (hℓ : ∀ s : ℝ, 0 < s → laplaceL ℓ s = ENNReal.ofReal (F.symbol x s)⁻¹) :
+    F.memoryKernel x ∗ ℓ = volume.restrict (Ici (0 : ℝ)) := by
+  have hcausconv : IsCausal (F.memoryKernel x ∗ ℓ) := F.isCausal_memoryKernel.conv hcaus
+  have hrestr := F.sonine_conservation hnd hx ℓ hcaus hℓ
+  have hleft : (F.memoryKernel x ∗ ℓ).restrict (Ici 0) = F.memoryKernel x ∗ ℓ := by
+    apply Measure.restrict_eq_self_of_ae_mem
+    rw [ae_iff, show {a : ℝ | a ∉ Ici (0 : ℝ)} = Iio 0 from compl_Ici]
+    exact hcausconv
+  rw [← hleft, hrestr]
 
 end SelfDecomposableExponent
 

@@ -174,14 +174,19 @@ on $[0,\infty)$ --- the \emph{potential kernel} --- with
 \[
   \widehat{\ell^{(x)}}(s) \;=\; \frac{1}{\varphi_x(s)} \;=\; \frac{1}{s\,F'(xs)}, \qquad s > 0.
 \]
-\statusT\quad\emph{(\textbf{Stated in Lean and decomposed}, as
-\texttt{Skeleton.existsUnique\_potentialKernel}. Route B --- construct the measure as the
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.existsUnique\_potentialKernel}; \texttt{\#print axioms}
+gives \ledger{A17} and nothing else. Route B --- construct the measure as the
 subordinator's potential $U = \int_0^\infty \mu_t\,dt$ rather than represent it via
-Bernstein--Widder --- is decided, and the main argument is now \texttt{sorry}-free: causality,
-the transform by Tonelli, local finiteness from convergence at one point, and uniqueness from
-Laplace injectivity for measures that are not finite. Two named sub-lemmas remain open: that
-$\varphi_x$ is a L\'evy exponent with its triple exhibited (drift $b_0$, L\'evy measure the
-Stieltjes measure $-d[k(\cdot/x)/x]$), and that the laws $\mu_t$ form a \emph{measurable} family.}
+Bernstein--Widder --- is what is proved: causality, the transform by Tonelli, local finiteness
+from convergence at one point, and uniqueness from Laplace injectivity for measures that are not
+finite; the two sub-lemmas that were once open --- that $\varphi_x$ is a L\'evy exponent with its
+triple exhibited (\texttt{exists\_levyTriple\_symbol}: drift $b_0$, L\'evy measure the Stieltjes
+measure $-d[k(\cdot/x)/x]$), and that the laws $\mu_t$ form a \emph{measurable} family
+(\texttt{exists\_subordinatorFamily}) --- are proved. The statement's first sentence, that
+$\varphi_x$ is a nonzero Bernstein function positive on $(0,\infty)$, is carried by those two
+declarations and by \texttt{symbol\_pos} rather than by the $\exists!$ theorem's conjuncts
+(fidelity review R21).}
 
 \emph{\textbf{That second clause is the finding, and the work order had omitted it.} Forming
 $\int_0^\infty \mu_t\,dt$ reads as bookkeeping and is not: \ledger{A17} supplies $\mu_t$ for each $t$
@@ -242,7 +247,11 @@ For every $x > 0$,
 \]
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.sonine\_conservation}; \texttt{\#print axioms} reduces
-to Lean core, so the chapter's headline crosses no interface at all.}
+to Lean core, so the chapter's headline crosses no interface at all. The tagged declaration states
+the identity restricted to $[0,\infty)$; \texttt{sonine\_conservation'} is the unrestricted
+equality of measures on $\mathbb{R}$ displayed above, the two agreeing because both factors ---
+$\kappa^{(x)} * \ell^{(x)}$ and $\mathrm{Leb}_{[0,\infty)}$ --- are causal, i.e.\ vanish on
+$(-\infty, 0)$ (fidelity review R23).}
 
 \emph{\textbf{It does not wait on \ref{lem:potential-kernel}.} The Lean statement quantifies over
 any causal $\ell$ meeting that lemma's specification rather than naming the $\ell^{(x)}$ it

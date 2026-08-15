@@ -1326,7 +1326,7 @@ A17 through `kernel`; the signal (`signal_hypotheses`) is Lean core.
 #print axioms Hemigroup.SelfDecomposableExponent.witness_hF_stable
 #print axioms Hemigroup.SelfDecomposableExponent.witness_main_characterization_stable
 
-/-! ### Fidelity review (P2)
+/-! ### Fidelity review (P2–P4)
 
 The lines the P2 fixes of `PLAN-fidelity-review.md` added. Each is a statement-tightening: the
 theorem was already proved and already the article's; what changed is that the Lean statement now
@@ -1376,3 +1376,14 @@ through `kernel`, exactly as `cascadeFamily` does.
 #print axioms Hemigroup.continuousOn_of_strictMonoOn_surjOn
 #print axioms Hemigroup.CascadeFamily.reparam
 #print axioms Hemigroup.SelfDecomposableExponent.cascadeFamily_reparam
+
+/-! **R23** — `thm:sonine-conservation` states the identity as an unrestricted equality of
+measures on `ℝ`, `κ^{(x)} ∗ ℓ^{(x)} = \mathrm{Leb}_{[0,∞)}`; the tagged declaration
+`sonine_conservation` only gave the restriction of both sides to `[0,∞)`. `sonine_conservation'`
+is the unrestricted form: both sides vanish on `Iio 0` (the left because a convolution of causal
+measures is causal, the right by construction), so restricting to `[0,∞)`, where
+`sonine_conservation` already identifies them, loses no information. Same ledger as
+`sonine_conservation` itself — the line below is unchanged from it.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.sonine_conservation'

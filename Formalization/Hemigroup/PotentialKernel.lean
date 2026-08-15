@@ -241,6 +241,15 @@ theorem exists_sonine_pair (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
   haveI : SigmaFinite ℓ := sigmaFinite_of_isCausal_of_measure_Icc_ne_top hcaus hloc
   exact ⟨ℓ, hcaus, hloc, inferInstance, F.sonine_conservation hnd hx ℓ hcaus htr⟩
 
+/-- **`prop:sonine-pair-exists`**, unrestricted (fidelity review R23): the same witness pair, with
+the conservation identity in the form the article states, `F.sonine_conservation'`. -/
+theorem exists_sonine_pair' (hnd : F.Nondegenerate) {x : ℝ} (hx : 0 < x) :
+    ∃ ℓ : Measure ℝ, IsCausal ℓ ∧ (∀ T : ℝ, ℓ (Icc 0 T) ≠ ⊤) ∧
+      ∃ _ : SFinite ℓ, F.memoryKernel x ∗ ℓ = volume.restrict (Ici 0) := by
+  obtain ⟨ℓ, ⟨hcaus, hloc, htr⟩, -⟩ := F.existsUnique_potentialKernel hnd hx
+  haveI : SigmaFinite ℓ := sigmaFinite_of_isCausal_of_measure_Icc_ne_top hcaus hloc
+  exact ⟨ℓ, hcaus, hloc, inferInstance, F.sonine_conservation' hnd hx ℓ hcaus htr⟩
+
 end SelfDecomposableExponent
 
 end Hemigroup

@@ -34,6 +34,11 @@ recorded, faithful choice worth a sentence in the text of record).
 | R17 | F6 | note-only | A18 anchor (`AXIOMS.md`) | Independent as Lean axioms, A17 and A18 are entangled as *anchors*: reading A18's hypothesis as SSV Def. 5.14 passes through Thm 5.2's converse, which is A17's anchor. Not a strengthening (SSV's own proof does the same). | **resolved (P3)** — cross-reference paragraph added to A18's entry |
 | R18 | F3 | note-only | `covariance_laplace` (`Covariance.lean:195`) vs Lemma 6.1 "is equivalent to" | Only (A8) ⇒ identities is under the tagged name; the converse is `dilL1_comp_mconvL1` + `mconvL1_congr`, used in `Instance.lean:221–225`. Elementary, available, not packaged. | open, optional: a converse lemma for literal iff-fidelity |
 | R19 | cosmetic | note-only | `Covariance.lean` module docstring | Said clause (3) of `lem:action-rigidity` and `prop:canonical-gauge` were in `Skeleton/`; both proved. | **resolved (P3)** — docstring fixed |
+| R20 | F8 | note-only | `lem:potential-kernel` annotation (`09-memory-kernels.tex`) | Said "Stated in Lean and decomposed, as `Skeleton.existsUnique_potentialKernel`… two sub-lemmas open"; the tag already pointed at the proved `Hemigroup` declaration. | **resolved (P4)** — annotation rewritten |
+| R21 | F3 | note-only | `lem:potential-kernel` / `existsUnique_potentialKernel` | "`φ_x` is a nonzero Bernstein function, positive on `(0,∞)`" is not a conjunct of the `∃!`; carried by `exists_levyTriple_symbol`, `exists_subordinatorFamily`, `symbol_pos`. | **resolved (P4)** — said in the annotation |
+| R22 | F3 | note-only | `lem:memory-kernel` first display | `∂_x F(xs) = sF'(xs)` has no standalone declaration; `symbol` defines the right side, chain rule inline where used. | accepted (note) |
+| R23 | F3 | statement-tightening, trivial | `sonine_conservation` (`Sonine.lean:65`) | Restricted to `Ici 0` on both sides; unrestricted equality follows from causality of both factors. | **resolved (P4)** — `sonine_conservation'` |
+| R5 | — | — | (update) | Checked in P4: no realness lemma for `A` on real test functions exists; the `Re` reading of `SatisfiesPMP` is a documented deliberate weakening. | **accepted with note** (T2.3f) |
 
 Ledger entries are added as cards are written; a resolved entry keeps its row with the commit.
 
@@ -51,8 +56,14 @@ two `[shared]` drift advisories — the paper's copies of `lem:symbol-uniqueness
 **State after P3 (2026-08-15).** Tier 1 is complete: the chapter 4–6 supply chain (nine cards,
 all faithful; one note-only, R18), the two ledger axioms (both faithful, axiom ≤ source on every
 row against image-verified pages; R17 recorded), and Cor. 7.4 (faithful). No claim-changing
-finding anywhere in Tier 1. Next: P4 (Tier 2 — chapters 9, 10, 12), P5 (Tier 3, the F7 sweep,
-the draft↔blueprint diff), then P6.
+finding anywhere in Tier 1. P4 done — see below.
+
+**State after P4 (2026-08-15).** Tier 2 complete: chapter 9 (seven cards), chapter 10 (three),
+chapter 12 (eight) — every statement faithful; the one blind-restatement risk that mattered
+(Lemma 10.3(1) as a norm bound only) does not arise, `Integrable` being an explicit conjunct.
+Four note-only findings (R20–R23), two fixed in the text of record, one by a two-line Lean
+strengthening; R5 accepted with note. Next: P5 (Tier 3, the F7 sweep, the draft↔blueprint
+diff), then P6.
 
 ---
 
@@ -755,6 +766,128 @@ admitted, matching Remark 7.5; `S σ x = σ^α x` extra. `Real.rpow` at `s = 0` 
 the canonical-gauge stable core is not one-parameter (the one-parameter stable semigroup is its
 `reparam` by `x ↦ x^{1/α}`, now available — a witness through `CascadeFamily.reparam` is
 possible, R14-adjacent, optional). **faithful.**
+
+## Tier 2 — the "theorem content" the introduction promises (P4)
+
+Three read-only card passes (one per chapter), reviewed by the integrator. Definitions were
+audited at T0.6/T0.8; these are the statements. All abbreviated.
+
+### T2.1 Chapter 9 — memory kernels, Sonine conservation, Volterra
+
+**T2.1a `lem:memory-kernel` (Lemma 9.1, first display) · `hasDerivAt_toRealExponent`
+(`ExponentDerivative.lean:296`).** `HasDerivAt toRealExponent (b₀ + ∫_{t>0} e^{−st} k t) s` for
+`s > 0` — a `HasDerivAt`, not a `deriv` equation, so no off-differentiability junk; `F' = b₀ + ∫
+e^{−st} k` exactly. The display's *first* equality `∂_x F(xs) = sF'(xs)` has no standalone
+counterpart — `symbol x s := s · deriv toRealExponent (xs)` *defines* the right side, and the
+chain rule is done inline where needed (`Volterra.lean:164–170`) — R22, note-only. **faithful.**
+
+**T2.1b `lem:potential-kernel` (Lemma 9.4) · `existsUnique_potentialKernel`
+(`PotentialKernel.lean:201`).** `Nondegenerate → 0 < x → ∃! ℓ, IsCausal ℓ ∧ (∀ T, ℓ (Icc 0 T) ≠
+⊤) ∧ ∀ s > 0, laplaceL ℓ s = ofReal (symbol x s)⁻¹` — the article's specification, existence by
+Route B inside the proof; A17 only. **No chosen potential-kernel object exists in `Hemigroup/`**:
+every consumer quantifies over an `ℓ` meeting the spec, so there is no `Classical.choose` to
+audit. `(symbol x s)⁻¹` guarded by `symbol_pos hnd`. The article's first sentence ("`φ_x` is a
+nonzero Bernstein function, positive on `(0,∞)`") is carried by `exists_levyTriple_symbol`
+(`:50`, the `LE` reading), `exists_subordinatorFamily` and `symbol_pos`, not by the `∃!`'s
+conjuncts — R21, note-only, now said in the blueprint annotation. The annotation had gone stale
+("Skeleton…, two sub-lemmas open") — R20, fixed. **faithful.**
+
+**T2.1c `thm:sonine-conservation` (Thm 9.5) · `sonine_conservation` (`Sonine.lean:65`).**
+`Nondegenerate → 0 < x → [SFinite ℓ] → IsCausal ℓ → (transform spec) → (memoryKernel x ∗
+ℓ).restrict (Ici 0) = volume.restrict (Ici 0)`; Lean core (`laplaceL_injective_of_ne_top`). The
+three hypotheses on `ℓ` are the article's `ℓ^{(x)}` unpacked, deliberately decoupled from
+existence. Restricted on both sides — R23, trivial tightening (`sonine_conservation'`, P4).
+**faithful-with-note.**
+
+**T2.1d `prop:volterra`, `prop:volterra-uniqueness` (Prop. 9.8) · `volterra`, `volterra_unique`
+(`Volterra.lean:149,205`).** `t μ_x(dt)` ↦ `(kernel 0 x).withDensity (t ↦ ofReal t)`; `θ_x` ↦
+`volterraKernel x := ofReal x • memoryKernel x` (= `x·κ^{(x)}`, as the blueprint says);
+`volterra : … = volterraKernel x ∗ kernel 0 x`; `volterra_unique : IsProbabilityMeasure ν →
+IsCausal ν → (identity for ν) → ν = kernel 0 x` — the article's class exactly. No
+`Classical.choose`, no `.toReal`. **faithful.**
+
+**T2.1e `prop:sonine-pair-exists` · `exists_sonine_pair` (`PotentialKernel.lean:237`).**
+Collation of b + c; inherits R23. **faithful.**
+
+**T2.1f `lem:memory-kernel-transform` · `laplace_memoryKernel`
+(`MemoryKernelTransform.lean:70`).** `laplace (memoryKernel x) s = symbol x s / s`, `x, s > 0` —
+the display's second equality; `laplace` (Bochner) of a non-finite measure, integrability proved
+piecewise (atom + density) inside; companion `laplaceL_memoryKernel_ne_top`. **faithful.**
+
+**T2.1g `lem:potential-kernel-scaling` · `potential_kernel_scaling`
+(`PotentialScaling.lean:77`).** For any `ℓ₁, ℓx` meeting the spec at scales `1`, `x`: `ℓx =
+ofReal x • ℓ₁.map (x·)` — **the scalar `x` is there** (sup-normalisation), so in density form
+`ℓ^{(x)}(t) = ℓ^{(1)}(t/x)` with no extra factor, as the draft's "Moreover" says. Quantified
+over any two measures meeting the spec (uniqueness pins them). **faithful.**
+
+`Skeleton.hasCMDensity_iff` (`Skeleton/Chapter9.lean:178`): `sorry`-marked, outside
+`Hemigroup/`, uncited, not in the guard — nothing claimed.
+
+### T2.2 Chapter 10 — the delay core and the generator
+
+**T2.2a `lem:delay-core` (Lemma 10.1) · `delay_core` (`DelayCore.lean:773`).** `causalL1 ⊆
+closure coreL1` (density in `X₀`, as a closure inclusion because `𝒟` is not dense in `X`) ∧
+`T_r`-invariance ∧ **`mconvL1 μ`-invariance for every causal probability `μ`** (more general
+than "every `Φ_{x,y}`"; the specific reading via `Φ x y = mconvL1 (repr x y)`) ∧ the difference
+quotient `r⁻¹ • (transL1 r F − F) → −G` at `𝓝[>] 0` for `HasCoreDerivL1 F G` ∧ `‖transL1 r F −
+F‖ ≤ min (2‖F‖) (r‖G‖)`. No partial functions. `memCore_iff_signaling_hypotheses` (`:377`) is an
+*iff* between `HasCoreDeriv f g` and the six signal hypotheses of `signaling_form`. **faithful.**
+
+**T2.2b `def:phillips-generator` (Def. 10.2).** Both displays: `phillipsGenerator` (`:427`) and
+`phillipsGenerator_eq_smul_integral` (`:436`); tag correct. **faithful.**
+
+**T2.2c `lem:generator-properties` (Lemma 10.3) · `generator_properties`
+(`PhillipsGenerator.lean:901`).** Hypotheses `HasLevyTail ν`, `HasCoreDerivL1 A B`, `x > 0`.
+**(1) is `Integrable (fun r => A − transL1 r A) (dilatedTail ν x) ∧ ‖…‖ ≤ b₀‖B‖ + x⁻¹ ∫ min (2‖A‖)
+(x r ‖B‖) ∂ν`** — the `Integrable` conjunct is explicit and proved first
+(`integrable_sub_transL1`, `:514–525`), so the blind-restatement worry (a norm bound provable
+from junk `0`) does not arise. (2) `laplaceFun (…) s = symbol x s · laplaceFun A s`, `s > 0`,
+`deriv` genuine (`hasDerivAt_toRealExponent`). (3) commutation with `mconvL1 μ` for causal
+probability `μ` (the lemma beneath holds for any finite `μ`). (4) `ContinuousOn (fun y =>
+phillipsGenerator ν y A B) (Ioi 0)` in `X`. (5) `mconv (memoryKernel x) f =ᵐ fun t => ∫_{Ioc 0 t}
+phillipsGenerator …` (the lemma beneath is everywhere-equality). **faithful.**
+
+### T2.3 Chapter 12 — the locality chain
+
+**T2.3a `lem:local-polynomial-symbol` (Lemma 12.2) · `nonempty_isLocalOfOrder_iff_symbol_eq`
+(`ProfileEuler.lean:669`), `exists_symbol_eq_of_isLocalOfOrder` (`:556`).** Symbol identity on
+**the whole strip** `0 < Re z < z_*−1` off the zeros of `H̃`; degree = `γ n ≠ 0`; coefficients
+`coeff j x = γ j x^{j−1}` in the separate declaration. **faithful** (to the blueprint; R3 for
+the draft, resolved).
+
+**T2.3b `lem:log-convexity` (Lemma 12.4) · `convexOn_log_negMoment` (`Locality.lean:100`).**
+`ConvexOn ℝ momentInterval (ζ ↦ log (negMoment ζ).toReal)` on `(0, z_*)`, not `(0,∞)` — the
+correct unconditional domain, equal to `Ioi 0` once A13 is spent (`momentInterval_eq_Ioi`);
+`.toReal` guarded by `negMoment_ne_top_of_lt_zStar`, `log` by `negMoment_pos` under the no-atom
+clause. **faithful.**
+
+**T2.3c `lem:symbol-vanishes-at-origin` (draft 12.3(1)) · `tendsto_inversionSymbol_nhdsGT_zero`
+(`Locality.lean:188`).** `B(0+) = 0` as a limit, with **no** polynomial hypothesis (inert in the
+proof); `B(0) = 0` as a value follows for `B` continuous at `0`, in the caller. **faithful.**
+
+**T2.3d `lem:gamma-recursion-uniqueness` · `eq_gamma_form_of_logConvex_of_recursion`
+(`GammaRecursion.lean:175`).** Abstract: `m > 0`, `log ∘ m` convex on `Ioi 0`, `m(z+1) = c(z+a)
+m(z)`, `m → 1` at `0+` ⇒ `m z = c^z Γ(a+z)/Γ(a)`. No project object; Lean core (Bohr–Mollerup);
+A15 discharged in the linear-`Q` case. **faithful.**
+
+**T2.3e `lem:moment-recursion-quotient` (draft 12.3(2)–(3)) · `exists_symbolQuotient_of_isLocalOfOrder`
+(`MomentRecursion.lean:226`).** `∃ Q, (∀ z, symbol_poly z = z Q z) ∧ ∀ 0 < z < z_*−1, ∃ q > 0, Q z
+= q ∧ m(z+1) = q m(z)` — **no `hA13`**, on exactly the range README claims. **faithful.**
+
+**T2.3f `lem:pmp-verification` · `satisfiesPMP_of_symbol_eq`
+(`PositiveMaximumPrinciple.lean:177`).** Concludes `Re (A g)(x₀) ≤ 0`; **no realness lemma
+exists** for `A` on real test functions, so R5 does **not** close — the weaker reading is
+deliberate and documented (`LocalOperator.lean:107`); as a *hypothesis* (A14's use in
+`thm:locality`) it costs nothing. **faithful-with-note (R5, accepted).**
+
+**T2.3g `lem:local-moment-classification` · `exists_moment_form_of_isLocalOfOrder`
+(`LocalityClassification.lean:85`).** Hypotheses `hH`, `hA13 : AllNegMomentsFinite` (A13 as an
+assignment), `0 < c`, `n ≤ 2` (A14's order bound as an assignment), `IsLocalOfOrder c n`;
+conclusion the pure-power / shifted-Gamma dichotomy on `Ioi 0`; guard prints A17 only. **faithful.**
+
+**T2.3h `thm:locality` (Thm 12.5).** No `\lean` tag (`[A]` on A14; A13 transitively; A15
+discharged; A16 belongs to `prop:local-ladder`). Machine-checked beneath it: the four `[T]`
+nodes above. **faithful as an `[A]` collation.**
 
 ## Witnesses (P1) — `Formalization/Hemigroup/Witnesses.lean`
 
