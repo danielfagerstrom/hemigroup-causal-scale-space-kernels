@@ -117,7 +117,46 @@ downstream of them, so acting thread-by-thread before deciding would mean editin
 twice. Prose edits should follow `ai-prose-patterns.md` §3's discipline: late, on frozen text, one
 item per invocation, exact-anchor replacement, one commit per pass.
 
-### 2. Surface prose — em-dashes and long sentences  ·  🟡 open
+### 2. Shared statements — pin or resolve the 11 non-verbatim markers  ·  🟡 open 2026-08-15
+
+`linkage check` now compares each `% shared with blueprint` statement against its blueprint node
+(article-kit #10). Result: **51 of 62 verified byte-identical, 11 not** — and none of the 11 is drift
+in the sense of an accident. They fall into four kinds, and the kind decides who acts:
+
+**(a) The paper merges several blueprint nodes — 5.** `prop:extreme-rays`, `prop:stable-moments`,
+`prop:gamma-kernels`, `def:inversion-operator`, `prop:volterra`. The blueprint splits statements so
+Lean progress is legible; the paper states the pieces whole. **25 of 87 blueprint nodes are marked by
+no paper marker at all** for this reason — `thm:main-construction` / `thm:main-analysis` /
+`prop:main-uniqueness` against the paper's one `thm:main-characterization`, `prop:gamma-density` +
+`prop:gamma-moments`, `prop:stable-mode`, `prop:volterra-uniqueness`, `lem:dickman-superposition` +
+`lem:admissible-cone`, `lem:profile-eigenfunction`. **Action:** name every node the statement renders,
+then pin — `% shared with blueprint prop:volterra, prop:volterra-uniqueness@<sha>`.
+
+**(b) Document-local cross-references — 3.** `lem:memory-fractional-integrals` (`\ref{sec:appendix-memory}`
+vs `\S10`), `lem:generator-properties` (vs `Chapter~9`), `prop:bessel-family` (vs `Theorems 10.4, 11.6
+and 12.5`). Both documents are right in their own numbering, so byte-equality is unreachable; these are
+pin-only. Worth considering whether the closing pointer belongs in a *shared statement* at all — §8's
+reviewer flagged `prop:bessel-family`'s for asserting what its proof does not establish. Note the
+blueprint side hardcodes numbers where the paper uses `\ref`, which goes stale by construction.
+
+**(c) Blueprint-internal bookkeeping inside a shared statement — 2.** `prop:admissibility-criterion`
+ends "…which is why this node's dependency list records only `\ref{def:levy-exponent}`";
+`def:locality-pmp` says the profiles "were added to the test class **after formalisation**". Neither
+belongs in a statement the paper shares. **Blueprint-side, so the mathematician's** — the paper is
+right in both.
+
+**(d) Formatting — 1.** `prop:scale-evolution`: the blueprint wraps a clause in
+`\begin{enumerate}\item[]`; no content difference.
+
+**Do (a) and (b) with `linkage check --pin-shared`, one statement at a time.** Pinning asserts that
+someone read the statement against that version of the node, so pinning the backlog wholesale would
+make the check a rubber stamp on day one. Several of these already carry hand-written annotations
+saying exactly this (`— "§10" adapted to the appendix.`); the pin makes them checkable.
+
+Once (a)–(d) are pinned or resolved, CI adopts `linkage check --strict-shared` and the paper can no
+longer fork from the blueprint silently.
+
+### 3. Surface prose — em-dashes and long sentences  ·  🟡 open
 
 `linkage prose stats` against two baselines (the author's own four papers, 24.8k words; nine pre-2022
 scale-space papers, 87k words):
