@@ -3,9 +3,13 @@ name: Manifest projection
 on:
   push:
     branches: [main]
-    paths: ["blueprint/**", "Formalization/**", "linkage.toml", ".github/workflows/manifest.yml"]
+    # `paper/**` added 2026-08-15 with strict_shared: without it the shared-statement
+    # check never sees the edit most likely to break it. The projection itself is
+    # unaffected — the diff-guard compares content excluding the freshness stamp, so a
+    # paper-only push emits, matches, and commits nothing to the hub.
+    paths: ["blueprint/**", "Formalization/**", "paper/**", "linkage.toml", ".github/workflows/manifest.yml"]
   pull_request:
-    paths: ["blueprint/**", "linkage.toml", ".github/workflows/manifest.yml"]
+    paths: ["blueprint/**", "paper/**", "linkage.toml", ".github/workflows/manifest.yml"]
   workflow_dispatch:
 
 permissions:
@@ -17,6 +21,11 @@ jobs:
     with:
       slug: hcs
       dry_run: ${{ github.event_name == 'pull_request' }}
+      # Enabled 2026-08-15, when this article reached zero shared-statement drift: all 69
+      # `% shared with blueprint` statements are byte-identical to the nodes they name.
+      # From here a paper edit that forks from the blueprint fails the build instead of
+      # passing quietly, which is the whole point of the marker.
+      strict_shared: true
     secrets:
       NOTES_WIKI_TOKEN: ${{ secrets.NOTES_WIKI_TOKEN }}
       ARTICLE_KIT_TOKEN: ${{ secrets.ARTICLE_KIT_TOKEN }}
