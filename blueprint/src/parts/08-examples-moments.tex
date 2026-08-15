@@ -339,21 +339,52 @@ the family as the marginals of a Sato subordinator.
 
 % additive: not in the draft. The clauses split out of Example 8.1 on 2026-08-11, when the
 % exponent was proved and these were not. Numbered 8.10, a number the draft does not use.
-\begin{proposition}[the extremal stable family: moments and the mode]\label{prop:stable-moments}
-\uses{prop:stable-family,cor:semigroup-case,prop:moment-criterion}
-With $F$ as in \ref{prop:stable-family}, every moment of $T_x$ is infinite, so the delay cannot
-be measured by the mean; measured by the mode it scales as $x^{1/\alpha}$.
-\statusT\quad\emph{(split from \ref{prop:stable-family}: the exponent is proved, while this
-clause runs through \ref{prop:moment-criterion} and hence \ledger{A7}, and the mode clause needs
-the self-similarity of the stable subordinator. Note that the failure of the mean here is what
-makes \ref{prop:moments} --- the mean-delay identity --- a statement about \emph{some} admissible
-families and not all of them, and it is the reason the article measures delay by the mode when it
-must.)}
+\begin{proposition}[the extremal stable family: every moment is infinite]\label{prop:stable-moments}
+\uses{prop:stable-family,prop:moments}
+\lean{Hemigroup.SelfDecomposableExponent.stableExponent_lintegral_pow_kernel}\leanok
+With $F$ as in \ref{prop:stable-family}, $\Ex\,T_x^{\,n} = \infty$ for every $n \ge 1$ and every
+$x > 0$, so the delay of the 2005 stable kernels cannot be measured by any moment.
+\statusT\quad\emph{(split from \ref{prop:stable-family}, whose exponent is proved; the mode clause
+that accompanied this one is now \ref{prop:stable-mode}. \textbf{Proved in Lean} (2026-08-15),
+\texttt{Hemigroup/StableMoments.lean}, on \ledger{A17} alone --- through the constructed family,
+as every statement about $T_x$ is, and unavoidably so, $T_x$ being what \ledger{A17} constructs.
+\textbf{What it no longer costs is \ledger{A7}.} Until this round the node was routed through
+\ref{prop:moment-criterion} for general $n$, and that entry's own assignment note already recorded
+that its $n = 1$ case is not carried by the ledger, being \ref{prop:moments}. Once
+\ref{prop:moments} was proved, $n = 1$ became all this node needs: infinite propagates upward,
+$t \le 1 + t^{\,n}$ on the half-line giving $\Ex\,T \le 1 + \Ex\,T^{\,n}$ on a probability
+measure. So the criterion is invoked here only in the direction ``infinite stays infinite'',
+which is elementary, and the proof below now says so. The failure of the mean is what makes
+\ref{prop:moments} a statement about \emph{some} admissible families rather than all of them, and
+it is why the article measures delay by the mode when it must.)}
 \end{proposition}
 
 \begin{proof}
-Since $\int_1^\infty t^{n-1}k(t)\,dt = \infty$ already for $n = 1$, all moments are infinite by
-\ref{prop:moment-criterion}. The mode scaling is the self-similarity
-$T_x \stackrel{d}{=} x^{1/\alpha} T_1$ of the $\alpha$-stable subordinator, which is the case
-$\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case}.
+\leanok
+By \ref{prop:moments} the mean delay is $\Ex\,T_x = x\bigl(b_0 + \int_0^\infty k\bigr)$, finite
+exactly when $k$ is integrable at infinity; here $b_0 = 0$ and $k(t) = \alpha t^{-\alpha}/\Gamma(1
+- \alpha)$, which is not integrable at infinity for $\alpha < 1$. So $\Ex\,T_x = \infty$. Every
+higher moment follows without a further criterion: $t \le 1 + t^{\,n}$ for $t \ge 0$ and
+$n \ge 1$, so on the probability measure $\mu_{0,x}$ we get $\Ex\,T_x \le 1 + \Ex\,T_x^{\,n}$, and
+a divergent mean forces $\Ex\,T_x^{\,n} = \infty$.
+\end{proof}
+
+% additive: the mode half of the former Proposition 8.10, separated on 2026-08-15 when the
+% moments half was proved without the ledger entry the two had shared. Numbered 8.11.
+\begin{proposition}[the extremal stable family: the mode]\label{prop:stable-mode}
+\uses{prop:stable-family,cor:semigroup-case}
+With $F$ as in \ref{prop:stable-family}, the mode of $T_x$ scales as $x^{1/\alpha}$.
+\statusT\quad\emph{(the self-similarity $T_x \stackrel{d}{=} x^{1/\alpha}T_1$ of the
+$\alpha$-stable subordinator, which is the case $\chi(x) = x^{1/\alpha}$ of
+\ref{cor:semigroup-case} --- itself proved. \textbf{Not formalised, and not for want of the
+self-similarity}: the development has no definition of the mode, and needs none anywhere else, so
+introducing one to state a single node would be a definition without a consumer. That is the
+opposite decision from `ein`, which was defined here because two nodes needed it. If a second
+consumer appears --- the tail-index yardstick is the candidate --- both should be defined
+together.)}
+\end{proposition}
+
+\begin{proof}
+The self-similarity is the case $\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case}, and the mode
+of $x^{1/\alpha}T_1$ is $x^{1/\alpha}$ times the mode of $T_1$.
 \end{proof}

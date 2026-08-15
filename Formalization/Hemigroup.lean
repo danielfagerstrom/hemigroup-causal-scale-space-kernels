@@ -34,6 +34,7 @@ import Hemigroup.MemoryFractional
 import Hemigroup.MomentRecursion
 import Hemigroup.PhillipsGenerator
 import Hemigroup.SignalingForm
+import Hemigroup.StableMoments
 import Hemigroup.MellinVertical
 import Hemigroup.MainAnalysis
 import Hemigroup.MainTheorem

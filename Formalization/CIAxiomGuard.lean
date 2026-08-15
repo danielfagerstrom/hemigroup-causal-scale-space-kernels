@@ -1042,6 +1042,31 @@ measures where any finite measure will do, and clause (5) `a.e.` where equality 
 #print axioms Hemigroup.SelfDecomposableExponent.mconv_memoryKernel_eq_setIntegral
 #print axioms Hemigroup.generator_properties
 
+/-! ### `prop:stable-moments` (8.10), narrowed and proved
+
+Every moment of the extremal stable delay is infinite. **A17 and nothing else** -- through
+`kernel`, as everything that quantifies over the constructed family does. The point of the entry
+is what is *absent*: the node was routed through `prop:moment-criterion`, ledger **A7**, for
+general `n`, and no longer is. The two supporting lemmas are Lean core; only the statement about
+`T_x` picks up A17, and it could not avoid it, `T_x` being what A17 constructs.
+
+That entry's own assignment note already recorded that its `n = 1` case is not carried by the
+ledger, being `prop:moments`. Once `prop:moments` was proved, `n = 1` became all this node needs,
+because **infinite propagates upward** -- `t <= 1 + t^n` on the half-line, so `E T <= 1 + E T^n` on
+a probability measure. The criterion is used here only in the direction "infinite stays infinite",
+which is elementary, so A7 comes off the node and its uses-edge with it. First node to collect on
+`prop:moments` having been proved, and the concrete return on splitting the mean off the
+higher-moment criterion in the first place.
+
+The mode clause the proposition used to carry is now `prop:stable-mode`, unformalised: the
+development has no definition of the mode and needs none elsewhere.
+-/
+
+#print axioms Hemigroup.SelfDecomposableExponent.not_integrableOn_stableDensity
+#print axioms Hemigroup.SelfDecomposableExponent.stableExponent_meanRate
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_pow_eq_top_of_lintegral_id_eq_top
+#print axioms Hemigroup.SelfDecomposableExponent.stableExponent_lintegral_pow_kernel
+
 /-! ### `Ein`, the entire exponential integral
 
 Mathlib has no exponential integral of any kind — no `Ein`, no `Ei`, no `E₁` — so `ein` is

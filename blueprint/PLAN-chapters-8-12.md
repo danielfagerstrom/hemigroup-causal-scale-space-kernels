@@ -2353,3 +2353,62 @@ never re-read after `lem:delay-core` created them.
 `PLAN`'s *available, nothing depends on them* row, now down to four: `prop:stable-moments`,
 `prop:gamma-kernels`, `prop:volterra`, `lem:potential-kernel-scaling`. Re-check each against its
 node before starting.
+
+---
+
+# `prop:stable-moments`, narrowed and proved — and it came off ledger A7 — 2026-08-15
+
+`Hemigroup/StableMoments.lean`. **60 nodes `\leanok`**, 84 statement nodes (the node split in
+two). Trust boundary unchanged at two entries — and one node that used to reach a third no longer
+does.
+
+## The interesting part is what the node stopped costing
+
+`prop:stable-moments` asserted two things: every moment of `T_x` is infinite, and the mode scales
+as `x^{1/α}`. The first was routed through `prop:moment-criterion`, which is ledger **A7** (Sato,
+Thm. 25.3 — a moment of an infinitely divisible law is finite exactly when the corresponding
+integral against the Lévy measure converges).
+
+**It does not need A7, and the reason was already written down.** `prop:moment-criterion`'s own
+assignment note says: *"The `n = 1` case is not carried by the ledger — it is `prop:moments`,
+proved by monotone convergence — which is the reason for the split."* That split was made in Phase
+0 to keep the mean off the ledger. What nobody then noticed is that for *this* node the mean is
+enough: infinite propagates upward. `t ≤ 1 + tⁿ` on the half-line gives `E T ≤ 1 + E Tⁿ` on a
+probability measure, so a divergent mean forces every higher moment to diverge, and the criterion
+is invoked only in the direction "infinite stays infinite", which is elementary.
+
+So the whole node is: `meanRate_ne_top_iff` (proved today), plus `t^{-α}` not being integrable at
+infinity for `α < 1` (`integrableOn_Ioi_rpow_iff`), plus one inequality. The blueprint proof has
+been rewritten to that route, and `prop:moment-criterion` is off the `\uses` edge.
+
+**This is the first node to collect on `prop:moments`, and it is the concrete return on a split
+made a week earlier for a different reason.** Worth recording as the counter-shape to this file's
+usual finding: normally a node turns out cheaper because the *derivation* asked for more than the
+obligation. Here it turned out cheaper because an *earlier decomposition* had already isolated the
+cheap part, and the payoff arrived at a node nobody had connected to it.
+
+## The axiom guard caught an overclaim, again
+
+I wrote "Lean core" in three places before running `#print axioms`. The node is **A17**, through
+`kernel` — as every statement about the constructed family is, and unavoidably, `T_x` being what
+A17 constructs. The two supporting lemmas are Lean core; the node is not. Corrected in the Lean
+docstring, the guard section and the blueprint annotation before committing.
+
+Second time in two days that the guard has caught something the prose had already asserted — the
+other being a stale declaration name. The pattern is the same: **the guard is not a formality at
+the end of a round, it is the only thing that checks the sentence "Lean core".**
+
+## The mode clause is now its own node, and deliberately unformalised
+
+`prop:stable-mode` (8.11) carries the mode scaling. Its self-similarity input is
+`cor:semigroup-case`, which *is* proved; what is missing is a **definition of the mode**, which the
+development does not have and needs nowhere else. Introducing one to state a single node would be
+a definition without a consumer — the opposite of `ein`, which was defined here because two nodes
+needed it. Recorded in the node so the next reader does not mistake "unformalised" for "hard": if
+a second consumer appears (the tail-index yardstick is the candidate), both should be defined
+together.
+
+## Next
+
+`PLAN`'s *available, nothing depends on them* row, down to three: `prop:gamma-kernels`,
+`prop:volterra`, `lem:potential-kernel-scaling`.
