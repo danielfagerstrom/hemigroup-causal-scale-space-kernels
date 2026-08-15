@@ -386,21 +386,32 @@ not already say.
 % additive: the higher-moment half of the former Proposition 8.9, separated on 2026-08-15 when the
 % mean was proved and the rest was not.
 \begin{proposition}[the Gamma family: the higher moments]\label{prop:gamma-moments}
-\uses{prop:gamma-family,prop:moment-criterion}
+\uses{prop:gamma-density}
+\lean{Hemigroup.SelfDecomposableExponent.gammaExponent_moments}\leanok
 With $F$ as in \ref{prop:gamma-family}, every moment of $T_x$ is finite, and
 $\operatorname{Var} T_x = \gamma x^2$.
-\statusT\quad\emph{(\ledger{A7} through \ref{prop:moment-criterion}, and unavoidably so on this
-route: the mean, which \ref{prop:gamma-kernels} now proves, does not imply the higher moments,
-because convergence does not propagate downward the way divergence propagates upward --- see that
-node's annotation. The alternative route is through \ref{prop:gamma-density}: with the density in
-hand the moments are a Gamma computation and the ledger entry is not needed. Whichever is done
-first makes the other cheap.)}
+\statusT\quad\emph{(\textbf{Proved in Lean} (2026-08-15),
+\texttt{Hemigroup/GammaDensity.lean}, on \ledger{A17} alone --- and \textbf{off \ledger{A7}}, which
+the route through \ref{prop:moment-criterion} would have spent.
+\textbf{The prediction made when this node was split off held.} It said: ``the alternative route
+is through \ref{prop:gamma-density}: with the density in hand the moments are a Gamma computation
+and the ledger entry is not needed. Whichever is done first makes the other cheap.''
+\ref{prop:gamma-density} was done first, and this became the cheap one --- so the \uses edge to
+\ref{prop:moment-criterion} is gone and the proof below is rewritten to the Gamma computation.
+Mathlib carries no moments for its own Gamma law any more than it carries a transform, so both
+come from the single Gamma integral $\int_0^\infty t^{a+n-1}e^{-rt}dt = \Gamma(a+n)/r^{a+n}$,
+which now serves the transform, the integrability, the moments and the variance in one file.
+Note what remains true of the \emph{stable} family: there the mean diverges, divergence propagates
+upward, and \ref{prop:stable-moments} came off \ledger{A7} by that route instead. Two families,
+two different escapes, and neither is the criterion.)}
 \end{proposition}
 
 \begin{proof}
-The moments are those of a Gamma law, and all are finite because
-$\int_1^\infty t^{n-1}e^{-t}dt < \infty$ for every $n$ (\ref{prop:moment-criterion}); the variance
-is the Gamma law's, $\gamma x^2$.
+\leanok
+By \ref{prop:gamma-density} the law of $T_x$ is the Gamma law of shape $\gamma$ and rate $1/x$, so
+$\Ex\,T_x^{\,n} = \Gamma(\gamma+n)x^{n}/\Gamma(\gamma)$, finite for every $n$. In particular
+$\Ex\,T_x = \gamma x$ and $\Ex\,T_x^{2} = \gamma(\gamma+1)x^{2}$, so
+$\operatorname{Var} T_x = \gamma(\gamma+1)x^2 - \gamma^2x^2 = \gamma x^2$.
 \end{proof}
 
 % additive: not in the draft. The clauses split out of Example 8.1 on 2026-08-11, when the

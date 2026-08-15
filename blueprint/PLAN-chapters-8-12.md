@@ -2630,3 +2630,69 @@ carried since the Route B round, now true of the whole chapter rather than most 
 `prop:gamma-moments`, the last node on the *available* row, and the one whose ledger entry
 `prop:gamma-density` has since made avoidable: with the kernel identified as Mathlib's
 `gammaMeasure`, its moments are a Gamma computation rather than an appeal to A7.
+
+---
+
+# `prop:gamma-moments`, proved — off ledger A7, and the *available* row is empty — 2026-08-15
+
+`Hemigroup/GammaDensity.lean`. **66 nodes `\leanok`**, 87 statement nodes. A17 through `kernel`;
+everything about Mathlib's Gamma law alone is Lean core. Trust boundary unchanged at two entries.
+
+**`PLAN`'s *available, nothing depends on them* row is now empty.** Every schedulable `[T]` node in
+chapters 8–12 is proved. What is left in those chapters is `[A]` by design, distributional, or
+`prop:extreme-rays`' Choquet clause.
+
+## The prediction made at the split held, for the third time today
+
+When this node was separated out this morning its annotation said: *"the alternative route is
+through `prop:gamma-density`: with the density in hand the moments are a Gamma computation and the
+ledger entry is not needed. Whichever is done first makes the other cheap."* The density was done
+first, and this was the cheap one. The `\uses` edge to `prop:moment-criterion` is gone and the
+blueprint proof is rewritten to the Gamma computation.
+
+That is now three for three today — `prop:volterra-uniqueness`, `lem:potential-kernel-scaling`,
+and this — for estimates written *next to the statement at the moment of splitting*, against one
+notable miss (`prop:volterra`'s clause (2)) for an estimate written from the mathematics-as-prose.
+The rule this file has been circling all week can be stated cleanly:
+
+> Write the cost estimate when you write the Lean statement, not when you read the paper proof.
+> The statement tells you what the obligation is; the paper tells you what one route to it was.
+
+## Two families, two different escapes, and neither is the criterion
+
+Worth setting down as the chapter's summary, because the pair is more informative than either:
+
+| family | mean | escape from A7 |
+|---|---|---|
+| extremal stable | diverges | divergence propagates upward: `t ≤ 1 + tⁿ`, so `n = 1` settles every `n` |
+| Gamma | converges | identify the law: `prop:gamma-density`, then the moments are a Gamma computation |
+
+Convergence does not propagate downward, so the stable family's trick is unavailable here — and
+divergence is unavailable there. `prop:moment-criterion` (A7) remains in the article for
+`prop:inverse-gamma-family` and `rem:heavy-tails`, which is where it genuinely earns its place.
+
+## Mathlib's Gamma file, twice
+
+`Probability/Distributions/Gamma.lean` carries the density, the total mass and the CDF, and stops:
+no transform, no moment generating function, no characteristic function, no moments, no variance.
+So `prop:gamma-density` computed the transform and this node computed the moments, both from the
+single Gamma integral `∫₀^∞ t^{a+n-1}e^{-rt}dt = Γ(a+n)/r^{a+n}` — which now serves the transform,
+the integrability, the moments and the variance in one file. Recorded because "Mathlib has the
+Gamma distribution" is true and was not enough twice running; what it has is the *definition*.
+
+## Next
+
+Nothing on the *available* row. What remains in chapters 8–12, all of it deliberate:
+
+* `[A]` by design: `prop:moment-criterion` (A7), `prop:inverse-gamma-family` (A12),
+  `prop:pair-regularity` (A9), `prop:volterra-density` (A10), `prop:fixed-scale-semigroup` (A11),
+  chapter 12's A13/A14/A16.
+* out of reach upstream: `thm:scale-cauchy` (C₀ theory *and* `prop:scale-evolution`),
+  `prop:scale-evolution` and `cor:exact-inversion` (distributional), chapter 12's Bessel `K`.
+* declined by design: `prop:extreme-rays`' Choquet clause, `prop:stable-mode` (no mode defined),
+  `rem:gamma-sato` (no stochastic process defined).
+* formalisation debt, permitted: `lem:selfdecomposable-derivative` and
+  `lem:selfdecomposable-exponents`, proved on paper only.
+
+The next substantive move is upstream-dependent, not schedulable here — which is the first time
+that has been true of this plan.

@@ -1146,14 +1146,25 @@ already used for the stable family's `F'`. That was the whole of the "separate p
 node's status line predicted in Phase 0, and the prediction was accurate -- worth noting, since
 this file's usual finding is that such predictions are wrong.
 
-**A17 through `kernel`**, as every statement about the constructed family is;
-`laplace_gammaMeasure` and `isCausal_gammaMeasure` are Lean core and are about Mathlib's Gamma law
-alone.
+**A17 through `kernel`**, as every statement about the constructed family is; the lemmas about
+Mathlib's Gamma law alone -- transform, moments, variance -- are Lean core.
+
+`prop:gamma-moments` is here too, and **off ledger A7**, which the blueprint's route spends. Its
+own annotation, written this morning when the node was split out, said "with the density in hand
+the moments are a Gamma computation and the ledger entry is not needed; whichever is done first
+makes the other cheap". The density was done first, and it did. Mathlib carries no moments for
+`gammaMeasure` either, so they come from the same Gamma integral the transform used -- one lemma
+now serving the transform, the integrability, the moments and the variance.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.isCausal_gammaMeasure
 #print axioms Hemigroup.SelfDecomposableExponent.laplace_gammaMeasure
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_kernel_eq_gammaMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.integrableOn_rpow_shift_mul_exp
+#print axioms Hemigroup.SelfDecomposableExponent.integrable_pow_gammaMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.integral_pow_gammaMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.variance_gammaMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_moments
 
 /-! ### `prop:stable-moments` (8.10), narrowed and proved
 
