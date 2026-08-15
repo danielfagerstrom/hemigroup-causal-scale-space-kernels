@@ -29,3 +29,6 @@ Formalization/build/
 
 # Agent worktrees (git worktrees live here; never a submodule of this repo)
 .claude/worktrees/
+
+# Draft-review reports (working records, not published)
+paper/review/
