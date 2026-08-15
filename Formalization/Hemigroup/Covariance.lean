@@ -31,10 +31,11 @@ reparametrises its transform, and `-\log` of that is `(6.1)`.
 
 ## What is here and what is not
 
-`lem:covariance-laplace` and clauses (1), (2) and (4) of `lem:action-rigidity` are proved.
-Clause (3) — continuity of `σ ↦ S_σ x` — and `prop:canonical-gauge` are stated in
-`Formalization/Skeleton/`, because they need a continuous inverse for `G(\cdot, s)` on its range,
-which is a genuine piece of work and not an order argument.
+`lem:covariance-laplace` and all four clauses of `lem:action-rigidity` are proved here, clause
+(3) — continuity of `σ ↦ S_σ x` — included (`continuousOn_S_apply`); `prop:canonical-gauge`
+lives in `Gauge.lean`. (`covariance_laplace` states the (A8) ⇒ transform-identity direction of
+the blueprint's equivalence; the converse is `dilL1_comp_mconvL1` with `mconvL1_congr`, used as
+such by `Instance.lean` — fidelity review R18.)
 -/
 
 namespace Hemigroup

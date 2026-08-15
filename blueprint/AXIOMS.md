@@ -856,6 +856,14 @@ already trusts. @dym1976gaussian is the book-length companion.
   5.17 — *not* through A4 and A3, which is how the blueprint's own proof of
   `lem:selfdecomposable-derivative` gets there. Both are valid; the routes are independent, and
   this entry is anchored on the first.
+- **The anchors interlock; the axioms do not** (fidelity review 2026-08-15, R17). Proposition
+  5.17 is a statement about a sub-probability measure `pi` with `L(pi) = e^{-f}`; our axiom is a
+  statement about the function `F`. Reading our hypothesis as Definition 5.14's therefore
+  passes through "an `F` in BF with `F(0+) = 0` is the exponent of some `pi`" — Theorem 5.2's
+  converse clause, which is A17's anchor. So a reader auditing whether A18 is anchored
+  independently of A17 should know: as *Lean axioms* the two are independent postulates
+  (`CIAxiomGuard.lean` prints each on its own consumers); as *anchors* they share Theorem 5.2.
+  This does not make A18 stronger than its source — SSV's own proof performs the same bridge.
 - **Quantifier shape.** Our `for all 0 < a <= b` and the printed `for all c in (0,1)` are the
   same condition: take `c = a/b` and substitute `lambda = b*s`, a bijection of `(0,inf)`;
   `a = b` gives the trivial `0` in BF. This is why the Lean statement quantifies over pairs.

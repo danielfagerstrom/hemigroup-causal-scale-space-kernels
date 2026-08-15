@@ -31,6 +31,9 @@ recorded, faithful choice worth a sentence in the text of record).
 | R14 | robustness | note-only | witnesses of (⇒)'s hypotheses | Every Lean witness of a `CascadeCore` + `IsScaleCovariant` passes through `kernel`, hence A17; a pure-delay core `Φ x y := transL1 (y − x)`, `S σ x = σx`, would certify nonemptiness of the hypothesis class in Lean core. Vacuity pass, Theorem 2′. | optional (P5) |
 | R15 | F3 | statement-tightening | `signaling_form` (2) | The theorem's "`u`" is two objects: (2a),(2c),(2d) are about `delayedField f`, (2b) about a free `q : X`; that `delayedField f · x` **is** `Φ_{0,x} f` (`coeFn_Phi_zero`, `MemoryFractional.lean:539`) and that `delayedField g` is its `X₀`-derivative (`delayedField_eq_setIntegral`, `:633`) are proved lemmas, not conjuncts — inside the theorem "`∂_t u`" is a comment. Vacuity pass, Theorem 4′. | **resolved (P2)** — conjuncts `Φ 0 x (toL1 f) =ᵐ delayedField f · x` (`coeFn_Phi_zero`) and `delayedField f t x = ∫_{Ioc 0 t} delayedField g` (`delayedField_eq_setIntegral'`, all `t`) |
 | R16 | F3 | note-only | `signaling_form` (2d) | Lemma 11.5's "absolutely convergent" has no Lean clause: the two `mellin`s in (2d) are convergent inside the proof (`integrable_delayed`, `integrableOn_pastIntegrand_of_bounded`) but not asserted, so the honest form would carry `MellinConvergent` conjuncts. Not junk-true (both sides equal `H̃(z)(I^{z−1}f)(t) ≠ 0` generically). | **resolved (P2)** — `mellinConvergent_delayedField_pair`, conjunct of (2d) |
+| R17 | F6 | note-only | A18 anchor (`AXIOMS.md`) | Independent as Lean axioms, A17 and A18 are entangled as *anchors*: reading A18's hypothesis as SSV Def. 5.14 passes through Thm 5.2's converse, which is A17's anchor. Not a strengthening (SSV's own proof does the same). | **resolved (P3)** — cross-reference paragraph added to A18's entry |
+| R18 | F3 | note-only | `covariance_laplace` (`Covariance.lean:195`) vs Lemma 6.1 "is equivalent to" | Only (A8) ⇒ identities is under the tagged name; the converse is `dilL1_comp_mconvL1` + `mconvL1_congr`, used in `Instance.lean:221–225`. Elementary, available, not packaged. | open, optional: a converse lemma for literal iff-fidelity |
+| R19 | cosmetic | note-only | `Covariance.lean` module docstring | Said clause (3) of `lem:action-rigidity` and `prop:canonical-gauge` were in `Skeleton/`; both proved. | **resolved (P3)** — docstring fixed |
 
 Ledger entries are added as cards are written; a resolved entry keeps its row with the commit.
 
@@ -44,6 +47,12 @@ height) are corrected in the text of record and the draft. Open: R14 (optional L
 witness), R5 (P4 check), and the note-only rows. **Hub/paper action:** `linkage check` reports
 two `[shared]` drift advisories — the paper's copies of `lem:symbol-uniqueness` and
 `thm:signaling-form` must be re-synced to the blueprint by the paper-writing session.
+
+**State after P3 (2026-08-15).** Tier 1 is complete: the chapter 4–6 supply chain (nine cards,
+all faithful; one note-only, R18), the two ledger axioms (both faithful, axiom ≤ source on every
+row against image-verified pages; R17 recorded), and Cor. 7.4 (faithful). No claim-changing
+finding anywhere in Tier 1. Next: P4 (Tier 2 — chapters 9, 10, 12), P5 (Tier 3, the F7 sweep,
+the draft↔blueprint diff), then P6.
 
 ---
 
@@ -624,6 +633,128 @@ Nothing is vacuous and nothing proved is weaker than what the article's proofs p
 (guard: A17 only, unchanged); R2, R10 resolved in the text of record and the draft. Remaining:
 the paper's mirror of the two statements (hub/paper session).
 
+
+### T1.3 The supply chain of `thm:main-analysis` — chapters 4–6 (P3)
+
+Cards written by two read-only agents against the draft, the blueprint and the Lean, reviewed by
+the integrator; each unfolds to primitives and audits junk values. Abbreviated where nothing
+was found.
+
+**T1.3a `lem:convolution-representation` (Lemma 4.1) · `CascadeCore.existsUnique_repr`
+(`Representation.lean:937`), `mconvL1_satisfies_axioms` (`Family.lean:245`).** Lean: `∃ μ
+[IsProbabilityMeasure μ], IsCausal μ ∧ Φ x y = mconvL1 μ ∧ ∀ ρ [IsProbabilityMeasure ρ], IsCausal ρ
+→ Φ x y = mconvL1 ρ → ρ = μ` for `0 ≤ x ≤ y` — the `∃!` written out; the converse gives (A2)–(A5)
+for `mconvL1 μ` from `IsProbabilityMeasure` + `IsCausal` and (A1) by the type. Stated over
+`CascadeCore` (which carries (A6), (A7), (ND) too) but the proof reads only (A1)–(A5) — unread
+fields, not a strengthening. `repr` off the wedge is `δ₀`, unread. **faithful.**
+
+**T1.3b `lem:transform-continuity` (Lemma 4.2) · `CascadeCore.transform_continuity`
+(`TransformContinuity.lean:196`).** Four conjuncts: `0 ≤ exponent x y s` for `s ≥ 0`; `exponent x
+y 0 = 0` (exact, `laplace_zero_prob`, not a limit); `ContinuousOn (fun p => exponent p.1 p.2 s)
+Index` with `Index = {0 ≤ p.1 ≤ p.2}`; `ContinuousOn (exponent x y) (Ici 0)`. `Real.log` guarded
+by `laplace_pos_of_prob` (T0.3). **faithful.**
+
+**T1.3c `lem:additivity` (Lemma 5.1) · `CascadeCore.additivity` (`Additivity.lean:153`).** Eight
+conjuncts in the draft's order: `repr x z = repr x y ∗ repr y z` (draft writes `μ_{y,z} ∗ μ_{x,y}`
+— commutative, the same measure); `exponent x z = exponent x y + exponent y z`; `exponent x x = 0`;
+`exponent x y s = G y s − G x s`; `G 0 s = 0`; `MonotoneOn (G · s) (Ici 0)`; `ContinuousOn (G · s)
+(Ici 0)`; `G x 0 = 0`. No partial functions. Lean core. **faithful.**
+
+**T1.3d `thm:increments-bernstein` (Theorem 5.2) · `CascadeCore.exponent_hasLevyRep`
+(`LevyTriple.lean:254`).** Draft: `g_{x,y} ∈ BF₀`. Blueprint: both readings, `BF₀` and — via
+ledger A3 — `LE`, as CLAUDE.md requires. Lean: `∃ b₀ ≥ 0, ν, IsCausal ν ∧ ∀ s ≥ 0, ofReal
+(exponent x y s) = levyExponent b₀ ν s` — the `LE` reading exactly; `ℝ≥0∞`-valued with no
+`.toReal`, `ofReal` never truncates (`exponent_nonneg`). `IsCausal ν` allows an atom at `0`,
+invisible to the integrand; the constructed `levyMeasure ρ` has none anyway
+(`isCausal_levyMeasure`). **faithful-with-note** (the vocabulary crossing is done in the
+statement, where it belongs).
+
+**T1.3e `cor:strict-monotonicity` (Cor. 5.3) · `CascadeCore.strict_monotonicity`
+(`LevyTriple.lean:310`).** `∀ 0 ≤ x < y, s > 0, G y s − G x s = exponent x y s ∧ 0 < exponent x y
+s`. (ND) enters through `nondegenerate` → `exists_exponent_ne_zero` → `exponent_pos` with the
+vanishing lemma — the blueprint's route. **faithful.**
+
+**T1.3f `lem:covariance-laplace` (Lemma 6.1) · `CascadeCore.covariance_laplace`
+(`Covariance.lean:195`).** Draft: under (A1)–(A5), (A8) **is equivalent to** `D_σ μ_{x,y} =
+μ_{S_σx,S_σy}` ⟺ `g_{S_σx,S_σy}(s) = g_{x,y}(σs)`, in particular (6.1). Lean: from `hcov :
+IsScaleCovariant Fam Gs S`, three identities — `(repr x y).map (σ·) = repr (Sσx) (Sσy)`, the
+exponent identity, the `G` identity (6.1). **One direction only** ((A8) ⇒ identities); the
+converse (identities ⇒ (A8)) is `dilL1_comp_mconvL1` + `mconvL1_congr` (`Family.lean:207,126`),
+used as such in `Instance.lean:221–225` to prove (A8) for the constructed family, but not
+packaged under the tagged name. **faithful-with-note (R18).**
+
+**T1.3g `lem:action-rigidity` (Lemma 6.2) · `CascadeCore.action_rigidity`
+(`Covariance.lean:338`).** All four clauses: `S_σ` unique given (6.1) (`eq_of_G_eq`, at `s > 0`);
+group law + `S_1 = Id`; `σ ↦ S_σ x` continuous and strictly increasing for `x > 0`
+(`continuousOn_S_apply`, `strictMonoOn_S_apply`); no fixed point in `(0,∞)`
+(`eq_zero_of_fixed`). `Ioi 0` = the article's `σ > 0`. Proof route differs from the draft's
+(uses `laplace_strictAnti`, no derivative) — F7, recorded in the blueprint. Stale file docstring
+said clause (3) was in `Skeleton/` — fixed (R19). **faithful.**
+
+**T1.3h `prop:canonical-gauge` (Prop. 6.3) · `CascadeCore.canonical_gauge` (`Gauge.lean:274`).**
+Lean: `∃ χ, χ 0 = 0 ∧ StrictMonoOn χ (Ici 0) ∧ SurjOn χ (Ici 0) (Ici 0) ∧ (∀ σ x, χ (S σ x) = σ χ
+x) ∧ (∀ x s, G x s = G 1 (χ x · s))`; `χ = gauge S := invFunOn (σ ↦ S σ 1) (Ioi 0)` extended by
+`0` — **not** an `sSup`; junk-safe because `exists_orbit_eq` proves surjectivity first, so
+`invFunOn`'s default branch is never taken for `y > 0`. Absent as conjuncts, deliberately and
+recorded: `F ∈ BF₀`/`LE` and `F ≢ 0` (they are `thm:increments-bernstein` and
+`cor:strict-monotonicity` at `F = G(1,·)`, nothing new). `gauge_one` (P2) adds `χ 1 = 1`.
+**faithful.**
+
+**T1.3i the machine-checked collation · `CascadeCore.similarity_form` (`MainAnalysis.lean:77`)**
+— not a `\lean`-tagged node; the blueprint annotation of `thm:main-analysis` names it as
+"everything but the last step". Conclusion: gauge (with `χ 1 = 1` since P2), `Φ x y = mconvL1
+(repr x y)`, `laplace (repr x y) s = exp(−(G 1 (χ y s) − G 1 (χ x s)))`, **`∀ 0 < a ≤ b, ∃ b₀ ν,
+IsCausal ν ∧ ofReal (G 1 (bs) − G 1 (as)) = levyExponent b₀ ν s`** (the `LE` reading of "every
+increment `F(b·) − F(a·) ∈ BF₀`", quantified over arbitrary `0 < a ≤ b` via `SurjOn χ` — exactly
+A18's `hincr`), and `∀ s > 0, G 1 s ≠ 0` (stronger in form than `F ≢ 0`, equivalent by
+`cor:strict-monotonicity`). `ofReal` safe by monotonicity of `G` in the scale. **faithful.**
+
+---
+
+### T1.4 The trust boundary — ledger A17, A18 · `Interfaces.lean` (F6)
+
+Source pages image-verified: Thm 5.2 p. 49 and the killing sentence p. 51 fetched today by the
+librarian (`library page schilling2012bernstein --printed 49/51 --format image`, running header
+"Chapter 5 A probabilistic intermezzo"); Def. 5.14 p. 55 and Prop. 5.17 p. 57 verbatim in
+`AXIOMS.md` (image-verified 2026-08-10). Every row is judged "axiom ≤ source": the axiom's
+hypothesis class lies inside the source's, its conclusion is implied by the source's.
+
+**T1.4a A17 · `exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent` · SSV Thm 5.2 p. 49,
+converse clause.**
+| row | judgement |
+|---|---|
+| objects: `IsCausal ν`, `∀ s ≥ 0, levyExponent b₀ ν s ≠ ⊤` vs Lévy measure on `(0,∞)` with `∫(1∧t)dν < ∞` (Thm 3.2) | ≤ — the docstring's bound `1 − e^{−st} ≥ (1 − e^{−s}) min(1,t)` (`t ≥ 1`: monotone; `t < 1`: concavity above the chord) is checked, so finiteness at one `s > 0` gives `∫(1∧t)dν < ∞`; an atom of `ν` at `0` is invisible (`1 − e^{0} = 0`) |
+| killing: `levyExponent` has no `a` | ≤ — the `a = 0` case; the probability upgrade is *proved* (`exists_isProbabilityMeasure_…`, `Interfaces.lean:90–101`, from `levyExponent_zero` at `s = 0`), consistent with p. 51 |
+| asked for: one finite causal `μ` with `laplace μ s = exp(−(…).toReal)`, `s ≥ 0` | ≤ — the `t = 1` slice of the semigroup; `IsCausal μ` **is** in the conclusion, so `laplace` over `ℝ` equals the source's `∫_{[0,∞)}`; `.toReal` guarded by `hfin` |
+| uniqueness | not asked; `laplace_injective` (`Injectivity.lean:198`), `kernel_unique` (`Construction.lean:286`) — proved |
+| minimality | sole consumer `exists_kernel` (`Construction.lean:230–245`) instantiates exactly the axiom's shape |
+| consistency | standard mathematics with the source's proof; hypothesis class non-empty (`Examples.lean`); no mis-transcription found |
+**Verdict: faithful, axiom ≤ source.**
+
+**T1.4b A18 · `exists_antitone_density_of_dilation_increments` · SSV Prop. 5.17 p. 57 (ii)⇒(i),
+Def. 5.14 p. 55.**
+| row | judgement |
+|---|---|
+| hypothesis `hincr`: `∀ 0 < a ≤ b, F(b·) − F(a·) = levyExponent c₀ ρ` (no killing) vs (ii) `g(λ)/g(cλ)` CM, `c ∈ (0,1)` | ≤ — ours ⇒ theirs by the cheap direction (`f ∈ BF ⇒ e^{−f} ∈ CM`, SSV's own p. 59 step); `c = a/b`, `λ = bs` a bijection; killing forced to `0` (Remark 3.3(iv)); "vanishing at `0+`" automatic |
+| **anchor entanglement** | Prop. 5.17 is about `π` with `L(π) = e^{−f}`; our axiom is about `F`. The bridge "`F ∈ BF`, `F(0+) = 0` is the exponent of some `π`" is Thm 5.2's converse — A17's anchor. Independent as Lean axioms (guard prints each on its own consumers); entangled as anchors. Not a strengthening — SSV's proof performs the same bridge. **R17**, recorded in `AXIOMS.md` |
+| conclusion `∃ c₀ k, 0 ≤ c₀ ∧ AntitoneOn k (Ioi 0) ∧ k ≥ 0 ∧ ofReal (F s) = levyExponentD c₀ k s` vs (i) Lévy measure has density `m` with `t·m(t)` nonincreasing, drift untouched | ≤ — the axiom allows a *different* drift `c₀`; the sole consumer `main_analysis` (`MainAnalysis.lean:112–145`) never compares `c₀` with `b₀`, so the weaker conclusion is exactly what is used; `k`'s integrability implied by `ofReal (F s) ≠ ⊤` |
+| non-vacuity | `exists_levyExponent_dilation_increment` (`SelfDecomposable.lean:291`) shows genuine self-decomposable exponents satisfy `hincr`'s exact shape, without A18 |
+| minimality | consumer supplies `hincr` verbatim from `similarity_form` |
+**Verdict: faithful, axiom ≤ source; one note (R17).**
+
+---
+
+### T1.5 `cor:semigroup-case` · Cor. 7.4 · `CascadeCore.semigroup_case` (`SemigroupCase.lean:233`)
+
+(Definition side and normalisation: T0.7.) Lean: `hcov`, `hone`, `hnorm : G 1 1 = 1` ⇒ `∃ α, 0 < α
+∧ α ≤ 1 ∧ (∀ s ≥ 0, G 1 s = s^α) ∧ (∀ x s ≥ 0, G x s = x s^α) ∧ (∀ σ > 0, x ≥ 0, S σ x = σ^α x)`.
+Both bounds are conclusions (`0 < α` from strict monotonicity of `S`, i.e. (ND); `α ≤ 1` from
+`levyExponent_add_le` at `s = t = 1`, `2^α ≤ 2` — subadditivity, not full `BF₀`); `α = 1`
+admitted, matching Remark 7.5; `S σ x = σ^α x` extra. `Real.rpow` at `s = 0` handled
+(`Real.zero_rpow`). Witness: `witness_semigroup_case_drift` (`α = 1`); no `α < 1` witness, since
+the canonical-gauge stable core is not one-parameter (the one-parameter stable semigroup is its
+`reparam` by `x ↦ x^{1/α}`, now available — a witness through `CascadeFamily.reparam` is
+possible, R14-adjacent, optional). **faithful.**
 
 ## Witnesses (P1) — `Formalization/Hemigroup/Witnesses.lean`
 
