@@ -182,21 +182,38 @@ $\int_0^\infty f' = 0$.
 \emph{Classes referred to later.} Five named subclasses appear in
 \S\S\ref{sec:locality}--\ref{sec:implementation} and the appendix, always as the answer to
 ``which laws have this property'', never as tools; they are recorded here so that each use
-can point to a definition. On the function side: the \emph{Stieltjes} functions
-$\mathcal{S}$, $f(s) = a/s + b + \int_{(0,\infty)} (s+t)^{-1}\mu(dt)$, a subclass of $\CM$
-(\sscite{schilling2012bernstein}, Def.~2.1, p.~16, and Thm.~2.2, p.~17); and the
-\emph{complete Bernstein} functions $\CBF \subset \BF$, those whose Lévy measure has a
-completely monotone density (\sscite{schilling2012bernstein}, Def.~6.1, p.~69). On the side
-of laws on $[0,\infty)$: the \emph{self-decomposable} laws $\SDclass$, or class $L$ ---
-$\mu$ with $\hat\mu(s) = \hat\mu(s/b)\,\hat\rho_b(s)$ for some law $\rho_b$, for every
-$b > 1$ (\sscite{sato1999levy}, Def.~15.1, p.~90), infinitely divisible
-(\sscite{sato1999levy}, Prop.~15.5, p.~93) --- whose Laplace exponents
-\S\ref{sec:characterization} characterizes; the \emph{generalized Gamma convolutions}
-$\GGC$, the laws with Laplace transform $\exp\{-as - \int \log(1 + s/t)\,U(dt)\}$
-(\sscite{bondesson1992generalized}, \S3.1, p.~29), the Thorin subclass of
-\S\ref{sec:characterization}, with $\GGC \subset \SDclass$
-(\sscite{bondesson1992generalized}, p.~30); and the laws with \emph{hyperbolically completely
-monotone} density, $\HCM$ --- $f(uv)f(u/v)$ completely monotone in $v + v^{-1}$ for every
-$u > 0$ (\sscite{bondesson1992generalized}, \S4.3, p.~55) --- with $\HCM \subset \GGC$
-(\sscite{bondesson1992generalized}, Thm.~4.3.1, p.~57, the regularity conditions removed on
-p.~68). So $\HCM \subset \GGC \subset \SDclass$.
+can point to a definition. Two are classes of functions on $(0,\infty)$:
+\begin{itemize}
+\item the \emph{Stieltjes} functions $\mathcal{S}$,
+  \[
+    f(s) = \frac{a}{s} + b + \int_{(0,\infty)} \frac{\mu(dt)}{s+t}, \qquad a, b \ge 0,
+  \]
+  a subclass of $\CM$ (\sscite{schilling2012bernstein}, Def.~2.1, p.~16, and Thm.~2.2,
+  p.~17);
+\item the \emph{complete Bernstein} functions $\CBF \subset \BF$: those whose Lévy measure
+  has a completely monotone density (\sscite{schilling2012bernstein}, Def.~6.1, p.~69).
+\end{itemize}
+Three are classes of laws on $[0,\infty)$:
+\begin{itemize}
+\item the \emph{self-decomposable} laws $\SDclass$, or class $L$: $\mu$ such that for
+  every $b > 1$ there is a law $\rho_b$ with
+  \[
+    \hat\mu(s) = \hat\mu(s/b)\,\hat\rho_b(s)
+  \]
+  (\sscite{sato1999levy}, Def.~15.1, p.~90); they are infinitely divisible
+  (\sscite{sato1999levy}, Prop.~15.5, p.~93), and their Laplace exponents are what
+  \S\ref{sec:characterization} characterizes;
+\item the \emph{generalized Gamma convolutions} $\GGC$: the laws with Laplace transform
+  \[
+    \exp\Bigl\{-\,a s - \int_{(0,\infty)} \log\bigl(1 + s/t\bigr)\,U(dt)\Bigr\}
+  \]
+  (\sscite{bondesson1992generalized}, \S3.1, p.~29) --- the Thorin subclass of
+  \S\ref{sec:characterization} --- with $\GGC \subset \SDclass$
+  (\sscite{bondesson1992generalized}, p.~30);
+\item the laws with \emph{hyperbolically completely monotone} density, $\HCM$: densities
+  $f$ with $f(uv)\,f(u/v)$ completely monotone in $v + v^{-1}$ for every $u > 0$
+  (\sscite{bondesson1992generalized}, \S4.3, p.~55), with $\HCM \subset \GGC$
+  (\sscite{bondesson1992generalized}, Thm.~4.3.1, p.~57, the regularity conditions removed
+  on p.~68).
+\end{itemize}
+So $\HCM \subset \GGC \subset \SDclass$.
