@@ -66,7 +66,12 @@ the axioms in \S\ref{sec:representation}, and which convolutions in
 
 One point of formulation is settled here, because the rest of the paper depends on it.
 The extended point says that no record is the signal and no measurement stage is the
-identity. The formal theory is nevertheless set on the \emph{closed} half-line
+identity. It is more than a statement about what can be built: in the signal--device
+duality of \sscite{florack1997image}, followed in \sscite{fagerstrom2005temporal}, the
+device is the part of the measurement one designs, and designing it with an extended
+aperture is what makes the space of records differentiable when the space of signals is
+not --- which is why the extended kernels, and not the pure translations, are the objects
+of the theory. The formal theory is nevertheless set on the \emph{closed} half-line
 $[0,\infty)$ of scales, with the signal as the record at scale $0$ and
 $\Phi_{x,x} = \Id$ on the diagonal. Neither is a realizable measurement; both enter as
 the limits the continuity requirement of \S\ref{sec:measurement-continuity} refers to,
@@ -121,11 +126,17 @@ A front end built before its signals has no preferred origin of time and no pref
 unit of time.
 
 No preferred origin: each $\Phi_{x,y}$ commutes with the translations
-$(\shift_a f)(t) = f(t-a)$ (A2).
+\[
+  (\shift_a f)(t) = f(t-a), \qquad a \in \RR,
+\]
+which is (A2).
 
-No preferred unit: rescaling the time axis must carry the family into itself. Write
-$(\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma)$ for the mass-preserving dilation. One
-point requires care before the requirement can be stated. Nothing so far ties the scale
+No preferred unit: rescaling the time axis must carry the family into itself. The
+mass-preserving dilations are
+\[
+  (\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma), \qquad \sigma > 0 .
+\]
+One point requires care before the requirement can be stated. Nothing so far ties the scale
 index $x$ to a unit of time: the scale axis is, at this stage, only an ordered
 parametrization of the records --- which is finer, which is coarser --- and the labels
 themselves have no metric meaning. A rescaling of the time axis can therefore not be
@@ -230,18 +241,29 @@ increasing bijections of $[0,\infty)$ such that
 \end{itemize}
 \end{definition}
 
-Two members, at the two ends of what the axioms admit. The \emph{pure delay}
-$\Phi_{x,y} = \shift_{y-x}$, with $\Sact_\sigma x = \sigma x$, satisfies every axiom at
-sight; it smooths nothing, and it is admitted for the reason the identity is --- it is
-the boundary the class closes on (Remark~\ref{rem:drift-boundary}). The \emph{Gamma
-family} of \S\ref{sec:introduction}, $\Phi_{x,y} f = \rho_{x,y} * f$ with the Laplace
-transform $\hat\rho_{x,y}(s) = \bigl((1+xs)/(1+ys)\bigr)^{\gamma}$, satisfies (A6) because the
-transforms multiply, (A8) with $\Sact_\sigma x = \sigma x$ because
+Two members, at the two ends of what the axioms admit.
+
+The \emph{pure delay},
+\[
+  \Phi_{x,y} = \shift_{y-x}, \qquad \Sact_\sigma x = \sigma x,
+\]
+satisfies every axiom at sight. It smooths nothing, and it is admitted for the reason the
+identity is: it is the boundary the class closes on (Remark~\ref{rem:drift-boundary}).
+
+The \emph{Gamma family} of \S\ref{sec:introduction},
+\[
+  \Phi_{x,y} f = \rho_{x,y} * f, \qquad
+  \hat\rho_{x,y}(s) = \Bigl(\frac{1+xs}{1+ys}\Bigr)^{\gamma},
+\]
+with $\hat\rho$ the Laplace transform, satisfies (A6) because the transforms multiply,
+(A8) with $\Sact_\sigma x = \sigma x$ because
 $\hat\rho_{\sigma x,\sigma y}(s) = \hat\rho_{x,y}(\sigma s)$, and (A7) because the
-transform is continuous in $(x,y)$; that $\rho_{x,y}$ is a probability measure on
-$[0,\infty)$, which gives (A1)--(A5), is the one non-obvious point, and it is the
-self-decomposability of the Gamma law (\S\ref{sec:examples}). Between these two the
-theory has to fit; \S\ref{sec:characterization} says exactly what fits.
+transform is continuous in $(x,y)$. That $\rho_{x,y}$ is a probability measure on
+$[0,\infty)$, which gives (A1)--(A5), is the one non-obvious point; it is the
+self-decomposability of the Gamma law (\S\ref{sec:examples}).
+
+Between these two the theory has to fit; \S\ref{sec:characterization} says exactly what
+fits.
 
 % Verbatim from the blueprint's rem:axiom-provenance (remarks are not statement nodes,
 % so this is not a `shared with blueprint` edge; keep the two texts in step by hand).

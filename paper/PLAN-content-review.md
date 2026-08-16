@@ -134,6 +134,10 @@ Per-section notes known now (from the reports and the current state):
 
 ### Step 15 — global sweep on the frozen content
 
+**Repetition check (author, after §2).** Local improvements — a fuller section lead, per-axiom
+motivation, then the axioms — can add up to a section that says each thing more than once. Not acted
+on now; at the sweep, read each section once for lead/body/statement redundancy and cut.
+
 Mechanical re-checks across all files, since each section step could only see its own instance:
 gauge names; every "(H)"/"Assume (H)"; every "absolutely continuous"/"density"; the economy sentences;
 each registry entry; hand-written tags; orphans (`\label` with no `\ref`). Then: figures not yet
