@@ -166,6 +166,14 @@ articles that have not yet pinned a ledger.
 - **Primary — Feller's continuity theorem.** ✅ **Theorem 2, p. 431** for probability
   distributions: `F_n → F` iff `φ_n(λ) → φ(λ)`. ✅ **Theorem 2a, p. 433**, the *extended*
   continuity theorem, for arbitrary measures. Verified 2026-08-07.
+- **⚠️ The blueprint statement is the probability case only (2026-08-16).** `prop:laplace-continuity`
+  no longer states the arbitrary-measures clause. Theorem 2a is genuinely different in kind from
+  Theorem 2, not just wider in scope: for infinite measures Feller proves convergence in *Feller's
+  sense* (vaguely, or on bounded intervals), not weak convergence, so "the same equivalence …
+  weakly" was imprecise, and no proof in this article spends the general-measure form — every use
+  (`prop:laplace-continuity-causal`, `thm:main-characterization`) is the probability case. Theorem
+  2a is kept above as the source of the "boundedness of `ω_n(a)`" hypothesis discussed below, which
+  remains relevant context, not because the node's statement uses it.
 - **The hypothesis that is easy to lose.** Theorem 2a's converse direction requires the
   sequence `{ω_n(a)}` to be **bounded**, and Feller gives the counterexample on the same page
   showing the hypothesis cannot be dropped. Any blueprint proof invoking the measure form must

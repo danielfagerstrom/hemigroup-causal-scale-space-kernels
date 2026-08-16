@@ -1,7 +1,7 @@
 % Appendix A — Memory kernels, Sonine conservation, and the scale-Cauchy problem
 % (Theorem 3′). Draft §§9–10 moved together (NOTES-exposition Part 4); statements
 % verbatim from blueprint parts 09–10. Lifted OUT: lem:memory-kernel (→ §7's tail),
-% X₀/T_r/core (→ §3). Included splits: lem:memory-kernel-transform, lem:transform-ode,
+% X₀/\shift_r/core (→ §3). Included splits: lem:memory-kernel-transform, lem:transform-ode,
 % lem:potential-kernel-scaling, prop:volterra-density. Skipped: prop:sonine-pair-exists
 % (a blueprint restatement node; its content is the three adjacent results).
 % Equation tags (9.1)/(9.2) are kept by hand for concordance with the blueprint and the
@@ -379,20 +379,20 @@ $\core$ of \S\ref{sec:preliminaries}.
 
 % shared with blueprint lem:delay-core
 \begin{lemma}[delay derivative]\label{lem:delay-core}
-$\core$ is dense in $\Xz$ and invariant under every $T_r$ and every $\Phi_{x,y}$, and for
+$\core$ is dense in $\Xz$ and invariant under every $\shift_r$ and every $\Phi_{x,y}$, and for
 $f \in \core$,
 \[
-  \lim_{h \downarrow 0} \tfrac{1}{h}\bigl(T_h f - f\bigr) = -\,f' \quad \text{in } \Xz,
+  \lim_{h \downarrow 0} \tfrac{1}{h}\bigl(\shift_h f - f\bigr) = -\,f' \quad \text{in } \Xz,
   \qquad
-  \bigl\|T_r f - f\bigr\|_1 \le \min\bigl(2\|f\|_1,\ r\,\|f'\|_1\bigr).
+  \bigl\|\shift_r f - f\bigr\|_1 \le \min\bigl(2\|f\|_1,\ r\,\|f'\|_1\bigr).
 \]
 \end{lemma}
 
 \begin{proof}
 Density is standard.
 
-\emph{Invariance under $T_r$.} $T_r f$ is absolutely continuous, vanishes on $[0, r]$, and
-$(T_r f)' = T_r f'$.
+\emph{Invariance under $\shift_r$.} $\shift_r f$ is absolutely continuous, vanishes on $[0, r]$, and
+$(\shift_r f)' = \shift_r f'$.
 
 \emph{Invariance under $\Phi_{x,y} = \mu_{x,y} * \cdot$.} From
 $f = \mathbf{1}_{[0,\infty)} * f'$ we get $\mu * f = \mathbf{1}_{[0,\infty)} * (\mu * f')$,
@@ -405,7 +405,7 @@ whose $L^1$-norm tends to $0$ by continuity of translation in $L^1$; on $[0, h)$
 contribution is
 $\tfrac{1}{h}\int_0^h |f| + \int_0^h |f'| \le \sup_{[0,h]}|f| + o(1) \to |f(0)| = 0$.
 
-\emph{The estimate.} $T_r f - f = -\int_0^r T_\rho f'\,d\rho$ as a Bochner integral --- the
+\emph{The estimate.} $\shift_r f - f = -\int_0^r \shift_\rho f'\,d\rho$ as a Bochner integral --- the
 integrated form of the limit --- together with $\|T_\rho f'\|_1 = \|f'\|_1$ and the trivial
 bound $\|T_rf - f\|_1 \le 2\|f\|_1$.
 \end{proof}
@@ -417,8 +417,8 @@ right-continuous and $k(\infty) = 0$, so that $\nu_1\bigl((r,\infty)\bigr) = k(r
 $x > 0$ put $\nu_x := x^{-1}$ times the pushforward of $\nu_1$ under $r \mapsto xr$, i.e.\
 $\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
 \[
-  \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - T_r f\bigr)\,\nu_x(dr)
-  \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - T_{xr} f\bigr)\,\nu_1(dr).
+  \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - \shift_r f\bigr)\,\nu_x(dr)
+  \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - \shift_{xr} f\bigr)\,\nu_1(dr).
 \]
 \end{definition}
 
@@ -450,7 +450,7 @@ two Bernstein representations of $\varphi_x$ agree.
 (3) Convolutions commute; pull $\Phi_{y,z}$ through the Bochner integral.
 
 (4) In the dilated form of Definition~\ref{def:phillips-generator} the integrand
-$\tfrac1x(f - T_{xr}f)$ is, for $x$ in a compact subset of $(0,\infty)$, continuous in $x$
+$\tfrac1x(f - \shift_{xr}f)$ is, for $x$ in a compact subset of $(0,\infty)$, continuous in $x$
 for each $r$ by strong continuity of $T$, and dominated by $C\min(\|f\|_1,\, r\|f'\|_1)$,
 which is $\nu_1$-integrable. Apply dominated convergence; the drift term is trivial.
 

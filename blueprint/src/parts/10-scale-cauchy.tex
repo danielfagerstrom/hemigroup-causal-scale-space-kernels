@@ -27,8 +27,8 @@ canonical gauge and write
   \Xz := L^1(\RR_+),
 \]
 identified with the causal elements of $X$; by (A3) every $\Phi_{x,y}$ restricts to $\Xz$. On
-$\Xz$ let $(T_r)_{r \ge 0}$ denote the \emph{delay semigroup},
-$(T_r f)(t) = f(t - r)\mathbf{1}_{t \ge r}$, a strongly continuous semigroup of positive
+$\Xz$ let $(\shift_r)_{r \ge 0}$ denote the \emph{delay semigroup},
+$(\shift_r f)(t) = f(t - r)\mathbf{1}_{t \ge r}$, a strongly continuous semigroup of positive
 isometries, and define the core
 \[
   \core \;:=\; \bigl\{\, f \in \Xz :\ f \text{ absolutely continuous},\ f' \in \Xz,\ f(0) = 0 \,\bigr\}.
@@ -38,12 +38,12 @@ isometries, and define the core
 \begin{lemma}[delay derivative]\label{lem:delay-core}
 \uses{lem:convolution-representation,def:cascade-family}
 \lean{Hemigroup.delay_core}\leanok
-$\core$ is dense in $\Xz$ and invariant under every $T_r$ and every $\Phi_{x,y}$, and for
+$\core$ is dense in $\Xz$ and invariant under every $\shift_r$ and every $\Phi_{x,y}$, and for
 $f \in \core$,
 \[
-  \lim_{h \downarrow 0} \tfrac{1}{h}\bigl(T_h f - f\bigr) = -\,f' \quad \text{in } \Xz,
+  \lim_{h \downarrow 0} \tfrac{1}{h}\bigl(\shift_h f - f\bigr) = -\,f' \quad \text{in } \Xz,
   \qquad
-  \bigl\|T_r f - f\bigr\|_1 \le \min\bigl(2\|f\|_1,\ r\,\|f'\|_1\bigr).
+  \bigl\|\shift_r f - f\bigr\|_1 \le \min\bigl(2\|f\|_1,\ r\,\|f'\|_1\bigr).
 \]
 \statusT\quad\emph{(The setting this lemma is about --- $\Xz$, the delay semigroup and $\core$
 --- is defined in \texttt{Hemigroup/DelayCore.lean}. $\Xz$ is modelled as a predicate on
@@ -59,7 +59,7 @@ Two steps of the proof below are reached differently in Lean, neither changing t
 estimate needs no $\Xz$-valued Bochner integral: bounding $|f(t-r)-f(t)|$ pointwise by
 $\int_{(0,r]}|f'(t-u)|\,du$ and exchanging in $[0,\infty]$ gives the same constant with no
 integrability side condition. And the limit needs no separate treatment of $[0,h)$: the identity
-$h^{-1}(T_hf-f)+f' = -h^{-1}\int_0^h (T_uf'-f')\,du$ is exact on all of $\RR$, so the quotient is
+$h^{-1}(\shift_hf-f)+f' = -h^{-1}\int_0^h (\shift_uf'-f')\,du$ is exact on all of $\RR$, so the quotient is
 an \emph{average} of translation defects and cannot exceed their supremum, with $f(0)=0$ spent
 once in making the identity hold rather than in repairing it at an endpoint.)}
 \end{lemma}
@@ -68,8 +68,8 @@ once in making the identity hold rather than in repairing it at an endpoint.)}
 \leanok
 Density is standard.
 
-\emph{Invariance under $T_r$.} $T_r f$ is absolutely continuous, vanishes on $[0, r]$, and
-$(T_r f)' = T_r f'$.
+\emph{Invariance under $\shift_r$.} $\shift_r f$ is absolutely continuous, vanishes on $[0, r]$, and
+$(\shift_r f)' = \shift_r f'$.
 
 \emph{Invariance under $\Phi_{x,y} = \mu_{x,y} * \cdot$.} From $f = \mathbf{1}_{[0,\infty)} * f'$
 we get $\mu * f = \mathbf{1}_{[0,\infty)} * (\mu * f')$, so $\mu * f$ is absolutely continuous
@@ -81,9 +81,9 @@ whose $L^1$-norm tends to $0$ by continuity of translation in $L^1$; on $[0, h)$
 contribution is $\tfrac{1}{h}\int_0^h |f| + \int_0^h |f'| \le \sup_{[0,h]}|f| + o(1) \to
 |f(0)| = 0$.
 
-\emph{The estimate.} $T_r f - f = -\int_0^r T_\rho f'\,d\rho$ as a Bochner integral --- the
-integrated form of the limit --- together with $\|T_\rho f'\|_1 = \|f'\|_1$ and the trivial
-bound $\|T_rf - f\|_1 \le 2\|f\|_1$.
+\emph{The estimate.} $\shift_r f - f = -\int_0^r \shift_\rho f'\,d\rho$ as a Bochner integral --- the
+integrated form of the limit --- together with $\|\shift_\rho f'\|_1 = \|f'\|_1$ and the trivial
+bound $\|\shift_rf - f\|_1 \le 2\|f\|_1$.
 \end{proof}
 
 % draft: Definition 10.2
@@ -95,18 +95,18 @@ right-continuous and $k(\infty) = 0$, so that $\nu_1\bigl((r,\infty)\bigr) = k(r
 $x > 0$ put $\nu_x := x^{-1}$ times the pushforward of $\nu_1$ under $r \mapsto xr$, i.e.\
 $\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
 \[
-  \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - T_r f\bigr)\,\nu_x(dr)
-  \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - T_{xr} f\bigr)\,\nu_1(dr).
+  \varphi_x(\partial_t)\, f \;:=\; b_0\, f' \;+\; \int_0^\infty \bigl(f - \shift_r f\bigr)\,\nu_x(dr)
+  \;=\; b_0\, f' \;+\; \frac{1}{x}\int_0^\infty \bigl(f - \shift_{xr} f\bigr)\,\nu_1(dr).
 \]
 \statusT\quad\emph{(\textbf{Defined in Lean} (2026-08-14), in
 \texttt{Hemigroup/PhillipsGenerator.lean}, and \textbf{not blocked by generation theory} --- the
 re-check that found so is recorded at \ref{lem:generator-properties}. Everything this definition
-names already existed: $\core$ and $(T_r)$ are \ref{lem:delay-core}'s, and $\nu_1$ is chapter~9's
+names already existed: $\core$ and $(\shift_r)$ are \ref{lem:delay-core}'s, and $\nu_1$ is chapter~9's
 \texttt{exists\_tailMeasure} --- the quantile construction made for \ref{lem:potential-kernel}
 precisely because \texttt{StieltjesFunction} does not apply to a L\'evy tail.
 \textbf{The $\Xz$-valued Bochner integral needed no new theory}, against a plan that had recorded
-it as the expensive part of the chapter: $X = L^1(\RR)$ is a complete normed real space, $T_r$ is
-a continuous linear map on it, and $r \mapsto T_rf$ is continuous, so the integrand is strongly
+it as the expensive part of the chapter: $X = L^1(\RR)$ is a complete normed real space, $\shift_r$ is
+a continuous linear map on it, and $r \mapsto \shift_rf$ is continuous, so the integrand is strongly
 measurable and the definition is \emph{total} --- clause (1) below is what says it means something
 on $\core$, not what makes it well formed. Note the contrast with \ref{lem:delay-core}, where the
 blueprint named a Bochner integral the obligation did not need; here the integral is in the
@@ -141,7 +141,7 @@ coincides on $\core$ with the memory-kernel operator of \ref{lem:memory-kernel-t
 \statusT\quad\emph{(\textbf{Proved in Lean} (2026-08-15), all five clauses, and \textbf{Lean
 core} --- the whole of this lemma is interface-free, and the chapter-level ``blocked on
 C$_0$-semigroup theory'' under which it sat was wrong: no clause mentions a generator's domain, a
-resolvent, or a generation theorem, and the ``strong continuity of $T$'' that (4) invokes is
+resolvent, or a generation theorem, and the ``strong continuity of $\shift$'' that (4) invokes is
 chapter~4's continuity of translation. \texttt{Hemigroup/PhillipsGenerator.lean}; the statements
 quantify over any $\nu_1$ meeting the tail specification rather than over the constructed family,
 which is what keeps them off the ledger.
@@ -152,8 +152,8 @@ $\int(1\wedge r)\nu_1 = \int_0^1 \nu_1\bigl((u,\infty)\bigr)du = \int_0^1 k$, no
 by parts the proof above names --- the $k(1) < \infty$ half of that argument's hypothesis is
 unused, and the tail identity is consumed under an integral in $u$, which is where $\nu_1$'s
 almost-everywhere specification is paid for and found free. Worth noting where $f \in \core$ is
-spent: $\|T_rf-f\|_1 \le r\|f'\|_1$ makes the integrand small at the origin, while
-$\|T_rf-f\|_1 \le 2\|f\|_1$ holds for every $f \in X$, so the core hypothesis buys only the first
+spent: $\|\shift_rf-f\|_1 \le r\|f'\|_1$ makes the integrand small at the origin, while
+$\|\shift_rf-f\|_1 \le 2\|f\|_1$ holds for every $f \in X$, so the core hypothesis buys only the first
 --- the half $\nu_1$'s mass at the origin needs.
 \textbf{Three of the five clauses are pass-throughs of a bounded functional}: (3) pushes
 $\Phi_{y,z}$ through the Bochner integral, (2) pushes $\Lap$, and (5) pushes
@@ -188,15 +188,15 @@ right-continuous representative nameable there.)}
 (1) Combine \ref{lem:delay-core} with $\int (1 \wedge r)\,\nu_x(dr) < \infty$, which follows
 from $\int_0^1 k < \infty$ and $k(1) < \infty$ by integration by parts.
 
-(2) Termwise: $\Lap[f'] = s\hat f$, using $f(0) = 0$, and $\Lap[f - T_rf] = (1 - e^{-sr})\hat f$.
+(2) Termwise: $\Lap[f'] = s\hat f$, using $f(0) = 0$, and $\Lap[f - \shift_rf] = (1 - e^{-sr})\hat f$.
 Fubini is justified by (1), and $b_0 s + \int(1 - e^{-sr})\nu_x(dr) = \varphi_x(s)$ by
 \ref{lem:memory-kernel} --- the two Bernstein representations of $\varphi_x$ agree.
 
 (3) Convolutions commute; pull $\Phi_{y,z}$ through the Bochner integral.
 
 (4) In the dilated form of \ref{def:phillips-generator} the integrand
-$\tfrac1x(f - T_{xr}f)$ is, for $x$ in a compact subset of $(0,\infty)$, continuous in $x$ for
-each $r$ by strong continuity of $T$, and dominated by $C\min(\|f\|_1,\, r\|f'\|_1)$, which is
+$\tfrac1x(f - \shift_{xr}f)$ is, for $x$ in a compact subset of $(0,\infty)$, continuous in $x$ for
+each $r$ by strong continuity of $\shift$, and dominated by $C\min(\|f\|_1,\, r\|f'\|_1)$, which is
 $\nu_1$-integrable. Apply dominated convergence; the drift term is trivial.
 
 (5) Both $\varphi_x(\partial_t)f \in L^1$ and $\kappa^{(x)} * f \in L^1_{\mathrm{loc}}$ are

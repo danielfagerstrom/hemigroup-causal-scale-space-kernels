@@ -83,8 +83,9 @@ in a shared statement (`prop:bessel-family`).
 
 ## Registries (applied per section, no further decision)
 
-- **Notation** — rename the *later* introduction of a colliding symbol; define at first use; `T_r`
-  stays the delay semigroup (it is in shared statements) and Sato's subordinator is renamed;
+- **Notation** — rename the *later* introduction of a colliding symbol; define at first use; the delay
+  semigroup `T_r` is written as the translation `τ_r` it is (`T_1`, `T_x` stay the subordinator —
+  ~100 uses against ~15; decided in the §3 step);
   `\SDclass`, `\GGC`, `\CBF` and the other undefined symbols are defined where first used or dropped.
 - **Figures** — generous; see the table in `PLAN-content-review.md`.
 - **Pointers** — mechanical, in the owning step.

@@ -15,23 +15,31 @@
 
 \section{Preliminaries and notation}\label{sec:preliminaries}
 
-Time runs over $\RR$. We write $X = \Lone$, real, with positive cone $X_+$ and
-$\int f := \int_{\RR} f(t)\,dt$; $\Mplus(\RR)$ for the finite positive Borel measures on
-$\RR$, with total mass $\|\mu\| = \mu(\RR)$; translations $(\shift_a f)(t) = f(t-a)$ for
-$a \in \RR$; dilations on functions $(\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma)$,
-$\sigma > 0$, which preserve mass, and on measures $\dil_\sigma \mu :=$ the pushforward of
-$\mu$ under $t \mapsto \sigma t$; and convolution
-$(\mu * f)(t) = \int f(t - r)\,\mu(dr)$ for $\mu \in \Mplus(\RR)$, $f \in X$. Then
-$\|\mu * f\|_1 \le \|\mu\|\,\|f\|_1$, and dilation is compatible with convolution:
+\emph{Spaces.} Time runs over $\RR$. We write $X = \Lone$, real, with positive cone $X_+$
+and $\int f := \int_{\RR} f(t)\,dt$, and $\Mplus(\RR)$ for the finite positive Borel
+measures on $\RR$, with total mass $\|\mu\| = \mu(\RR)$.
+
+\emph{Actions.} Translations are $(\shift_a f)(t) = f(t-a)$, $a \in \RR$. Dilations act on
+functions by $(\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma)$, $\sigma > 0$, which preserves
+mass, and on measures by $\dil_\sigma \mu :=$ the pushforward of $\mu$ under
+$t \mapsto \sigma t$.
+
+\emph{Convolution.} $(\mu * f)(t) = \int f(t - r)\,\mu(dr)$ for $\mu \in \Mplus(\RR)$,
+$f \in X$. Then $\|\mu * f\|_1 \le \|\mu\|\,\|f\|_1$, and dilation is compatible with
+convolution:
 \[
   \dil_\sigma(\mu * f) = (\dil_\sigma \mu) * (\dil_\sigma f).
 \]
 
-For $\mu \in \Mplus$ supported on $[0,\infty)$ the Laplace transform is
+\emph{Transforms.} For $\mu \in \Mplus$ supported on $[0,\infty)$ the Laplace transform is
 \[
-  \hat\mu(s) = \int_{[0,\infty)} e^{-st}\,\mu(dt), \qquad s \ge 0 .
+  \hat\mu(s) = \int_{[0,\infty)} e^{-st}\,\mu(dt), \qquad s \ge 0 ,
 \]
-If $\mu \ne 0$ then $\hat\mu(s) > 0$ for all $s \ge 0$.
+and $\hat\mu(s) > 0$ for all $s \ge 0$ whenever $\mu \ne 0$, the integrand being positive.
+
+Two classes of functions on $(0,\infty)$ carry the analysis: the completely monotone
+functions, which will be the transforms of the kernels, and the Bernstein functions, which
+will be their exponents.
 
 % shared with blueprint def:completely-monotone
 \begin{definition}[completely monotone]\label{def:completely-monotone}
@@ -47,8 +55,10 @@ $g(\zp) = 0$.
 \end{definition}
 
 The toolbox that connects the two classes to Laplace transforms is classical, and it is
-cited rather than reproven: \sscite{feller2009introduction}, Ch.~XIII, and
-\sscite{schilling2012bernstein}, Ch.~1 and~3.
+cited rather than reproven: part~(1) is \sscite{feller2009introduction}, Vol.~2,
+\S~XIII.4, Theorems~1 and~1a, pp.~439--440; parts~(2)--(4) are
+\sscite{schilling2012bernstein}, Theorem~3.7, p.~27, Theorem~3.2, pp.~21--22, and
+Corollary~3.8, pp.~28--29, respectively.
 
 % shared with blueprint prop:bernstein-toolbox
 \begin{proposition}[the Bernstein-function toolbox]\label{prop:bernstein-toolbox}
@@ -81,15 +91,14 @@ Theorem~\ref{thm:increments-bernstein} are produced as representations, not as p
 limits of Bernstein functions; the potential kernel of the appendix is constructed as a
 subordinator's potential measure, not represented from complete monotonicity; the Mellin
 calculus of \S\ref{sec:signaling} mentions neither class. Complete monotonicity and the
-derivative-sign definition of $\BF$ are genuinely needed at exactly three places, and it is
-worth naming them: Lemma~\ref{lem:selfdecomposable-exponents}'s implications
+derivative-sign definition of $\BF$ enter where the $\CM$ class is itself the subject
+(Proposition~\ref{prop:pair-regularity}(2), Proposition~\ref{prop:thorin-subclass}), in
+Lemma~\ref{lem:selfdecomposable-exponents}'s implications
 (1)~$\Rightarrow$~(2)~$\Rightarrow$~(3), where $B(s) = sF'(s)$ has no meaning until the
-representation is in hand; Proposition~\ref{prop:pair-regularity}(3) and
-Proposition~\ref{prop:thorin-subclass}, where the $\CM$ class is the \emph{subject} rather
-than a tool; and Proposition~\ref{prop:bernstein-toolbox} itself, which identifies the two
-vocabularies once so that no later proof has to. A reader who wants the shortest path to
-Theorem~\ref{thm:main-characterization} or Theorem~\ref{thm:signaling-form} may take~(3) as
-the definition of admissibility and never invoke Bernstein--Widder.
+representation is in hand, and in the classical proofs of \S\ref{sec:characterization},
+where the printed route and the machine-checked route differ
+(\S\ref{sec:machine-checked}); Proposition~\ref{prop:bernstein-toolbox} identifies the two
+vocabularies once so that no later proof has to.
 
 The same class carries a second name, after its representation rather than its derivative
 signs; several statements below are given in both forms, and
@@ -106,8 +115,11 @@ for a drift $b_0$ and a positive Borel measure $\nu$ on $(0,\infty)$ --- with no
 so that $g(0) = 0$. We write $g \in \LE$, and call $(b_0, \nu)$ its \emph{triple}.
 \end{definition}
 
-By Proposition~\ref{prop:bernstein-toolbox}(3), $\LE = \BFz$ as classes of functions, with
-the triple unique. Both names are kept because the two readings matter separately: the proofs
+The definition is valued in $[0,\infty]$ so that it carries no integrability hypothesis;
+for a measure $\nu$ on $(0,\infty)$, finiteness of $g$ at a single $s > 0$ is equivalent to
+$\int_0^\infty (1 \wedge t)\,\nu(dt) < \infty$. On the finite members, by
+Proposition~\ref{prop:bernstein-toolbox}(3), $\LE = \BFz$ as classes of functions, with the
+triple unique. Both names are kept because the two readings matter separately: the proofs
 of this paper argue mostly in the representation, and the machine-checked development
 (\S\ref{sec:machine-checked}) argues \emph{only} there --- it never defines complete
 monotonicity at all --- so a statement whose conclusion is given in $\LE$ is one the
@@ -129,15 +141,13 @@ identically. So $g' \equiv 0$ on $(0,\infty)$, and with $g(\zp) = 0$ this gives 
 
 Two further classical facts are used repeatedly and are recorded here so that each later
 use can cite a statement; both are from \sscite{feller2009introduction}, Vol.~2,
-\S~XIII.1, which states the probability and the general-measure forms as separate theorems
-(Theorems~2 and~2a, and Theorems~1 and~1a, respectively).
+\S~XIII.1: Theorem~2, p.~431, and Theorems~1 and~1a, pp.~430 and~432, the latter stated
+for arbitrary measures.
 
 % shared with blueprint prop:laplace-continuity
 \begin{proposition}[continuity theorem for Laplace transforms]\label{prop:laplace-continuity}
 Let $\mu_n, \mu$ be probability measures on $[0,\infty)$. Then $\mu_n \to \mu$ weakly if and
-only if $\hat\mu_n(s) \to \hat\mu(s)$ for every $s > 0$. The same equivalence holds for
-arbitrary measures on $[0,\infty)$, provided that in the direction from transforms to measures
-the masses $\hat\mu_n(a)$ are bounded for some $a > 0$.
+only if $\hat\mu_n(s) \to \hat\mu(s)$ for every $s > 0$.
 \end{proposition}
 
 % shared with blueprint prop:laplace-uniqueness
@@ -146,19 +156,47 @@ A measure on $[0,\infty)$ is determined by its Laplace transform: if $\hat\mu(s)
 for all $s$ in some interval $(a,\infty)$, then $\mu = \rho$.
 \end{proposition}
 
-Finally, the causal vocabulary, used from \S\ref{sec:signaling} on and in the appendix. A
-function $f \in X$ is \emph{causal} if it vanishes a.e.\ on $(-\infty, 0)$; its transform
+\emph{The causal vocabulary}, used from \S\ref{sec:signaling} on and in the appendix, is
+the setting in which the family is read as an evolution in present time: a signal that
+starts at time $0$, delayed and smoothed. A function $f \in X$ is \emph{causal} if it
+vanishes a.e.\ on $(-\infty, 0)$; its transform
 $\hat f(s) = \int_0^\infty e^{-st} f(t)\,dt$ is then defined for $s > 0$ with
 $|\hat f(s)| \le \|f\|_1$. We write
 \[
   \Xz := L^1(\RR_+),
 \]
 identified with the causal elements of $X$; by (A3) every $\Phi_{x,y}$ restricts to $\Xz$.
-On $\Xz$, $(T_r)_{r \ge 0}$ denotes the \emph{delay semigroup},
-$(T_r f)(t) = f(t - r)\,\mathbf{1}_{t \ge r}$, a strongly continuous semigroup of positive
-isometries, and
+On $\Xz$ the translations $(\shift_r)_{r \ge 0}$ form the \emph{delay semigroup},
+$(\shift_r f)(t) = f(t - r)\,\mathbf{1}_{t \ge r}$: positive isometries, and strongly
+continuous because translation is continuous in $L^1$. The operator core used there is
 \[
   \core \;:=\; \bigl\{\, f \in \Xz :\ f \text{ absolutely continuous},\ f' \in \Xz,\
-  f(0) = 0 \,\bigr\}
+  f(0) = 0 \,\bigr\}.
 \]
-is the operator core used there.
+It is cut so that its members are exactly the primitives of their derivatives,
+$f = \int_0^{\cdot} f'$ with $f' \in \Xz$ --- hence bounded, which is what widens the Mellin
+strips of \S\ref{sec:signaling} --- and lie in $\Xz$ themselves, which the other two
+conditions do not imply, a primitive of an $L^1$ function being integrable only when
+$\int_0^\infty f' = 0$.
+
+\emph{Classes referred to later.} Five named subclasses appear in
+\S\S\ref{sec:locality}--\ref{sec:implementation} and the appendix, always as the answer to
+``which laws have this property'', never as tools; they are recorded here so that each use
+can point to a definition. On the function side: the \emph{Stieltjes} functions
+$\mathcal{S}$, $f(s) = a/s + b + \int_{(0,\infty)} (s+t)^{-1}\mu(dt)$, a subclass of $\CM$
+(\sscite{schilling2012bernstein}, Def.~2.1, p.~16, and Thm.~2.2, p.~17); and the
+\emph{complete Bernstein} functions $\CBF \subset \BF$, those whose Lévy measure has a
+completely monotone density (\sscite{schilling2012bernstein}, Def.~6.1, p.~69). On the side
+of laws on $[0,\infty)$: the \emph{self-decomposable} laws $\SDclass$, or class $L$ ---
+$\mu$ with $\hat\mu(s) = \hat\mu(s/b)\,\hat\rho_b(s)$ for some law $\rho_b$, for every
+$b > 1$ (\sscite{sato1999levy}, Def.~15.1, p.~90), infinitely divisible
+(\sscite{sato1999levy}, Prop.~15.5, p.~93) --- whose Laplace exponents
+\S\ref{sec:characterization} characterizes; the \emph{generalized Gamma convolutions}
+$\GGC$, the laws with Laplace transform $\exp\{-as - \int \log(1 + s/t)\,U(dt)\}$
+(\sscite{bondesson1992generalized}, \S3.1, p.~29), the Thorin subclass of
+\S\ref{sec:characterization}, with $\GGC \subset \SDclass$
+(\sscite{bondesson1992generalized}, p.~30); and the laws with \emph{hyperbolically completely
+monotone} density, $\HCM$ --- $f(uv)f(u/v)$ completely monotone in $v + v^{-1}$ for every
+$u > 0$ (\sscite{bondesson1992generalized}, \S4.3, p.~55) --- with $\HCM \subset \GGC$
+(\sscite{bondesson1992generalized}, Thm.~4.3.1, p.~57, the regularity conditions removed on
+p.~68). So $\HCM \subset \GGC \subset \SDclass$.
