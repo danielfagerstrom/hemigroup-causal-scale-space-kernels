@@ -102,7 +102,7 @@ Per-section notes known now (from the reports and the current state):
   LE/BF₀ integrability note dropped in transcription (thread C — restore).
 - **§4** — "(A3) once" (D-D); "nothing rests on the trust boundary" (J); `§XIII`; `g` collision;
   measures-not-densities (D-A).
-- **§5** — covariance-free note and change-of-variables step dropped (C — restore).
+- **§5** — covariance-free note and change-of-variables step dropped (C — restore); `lem:additivity`'s statement says `G(x,0+) = 0` where the Lean (`Additivity.lean:162`) and the proof have the value at 0 — same one-token fix as `lem:transform-continuity` (found by the mathematician in the §4 step).
 - **§6** — gauge declaration (D-G); `lem:action-rigidity` gloss dropped (C); orbit figure.
 - **§7** — `rem:extreme-rays` under `k ≢ 0` (D-A); §1.1 vs printed imports (D-D); `\Mplus`
   overload and lemma clause (1)'s `0 < a` are **blueprint-side**; move the (H)-boundary half of
@@ -157,7 +157,7 @@ per pass; em-dashes and >30-word sentences first (the only two features over bot
 | 0 | decisions | done — `DECISIONS.md` | |
 | 1 | §2 | done | see git log |
 | 2 | §3 | done | see git log |
-| 3 | §4 | | |
+| 3 | §4 | done | see git log |
 | 4 | §5 | | |
 | 5 | §6 | | |
 | 6 | §7 | | |
