@@ -18,9 +18,10 @@
 
 This section assembles the axiom system of the paper: a list of requirements on temporal
 measurement, each motivated in turn and collected at the end in
-Definition~\ref{def:cascade-family}. All but one are the requirements of
-\sscite{fagerstrom2005temporal}. The exception is the cascade property of
-\S\ref{sec:measurement-cascade}, and it is the subject of this paper.
+Definition~\ref{def:cascade-family}. The substantive change from
+\sscite{fagerstrom2005temporal} is one axiom, the cascade property of
+\S\ref{sec:measurement-cascade}, and it is the subject of this paper; the two smaller
+differences are recorded in Remark~\ref{rem:axiom-provenance}.
 
 It is impossible to measure the value of a signal at a point: a measurement must collect
 input from a region of non-vanishing extent --- an \emph{extended point}
@@ -41,9 +42,10 @@ state --- the observer must \emph{embody} its past. Causality is a condition on 
 measured values and becomes an axiom below (\S\ref{sec:measurement-causality}).
 Embodiment is a condition on how a measurement can be realized, and it is not an axiom:
 no requirement below mentions the observer's state. That the axioms nevertheless admit an
-embodied realization is a result of the theory --- \S\ref{sec:signaling} constructs the
-state a covariant observer carries, and \S\ref{sec:jet} shows that the temporal
-derivatives of the signal can be read off that state.
+embodied realization is a result of the theory: under a mild standing hypothesis on the
+family, stated in \S\ref{sec:signaling}, that section constructs the state a covariant
+observer carries, and \S\ref{sec:jet} shows that the temporal derivatives of the signal
+can be read off that state.
 
 A temporal measurement is an operator that smooths the signal. Signals are integrable
 transients, $X = \Lone$, with positive cone $X_+$ and $\int f := \int_{\RR} f(t)\,dt$.
@@ -56,16 +58,39 @@ of scales,
 with $\Phi_{x,y}$ carrying the record at scale $x$ to the record at the coarser scale
 $y$, and the signal itself as the record at scale $0$. In the classical theory a single
 scale index suffices; why two are needed here is explained in
-\S\ref{sec:measurement-cascade}. The apertures --- the convolution kernels realizing
-these operators --- are not postulated: they are recovered from the axioms in
-\S\ref{sec:representation}. The remaining notation is collected in
+\S\ref{sec:measurement-cascade}. The apertures --- the measures realizing these
+operators --- are not postulated: that the operators are convolutions is recovered from
+the axioms in \S\ref{sec:representation}, and which convolutions in
+\S\ref{sec:characterization}. The remaining notation is collected in
 \S\ref{sec:preliminaries}.
+
+One point of formulation is settled here, because the rest of the paper depends on it.
+The extended point says that no record is the signal and no measurement stage is the
+identity. The formal theory is nevertheless set on the \emph{closed} half-line
+$[0,\infty)$ of scales, with the signal as the record at scale $0$ and
+$\Phi_{x,x} = \Id$ on the diagonal. Neither is a realizable measurement; both enter as
+the limits the continuity requirement of \S\ref{sec:measurement-continuity} refers to,
+in the same way that the Dirac measure enters the extended point axiom of
+\sscite{fagerstrom2005temporal}, $\lim_{\tau \to 0}\phi_\tau = \delta$ with $\phi_\tau$
+the kernel at scale $\tau$: as a limit the family approaches and never attains. Nothing
+is measured \emph{at} scale $0$; every statement below is about the family and its
+limits. The alternative --- taking ``a measurement of a measurement is a measurement''
+as a formal requirement, every stage strictly smoothing --- leads to a discrete ladder of
+scales and would still need the diagonal in its closure to state continuity at all; it is
+not pursued. The same stance covers one degenerate member the axioms admit, the pure
+delay, exhibited after Definition~\ref{def:cascade-family} and kept separate in the text
+wherever a property fails on it.
 
 \subsection{Linearity, positivity, and mass}\label{sec:measurement-linearity}
 
 An uncommitted front end treats all intensity levels alike and prefers no signal feature
-over another: measurement respects superposition, and each $\Phi_{x,y}$ is linear.
-Measurement is also stable --- a small signal leaves a small record --- which on $X$ is
+over another. Superposition is the operational form of that indifference: a device that
+does not respect it responds to some combinations of inputs differently from the sum of
+its responses, and has thereby singled those combinations out before anything is known
+about the signals. So each $\Phi_{x,y}$ is linear. This is the assumption on which the
+convolution route of \S\ref{sec:representation} rests; the nonlinear scale-space
+axiomatics \sscite{alvarez1993axioms}, which give it up, are a different theory and
+outside the scope of this paper. Measurement is also stable --- a small signal leaves a small record --- which on $X$ is
 boundedness of each $\Phi_{x,y}$ (A1).
 
 An intensity signal is nonnegative, and a measurement of nonnegative input that reports
@@ -73,11 +98,10 @@ negative values has created structure of its own --- structure of the apparatus 
 than of the signal. Measurement preserves the positive cone (A4).
 
 In the spatial theory the corresponding normalization is \emph{gray-level invariance}:
-smoothing an image may not change its average intensity, so the aperture must have unit
-area, and the smoothing operator is conservative --- it redistributes intensity and
+smoothing an image may not change its average intensity, so the smoothing kernel has unit
+area and the smoothing operator is conservative --- it redistributes intensity and
 neither creates nor absorbs any. Read on integrable transients the invariant quantity is
-the total mass $\int f$: the crudest measurement of a transient, its reading at infinite
-scale, on which all stages must already agree. This is (A5). A device that loses mass
+the total mass $\int f$. This is (A5). A device that loses mass
 models absorption rather than measurement; the passive variant is recorded in
 Remark~\ref{rem:axiom-provenance} and not pursued.
 
@@ -86,8 +110,10 @@ Remark~\ref{rem:axiom-provenance} and not pursued.
 The record at time $t$ may depend on the signal only through its restriction to
 $(-\infty, t]$: if the signal vanishes before some time $t_0$, so does every record of it
 (A3). This is the one requirement with no spatial counterpart, and it removes the
-Gaussian: the Gaussian aperture reads the future, and truncating it destroys the cascade
-structure discussed below.
+Gaussian: the Gaussian aperture reads the future, and no truncation of it is compatible
+with the cascade structure discussed below --- the characterization of
+\S\ref{sec:characterization} shows that every admissible kernel is infinitely divisible,
+which no truncated Gaussian is.
 
 \subsection{Covariance}\label{sec:measurement-covariance}
 
@@ -110,12 +136,14 @@ increasing bijections of $[0,\infty)$ with
   \dil_\sigma\,\Phi_{x,y} \;=\; \Phi_{\Sact_\sigma x,\,\Sact_\sigma y}\,\dil_\sigma
   \qquad \text{for all } 0 \le x \le y,\ \sigma > 0,
 \]
-which is (A8). The axioms determine each $\Sact_\sigma$ uniquely, and
-\S\ref{sec:covariance} recovers a canonical scale parametrization from the action. The
-covariance demanded is \emph{full}: every $\sigma > 0$, not a discrete ladder
-$\sigma \in q^{\ZZ}$ of preferred ratios --- a preferred ratio is a preferred unit in
-disguise. The weaker discrete form defines a stratum of its own, taken up in
-\S\ref{sec:conclusions}.
+which is (A8) (Figure~\ref{fig:covariance-square}). The axioms, with the nondegeneracy
+of \S\ref{sec:measurement-continuity}, determine each $\Sact_\sigma$ uniquely, and
+\S\ref{sec:covariance} recovers a canonical scale parametrization from the action. We
+demand \emph{full} covariance, every $\sigma > 0$. The discrete form
+$\sigma \in q^{\ZZ}$, a fixed ratio between successive scales, is a genuinely weaker
+requirement with a theory of its own; \S\ref{sec:conclusions} places it.
+
+\input{fig-covariance-square}
 
 \subsection{The cascade property}\label{sec:measurement-cascade}
 
@@ -151,17 +179,19 @@ consequences follow immediately. The family must be indexed by pairs, since an i
 $\Phi_{x,y}$ is no longer determined by the difference $y - x$. And the scale axis
 acquires a gauge freedom --- any increasing reparametrization of $[0,\infty)$ yields the
 same family relabelled --- which is why (A8) was stated with the relabelling
-$\Sact_\sigma$ left free. \S\ref{sec:covariance} resolves both: covariance determines
-the gauge up to normalization, and the semigroup case reappears exactly when
-stage-interchangeability is reimposed (Corollary~\ref{cor:semigroup-case}).
+$\Sact_\sigma$ left free. \S\ref{sec:covariance} resolves the first: covariance
+determines the gauge up to normalization. And the semigroup case reappears when
+stage-interchangeability is reimposed: Corollary~\ref{cor:semigroup-case} in
+\S\ref{sec:characterization} returns the stable family of the semigroup theory together
+with the pure delay.
 
 \subsection{Continuity and nondegeneracy}\label{sec:measurement-continuity}
 
 Measurements at nearby scales must be comparable: the record depends continuously on the
 pair of scales, jointly, in the norm of $X$ (A7). Together with the diagonal condition
-$\Phi_{x,x} = \Id$, continuity makes the aperture an extended point in the limit: as
-$y \downarrow x$ the record at scale $y$ recovers the record at scale $x$, which is the
-two-parameter form of the extended point axiom of \sscite{fagerstrom2005temporal},
+$\Phi_{x,x} = \Id$, continuity is the extended point in its two-parameter form: as
+$y \downarrow x$ the record at scale $y$ recovers the record at scale $x$, and the
+identity on the diagonal is the limit this refers to, as $\delta$ is in
 $\lim_{\tau \to 0} \phi_\tau = \delta$.
 
 Finally, the scale axis carries no idle stretches: strictly coarser means strictly more
@@ -200,19 +230,35 @@ increasing bijections of $[0,\infty)$ such that
 \end{itemize}
 \end{definition}
 
+Two members, at the two ends of what the axioms admit. The \emph{pure delay}
+$\Phi_{x,y} = \shift_{y-x}$, with $\Sact_\sigma x = \sigma x$, satisfies every axiom at
+sight; it smooths nothing, and it is admitted for the reason the identity is --- it is
+the boundary the class closes on (Remark~\ref{rem:drift-boundary}). The \emph{Gamma
+family} of \S\ref{sec:introduction}, $\Phi_{x,y} f = \rho_{x,y} * f$ with the Laplace
+transform $\hat\rho_{x,y}(s) = \bigl((1+xs)/(1+ys)\bigr)^{\gamma}$, satisfies (A6) because the
+transforms multiply, (A8) with $\Sact_\sigma x = \sigma x$ because
+$\hat\rho_{\sigma x,\sigma y}(s) = \hat\rho_{x,y}(\sigma s)$, and (A7) because the
+transform is continuous in $(x,y)$; that $\rho_{x,y}$ is a probability measure on
+$[0,\infty)$, which gives (A1)--(A5), is the one non-obvious point, and it is the
+self-decomposability of the Gamma law (\S\ref{sec:examples}). Between these two the
+theory has to fit; \S\ref{sec:characterization} says exactly what fits.
+
 % Verbatim from the blueprint's rem:axiom-provenance (remarks are not statement nodes,
 % so this is not a `shared with blueprint` edge; keep the two texts in step by hand).
 \begin{remark}[provenance of the axioms]\label{rem:axiom-provenance}
 (A1)--(A5) and (A7) are as in \sscite{fagerstrom2005temporal}; the diagonal condition in (A6)
 together with (A7) is the two-parameter form of the \emph{extended point} axiom
-$\lim_{\tau\to 0}\phi_\tau = \delta$.
+$\lim_{\tau\to 0}\phi_\tau = \delta$, in the notation of that paper, $\phi_\tau$ the kernel
+at scale $\tau$.
 
-The single change is (A6). In \sscite{fagerstrom2005temporal} the cascade reads
+The substantive change is (A6). In \sscite{fagerstrom2005temporal} the cascade reads
 $\Phi_\tau \Phi_{\tau'} = \Phi_{\tau + \tau'}$, which additionally assumes that the composite
 measurement depends only on the total amount of scale --- that measurement stages are
-interchangeable. (A6) drops exactly that assumption, and nothing else: this is the whole
-difference between the semigroup axiomatics and the present one, and every result that
-follows is a consequence of dropping it.
+interchangeable. (A6) drops that assumption, and every result that follows is a
+consequence of dropping it. Two smaller differences: \sscite{fagerstrom2005temporal} also
+required the kernels to be continuous functions, which the pure delay violates, and
+dropping that requirement is what admits the drift term (Remark~\ref{rem:drift-boundary});
+and (ND) is a normalization not stated there.
 
 (A8) is the two-parameter form of scaling covariance; note that an increasing bijection of
 $[0,\infty)$ automatically fixes $0$. (ND) excludes idle stretches of the scale axis.

@@ -72,14 +72,17 @@ set. Chapter 4 is proved for the core alone --- it uses (A2)--(A5) and (A7) and 
 \uses{def:cascade-family}
 (A1)--(A5) and (A7) are as in \sscite{fagerstrom2005temporal}; the diagonal condition in (A6)
 together with (A7) is the two-parameter form of the \emph{extended point} axiom
-$\lim_{\tau\to 0}\phi_\tau = \delta$.
+$\lim_{\tau\to 0}\phi_\tau = \delta$, in the notation of that paper, $\phi_\tau$ the kernel
+at scale $\tau$.
 
-The single change is (A6). In \sscite{fagerstrom2005temporal} the cascade reads
+The substantive change is (A6). In \sscite{fagerstrom2005temporal} the cascade reads
 $\Phi_\tau \Phi_{\tau'} = \Phi_{\tau + \tau'}$, which additionally assumes that the composite
 measurement depends only on the total amount of scale --- that measurement stages are
-interchangeable. (A6) drops exactly that assumption, and nothing else: this is the whole
-difference between the semigroup axiomatics and the present one, and every result that
-follows is a consequence of dropping it.
+interchangeable. (A6) drops that assumption, and every result that follows is a
+consequence of dropping it. Two smaller differences: \sscite{fagerstrom2005temporal} also
+required the kernels to be continuous functions, which the pure delay violates, and
+dropping that requirement is what admits the drift term (Remark~\ref{rem:drift-boundary});
+and (ND) is a normalization not stated there.
 
 (A8) is the two-parameter form of scaling covariance; note that an increasing bijection of
 $[0,\infty)$ automatically fixes $0$. (ND) excludes idle stretches of the scale axis.

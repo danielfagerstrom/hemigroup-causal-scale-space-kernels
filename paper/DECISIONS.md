@@ -22,6 +22,24 @@ ones — was not built into the axiomatization and is not worth building in now.
   a density …"; §10: case (1) is a case, `rem:drift-boundary` says why the semigroup theory excluded
   it; §11 and App. A carry the `b₀` term where it was omitted.
 
+### D-A′ · The closed half-line: the extended point motivates, the formalization includes scale 0
+
+(Author, 2026-08-16, on reflection during the §2 step.) The extended point — no record is the
+signal, no stage is the identity — is a requirement on *physical realization* and is the motivation.
+The *formal* theory is set on the closed half-line `[0,∞)` with the signal as the record at scale 0
+and `Φ_{x,x} = Id` on the diagonal; both are admitted as the limits (A7) refers to, in the same way
+`δ` enters 2005's extended-point axiom `lim φ_τ = δ`. Nothing is measured *at* scale 0. Taking
+"measurement of a measurement" as a formal requirement (every stage strictly smoothing) would give a
+discrete ladder and would still need the diagonal in its closure to state continuity — not pursued.
+The pure delay is the degenerate member admitted for the same reason as the identity. §2 says this
+once, explicitly (the paragraph after the operator is introduced, and the worked-member paragraph
+after Def. 2.1).
+
+**Later sections must keep to it:** the signal is "the record at scale 0" (§1 too); kernel language
+never implies a density; (H)'s "no atom at zero *delay*" is a different zero and is phrased so it
+cannot be read as scale 0; §7's drift ray and §10's case (1) are this same member. Checked in the
+global sweep.
+
 ## D-B · (H) has one home, and the summaries carry it carefully
 
 `def:standing-hypothesis` stays in §9's opening; every result on the memory line says "Assume (H)" as
