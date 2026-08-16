@@ -150,7 +150,7 @@ per pass; em-dashes and >30-word sentences first (the only two features over bot
 
 | step | section | state | commit |
 |---|---|---|---|
-| 0 | decisions | open | |
+| 0 | decisions | done — `DECISIONS.md` | |
 | 1 | §2 | | |
 | 2 | §3 | | |
 | 3 | §4 | | |
