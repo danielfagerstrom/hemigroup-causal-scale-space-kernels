@@ -86,6 +86,15 @@ files. And when `linkage` fails oddly — an undefined handler, a syntax error i
 defect: retry before diagnosing, and never edit `article-kit` to unblock yourself. Expect to rebase
 and re-run the build.
 
+**Never search from the filesystem root — no `find /`, `grep -r /`, `Get-ChildItem C:\ -Recurse`,
+or `Glob` with a root path.** This applies to every agent dispatched here as much as to the main
+session. Two `find / -iname ... -path *linkage*` runs left behind by a subagent each pinned a core
+for an hour (2026-08-16); the author had killed one the day before. To locate a tool or package,
+ask the shell (`where linkage`, `Get-Command`, `pip show`, `python -c "import linkage; print(
+linkage.__file__)"`) or search a named directory (`~/dev/article-kit`, `~/.local/bin`). If a search
+must be broad, bound it (`-maxdepth`, a specific drive subtree) and run it in the foreground so it
+dies with the call. Never leave a search running in the background.
+
 **Run the axiom guard to completion and check its exit code**, `lake env lean CIAxiomGuard.lean`.
 Reading only the tail of its output hides a stale declaration name, which makes it exit non-zero
 while printing a screenful of correct lines — that went unnoticed for weeks once. Run it *before*
