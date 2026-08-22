@@ -6,6 +6,21 @@
 
 \section{The cascade: additivity and infinite divisibility}\label{sec:cascade}
 
+With the representation in hand, the cascade axiom (A6) becomes a statement about
+kernels: composition of operators is convolution of measures, so the exponent of
+\S\ref{sec:representation} is \emph{additive} over adjacent intervals of the scale axis. Set
+\[
+  G(x, s) := g_{0,x}(s),
+\]
+the exponent accumulated from scale $0$ to scale $x$. For fixed $s$ this is a nondecreasing
+function of the scale, and the section shows three things about it: that every increment
+$g_{x,y} = G(y,\cdot) - G(x,\cdot)$ is a Bernstein function, which is the hemigroup form of
+infinite divisibility; and that, under (ND), $G(\cdot, s)$ is strictly increasing --- so that
+it is a coordinate on the scale axis, which is what \S\ref{sec:covariance} will use to
+straighten that axis. No covariance is used anywhere in this section: everything below holds
+for every family satisfying (A1)--(A7), and the stratification of \S\ref{sec:conclusions}
+depends on exactly that.
+
 % shared with blueprint lem:additivity
 \begin{lemma}[additivity]\label{lem:additivity}
 Under (A1)--(A7), $\mu_{x,z} = \mu_{y,z} * \mu_{x,y}$ for $x \le y \le z$, hence
@@ -17,7 +32,7 @@ Consequently, with $G(x, s) := g_{0,x}(s)$,
   g_{x,y}(s) = G(y, s) - G(x, s),
 \]
 where $G(0, \cdot) = 0$, $G(\cdot, s)$ is nondecreasing and continuous for each $s$, and
-$G(x, \zp) = 0$.
+$G(x, 0) = 0$.
 \end{lemma}
 
 \begin{proof}
@@ -32,7 +47,7 @@ Lemma~\ref{lem:transform-continuity} --- giving the additivity of $g$;
 $\Phi_{x,x} = \Id$ gives $\mu_{x,x} = \delta_0$ and so
 $g_{x,x} = 0$. Setting $x = 0$ defines $G$, and additivity gives
 $g_{x,y} = G(y,\cdot) - G(x,\cdot)$. Monotonicity in the first argument is the nonnegativity
-of $g_{x,y}$, continuity is Lemma~\ref{lem:transform-continuity}, and $G(x,\zp) = 0$ is the
+of $g_{x,y}$, continuity is Lemma~\ref{lem:transform-continuity}, and $G(x,0) = 0$ is the
 corresponding clause there.
 \end{proof}
 
@@ -84,8 +99,16 @@ than to invoke closure of $\BF$ under pointwise limits. The total masses $\Pi_n(
 diverge, because mass piles up at the origin --- and that pile \emph{is} the drift. So weight the
 measures by $1 - e^{-t}$, which vanishes at the origin at exactly the rate that compensates, and
 substitute $v = 1 - e^{-t}$, carrying $[0,\infty]$ onto the compact $[0,1]$ with
-$\infty \mapsto 1$. The weighted measures then have uniformly bounded mass and live on a fixed
-compact, so a subsequence converges weakly with no tightness argument needed. Integrating against
+$\infty \mapsto 1$. Weighting $\mu_i$ by $1 - e^{-t}$ and integrating gives $1 - \hat\mu_i(1)$, so
+the weighted measures have total mass
+\[
+  \sum_i \bigl(1 - \hat\mu_i(1)\bigr) \;=\; \sum_i \bigl(1 - e^{-g_i(1)}\bigr)
+  \;\le\; \sum_i g_i(1) \;=\; g_{x,y}(1),
+\]
+using $1 - e^{-u} \le u$ for $u \ge 0$ and Lemma~\ref{lem:additivity} at $s = 1$; this bound is
+uniform in $n$. So the weighted measures live on the fixed compact $[0,1]$ with uniformly bounded
+mass, and a subsequence converges weakly, with no further tightness argument needed. Integrating
+against
 \[
   k_s(v) \;=\; \frac{1 - (1-v)^s}{v},
 \]
@@ -93,12 +116,22 @@ which has a removable singularity at $v = 0$ with value $s$, gives
 \[
   g_{x,y}(s) \;=\; b_0(x,y)\,s + \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu_{x,y}(dt),
 \]
-the mass the limit puts at $v = 0$ being the drift $b_0(x,y)$ --- that is what the value $s$ at
-the removable singularity records --- and the mass at $v = 1$, which would be a killing term,
-excluded by $g_{x,y}(\zp) = 0$ (Lemma~\ref{lem:transform-continuity}). So $g_{x,y} \in \BFz$ by
-the representation itself, and Proposition~\ref{prop:bernstein-toolbox}(4) is not needed.
+where the limit measure $\rho$ on $[0,1]$ is read in three pieces. The atom at $v = 0$ gives the
+drift $b_0(x,y) := \rho(\{0\})$, because $k_s(0) = s$. On the interior $(0,1)$, the substitution
+$v \mapsto t = -\log(1-v)$ carries $\rho$ back to a measure $\nu_{x,y}$ on $(0,\infty)$: the
+weight $1/v$ in $k_s$ undoes the weighting by $1 - e^{-t}$, and $1 - (1-v)^s = 1 - e^{-st}$, so
+$k_s(v)\,d\rho(v)$ on $(0,1)$ reads as $(1 - e^{-st})\,d\nu_{x,y}(t)$ on $(0,\infty)$; finiteness
+of $\int_0^\infty (1 \wedge t)\,\nu_{x,y}(dt)$ follows from the finiteness of $\rho$, since
+$1 - e^{-t} \ge (1 - e^{-1})(1 \wedge t)$. The atom at $v = 1$ would be a killing term, and is
+excluded by $g_{x,y}(0) = 0$ (Lemma~\ref{lem:transform-continuity}). So $g_{x,y} \in \BFz$ by the
+representation itself.
 The case $x = y$ is $g_{x,x} = 0 \in \BFz$.
 \end{proof}
+
+In particular every kernel is infinitely divisible: for each $n$, $e^{-g_{x,y}/n}$ is
+completely monotone with value $1$ at $\zp$ (Proposition~\ref{prop:bernstein-toolbox}(2)
+and~(1)), hence the Laplace transform of a probability measure on $[0,\infty)$, whose $n$-fold
+convolution is $\mu_{x,y}$.
 
 % shared with blueprint cor:strict-monotonicity
 \begin{corollary}[strict monotonicity]\label{cor:strict-monotonicity}
@@ -116,3 +149,8 @@ Theorem~\ref{thm:increments-bernstein}, $g_{x,y} \in \BFz$; by Lemma~\ref{lem:va
 member of $\BFz$ vanishing at a single point of $(0,\infty)$ vanishes identically, so
 $g_{x,y}(s) > 0$ for all $s > 0$. The displayed identity is Lemma~\ref{lem:additivity}.
 \end{proof}
+
+The corollary is the formal content of ``the scale axis carries no idle stretches''
+(\S\ref{sec:measurement-continuity}): for each $s > 0$ the accumulated exponent $G(\cdot, s)$
+is injective. That injectivity is what makes the relabelling $\Sact_\sigma$ of (A8) rigid and
+the canonical gauge exist, in \S\ref{sec:covariance}.
