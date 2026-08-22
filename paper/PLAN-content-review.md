@@ -112,7 +112,7 @@ Per-section notes known now (from the reports and the current state):
   `prop:moments`' definition-in-statement (I; blueprint-side); `prop:stable-moments`' gauge (D-G);
   `rem:heavy-tails` (D-A); Gamma γ > 1 (D-B).
 - **§9** — re-check first (R2, R10 changed `thm:signaling-form`, `lem:symbol-uniqueness`); "(H)
-  excludes … nothing else" (D-A/D-B); the covariant Mellin class **defined**; `rem:markov-media`'s
+  excludes … nothing else" (D-A/D-B); **deposit from §7's `rem:extreme-rays` (cut there per D-B item 5):** every extreme ray has `F(s) ~ log s`, hence `z_* = 1`, so the extreme rays with `b₀ = 0` lie on (H)'s boundary; (H) asks `z_* > 1` and §9 needs the strict inequality at three points — convergence of the Mellin integral of the delayed field (`lem:memory-fractional-integrals`), that lemma applied at `z−1` in Thm 11.6(2), and convergence of `∫_ρ^t (t−r)^{z−2}dr` in the same proof — three obligations, one endpoint, so the boundary of (H) is characteristic of the theory; rewrite per D-B item 4 (b₀ > 0 gives z_* = ∞; Gamma at γ ≤ 1 excluded though not extreme); the covariant Mellin class **defined**; `rem:markov-media`'s
   three flat claims (J — down-grade to conjecture, or point at §13's open list); lemma statement
   carrying exegesis (I); signaling-geometry figure.
 - **§10** — drop the `SYNC FLAG`, re-sync the (⇒) proof from blueprint part 12; Mellin uniqueness
@@ -160,7 +160,7 @@ per pass; em-dashes and >30-word sentences first (the only two features over bot
 | 3 | §4 | done | see git log |
 | 4 | §5 | done | see git log |
 | 5 | §6 | done | see git log |
-| 6 | §7 | | |
+| 6 | §7 | done | see git log |
 | 7 | §8 | | |
 | 8 | §9 | | |
 | 9 | §10 | | |

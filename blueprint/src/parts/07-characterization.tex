@@ -276,7 +276,7 @@ The superposition map of \ref{lem:dickman-superposition},
   F(s) = b_0\,s + \int_{(0,\infty)} \mathrm{Ein}(\tau s)\,\rho(d\tau),
 \]
 is a linear \emph{bijection} from
-$\bigl\{(b_0, \rho) : b_0 \ge 0,\ \rho \in \Mplus(0,\infty),\
+$\bigl\{(b_0, \rho) : b_0 \ge 0,\ \rho \text{ a positive Borel measure on } (0,\infty),\
 \int \bigl[\tau \wedge (1 + \log_+ \tau)\bigr]\,\rho(d\tau) < \infty \bigr\}$
 onto the cone of \ref{lem:admissible-cone}, with inverse $\rho = -dk$,
 $k(t) = \rho\bigl((t,\infty)\bigr)$. Consequently the
@@ -340,20 +340,16 @@ obtained from the Volterra identity of the memory chapter with the step kernel
 $k = \mathbf{1}_{[0,\tau)}$, and carry derivative singularities at the delays
 $\tau, 2\tau, \dots$ --- echo signatures unattainable within the Thorin subclass.
 
-Two universal bounds nevertheless hold across the entire cone: every kernel is absolutely
-continuous (\sscite{sato1999levy}, Thm.~27.13), and every kernel is \emph{unimodal}, by
-Yamazato's theorem on class $L$ laws (\sscite{yamazato1978unimodality}, Thm.~1, p.~523). The
-axioms never produce multimodal kernels.
-
-Finally, every extreme ray has $F(s) \sim \log s$ and hence $z_* = 1$: the extreme boundary of
-the cone lies exactly on the boundary of \ref{def:standing-hypothesis}. That coincidence is not
-decorative. (H) asks for $z_* > 1$, and Chapter~11 needs the strict inequality at three
-independent points --- the convergence of the Mellin integral of the delayed field
-(\ref{lem:delayed-average-mellin}), the application of \ref{lem:memory-fractional-integrals} at
-$z-1$ in \ref{thm:signaling-form}(2), and the convergence of $\int_\rho^t (t-r)^{z-2}dr$ in
-\ref{lem:fractional-integral-derivative}. Three different obligations, one endpoint; so the
-boundary of (H) is characteristic of the theory rather than an artefact of one argument, and it is
-the extreme boundary of the cone.
+Two bounds hold throughout the cone off the drift ray. If $k \not\equiv 0$, every kernel
+$\mu_{0,x}$, $x > 0$, is a nondegenerate self-decomposable law, hence absolutely continuous
+(\sscite{sato1999levy}, Thm.~27.13) and \emph{unimodal}, by Yamazato's theorem on class $L$
+laws (\sscite{yamazato1978unimodality}, Thm.~1, p.~523); on the drift ray $k \equiv 0$ the
+kernel is the point mass $\delta_{b_0 x}$. The axioms never produce multimodal kernels. And
+every kernel with $k \not\equiv 0$ is infinitely divisible and carried by $[0,\infty)$, so its
+tail is never lighter than $e^{-c\,t\log t}$ (\sscite{sato1999levy}, Thm.~26.1, p.~168): no
+truncation of the Gaussian is an admissible kernel among these, which is the claim made in
+Chapter~3; the drift ray is the point mass above, whose tail is of course lighter than any
+such bound.
 \end{remark}
 
 \bigskip
@@ -428,7 +424,8 @@ action $\Sact_\sigma x = \chi^{-1}(\sigma\,\chi(x))$. Lean core for the reparame
 \begin{proof}
 \leanok
 Work in the canonical gauge. For $0 \le a \le b$ the function $g_{a,b} = F(b\,\cdot) - F(a\,\cdot)$
-lies in $\LE$ by \ref{lem:selfdecomposable-increment}, hence in $\BFz$ by
+lies in $\LE$ by \ref{lem:selfdecomposable-increment} (for $a = 0$ the increment is
+$F(b\,\cdot)$ itself, which is in $\BFz$ by hypothesis), hence in $\BFz$ by
 \ref{prop:bernstein-toolbox}(3), so $e^{-g_{a,b}}$ is completely monotone
 with value $1$ at $\zp$ by \ref{prop:bernstein-toolbox}(2), and by the Bernstein--Widder
 criterion \ref{prop:bernstein-toolbox}(1) it is the Laplace transform of a unique probability
@@ -452,6 +449,10 @@ map $r \mapsto \shift_r f$ is bounded and continuous, and an $\varepsilon/3$ arg
 compact carrying mass $1 - \varepsilon$ concludes, first for compactly supported continuous $f$
 and then for all of $X$ by density, the error not growing because each $\Phi_{a,b}$ is a
 contraction.
+
+Finally, for an arbitrary gauge $\chi$ set $\Phi'_{x,y} := \Phi_{\chi(x),\chi(y)}$: (A1)--(A6)
+and (ND) hold verbatim, (A7) because an increasing bijection of $[0,\infty)$ is continuous, and
+(A8) with $\Sact'_\sigma = \chi^{-1}(\sigma\,\chi(\cdot))$.
 \end{proof}
 
 % additive: not in the draft. The (=>) half of Theorem 7.3.
@@ -555,7 +556,9 @@ Equal kernels have equal exponents, the transform being injective
 \]
 Let $x \downarrow 0$. Both subtrahends vanish, because $F(\zp) = F'(\zp) = 0$ and
 $\chi(\zp) = 0$, leaving $F'(\chi(y)s) = F(ys)$. At $y = 1$, with $\chi(1) = 1$, this is
-$F' = F$.
+$F' = F$ (without the normalization the pair is determined up to
+$(\chi, F) \mapsto (c\,\chi,\ F(c^{-1}\,\cdot))$, $c > 0$, which is the freedom the
+normalization removes).
 
 Feeding that back gives $F(\chi(y)s) = F(ys)$ for all $y > 0$, $s \ge 0$. At $s = 1$, strict
 monotonicity of $F$ --- which holds because $F \not\equiv 0$, by \ref{lem:vanishing} applied to
