@@ -27,6 +27,12 @@
 % limit's triple is the vague limit of those. Doing this BEFORE writing the Lean is the point;
 % doing it after means proving the theorem and then discovering it cannot be tagged.
 
+Set
+\[
+  G(x,s) := g_{0,x}(s),
+\]
+the exponent accumulated from scale $0$ to scale $x$.
+
 % draft: Lemma 5.1
 \begin{lemma}[additivity]\label{lem:additivity}
 \uses{def:cascade-family,lem:convolution-representation,lem:transform-continuity}

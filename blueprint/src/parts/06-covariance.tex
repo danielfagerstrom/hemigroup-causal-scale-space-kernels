@@ -31,22 +31,27 @@
 
 % draft: Lemma 6.1
 \begin{lemma}[Laplace form of covariance]\label{lem:covariance-laplace}
-\uses{def:cascade-family,lem:convolution-representation,lem:additivity,prop:laplace-uniqueness}
+\uses{def:cascade-family,lem:convolution-representation,prop:laplace-uniqueness}
 \lean{Hemigroup.CascadeCore.covariance_laplace}\leanok
-Under (A1)--(A5), axiom (A8) is equivalent to
-\[
-  \dil_\sigma\,\mu_{x,y} = \mu_{\Sact_\sigma x,\, \Sact_\sigma y}
-  \qquad \Longleftrightarrow \qquad
-  g_{\Sact_\sigma x,\, \Sact_\sigma y}(s) = g_{x,y}(\sigma s),
-\]
-and in particular
+Under (A1)--(A5), the following are equivalent:
+\begin{enumerate}
+\item axiom (A8);
+\item $\dil_\sigma\,\mu_{x,y} = \mu_{\Sact_\sigma x,\,\Sact_\sigma y}$ for all
+$0 \le x \le y$, $\sigma > 0$;
+\item $g_{\Sact_\sigma x,\,\Sact_\sigma y}(s) = g_{x,y}(\sigma s)$ for all
+$0 \le x \le y$, $\sigma, s > 0$.
+\end{enumerate}
+In particular, under (A8),
 \[
   G(\Sact_\sigma x,\, s) = G(x,\, \sigma s)
   \qquad \text{for all } x \ge 0,\ \sigma, s > 0. \tag{6.1}
 \]
-\statusT\quad\emph{the ``is equivalent to'' is carried by two declarations: (A8)
-$\Rightarrow$ identities is \texttt{covariance\_laplace}, and identities $\Rightarrow$ (A8) is
-\texttt{isScaleCovariant\_of\_repr\_map} (\texttt{Covariance.lean}, fidelity review R18).}
+\statusT\quad\emph{(1)$\Rightarrow$(2)$\wedge$(3) is \texttt{covariance\_laplace}, and
+(2)$\Rightarrow$(1) is \texttt{isScaleCovariant\_of\_repr\_map} (\texttt{Covariance.lean},
+fidelity review R18); (2)$\Leftrightarrow$(3) needs no further declaration, being the
+transform identity $\widehat{\dil_\sigma\mu}(s) = \hat\mu(\sigma s)$ together with
+injectivity of the Laplace transform on causal probability measures and of $-\log$ on its
+positive values, both already in play in the proof below.}
 \end{lemma}
 
 \begin{proof}
@@ -54,11 +59,12 @@ $\Rightarrow$ identities is \texttt{covariance\_laplace}, and identities $\Right
 The compatibility $\dil_\sigma(\mu * f) = (\dil_\sigma\mu) * (\dil_\sigma f)$ turns (A8) into
 the statement that $\dil_\sigma\mu_{x,y}$ and $\mu_{\Sact_\sigma x, \Sact_\sigma y}$ represent
 the same operator, and the uniqueness clause of \ref{lem:convolution-representation} makes
-that an identity of measures; this is the first equivalence. For the second,
+that an identity of measures; this is (1)$\Leftrightarrow$(2). For (2)$\Leftrightarrow$(3),
 $\widehat{\dil_\sigma\mu}(s) = \hat\mu(\sigma s)$, so taking $-\log$ gives
 $g_{\Sact_\sigma x, \Sact_\sigma y}(s) = g_{x,y}(\sigma s)$. Equation (6.1) is the case
 $x = 0$ of that identity together with $\Sact_\sigma 0 = 0$, which holds because an increasing
-bijection of $[0,\infty)$ fixes $0$; $G$ is $g_{0,\cdot}$ by \ref{lem:additivity}.
+bijection of $[0,\infty)$ fixes $0$; here $G(x,s) = g_{0,x}(s)$, which needs only
+\ref{lem:convolution-representation}.
 \end{proof}
 
 % draft: Lemma 6.2
@@ -217,11 +223,19 @@ through \ref{cor:strict-monotonicity}. The case $x = 0$ is $G(0,\cdot) = 0 = F(0
 \uses{prop:canonical-gauge}
 In the hemigroup setting the scale coordinate carries no intrinsic parametrization: replacing
 $x$ by any increasing bijection of $[0,\infty)$ yields an equivalent family.
-\ref{prop:canonical-gauge} fixes the \emph{canonical gauge} $\tilde x := \chi(x)$, in which
-$\Sact_\sigma$ acts by multiplication, scale carries the dimension of time, and
-$G(x,s) = F(\tilde x\, s)$.
+\ref{prop:canonical-gauge} fixes the \emph{canonical gauge} $\tilde x := \chi(x)$,
+in which $\Sact_\sigma$ acts by multiplication and $G(x,s) = F(\tilde x\, s)$. In it, scale
+carries the dimension of time: $s$ is dual to time, and $\tilde x s$ must be dimensionless for
+$F(\tilde x s)$ to make sense. The canonical gauge is the working gauge of the rest of the
+paper.
 
-The powers $\tilde x \mapsto \tilde x^{\,\alpha}$ parametrize the other homogeneous gauges;
-the \emph{parabolic gauge} $\alpha = 1/2$ is the natural one for the diffusive memory-line
-realization and is used in the sequel.
+The other homogeneous gauges are $c\,\tilde x^{\,\alpha}$, $c, \alpha > 0$. One of them
+recurs, for the Bessel family of Chapters~8--12: the
+\emph{parabolic gauge} $\xi$, defined by
+\[
+  \tilde x = \tfrac12\,\xi^2 ,
+\]
+the normalization under which that family's memory-line evolution is the Bessel operator
+$\tfrac12\,\partial_\xi^2 + \tfrac{\beta}{\xi}\,\partial_\xi$ --- the heat-equation form. It is
+named at each use and never written $\tilde x$.
 \end{remark}
