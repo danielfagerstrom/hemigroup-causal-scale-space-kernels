@@ -16,12 +16,38 @@
 
 \section{Self-decomposability and the characterization theorem}\label{sec:characterization}
 
-By Proposition~\ref{prop:canonical-gauge} the exponent of every kernel is an increment
-$F(bs) - F(as)$ with $0 \le a \le b$, and by Theorem~\ref{thm:increments-bernstein} every such
-increment must lie in $\BFz$. That pins down $F$: it is the Laplace exponent of a
-\emph{self-decomposable} law --- a law of $T$ such that for every $c \in (0,1)$, $T$ is in
-distribution $cT$ plus an independent remainder (\S\ref{sec:preliminaries}) --- and the
-lemma below is the analytic form of that statement.
+The two preceding sections reduce the family to one function. By
+Lemma~\ref{lem:additivity} the exponent of a kernel is a difference of accumulated
+exponents, $g_{x,y} = G(y,\cdot) - G(x,\cdot)$, and by Proposition~\ref{prop:canonical-gauge}
+the accumulated exponent is a dilate of one function, $G(x,s) = F(\chi(x)s)$. So every kernel
+is read off $F$ by stretching its argument and subtracting:
+\[
+  g_{x,y}(s) \;=\; F(bs) - F(as), \qquad a = \chi(x) \le b = \chi(y),
+\]
+and since $\chi$ is onto, $(a,b)$ ranges over all pairs $0 \le a \le b$. Theorem~\ref{thm:increments-bernstein}
+requires each of these differences to be a Bernstein function vanishing at the origin. That
+is a condition on $F$ alone --- not that $F$ is Bernstein, which it is, but that
+\emph{every stretched difference} $F(b\,\cdot) - F(a\,\cdot)$ is --- and it is exactly the
+condition this section solves.
+
+It has a probabilistic name. Let $T_1$ be the random delay whose law is the kernel at
+canonical scale $1$, so that $\Ex\,e^{-sT_1} = e^{-F(s)}$; in the canonical gauge the kernel
+at scale $x$ is then the law of $xT_1$. That $F(s) - F(cs)$ is a Laplace exponent for
+$c \in (0,1)$ says that the law of $T_1$ is the convolution of the law of $cT_1$ with some
+probability law: there is a random variable $R_c$, independent of $T_1$, with
+\[
+  T_1 \;\stackrel{d}{=}\; c\,T_1 + R_c \qquad \text{for every } c \in (0,1).
+\]
+A law with this property --- shrink it by any factor, and what was removed is itself a
+random variable independent of the shrunk copy --- is called \emph{self-decomposable}, or of
+class $L$ (\sscite{sato1999levy}, Def.~15.1, p.~90; \S\ref{sec:preliminaries}). It is the
+hemigroup form of infinite divisibility: in the semigroup case the kernel at scale $\tau$ is
+the $n$-fold convolution power of the kernel at $\tau/n$, all stages identical; here the
+stages differ, but covariance turns a shrinking of the scale axis into a shrinking of the
+delay, and the cascade requires what remains, the passage from scale $c$ to scale $1$, to be
+a measurement in its own right --- that is $R_c$. The lemma below is the analytic form of
+this statement: the classical characterization of self-decomposable laws by their Lévy
+measure (\sscite{sato1999levy}, Cor.~15.11, p.~95), which is what makes $F$ concrete.
 
 % shared with blueprint lem:selfdecomposable-exponents
 \begin{lemma}[self-decomposable exponents]\label{lem:selfdecomposable-exponents}
