@@ -1,9 +1,22 @@
 name: Lean CI
 
+# Path-filtered: article-only changes (paper/, draft/, blueprint prose) don't need a
+# Lean build. Keep the filter in sync with what the reusable workflow reads: the Lean
+# sources, the trust boundary it checks the axiom guard against, and this file itself.
+# NOTE: if the lean job is ever made a required status check, path-skipped runs will
+# block merging — the filter and required-check settings must be decided together.
 on:
   push:
     branches: [main]
+    paths:
+      - 'Formalization/**'
+      - 'blueprint/trust-boundary.txt'
+      - '.github/workflows/lean.yml'
   pull_request:
+    paths:
+      - 'Formalization/**'
+      - 'blueprint/trust-boundary.txt'
+      - '.github/workflows/lean.yml'
 
 permissions:
   contents: read
