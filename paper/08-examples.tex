@@ -10,10 +10,18 @@
 
 \section{Examples and moments}\label{sec:examples}
 
-Throughout this section we work in the canonical gauge, so that
-$\phi_x = \Lap^{-1}[e^{-F(x s)}]$, and $T_x$ denotes a random variable with density $\phi_x$.
-Each family below is admissible by one criterion, stated once; its converse makes the two
-integrability conditions characteristic of the class rather than an artifact of the estimate.
+Throughout this section we work in the canonical gauge, so that the kernel at scale $x$
+is $\mu_{0,x} = \Lap^{-1}[e^{-F(x s)}]$, with density $\phi_x$ where it has one, and $T_x$
+denotes a random variable with law $\mu_{0,x}$ --- the delay at scale $x$, so that
+$T_x \stackrel{d}{=} xT_1$. The section does three things. It states once the one criterion by
+which every family below is admissible, and its converse, which makes the two integrability
+conditions of (7.1) characteristic of the class rather than an artifact of an estimate. It
+gives the mean delay and the moment criterion, the two quantities by which the families are
+then compared. And it works the three families the rest of the paper uses, each the worked
+case of one of the slices in Figure~\ref{fig:admissible-cone}: the stable family, cut by
+dilation symmetry, which is the semigroup theory; the Gamma family, the atoms of the Thorin
+representation, which is what \S\ref{sec:implementation} implements; and the Bessel family,
+cut by locality, which is the subject of \S\S\ref{sec:signaling}--\ref{sec:locality}.
 
 % shared with blueprint prop:admissibility-criterion
 \begin{proposition}[admissibility criterion for a memory kernel]\label{prop:admissibility-criterion}
@@ -26,10 +34,8 @@ Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing with
 Then $F(s) = b_0 s + \int_0^\infty (1 - e^{-st})\,k(t)\,\frac{dt}{t}$ is finite for every
 $s \ge 0$.
 
-Consequently $F$ is of the form (7.1) and Theorem~\ref{thm:main-characterization} applies to it
---- a consequence and not part of the statement, which is why this node's dependency list records
-only Definition~\ref{def:levy-exponent}: convergence is all the estimates below establish, and
-admissibility is what Lemma~\ref{lem:selfdecomposable-exponents} then reads off it.
+Consequently $F$ is of the form (7.1), and if $F \not\equiv 0$ Theorem~\ref{thm:main-characterization}
+applies to it.
 \end{proposition}
 
 \begin{proof}
@@ -41,8 +47,12 @@ second. The drift term is finite for every real $s$.
 
 % shared with blueprint lem:criterion-converse
 \begin{lemma}[the criterion is characteristic]\label{lem:criterion-converse}
-Conversely, if $F$ is of the form (7.1) with $F(1) < \infty$, then $\int_0^1 k(t)\,dt < \infty$
-and $\int_1^\infty k(t)t^{-1}dt < \infty$.
+Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing. If the $[0,\infty]$-valued
+exponent (7.1) at $s = 1$,
+\[
+  b_0 + \int_0^\infty (1 - e^{-t})\,k(t)\,\frac{dt}{t} ,
+\]
+is finite, then $\int_0^1 k(t)\,dt < \infty$ and $\int_1^\infty k(t)t^{-1}dt < \infty$.
 \end{lemma}
 
 \begin{proof}
@@ -52,29 +62,32 @@ $k(t)/2$, and on $(1,\infty)$ it is at least $k(t)/(2t)$; both claims follow.
 \end{proof}
 
 In particular every admissible $F$ carries both integrability facts already, so nothing below
-assumes regularity of $k$ beyond the definition; this is also what justified differentiating
-under the integral sign in Lemma~\ref{lem:memory-kernel}.
+assumes regularity of $k$ beyond the definition.
+
+The first quantity to compare families by is the mean delay.
 
 % shared with blueprint prop:moments
 \begin{proposition}[the mean delay and the influence curve]\label{prop:moments}
 $\Ex\,T_x = x\,F'(\zp) = x\bigl(b_0 + \int_0^\infty k(t)\,dt\bigr)$, finite if and only if $k$
-is integrable at infinity. When the mean is finite, the influence curve of
-\sscite{fagerstrom2005temporal}, \S7, may be defined by the mean delay, and it is exactly
-linear in the canonical gauge:
-\[
-  t_0 - t_m = F'(\zp)\; x .
-\]
+is integrable at infinity.
 \end{proposition}
 
 \begin{proof}
 Differentiating the transform at the origin,
 $\Ex\,T_x = -\partial_s e^{-F(xs)}\big|_{s=\zp} = x F'(\zp)$, and monotone convergence in
 (7.1) gives $F'(\zp) = b_0 + \int_0^\infty k(t)\,dt$, finite exactly when $k$ is integrable at
-infinity. The influence curve is then linear in $x$ because $\Ex\,T_x$ is.
+infinity.
 \end{proof}
 
-The higher moments run through one cited equivalence, the moment criterion for infinitely
-divisible laws.
+The \emph{influence curve} of \sscite{fagerstrom2005temporal}, \S8, p.~106, is the
+distance $t_0 - t_m$ between the time $t_0$ at which a measurement is made and the time
+$t_m$ with the largest influence on it, as a function of scale. There $t_m$ had to be the
+mode of the kernel, the mean of the stable kernels being infinite (\emph{ibid.}, p.~102).
+Whenever the mean is finite it can be taken as $t_0 - t_m$ instead, and the proposition
+says that in the canonical gauge the influence curve is then exactly linear,
+$t_0 - t_m = \Ex\,T_x = F'(\zp)\,x$. The
+condition "$k$ integrable at infinity" is the case $n = 1$ of the general criterion, which
+runs through one cited equivalence.
 
 % shared with blueprint prop:moment-criterion
 \begin{proposition}[the moment criterion]\label{prop:moment-criterion}
@@ -87,6 +100,9 @@ $\int_{t>1} t^n\,\nu(dt) = \int_1^\infty t^{\,n-1}k(t)\,dt$; the moment criterio
 infinitely divisible laws (\sscite{sato1999levy}, Thm.~25.3) equates finiteness of that
 integral with finiteness of $\Ex\,T_x^n$.
 \end{proof}
+
+\emph{The stable family} is the semigroup theory seen from inside the cone: $F(s) = s^\alpha$
+is the only exponent, up to scale, that is homogeneous, and its $k$ is a pure power.
 
 % shared with blueprint prop:stable-family
 \begin{proposition}[the extremal stable family: the exponent]\label{prop:stable-family}
@@ -102,7 +118,9 @@ which is nonincreasing.
 $s^\alpha = \frac{\alpha}{\Gamma(1-\alpha)}\int_0^\infty (1 - e^{-st})\,t^{-\alpha-1}\,dt$ is
 the standard integral representation, which is (7.1) with $b_0 = 0$ and
 $k(t)/t = \alpha t^{-\alpha-1}/\Gamma(1-\alpha)$; $k$ is a negative power, hence
-nonincreasing.
+nonincreasing, and both integrability conditions of Proposition~\ref{prop:admissibility-criterion}
+hold ($t^{-\alpha}$ integrable at $0$, $t^{-\alpha-1}$ integrable at infinity), so $F$ is finite
+and of the form (7.1).
 \end{proof}
 
 % shared with blueprint prop:stable-moments
@@ -122,13 +140,21 @@ $\Ex\,T_x \le 1 + \Ex\,T_x^{\,n}$, and a divergent mean forces $\Ex\,T_x^{\,n} =
 
 % shared with blueprint prop:stable-mode
 \begin{proposition}[the extremal stable family: the mode]\label{prop:stable-mode}
-With $F$ as in Proposition~\ref{prop:stable-family}, the mode of $T_x$ scales as $x^{1/\alpha}$.
+With $F$ as in Proposition~\ref{prop:stable-family}, $T_x$ is unimodal, and its mode is $x$ times
+the mode of $T_1$ in the canonical gauge; in the parametrization of the one-parameter family of
+Corollary~\ref{cor:semigroup-case}, where $\chi(x) = x^{1/\alpha}$, it scales as $x^{1/\alpha}$.
 \end{proposition}
 
 \begin{proof}
-The self-similarity is the case $\chi(x) = x^{1/\alpha}$ of Corollary~\ref{cor:semigroup-case},
+By Remark~\ref{rem:extreme-rays}, $T_x$ is unimodal, since $k \not\equiv 0$ for the stable family.
+In the canonical gauge $\mu_{0,x}$ is the law of $xT_1$, so its mode is $x$ times the mode of
+$T_1$. The self-similarity is the case $\chi(x) = x^{1/\alpha}$ of Corollary~\ref{cor:semigroup-case},
 and the mode of $x^{1/\alpha}T_1$ is $x^{1/\alpha}$ times the mode of $T_1$.
 \end{proof}
+
+\emph{The Gamma family} is the one the introduction started from. Its $k$ is an exponential
+--- bounded, with every moment finite --- and its kernels are the Gamma densities, which is
+what makes it implementable by a cascade of first-order filters.
 
 % shared with blueprint prop:gamma-family
 \begin{proposition}[the Gamma family: the exponent]\label{prop:gamma-family}
@@ -139,7 +165,9 @@ $k(t) = \gamma\, e^{-t}$, which is nonincreasing.
 \begin{proof}
 The Frullani integral gives
 $\log(1+s) = \int_0^\infty (1 - e^{-st})\,e^{-t}\,t^{-1}\,dt$, so $F$ has the form (7.1) with
-$b_0 = 0$ and $k(t) = \gamma e^{-t}$, nonincreasing; hence $F$ is admissible by
+$b_0 = 0$ and $k(t) = \gamma e^{-t}$, nonincreasing, and both integrability conditions of
+Proposition~\ref{prop:admissibility-criterion} hold ($e^{-t}$ bounded near $0$, integrable at
+infinity), so $F$ is finite and of the form (7.1); hence $F$ is admissible by
 Lemma~\ref{lem:selfdecomposable-exponents}.
 \end{proof}
 
@@ -196,20 +224,31 @@ particular $\Ex\,T_x = \gamma x$ and $\Ex\,T_x^{2} = \gamma(\gamma+1)x^2$, so
 $\operatorname{Var} T_x = \gamma(\gamma+1)x^2 - \gamma^2x^2 = \gamma x^2$.
 \end{proof}
 
-% shared with blueprint prop:bessel-family — closing cross-reference now a \ref to the
-% node the blueprint's hard-coded theorem numbers (10.4, 11.6, 12.5) meant.
+Two facts about the Gamma family belong here although they are proved later. It is the
+family \S\ref{sec:implementation} implements, exactly, by first-order recursive sections, one
+per unit of shape. And the memory-line development of \S\ref{sec:signaling} needs more of it
+than admissibility: the standing hypothesis stated there requires a negative moment
+$\Ex\,T_1^{-\zeta} < \infty$ of some order $\zeta > 1$, which for a Gamma law of shape $\gamma$
+holds exactly when $\gamma > 1$. The propositions above hold for every $\gamma > 0$; the
+memory line uses $\gamma > 1$, and $\gamma \le 1$ is listed among the open problems in
+\S\ref{sec:conclusions}.
+
+\emph{The Bessel family} is cut by the third principle, locality of the memory-line
+evolution, and it is the family on which the second half of the paper is worked. It is
+introduced here by its law and transform; what it is the kernel \emph{of} is the subject of
+\S\S\ref{sec:signaling}--\ref{sec:locality}.
+
+% shared with blueprint prop:bessel-family — the closing memory-line pointer and the
+% parabolic-gauge sentence are no longer part of the statement (2026-08-23); the former is now
+% prose after the proof, the latter Example~\ref{ex:bessel-quadratic}'s.
 \begin{proposition}[the Bessel-K family; preview of the memory line]\label{prop:bessel-family}
 For $a > 0$ let $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ be the scaled inverse-gamma law, where
 $\gamma_a$ has the Gamma density of shape $a$, and let $F$ be its Laplace exponent. Then
 \[
   e^{-F(s)} = \frac{2^{1-a}}{\Gamma(a)}\,\bigl(\sqrt{2s}\bigr)^{a} K_a\bigl(\sqrt{2s}\bigr),
 \]
-and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is admissible. In
-the parabolic gauge $\tilde x = x^2/2$ these are the boundary-hitting kernels of the
-Bessel-type media $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with $a = \tfrac12 -
-\beta$, and the moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$. This family is
-the subject of the memory-line development, \ref{thm:scale-cauchy}, \ref{thm:signaling-form} and
-\ref{thm:locality}.
+and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is admissible. The
+moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$.
 \end{proposition}
 
 \begin{proof}
@@ -229,19 +268,39 @@ taken at $\nu = -a$, $A = \tfrac12$, $B = s$, together with $K_{-a} = K_a$, give
 \]
 Self-decomposability of $T_1$ is a theorem of Halgreen (\sscite{halgreen1979self}, for the
 generalized inverse Gaussian laws, of which this is a limiting case); by
-Lemma~\ref{lem:selfdecomposable-exponents} its exponent is therefore of the form (7.1), and
-Theorem~\ref{thm:main-characterization} makes the family admissible. Finally, the Lévy density
-factor of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$ at infinity,
-so $\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$;
+Lemma~\ref{lem:selfdecomposable-exponents} its exponent is of the form (7.1), and both
+integrability conditions of Proposition~\ref{prop:admissibility-criterion} hold for the resulting
+$(b_0,k)$ by Lemma~\ref{lem:criterion-converse}, since $F(1) = -\log\Ex\,e^{-T_1} < \infty$; so
+$F$ is finite and Theorem~\ref{thm:main-characterization} makes the family admissible. Finally,
+the Lévy density factor of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$
+at infinity, so $\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$;
 Proposition~\ref{prop:moment-criterion} converts that into $\Ex\,T_x^n < \infty$ iff $a > n$.
 \end{proof}
+
+In the parabolic gauge $\xi$ of Remark~\ref{rem:gauge-freedom}, $\tilde x = \xi^2/2$, these
+kernels are the laws of the first hitting time of the boundary $\xi = 0$ by the Bessel-type
+diffusion with generator $\tfrac12\partial_\xi^2 + \tfrac{\beta}{\xi}\partial_\xi$,
+$a = \tfrac12 - \beta$, started at $\xi$; that identification is proved in
+Example~\ref{ex:bessel-quadratic}, where it appears as the statement that the family's
+signaling form is local, and \S\ref{sec:locality} shows it is the only admissible family with
+that property. Figure~\ref{fig:families} shows the family across $a$: the tails are power laws
+of exponent $-(a+1)$, so the shape parameter is a dial on the moments, and $a = \tfrac12$ is
+the stable member.
+
+\input{fig-families}
 
 % Verbatim from the blueprint's rem:heavy-tails.
 \begin{remark}[heavy tails are the semigroup's doing]\label{rem:heavy-tails}
 The heavy tails of the 2005 kernels are an artifact of the semigroup axiom, not of causality
 together with covariance. Within Theorem~\ref{thm:main-characterization} the semigroup sub-case
-(Corollary~\ref{cor:semigroup-case}) is precisely the subset with $k$ a pure power --- the only
-$k$ compatible with homogeneity --- and every non-power nonincreasing $k$, for instance
-$k(t) = \gamma e^{-t}$, yields a causal, continuously scale-covariant family with finite
-moments of all orders.
+(Corollary~\ref{cor:semigroup-case}) is the subset with $k$ a pure power $c\,t^{-\alpha}$,
+$0 < \alpha < 1$, or the pure delay, $k \equiv 0$ with $b_0 > 0$ --- the only data compatible
+with homogeneity --- and a pure power is never integrable at infinity, so by
+Proposition~\ref{prop:moments} no stable member has a mean. Any other nonincreasing $k$ is
+admitted, and its moments are governed by Proposition~\ref{prop:moment-criterion} alone:
+$\Ex\,T_x^n < \infty$ exactly when $\int_1^\infty t^{n-1}k(t)\,dt < \infty$. For
+$k(t) = \gamma e^{-t}$ every moment is finite (Proposition~\ref{prop:gamma-moments}); for
+the Bessel family with shape $a$ exactly the moments of order below $a$ are finite
+(Proposition~\ref{prop:bessel-family}). The comparison at matched delay is drawn in
+Figure~\ref{fig:kernels}.
 \end{remark}

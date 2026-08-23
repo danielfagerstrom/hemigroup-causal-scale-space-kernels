@@ -59,7 +59,9 @@ half, which is why the criterion could not have been stated with a single condit
 $s^\alpha = \frac{\alpha}{\Gamma(1-\alpha)}\int_0^\infty (1 - e^{-st})\,t^{-\alpha-1}\,dt$ is
 the standard integral representation, which is (7.1) with $b_0 = 0$ and
 $k(t)/t = \alpha t^{-\alpha-1}/\Gamma(1-\alpha)$; $k$ is a negative power, hence
-nonincreasing.
+nonincreasing, and both integrability conditions of \ref{prop:admissibility-criterion} hold
+($t^{-\alpha}$ integrable at $0$, $t^{-\alpha-1}$ integrable at infinity), so $F$ is finite and
+of the form (7.1).
 \end{proof}
 
 % draft: Example 8.2
@@ -96,35 +98,42 @@ than merely inelegant, and $\{0\}$ being null costs nothing downstream.)}
 \leanok
 The Frullani integral gives
 $\log(1+s) = \int_0^\infty (1 - e^{-st})\,e^{-t}\,t^{-1}\,dt$, so $F$ has the form (7.1) with
-$b_0 = 0$ and $k(t) = \gamma e^{-t}$, nonincreasing; hence $F$ is admissible by
+$b_0 = 0$ and $k(t) = \gamma e^{-t}$, nonincreasing, and both integrability conditions of
+\ref{prop:admissibility-criterion} hold ($e^{-t}$ bounded near $0$, integrable at infinity), so
+$F$ is finite and of the form (7.1); hence $F$ is admissible by
 \ref{lem:selfdecomposable-exponents}.
 \end{proof}
 
 % draft: Example 8.3
 \begin{proposition}[the Bessel-K family; preview of the memory line]\label{prop:bessel-family}
-\uses{lem:selfdecomposable-exponents,thm:main-characterization,prop:moment-criterion}
+\uses{lem:selfdecomposable-exponents,thm:main-characterization,prop:moment-criterion,lem:criterion-converse,prop:admissibility-criterion}
 For $a > 0$ let $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ be the scaled inverse-gamma law, where
 $\gamma_a$ has the Gamma density of shape $a$, and let $F$ be its Laplace exponent. Then
 \[
   e^{-F(s)} = \frac{2^{1-a}}{\Gamma(a)}\,\bigl(\sqrt{2s}\bigr)^{a} K_a\bigl(\sqrt{2s}\bigr),
 \]
-and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is admissible. In
-the parabolic gauge $\tilde x = x^2/2$ these are the boundary-hitting kernels of the
-Bessel-type media $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with $a = \tfrac12 -
-\beta$, and the moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$. This family is
-the subject of the memory-line development, \ref{thm:scale-cauchy}, \ref{thm:signaling-form} and
-\ref{thm:locality}.
+and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is admissible. The
+moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$.
 \statusA\quad\ledger{A8}\quad\emph{(self-decomposability of the generalized inverse Gaussian
 laws; \sscite{halgreen1979self}. A cited interface, not reproven here.
 \textbf{Assignment.} \ledger{A8} carries exactly one clause: that $T_1$ is self-decomposable,
 which is what makes $F$ admissible and puts the family inside
 \ref{thm:main-characterization}. Everything else is \textbf{[T]} and proved below --- the
 evaluation of the transform in terms of $K_a$ is a classical integral representation, and the
-moment criterion is \ref{prop:moment-criterion} applied to this $k$. The parabolic-gauge reading is a
-forward reference to Chapter~11 and is not asserted here. Note also that Halgreen proves the
+moment criterion is \ref{prop:moment-criterion} applied to this $k$. Note also that Halgreen proves the
 stronger statement that the law is a generalized Gamma convolution; self-decomposability
 follows through $\GGC \subset \SDclass$, which is a clause of \ledger{A16} --- so A8 and A16
-rest on the same tower and should be reviewed together.)}
+rest on the same tower and should be reviewed together.}
+
+\emph{\textbf{Two sentences moved out of the statement (2026-08-23).} The parabolic-gauge
+identification of these kernels with the Bessel-type media
+$\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$, $a = \tfrac12 - \beta$, is not this node's
+content --- it is \ref{ex:bessel-quadratic}'s, in Chapter~11, which already depends on this one
+and states the identification precisely, in its own gauge notation
+(\ref{rem:gauge-freedom}'s parabolic gauge $\xi$); restating it here used the older, now-superseded
+symbol $\tilde x$ for it and said the same thing a second time. Likewise the closing pointer to
+the memory-line theorems is prose, not a mathematical clause of this proposition, and now lives
+at the point of citation instead.}
 \end{proposition}
 
 \begin{proof}
@@ -143,7 +152,9 @@ taken at $\nu = -a$, $A = \tfrac12$, $B = s$, together with $K_{-a} = K_a$, give
   = \frac{2^{1-a}}{\Gamma(a)}\bigl(\sqrt{2s}\bigr)^{a}K_a\bigl(\sqrt{2s}\bigr).
 \]
 Self-decomposability of $T_1$ is \ledger{A8}; by
-\ref{lem:selfdecomposable-exponents} its exponent is therefore of the form (7.1), and
+\ref{lem:selfdecomposable-exponents} its exponent is of the form (7.1), and both integrability
+conditions of \ref{prop:admissibility-criterion} hold for the resulting $(b_0,k)$ by
+\ref{lem:criterion-converse}, since $F(1) = -\log\Ex\,e^{-T_1} < \infty$; so $F$ is finite and
 \ref{thm:main-characterization} makes the family admissible. Finally, the Lévy density factor
 of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$ at infinity, so
 $\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$; \ref{prop:moment-criterion} converts
@@ -155,14 +166,13 @@ that into $\Ex\,T_x^n < \infty$ iff $a > n$.
 \uses{lem:selfdecomposable-exponents,thm:main-characterization}
 \lean{Hemigroup.moments}\leanok
 $\Ex\,T_x = x\,F'(\zp) = x\bigl(b_0 + \int_0^\infty k(t)\,dt\bigr)$, finite if and only if $k$
-is integrable at infinity. When the mean is finite, the influence curve of
-\sscite{fagerstrom2005temporal}, \S7, may be defined by the mean delay, and it is exactly
-linear in the canonical gauge:
-\[
-  t_0 - t_m = F'(\zp)\; x .
-\]
+is integrable at infinity.
 \statusT\quad\emph{(monotone convergence in (7.1) and nothing else --- no citation is needed and
-none is made. The higher-moment criterion, which \emph{does} need one, was split off as
+none is made. \textbf{The influence-curve identification} (\sscite{fagerstrom2005temporal}, \S7)
+moved out of the statement into prose at the point of citation (2026-08-23): it restates this
+node's linearity in different language rather than adding a further fact, and the statement of
+record should carry only the latter. The higher-moment criterion, which \emph{does} need one, was
+split off as
 \ref{prop:moment-criterion}; before the split this node reported that entry's cost for a result
 that does not incur it. What is \emph{not} claimed here is anything about the mode, which is the
 delay measure the stable family forces one to use --- see \ref{prop:stable-family}.
@@ -186,18 +196,23 @@ would have had to exclude.)}
 Differentiating the transform at the origin,
 $\Ex\,T_x = -\partial_s e^{-F(xs)}\big|_{s=\zp} = x F'(\zp)$, and monotone convergence in
 (7.1) gives $F'(\zp) = b_0 + \int_0^\infty k(t)\,dt$, finite exactly when $k$ is integrable at
-infinity. The influence curve is then linear in $x$ because $\Ex\,T_x$ is.
+infinity.
 \end{proof}
 
 % draft: Remark 8.5
 \begin{remark}[heavy tails are the semigroup's doing]\label{rem:heavy-tails}
-\uses{thm:main-characterization,cor:semigroup-case,prop:moment-criterion,prop:gamma-family}
+\uses{thm:main-characterization,cor:semigroup-case,prop:moment-criterion,prop:moments,prop:gamma-moments,prop:bessel-family}
 The heavy tails of the 2005 kernels are an artifact of the semigroup axiom, not of causality
 together with covariance. Within \ref{thm:main-characterization} the semigroup sub-case
-(\ref{cor:semigroup-case}) is precisely the subset with $k$ a pure power --- the only $k$
-compatible with homogeneity --- and every non-power nonincreasing $k$, for instance
-$k(t) = \gamma e^{-t}$, yields a causal, continuously scale-covariant family with finite
-moments of all orders.
+(\ref{cor:semigroup-case}) is the subset with $k$ a pure power $c\,t^{-\alpha}$,
+$0 < \alpha < 1$, or the pure delay, $k \equiv 0$ with $b_0 > 0$ --- the only data compatible
+with homogeneity --- and a pure power is never integrable at infinity, so by
+\ref{prop:moments} no stable member has a mean. Any other nonincreasing $k$ is
+admitted, and its moments are governed by \ref{prop:moment-criterion} alone:
+$\Ex\,T_x^n < \infty$ exactly when $\int_1^\infty t^{n-1}k(t)\,dt < \infty$. For
+$k(t) = \gamma e^{-t}$ every moment is finite (\ref{prop:gamma-moments}); for
+the Bessel family with shape $a$ exactly the moments of order below $a$ are finite
+(\ref{prop:bessel-family}).
 \end{remark}
 
 % additive: not in the draft. The higher-moment half of Proposition 8.4, split off so that the
@@ -238,16 +253,19 @@ Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing with
 Then $F(s) = b_0 s + \int_0^\infty (1 - e^{-st})\,k(t)\,\frac{dt}{t}$ is finite for every
 $s \ge 0$.
 
-Consequently $F$ is of the form (7.1) and \ref{thm:main-characterization} applies to it --- a
-consequence and not part of the statement, which is why this node's dependency list records only
-\ref{def:levy-exponent}: convergence is all the estimates below establish, and
-admissibility is what \ref{lem:selfdecomposable-exponents} then reads off it.
+Consequently $F$ is of the form (7.1), and if $F \not\equiv 0$ \ref{thm:main-characterization}
+applies to it.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.levyExponentD\_ne\_top\_of\_integrableOn}; \texttt{\#print axioms} reduces to
 Lean core. Elementary, and stated separately because it is the \emph{only} clause with content
 in exhibiting a concrete admissible exponent: the other five fields of the Lean structure ---
 nonnegativity of $b_0$ and of $k$, monotonicity of $k$, and the normalisation $k(0)=0$ --- are
 immediate for every kernel in this chapter, and this one is not.}
+
+\emph{The closing reference to \ref{thm:main-characterization} is a consequence and not part of
+the statement, which is why this node's dependency list records only \ref{def:levy-exponent}:
+convergence is all the estimates below establish, and admissibility is what
+\ref{lem:selfdecomposable-exponents} then reads off it.}
 
 \emph{The two-sided split is forced by the integrand rather than chosen for convenience.
 Near the origin $1 - e^{-st}$ is comparable to $st$, which cancels the $1/t$ and leaves $k$
@@ -280,14 +298,23 @@ second. The drift term is finite for every real $s$.
 \begin{lemma}[the criterion is characteristic]\label{lem:criterion-converse}
 \uses{prop:admissibility-criterion,def:levy-exponent}
 \lean{Hemigroup.SelfDecomposableExponent.integrableOn_of_ne_top}\leanok
-Conversely, if $F$ is of the form (7.1) with $F(1) < \infty$, then $\int_0^1 k(t)\,dt < \infty$
-and $\int_1^\infty k(t)t^{-1}dt < \infty$.
+Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing. If the $[0,\infty]$-valued
+exponent (7.1) at $s = 1$,
+\[
+  b_0 + \int_0^\infty (1 - e^{-t})\,k(t)\,\frac{dt}{t} ,
+\]
+is finite, then $\int_0^1 k(t)\,dt < \infty$ and $\int_1^\infty k(t)t^{-1}dt < \infty$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.integrableOn\_of\_ne\_top}; \texttt{\#print axioms}
-reduces to Lean core. Worth stating because it changes what \ref{prop:admissibility-criterion}
-is: not a convenient sufficient condition but a characterisation, so that the two integrals are
-the right invariants of the kernel and not an artifact of how the estimate was arranged. It also
-has a practical consequence for the Lean development --- every admissible $F$ carries both
+reduces to Lean core. \textbf{Restated (2026-08-23) from the Lean hypothesis directly}, rather
+than through ``$F$ is of the form (7.1)'': that phrase already packages the two integrability
+conditions in as part of Lemma~\ref{lem:selfdecomposable-exponents}(3), which made the previous
+wording tautological. What has content is that finiteness of the exponent at the single point
+$s = 1$ --- nothing about $s$ elsewhere, and no appeal to admissibility already holding --- is
+enough to force both integrals; that is what changes \ref{prop:admissibility-criterion} from a
+convenient sufficient condition into a characterisation, so that the two integrals are the right
+invariants of the kernel and not an artifact of how the estimate was arranged. It also has a
+practical consequence for the Lean development --- every admissible $F$ carries both
 integrability facts \emph{already}, so the analysis of Chapter~9 needs no hypothesis beyond
 membership of the class, and in particular $F'$ may be differentiated under the integral sign
 without one.)}
@@ -450,19 +477,29 @@ a divergent mean forces $\Ex\,T_x^{\,n} = \infty$.
 % additive: the mode half of the former Proposition 8.10, separated on 2026-08-15 when the
 % moments half was proved without the ledger entry the two had shared. Numbered 8.11.
 \begin{proposition}[the extremal stable family: the mode]\label{prop:stable-mode}
-\uses{prop:stable-family,cor:semigroup-case}
-With $F$ as in \ref{prop:stable-family}, the mode of $T_x$ scales as $x^{1/\alpha}$.
-\statusT\quad\emph{(the self-similarity $T_x \stackrel{d}{=} x^{1/\alpha}T_1$ of the
-$\alpha$-stable subordinator, which is the case $\chi(x) = x^{1/\alpha}$ of
-\ref{cor:semigroup-case} --- itself proved. \textbf{Not formalised, and not for want of the
-self-similarity}: the development has no definition of the mode, and needs none anywhere else, so
-introducing one to state a single node would be a definition without a consumer. That is the
-opposite decision from `ein`, which was defined here because two nodes needed it. If a second
-consumer appears --- the tail-index yardstick is the candidate --- both should be defined
-together.)}
+\uses{prop:stable-family,cor:semigroup-case,rem:extreme-rays}
+With $F$ as in \ref{prop:stable-family}, $T_x$ is unimodal, and its mode is $x$ times the mode of
+$T_1$ in the canonical gauge; in the parametrization of the one-parameter family of
+\ref{cor:semigroup-case}, where $\chi(x) = x^{1/\alpha}$, it scales as $x^{1/\alpha}$.
+\statusT\quad\emph{(unimodality is Yamazato's theorem on class $L$ laws, cited via
+\ref{rem:extreme-rays} since $k \not\equiv 0$ for the stable family; the canonical-gauge mode
+scaling is the trivial change of variables --- $\mu_{0,x}$ is the law of $xT_1$, recorded in
+\ref{prop:moments}'s annotation --- and the semigroup-parameter scaling is the case
+$\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case} --- itself proved.
+\textbf{Not formalised, and not for want of the self-similarity}: the development has no
+definition of the mode, and needs none anywhere else, so introducing one to state a single node
+would be a definition without a consumer. That is the opposite decision from `ein`, which was
+defined here because two nodes needed it. If a second consumer appears --- the tail-index
+yardstick is the candidate --- both should be defined together.
+\textbf{Corrected (2026-08-23).} The statement previously read ``the mode of $T_x$ scales as
+$x^{1/\alpha}$'' unqualified, which is false in the canonical gauge this chapter declares: there
+$T_x \stackrel{d}{=} xT_1$, so the mode scales as $x$, and $x^{1/\alpha}$ is only the scaling in
+the semigroup's own pre-gauge parameter (\ref{cor:semigroup-case}'s $\chi(x) = x^{1/\alpha}$).)}
 \end{proposition}
 
 \begin{proof}
-The self-similarity is the case $\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case}, and the mode
-of $x^{1/\alpha}T_1$ is $x^{1/\alpha}$ times the mode of $T_1$.
+By \ref{rem:extreme-rays}, $T_x$ is unimodal, since $k \not\equiv 0$ for the stable family. In the
+canonical gauge $\mu_{0,x}$ is the law of $xT_1$, so its mode is $x$ times the mode of $T_1$. The
+self-similarity is the case $\chi(x) = x^{1/\alpha}$ of \ref{cor:semigroup-case}, and the mode of
+$x^{1/\alpha}T_1$ is $x^{1/\alpha}$ times the mode of $T_1$.
 \end{proof}
