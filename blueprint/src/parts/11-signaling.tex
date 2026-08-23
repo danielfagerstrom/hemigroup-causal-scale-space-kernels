@@ -194,19 +194,7 @@ $\operatorname{Re} z = c$ and $B(-z)\tilde g(z)$ is absolutely integrable there,
   \;=\; \Bigl(\frac{1}{x}\,B(\theta)\,g\Bigr)(x),
 \]
 the second expression being the functional-calculus reading, the Euler operator having Mellin
-symbol $-z$. The second equality is an assertion and not a rewriting, and it is worth being
-explicit about what it asserts: $B(\theta)$ is a functional calculus for a symbol with poles, so
-what the display says is that there \emph{exists} a function $h$ on $(0,\infty)$ whose Mellin
-transform is $B(-z)\tilde g(z)$ on the line, and that the contour integral computes $h(x)/x$.
-Absolute integrability on the line is exactly the hypothesis under which the inversion integral
-recovers such an $h$. Given $h$, the rest is elementary and is
-\ref{lem:inversion-operator-action}; in particular the transform-level form is
-$\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$, wherever the identity defining $h$ holds
-pointwise. Every application below \emph{exhibits} its $h$ rather than inferring it --- for the
-profiles $g = H(s\,\cdot)$ it is $h(x) = s\,x\,H(sx)$, \ref{lem:profile-eigenfunction} --- so the
-cited inversion theorem is available but never spent. Note finally the covariant scaling: $A$
-commutes with dilations up to the weight $x^{-1}$, i.e.\ it scales like $\partial_t$ under
-$(t, x) \mapsto (\sigma t, \sigma x)$, as (A8) requires of any inversion.
+symbol $-z$.
 \statusA\quad\ledger{A12}\quad\emph{(Mellin inversion on a line of absolute convergence;
 \sscite{widder1941laplace}, Ch.~VI, \S9, Thm.~9a. Cited, not reproven here. The operator itself is
 \textbf{machine-checked}, as \texttt{Hemigroup.SelfDecomposableExponent.inversionOperator}: the
@@ -235,6 +223,44 @@ this, which states Mellin inversion only as an unhypothesized display, equation~
 states it with the absolute-convergence hypothesis that is exactly the one imposed above.)}
 \end{definition}
 
+The second equality is an assertion and not a rewriting, and it is worth being explicit about
+what it asserts: $B(\theta)$ is a functional calculus for a symbol with poles, so what the
+display says is that there \emph{exists} a function $h$ on $(0,\infty)$ whose Mellin transform is
+$B(-z)\tilde g(z)$ on the line, and that the contour integral computes $h(x)/x$. Absolute
+integrability on the line is exactly the hypothesis under which the inversion integral recovers
+such an $h$. Given $h$, the rest is elementary and is \ref{lem:inversion-operator-action}; in
+particular the transform-level form is $\widetilde{A g}(z) = B(1 - z)\,\tilde g(z - 1)$, wherever
+the identity defining $h$ holds pointwise. Every application below \emph{exhibits} its $h$ rather
+than inferring it --- for the profiles $g = H(s\,\cdot)$ it is $h(x) = s\,x\,H(sx)$,
+\ref{lem:profile-eigenfunction} --- so the cited inversion theorem is available but never spent.
+
+% additive: not in the draft. The term "covariant Mellin class" is used from lem:symbol-uniqueness
+% and thm:signaling-form(3) onward (also chapter 12, S1, the abstract) without ever being defined;
+% this node supplies it, matching how lem:symbol-uniqueness's proof glosses "of the form
+% x^{-1}B_i(theta)" and how chapter 12 quantifies over "every operator of def:inversion-operator".
+\begin{definition}[the covariant Mellin class]\label{def:covariant-mellin-class}
+\uses{def:inversion-operator,lem:inversion-symbol}
+Fix $c \in (0, z_* - 1)$. An operator $A'$ belongs to the \emph{covariant Mellin class} at height
+$c$ if there is a function $B'(-z)$ on the line $\operatorname{Re} z = c$ such that $A'$ is of the
+form $x^{-1}B'(\theta)$ in the sense of \ref{def:inversion-operator}: every $g$ in its domain has
+a realising function $h$ with $\tilde h(z) = B'(-z)\tilde g(z)$ at every point of the line where
+$\tilde H(z) \ne 0$, and $A'g = h/x$. The weight $x^{-1}$ makes every member scale like
+$\partial_t$ under $(t,x) \mapsto (\sigma t, \sigma x)$, which is the covariance (A8) requires of
+an inversion --- the class is the covariant one.
+\statusT\quad\emph{(\textbf{Not tagged.}
+\texttt{Hemigroup.SelfDecomposableExponent.RealisesAction} is exactly the realising-function
+clause above, for one $g$ and its $h$: the transform identity off the zeros of $\tilde H$,
+together with \texttt{MellinConvergent h c} and \texttt{Complex.VerticalIntegrable (mellin h) c},
+which are the two convergence hypotheses \ref{def:inversion-operator} imposes. What the Lean has
+\emph{not} bundled is the quantifier ``every $g$ in $A'$'s domain'' into a single class-membership
+predicate on operators: no theorem here needs to quantify over the class as a whole, since
+\ref{lem:symbol-uniqueness} and \ref{thm:signaling-form}(3) each instantiate
+\texttt{RealisesAction} directly at the one $g$ in play --- the profile $H(s\,\cdot)$ and its
+exhibited eigenfunction --- at every height $c'$ in range, rather than through a bundled class
+predicate. So the definition above is faithful to what \texttt{RealisesAction} says pointwise, but
+has no single Lean declaration proving it as a statement about operators, and is left untagged.)}
+\end{definition}
+
 % draft: Lemma 11.4
 % THE SPLIT (2026-08-11), BOTH HALVES NOW PROVED (2026-08-12). Step 1 turns the operator relation
 % into a relation between Mellin transforms; step 2 is the rigidity argument, appended as 11.15
@@ -242,13 +268,13 @@ states it with the absolute-convergence hypothesis that is exactly the one impos
 % form x^{-1} B(theta)" is one whose B(theta)g is GIVEN, and given it, step 1 is elementary --
 % see the node's own remark on what the route does not need.
 \begin{lemma}[uniqueness of the symbol]\label{lem:symbol-uniqueness}
-\uses{lem:mellin-data,lem:inversion-symbol,lem:symbol-rigidity,def:inversion-operator,lem:profile-eigenfunction}
+\uses{lem:mellin-data,lem:inversion-symbol,lem:symbol-rigidity,def:inversion-operator,def:covariant-mellin-class,lem:profile-eigenfunction}
 \lean{Hemigroup.SelfDecomposableExponent.eventuallyEq_inversionSymbol_of_realisesAction}\leanok
 If two operators of the form $x^{-1}B_1(\theta)$ and $x^{-1}B_2(\theta)$ both satisfy
 $A[H(s\,\cdot)] = s\,H(s\,\cdot)$ for some $s > 0$, at every height $c \in (0, z_* - 1)$ --- that
 is, at every such $c$ both are of that form on $H(s\,\cdot)$ at height $c$ and both send it to
 $s\,H(s\,\cdot)$ --- then $B_1 = B_2$ on the strip. Hence $A$ is the unique inversion within the
-covariant Mellin class.
+covariant Mellin class (\ref{def:covariant-mellin-class}).
 \statusT\quad\emph{(\textbf{Machine-checked}, both halves. Step~2 is
 \ref{lem:symbol-rigidity}; step~1 is
 \texttt{Hemigroup.SelfDecomposableExponent.sameSymbolAction\_of\_realisesAction}, and
@@ -305,9 +331,7 @@ absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t
 $\Xz$-derivative of \ref{lem:delay-core}, i.e.\ $u(\cdot, x)$ is the primitive of
 $\Ex[f'(\cdot - xT_1)]$ --- with
 $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the identity extends to the wider strip
-$0 < \operatorname{Re} z < z_*$, since $f \in \core$ is bounded ($f(0) = 0$ and $f' \in \Xz$ give
-$\|f\|_\infty \le \|f'\|_1$) and the weight $y^{z-1}$ is then integrable at the origin on its own.
-Of the three conditions defining $\core$ the proofs use exactly three consequences and no others: boundedness, which is what widens the strip; that $f$ is the primitive of $f'$, which is what the derivative clause asserts; and $f \in \Xz$ itself, needed for the Laplace form of \ref{thm:signaling-form}(2) and \emph{not} implied by the other two, a primitive of an $L^1$ function lying in $L^1$ only when $\int_0^\infty f' = 0$. Density and invariance under $\shift_r$ and $\Phi_{x,y}$ --- the substance of \ref{lem:delay-core} --- are not used here.
+$0 < \operatorname{Re} z < z_*$.
 \statusT
 \end{lemma}
 
@@ -322,7 +346,11 @@ gives
   \;=\; \Ex\bigl[T_1^{-z}\bigr]\int_0^t y^{z-1} f(t - y)\,dy
   \;=\; \Ex\bigl[T_1^{-z}\bigr]\,\Gamma(z)\,(I^z f)(t),
 \]
-which is the claim by \ref{lem:mellin-data}. For $f \in \core$: $u(\cdot,x) = \mu_{0,x} * f$ and
+which is the claim by \ref{lem:mellin-data}. (For bounded $f$ the inner integral converges for
+every $c > 0$, which is the wider strip.) For $f \in \core$, $f$ is bounded --- $f(0) = 0$ and
+$f' \in \Xz$ give $\|f\|_\infty \le \|f'\|_1$ --- so the weight $x^{z-1}$ is then integrable at
+the origin on its own, which is where the extension to $c > 0$ is used. Also for $f \in \core$:
+$u(\cdot,x) = \mu_{0,x} * f$ and
 $f = \mathbf{1}_{[0,\infty)} * f'$, so $u(\cdot,x) = \mathbf{1}_{[0,\infty)} * (\mu_{0,x} * f')$ ---
 that is, $u(\cdot,x)$ is the primitive of $\Ex[f'(\cdot - xT_1)]$, which is what
 $\partial_t u = \Ex[f'(\cdot - xT_1)]$ asserts in $\Xz$. Finally $I^zf' = I^{z-1}f$: substituting
@@ -330,6 +358,18 @@ $f(r) = \int_0^r f'$ and exchanging the order of integration over $0 < \rho \le 
 $\int_\rho^t (t-r)^{z-2}dr = (t-\rho)^{z-1}/(z-1)$, and $\Gamma(z) = (z-1)\Gamma(z-1)$; the
 semigroup identity $I^{z-1}I^1 = I^z$ is not needed (\ref{lem:fractional-integral-derivative}).
 \end{proof}
+
+% additive: not in the draft. The statement's accounting of which of core's three defining
+% conditions the proofs actually use was moved out of the statement and into this remark.
+\begin{remark}[what the core supplies]\label{rem:core-accounting}
+\uses{lem:memory-fractional-integrals}
+Of the three conditions defining $\core$ the proofs use exactly three consequences and no
+others: boundedness, which is what widens the strip; that $f$ is the primitive of $f'$, which is
+what the derivative clause asserts; and $f \in \Xz$ itself, needed for the Laplace form of
+\ref{thm:signaling-form}(2) and \emph{not} implied by the other two, a primitive of an $L^1$
+function lying in $L^1$ only when $\int_0^\infty f' = 0$. Density and invariance under $\shift_r$
+and $\Phi_{x,y}$ --- the substance of \ref{lem:delay-core} --- are not used here.
+\end{remark}
 
 \emph{\textbf{The first clause is machine-checked}, as \ref{lem:delayed-average-mellin}, which
 also carries the identification of $\Ex[f(t-xT_1)]$ with $\Phi_{0,x}f$ and so the canonical gauge
@@ -379,7 +419,7 @@ than the definition itself.}
 
 % draft: Theorem 11.6
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
-\uses{def:standing-hypothesis,lem:mellin-data,lem:mellin-vertical,lem:inversion-symbol,def:inversion-operator,lem:profile-eigenfunction,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
+\uses{def:standing-hypothesis,lem:mellin-data,lem:mellin-vertical,lem:inversion-symbol,def:inversion-operator,def:covariant-mellin-class,lem:profile-eigenfunction,lem:symbol-uniqueness,lem:memory-fractional-integrals,def:cascade-family,thm:main-characterization}
 \lean{Hemigroup.SelfDecomposableExponent.signaling_form}\leanok
 Assume (H) and work in the canonical gauge. Then:
 \begin{enumerate}
@@ -403,8 +443,9 @@ set, \ref{rem:poles} ---
 both transforms absolutely convergent; that is, $\partial_t u = A\,u$ read through the Mellin
 transform in $x$.
 \end{itemize}
-\item \emph{(Uniqueness.)} $A$ is the unique operator in the covariant Mellin class with
-property (1), at every height $c$, hence with property (2).
+\item \emph{(Uniqueness.)} $A$ is the unique operator in the covariant Mellin class
+(\ref{def:covariant-mellin-class}) with property (1), at every height $c$; in particular, it is
+the operator of the signaling problem (2).
 \end{enumerate}
 \statusT\quad\emph{(the hemigroup analogue of \sscite{fagerstrom2005temporal}, Thm.~4, whose
 translation-invariant operator is recovered in \ref{ex:stable-signaling} as an accident of
@@ -433,13 +474,20 @@ identification, the derivative reading and the convergence were added as conjunc
 review (findings R9, R11); before it they were proved as lemmas but not asserted by the theorem.
 Two side conditions are explicit in the statement and discussed at the nodes that introduce them:
 the Mellin form holds off the zeros of $\tilde H(z-1)$ (\ref{rem:poles}), which the display now
-says, and ``operators of the form $x^{-1}B(\theta)$'' in clause~(3) is the hypothesis that
-$B(\theta)g$ exists (\ref{def:inversion-operator}), asked at every height $c$ as
-\ref{lem:symbol-uniqueness} requires --- the theorem keeps its full statement and its number, on
-the pattern of \ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That clause is also what
-empties the article's use of \ledger{A12}: it \emph{exhibits} the realising function rather than
-inferring its existence, and the Laplace form of clause~(2) is clause~(1) applied to
-$\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$, so no other shape of $g$ ever reaches $A$.)}
+says, and ``the covariant Mellin class'' in clause~(3) is \ref{def:covariant-mellin-class} ---
+membership is the hypothesis that $B(\theta)g$ exists (\ref{def:inversion-operator}), asked at
+every height $c$ as \ref{lem:symbol-uniqueness} requires --- the theorem keeps its full statement
+and its number, on the pattern of \ref{lem:symbol-uniqueness} and \ref{lem:symbol-rigidity}. That
+clause is also what empties the article's use of \ledger{A12}: it \emph{exhibits} the realising
+function rather than inferring its existence, and the Laplace form of clause~(2) is clause~(1)
+applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$, so no other shape of $g$ ever reaches $A$.
+\textbf{Clause~(3)'s ``hence with property (2)'' is corrected to a comment.} The Lean conjunct
+proves uniqueness only against property (1): for every candidate symbol $B$, if $x^{-1}B(\theta)$
+has the eigenfunction relation at every height, then $B$ agrees with $A$'s own symbol as germs on
+the strip; it says nothing about property (2), and (2)$\Rightarrow$(1) is not proved (it would need
+linearity plus division by $\hat f(s) \ne 0$, neither stated or used). Property (2) is established
+for $A$ separately, in clause~(2); ``in particular'' records that fact about the already-identified
+$A$, not a further uniqueness claim among operators satisfying (2).)}
 \end{theorem}
 
 \begin{proof}
@@ -580,9 +628,10 @@ $\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$ with $u(t,0) = f(t)$ and 
 \begin{remark}[Markov media]\label{rem:markov-media}
 \uses{thm:signaling-form,ex:stable-signaling,ex:gamma-signaling}
 Within the class of \ref{thm:signaling-form}, the operators $A$ that additionally satisfy the
-positive maximum principle --- i.e.\ generate a sub-Markov process on the memory half-line, so
-that the medium is a physical transport medium --- are, after the logarithmic substitution
-$x = e^\xi$, exactly those whose symbol $B$ is the Laplace exponent of a Lévy process. By the
+positive maximum principle (\ref{def:locality-pmp}) --- i.e.\ generate a sub-Markov process on the
+memory half-line, so that the medium is a physical transport medium --- are --- we record this
+without proof here --- after the logarithmic substitution $x = e^\xi$, exactly those whose symbol
+$B$ is the Laplace exponent of a Lévy process. By the
 Lamperti correspondence (\sscite{lamperti1972semi}) these media are positive self-similar
 Markov processes absorbed at the boundary, and the kernels are the boundary-arrival times
 $T_x \stackrel{d}{=}$ absorption time from depth $x$.
@@ -599,12 +648,14 @@ and jumps to $\sigma x$ with $\sigma \sim \mathrm{Beta}(\gamma-1, 1)$, reaching 
 accumulation of jumps; a first-jump computation confirms
 $\Ex_x[e^{-s\tau_0}] = (1+sx)^{-\gamma}$.
 
-A necessary condition in all cases is quadratic symbol growth, $B(\theta) = O(\theta^2)$; by
-\ref{ex:stable-signaling} the homogeneous members with $\alpha < \tfrac12$, of symbol order
-$1/\alpha > 2$, admit \emph{no} Markov medium, although \ref{thm:signaling-form} always
-supplies the analytic signaling form --- the operator exists, the process does not. The
-classification of which admissible $F$ are Markov-realizable is the memory-line inverse
-problem, and is taken up with Theorem~5$'$.
+A necessary condition in all cases --- again recorded without proof --- is quadratic symbol
+growth, $B(\theta) = O(\theta^2)$; by \ref{ex:stable-signaling} the homogeneous members with
+$\alpha < \tfrac12$, of symbol order $1/\alpha > 2$, admit \emph{no} Markov medium, although
+\ref{thm:signaling-form} always supplies the analytic signaling form --- the operator exists, the
+process does not. The locality theorem settles the local sub-case --- a polynomial symbol of
+degree at most two --- but the general classification of which admissible $F$ are
+Markov-realizable is the memory-line inverse problem, and it is left open; it is listed with the
+open problems in the concluding chapter.
 \end{remark}
 
 % additive: not in the draft. Clauses three and four of Lemma 11.2, split off on 2026-08-11 when

@@ -162,7 +162,7 @@ per pass; em-dashes and >30-word sentences first (the only two features over bot
 | 5 | §6 | done | see git log |
 | 6 | §7 | done | see git log |
 | 7 | §8 | done | see git log |
-| 8 | §9 | | |
+| 8 | §9 | done | see git log |
 | 9 | §10 | | |
 | 10 | §11 | | |
 | 11 | §12 | | |

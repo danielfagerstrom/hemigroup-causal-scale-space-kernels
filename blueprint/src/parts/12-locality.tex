@@ -98,7 +98,7 @@ proving that $A$ preserves realness, and therefore the safer of the two.)}
 
 % draft: Lemma 12.2
 \begin{lemma}[covariant local = polynomial symbol]\label{lem:local-polynomial-symbol}
-\uses{def:locality-pmp,def:inversion-operator,lem:mellin-data}
+\uses{def:locality-pmp,def:inversion-operator,def:covariant-mellin-class,lem:mellin-data}
 \lean{Hemigroup.SelfDecomposableExponent.nonempty_isLocalOfOrder_iff_symbol_eq}\leanok
 $A$ is local of order $n$ if and only if $B$ is a polynomial of degree $n$; in that case the
 covariance built into the Mellin class forces the coefficients
@@ -236,7 +236,8 @@ H(z)$ by the identity used in ($\Rightarrow$) below; that transform is absolutel
 the line because $|\Gamma(c+i\tau)|$ decays faster than every power of $\tau$, so
 $\mathcal{M}^{-1}\mathcal{M}h = h$ and $x^{-1}h$ is $(A\,H(s\,\cdot))$.
 
-($\Rightarrow$) Every operator of \ref{def:inversion-operator} satisfies the covariance
+($\Rightarrow$) Every operator of the covariant Mellin class (\ref{def:covariant-mellin-class})
+satisfies the covariance
 $A\Delta_\sigma = \sigma^{-1}\Delta_\sigma A$, where $(\Delta_\sigma g)(x) = g(x/\sigma)$ ---
 machine-checked as \texttt{Hemigroup.inversionOperator\_lineDilate}, the mechanism being entirely
 Mellin-side: dilation multiplies the transform by $\sigma^{z}$, and multiplying the symbol by
