@@ -63,8 +63,9 @@ now. Additions:
 
 The **canonical gauge** `x̃ = χ(x)` (Prop. 6.x) is the working gauge from §6 to the end;
 `rem:gauge-freedom`'s "used in the sequel" is corrected to "used where the diffusive realization is
-written out". The **parabolic gauge** is written **`ξ`** (`ξ = x²/2` relative to the canonical gauge —
-the ½ is the heat-equation normalization that makes the Bessel generator `½∂²_ξ + (β/ξ)∂_ξ`), defined
+written out". The **parabolic gauge** is written **`ξ`**, with `x̃ = ξ²` (corrected 2026-08-24: the draft's
+`x²/2` was off by a factor 2 — verified by direct substitution and the Brownian first-passage check
+at a = ½; the ½ in the operator `½∂²_ξ + (β/ξ)∂_ξ` arises from the substitution itself), defined
 once in §6's `rem:gauge-freedom` (the remark later sections cite for the term; moved there from §8 in the
 §6 step) and named at each later use (§9's Bessel example, §10's Bessel remark,
 §12's display). `x̃` is never used for the parabolic gauge again. Blueprint-side where the symbol sits

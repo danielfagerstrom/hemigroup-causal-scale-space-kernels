@@ -12,7 +12,7 @@ file is **work**, not knowledge; `README.md` holds the node-level state.
 
 ## Now
 
-### 1. Paper review worklist — fourteen blind draft reviews, 2026-08-15  ·  🟡 open
+### 1. Paper review worklist — fourteen blind draft reviews, 2026-08-15  ·  ✅ closed 2026-08-24
 
 Fourteen independent `draft-reviewer` runs over `paper/*.tex` (§§1–13 + Appendix A), each blind: no
 reviewer saw another's report, none was given a summary of the paper or the drafting history. About
@@ -20,6 +20,13 @@ reviewer saw another's report, none was given a summary of the paper or the draf
 something any single review could report, since blindness is per-section.
 
 Raw reports: `paper/review/2026-08-15/` (gitignored; one file per section, with the exact anchors).
+
+**Closed 2026-08-24.** Executed as `paper/PLAN-content-review.md` (steps 0–15): the four decisions
+are `paper/DECISIONS.md`; every section step is one commit (see git log 2026-08-16…-24); the
+blocker was stale (the §10 lemma was already proved blueprint-side — the step became a re-sync);
+eight figures were added; threads A–J are all discharged or explicitly recorded as deferred in the
+plan. Remaining from this batch: item 3 below (the language pass), and the pending Oustaloup
+acquisition (URBZNXEX) for §11's fractional-order-elements citation.
 
 **Ranked by how many independent reviewers hit the same underlying fact, not by any one reviewer's
 severity label** — thread A's §4 instance was labelled `[low-med]` and its §7 instance `[high]`, and
@@ -117,7 +124,7 @@ downstream of them, so acting thread-by-thread before deciding would mean editin
 twice. Prose edits should follow `ai-prose-patterns.md` §3's discipline: late, on frozen text, one
 item per invocation, exact-anchor replacement, one commit per pass.
 
-### 2. Shared statements — pin or resolve the 11 non-verbatim markers  ·  🟡 open 2026-08-15
+### 2. Shared statements — pin or resolve the 11 non-verbatim markers  ·  ✅ closed 2026-08-15 (strict since `b32fc8f`; 71/71 verbatim after the content review)
 
 `linkage check` now compares each `% shared with blueprint` statement against its blueprint node
 (article-kit #10). Result: **51 of 62 verified byte-identical, 11 not** — and none of the 11 is drift

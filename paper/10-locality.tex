@@ -213,11 +213,12 @@ has no smoothing and is excluded by requiring absolutely continuous kernels
 \item \emph{(Order 2; the Bessel family.)} After normalizing the unit of time so that
 $q_1 = 2$: $B(\theta) = 2\,\theta(\theta - a)$ for some $a > 0$; the kernels are the
 inverse-gamma family $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ of
-Proposition~\ref{prop:bessel-family}; and in the parabolic gauge the signaling problem is the
-classical degenerate-parabolic PDE
+Proposition~\ref{prop:bessel-family}; and in the parabolic gauge $\xi$
+(Remark~\ref{rem:gauge-freedom}) the signaling problem is the classical degenerate-parabolic
+PDE
 \[
-  \partial_t u \;=\; \tfrac12\,\partial_x^2 u + \frac{\beta}{x}\,\partial_x u,
-  \qquad \beta = \tfrac12 - a, \qquad u(t,0) = f(t),\quad u(0,x) = 0 .
+  \partial_t u \;=\; \tfrac12\,\partial_\xi^2 u + \frac{\beta}{\xi}\,\partial_\xi u,
+  \qquad \beta = \tfrac12 - a, \qquad u(t,0) = f(t),\quad u(0,\xi) = 0 .
 \]
 \end{enumerate}
 Within case (2), the depth-homogeneous (semigroup) members are exactly $a = \tfrac12$, i.e.\
@@ -273,10 +274,10 @@ parabolic-gauge form as displayed.
 ($\Leftarrow$) \emph{Case (1).} Admissibility is the pure-drift member $F(s) = s/c'$ of
 (7.1), and a first-order operator satisfies the PMP trivially, since $g'(x_0) = 0$ at an
 interior maximum. \emph{Case (2).} Admissibility of the inverse-gamma family is
-Proposition~\ref{prop:bessel-family}; locality is Example~\ref{ex:bessel-quadratic}; and a
-second-order operator $\tfrac12\partial_x^2 + \tfrac{\beta}{x}\partial_x$ with nonnegative
-leading coefficient satisfies the PMP, because at an interior nonnegative maximum
-$g'(x_0) = 0$ and $g''(x_0) \le 0$, so $(Ag)(x_0) = \tfrac12 g''(x_0) \le 0$.
+Proposition~\ref{prop:bessel-family}; locality is Example~\ref{ex:bessel-quadratic}; and, in
+the parabolic gauge $\xi$, a second-order operator $\tfrac12\partial_\xi^2 + \tfrac{\beta}{\xi}\partial_\xi$
+with nonnegative leading coefficient satisfies the PMP, because at an interior nonnegative
+maximum $g'(\xi_0) = 0$ and $g''(\xi_0) \le 0$, so $(Ag)(\xi_0) = \tfrac12 g''(\xi_0) \le 0$.
 
 \emph{The homogeneity claim.} By Corollary~\ref{cor:semigroup-case}, depth-homogeneous
 members have $F(s) = c\,s^{\alpha}$; within the inverse-gamma family the exponent is a pure

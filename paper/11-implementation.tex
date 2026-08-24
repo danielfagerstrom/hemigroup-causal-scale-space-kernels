@@ -101,9 +101,11 @@ profiles), hence \emph{no} finite-dimensional time-recursive realization; the sa
 the stable family ($e^{-(x_{k+1}^{\,\alpha} - x_k^{\,\alpha})\,s^\alpha}$ in the homogeneous
 gauge). The implementation options are: (i) direct convolution against tabulated increment
 kernels per knot --- burdened by the polynomial tails $t^{-1-a}$, so truncation error decays
-only polynomially in the window length; (ii) marching the memory-line PDE
-$\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$ in time (implicit in $x$, with care at
-the degenerate boundary), which reintroduces scale-direction discretization error; or (iii)
+only polynomially in the window length; (ii) marching the memory-line PDE, in the parabolic
+gauge $\xi$ of Remark~\ref{rem:gauge-freedom},
+$\partial_t u = \tfrac12 u_{\xi\xi} + \tfrac{\beta}{\xi}u_\xi$ in time (implicit in $\xi$, with
+care at the degenerate boundary), which reintroduces scale-direction discretization error; or
+(iii)
 rational approximation of the irrational symbol, in the manner standard for
 fractional-order elements in filter and control design, with state count growing logarithmically in the required bandwidth ---
 made systematic within the axioms in Proposition~\ref{prop:thorin-subclass} below. All three
@@ -114,11 +116,12 @@ medium is bought at the price of heavy-tailed, non-rational kernels.
 
 \begin{remark}[finite differences on the memory line]\label{rem:finite-differences}
 The explicit finite-difference scheme of \sscite{fagerstrom2005temporal}, \S\S6--7, for the
-heat signaling equation extends verbatim to the Bessel family. On the logarithmic grid
-$\xi = \log x$ the operator is constant-coefficient up to a rate factor,
+heat signaling equation extends verbatim to the Bessel family. Working in the parabolic gauge
+$\xi$ of Remark~\ref{rem:gauge-freedom}, on the logarithmic grid $\eta = \log\xi$ the operator
+is constant-coefficient up to a rate factor,
 \[
-  \tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x
-  \;=\; e^{-2\xi}\Bigl[\tfrac12\,\partial_\xi^2 + \bigl(\beta - \tfrac12\bigr)\,\partial_\xi\Bigr],
+  \tfrac12\,\partial_\xi^2 + \frac{\beta}{\xi}\,\partial_\xi
+  \;=\; e^{-2\eta}\Bigl[\tfrac12\,\partial_\eta^2 + \bigl(\beta - \tfrac12\bigr)\,\partial_\eta\Bigr],
 \]
 so the stencil is uniform along the scale ladder and only the update rate varies with
 position --- the discrete form of the Lamperti time change (\sscite{lamperti1972semi}). With
@@ -127,9 +130,10 @@ and non-amplification are automatic, and the discrete scheme is itself a hemigro
 sub-probability kernels: a random-walk medium whose absorption-time laws are discrete
 analogues of the inverse-gamma kernels. We record this for continuity with the 2005 paper but
 do not recommend it: the explicit step is constrained by the finest cell,
-$\Delta t \lesssim x_{\min}^2\,\Delta\xi^2$, while the coarse-scale dynamics live on horizons
-$\sim x_{\max}^2$, so the cost of covering the ladder grows like $(x_{\max}/x_{\min})^2$ (an
-implicit march trades this for per-sample band solves plus additional discretization error);
+$\Delta t \lesssim \xi_{\min}^2\,\Delta\eta^2$, while the coarse-scale dynamics live on
+horizons $\sim \xi_{\max}^2$, so the cost of covering the ladder grows like
+$(\xi_{\max}/\xi_{\min})^2$ (an implicit march trades this for per-sample band solves plus
+additional discretization error);
 the finite-moment regime $a > 1$, i.e.\ $\beta < -\tfrac12$ --- the very reason to prefer the
 Bessel family --- is advection-dominated near the singular boundary and numerically the least
 pleasant; and, decisively, any marching of the signaling equation approximates the scale
@@ -253,7 +257,7 @@ asymptotes.}
 \begin{example}[numerical illustration]\label{ex:tail-contrast}
 Figure~\ref{fig:kernels} compares the kernels of the three corners at matched delay: Gamma
 kernels with $\gamma \in \{1, 2, 4\}$ and scale $x = 1/\gamma$ (mean delay $1$); the
-Bessel/inverse-gamma kernel with $a = 2$ and scale $x^2/2 = a - 1$ (mean delay $1$); and the
+Bessel/inverse-gamma kernel with $a = 2$ and inverse-gamma scale parameter $\vartheta = a - 1$ (mean delay $1$); and the
 $\tfrac12$-stable kernel of \sscite{fagerstrom2005temporal} normalized to median delay $1$,
 its mean being infinite.
 
@@ -298,7 +302,7 @@ Since the stable mean is infinite, the delay proxy used in the influence-curve d
 \sscite{fagerstrom2005temporal}, \S8, is the \emph{mode}, and Figure~\ref{fig:kernels-mode}
 repeats the experiment in that normalization: matched mode delay $1$, i.e.\
 $x = 1/(\gamma - 1)$ for the Gamma kernels ($\gamma = 1$ is omitted, its mode sitting at the
-onset), $x^2/2 = a + 1 = 3$ for the inverse-gamma, and $x^2/2 = 3/2$ for the
+onset), $\vartheta = a + 1 = 3$ for the inverse-gamma, and $\vartheta = 3/2$ for the
 $\tfrac12$-stable.
 
 
@@ -328,6 +332,6 @@ At matched mode, capturing $99.9\%$ of the $\tfrac12$-stable kernel requires a w
 orders of magnitude beyond the peak. Both figures and both tables are generated by the
 accompanying script \texttt{make-figures.py}; the power-law guides in the tail panels are the
 exact asymptotes $\vartheta^{\,a}\, t^{-1-a}/\Gamma(a)$ and $\sqrt{\vartheta/\pi}\, t^{-3/2}$,
-with $\vartheta := x^2/2$ the scale parameter of the inverse-gamma law in the respective
+with $\vartheta$ the scale parameter of the inverse-gamma law ($\vartheta = \tilde x/2$ at canonical scale $\tilde x$) in the respective
 normalization.
 \end{example}

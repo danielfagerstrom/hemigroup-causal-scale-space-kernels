@@ -1,7 +1,20 @@
-% AI-use statement — mirror the sibling article's (scale-space-foundations/paper/
-% ai-statement.tex) in form; content to be reviewed by the author before publication.
+% Author contribution and AI-use disclosure. Adapted from the hub's
+% writing-style-and-ai-use.md §2 (the publication-ready draft), instantiated for this
+% article. Placement: after the conclusions, before the bibliography.
 
-\section*{Statement on the use of AI}
+\section*{Author contribution and use of AI}
 
-% [to be written — align with the sibling article's statement and the author's
-% writing-style-and-ai-use policy]
+The theory presented here was conceived and originally developed by the author in a series
+of publications between 2004 and 2011. This article re-presents, extends, and formally
+verifies that work. Generative AI was used as an assistant: for drafting and restructuring
+exposition from the author's own earlier manuscripts, for assisting the Lean~4
+formalization, and for triaging related literature. The author directed all of this work,
+takes full responsibility for the mathematical content and its correctness, and has checked
+every citation.
+
+The formal results are machine-checked by the Lean~4 proof assistant and its Mathlib
+library; their validity rests on the Lean kernel and is independent of how the proof terms
+were produced. The analytic facts taken as axioms in the formalization rather than proved
+are enumerated, each with a page-verified citation, in the axiom ledger of the accompanying
+repository (\S\ref{sec:machine-checked}); these are the sole human-trust boundary of the
+verified development.

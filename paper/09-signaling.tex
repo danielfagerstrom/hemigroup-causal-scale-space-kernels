@@ -472,18 +472,19 @@ architecture of the time side.
 In the $\alpha$-gauge (similarity variable $x^{1/\alpha} s$; Remark~\ref{rem:gauge-freedom})
 the profiles are $H(x^{1/\alpha}s)$, the Euler operator acts on the profile through
 $\alpha^{-1}\theta$, and the inversion becomes $A = x^{-1/\alpha}\,B(\alpha\,\theta)$. Take the
-parabolic gauge $\alpha = \tfrac12$ and the Bessel-K family of
-Proposition~\ref{prop:bessel-family}, $T_1 = 1/(2\gamma_a)$: then
+parabolic gauge $\alpha = \tfrac12$, i.e.\ the coordinate $\xi$ of Remark~\ref{rem:gauge-freedom},
+and the Bessel-K family of Proposition~\ref{prop:bessel-family}, $T_1 = 1/(2\gamma_a)$: then
 $\Ex[T_1^{-z}] = 2^z\,\Gamma(a + z)/\Gamma(a)$, so
 \[
   B(-z) = 2z(z + a), \qquad
-  A = x^{-2}\Bigl(\tfrac{\theta^2}{2} - a\theta\Bigr)
-  = \tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x, \quad \beta = \tfrac12 - a .
+  A = \xi^{-2}\Bigl(\tfrac{\theta^2}{2} - a\theta\Bigr)
+  = \tfrac12\,\partial_\xi^2 + \frac{\beta}{\xi}\,\partial_\xi, \quad \beta = \tfrac12 - a .
 \]
 The symbol is a \emph{quadratic polynomial}, so $A$ is local: the signaling form of the
 Bessel-K scale space is exactly the Bessel diffusion-with-drift medium, and
 Theorem~\ref{thm:signaling-form}(2) becomes the classical signaling problem
-$\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$ with $u(t,0) = f(t)$ and $u(0,x) = 0$.
+$\partial_t u = \tfrac12 u_{\xi\xi} + \tfrac{\beta}{\xi}u_\xi$ with $u(t,0) = f(t)$ and
+$u(0,\xi) = 0$.
 \end{example}
 
 % Verbatim from the blueprint's rem:markov-media.

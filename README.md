@@ -40,6 +40,13 @@ CI checks both with `#print axioms` against `blueprint/trust-boundary.txt` on ev
 declaration — so the article's claim that the analysis direction crosses the boundary where the
 constructive one does not is machine-checked rather than asserted.
 
+**Content-reviewed 2026-08-16…-24** (`paper/PLAN-content-review.md`, decisions in
+`paper/DECISIONS.md`): the fourteen blind draft reviews of ROADMAP item 1 were worked section by
+section — four global decisions first (the pure delay is in the class; (H) has one home; one gauge
+notation with the parabolic gauge named ξ; economy claims exact or removed), then every section,
+with shared-statement fixes landing blueprint-side and eight figures added. The language pass
+(ROADMAP item 3) is the remaining step.
+
 **Fidelity-reviewed 2026-08-15** (`blueprint/PLAN-fidelity-review.md`, executed in
 `blueprint/REVIEW-fidelity.md`): every `\leanok` node was audited statement-by-statement against
 the article and the blueprint — definitions unfolded to Mathlib primitives, partial functions'

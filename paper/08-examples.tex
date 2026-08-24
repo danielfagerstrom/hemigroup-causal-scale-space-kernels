@@ -82,7 +82,7 @@ infinity.
 The \emph{influence curve} of \sscite{fagerstrom2005temporal}, \S8, p.~106, is the
 distance $t_0 - t_m$ between the time $t_0$ at which a measurement is made and the time
 $t_m$ with the largest influence on it, as a function of scale. There $t_m$ had to be the
-mode of the kernel, the mean of the stable kernels being infinite (\emph{ibid.}, p.~102).
+mode of the kernel --- whose scaling is Proposition~\ref{prop:stable-mode} --- the mean of the stable kernels being infinite (\emph{ibid.}, p.~102).
 Whenever the mean is finite it can be taken as $t_0 - t_m$ instead, and the proposition
 says that in the canonical gauge the influence curve is then exactly linear,
 $t_0 - t_m = \Ex\,T_x = F'(\zp)\,x$. The
@@ -277,7 +277,7 @@ at infinity, so $\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$;
 Proposition~\ref{prop:moment-criterion} converts that into $\Ex\,T_x^n < \infty$ iff $a > n$.
 \end{proof}
 
-In the parabolic gauge $\xi$ of Remark~\ref{rem:gauge-freedom}, $\tilde x = \xi^2/2$, these
+In the parabolic gauge $\xi$ of Remark~\ref{rem:gauge-freedom}, $\tilde x = \xi^2$, these
 kernels are the laws of the first hitting time of the boundary $\xi = 0$ by the Bessel-type
 diffusion with generator $\tfrac12\partial_\xi^2 + \tfrac{\beta}{\xi}\partial_\xi$,
 $a = \tfrac12 - \beta$, started at $\xi$; that identification is proved in
@@ -296,7 +296,7 @@ together with covariance. Within Theorem~\ref{thm:main-characterization} the sem
 (Corollary~\ref{cor:semigroup-case}) is the subset with $k$ a pure power $c\,t^{-\alpha}$,
 $0 < \alpha < 1$, or the pure delay, $k \equiv 0$ with $b_0 > 0$ --- the only data compatible
 with homogeneity --- and a pure power is never integrable at infinity, so by
-Proposition~\ref{prop:moments} no stable member has a mean. Any other nonincreasing $k$ is
+Proposition~\ref{prop:moments} no stable member has a mean (Proposition~\ref{prop:stable-moments}). Any other nonincreasing $k$ is
 admitted, and its moments are governed by Proposition~\ref{prop:moment-criterion} alone:
 $\Ex\,T_x^n < \infty$ exactly when $\int_1^\infty t^{n-1}k(t)\,dt < \infty$. For
 $k(t) = \gamma e^{-t}$ every moment is finite (Proposition~\ref{prop:gamma-moments}); for
