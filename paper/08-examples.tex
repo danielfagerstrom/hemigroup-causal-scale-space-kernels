@@ -304,3 +304,97 @@ the Bessel family with shape $a$ exactly the moments of order below $a$ are fini
 (Proposition~\ref{prop:bessel-family}). The comparison at matched delay is drawn in
 Figure~\ref{fig:kernels}.
 \end{remark}
+
+% Paper-side expository addition (no blueprint counterpart; reader's thread). The
+% class-wide tail floor is already cited in rem:extreme-rays for the Gaussian-truncation
+% exclusion; this remark states it where the moment dial lives and adds the two-sided
+% dichotomy, which prices the Thorin subclass's smoothness in tail weight.
+%
+% TODO(librarian): the two-sided form below is Sato Thm 26.1 as recalled -- verify the
+% exact statement (bounded Lévy support, supremum c: -log tail ~ (r/c) log r; unbounded
+% support: -log tail = o(r log r)) against sato1999levy p. 168 before publication; the
+% one-sided floor at that page is already anchored in rem:extreme-rays.
+\begin{remark}[the tail dichotomy: how light can an aperture be?]\label{rem:tail-dichotomy}
+The moment criterion (Proposition~\ref{prop:moment-criterion}) reads the
+\emph{polynomial} weight of a kernel's tail off the tail of $k$. The
+super-exponential end is governed by a theorem that needs only infinite divisibility
+--- axioms (A1)--(A7), no covariance --- and so binds every stratum at once
+(\sscite{sato1999levy}, Thm.~26.1, p.~168): off the drift ray, a kernel's tail
+satisfies $\mu_{0,x}\bigl((r,\infty)\bigr) \ge e^{-c\,r\log r}$ for some $c$ and all
+large $r$. The mechanism is the cascade itself: the delay is assembled from
+independent increments, and independent increments can always conspire --- $n$
+repetitions of one available delay cost only the Poisson probability
+$\lambda^n/n! \approx e^{-n\log n}$ --- so no admissible tail can be suppressed
+faster than $e^{-c\,r\log r}$. Consequently no kernel of compact support and none
+with Gaussian-or-lighter tail belongs to any causal cascade family: apart from the
+pure delay, every admissible smoother has infinite impulse response, and truncation
+is a violation of the cascade, not an implementation detail.
+
+The theorem is two-sided, and the dichotomy ranks the families. If the Lévy support
+is \emph{bounded} --- $k$ vanishing beyond a cutoff $\tau$ --- the floor is
+attained: $-\log \mu_{0,x}\bigl((r,\infty)\bigr) \sim (r/\tau x)\log r$. If it is
+\emph{unbounded}, the tail is strictly heavier than every bounded-support rate. A
+completely monotone $k$ is strictly positive on all of $(0,\infty)$, so the entire
+Thorin subclass sits on the heavy side of the dichotomy, the Gamma family's plain
+exponential tail being typical; the bounded-support members --- the Dickman rays of
+Remark~\ref{rem:extreme-rays} and their superpositions --- attain the lightest
+tails the axioms permit and, their $k$ being compactly supported, have all moments
+finite as well: the extreme rays of the cone are its best-localized members. The
+trade-off is legible in the kernel $k$ itself: a hard cutoff of long delays buys
+super-exponential tails and a full set of moments at the price of the echo
+signatures of Remark~\ref{rem:extreme-rays}, unattainable within the Thorin
+subclass; a completely monotone $k$ buys echo-free kernels realizable by
+first-order sections (\S\ref{sec:implementation}) at the price of a tail no lighter
+than exponential. Both dials --- the polynomial one of
+Proposition~\ref{prop:moment-criterion} and the super-exponential one here --- are
+turned by the same object, the tail of $k$.
+\end{remark}
+
+% Paper-side expository addition (no blueprint counterpart; reader's thread). Answers
+% the question the three worked families invite -- are there more? -- via the
+% observation that the main theorem is a machine: one self-decomposable law in, one
+% scale space out. Prose citations on the rem:extreme-rays precedent (no ledger
+% entries: no proof consumes them).
+%
+% TODO(librarian): three further catalogue entries are drafted below as comments,
+% pending page-verified anchors and (for Kent) a verified bib entry:
+%   - powers and ratios of Gamma variables are HCM, hence GGC: locate the theorem in
+%     bondesson1992generalized ch. 5 and anchor;
+%   - Mittag-Leffler laws (transform (1+s^alpha)^{-1} and powers) are GGC: needs a
+%     source (Bondesson or a survey);
+%   - first-passage times of one-dimensional diffusions have mixture-of-exponentials
+%     Lévy densities, hence lie in the Thorin subclass: Kent, "The spectral
+%     decomposition of a diffusion hitting time", Ann. Probab. ~1982 -- verify
+%     statement, bib data, and page before activating; if confirmed, it is the general
+%     phenomenon behind the Bessel family, whose memory-line reading §9 develops.
+\begin{remark}[the classical catalogue]\label{rem:classical-catalogue}
+Theorem~\ref{thm:main-characterization} is a machine: any single self-decomposable
+law on $[0,\infty)$, with Laplace exponent $F$, generates a complete time-causal
+scale space $\phi_x = \Lap^{-1}[e^{-F(xs)}]$. The three families above are
+therefore worked representatives, not an enumeration; the classical catalogue of
+class~$L$ supplies more, each with its own physiognomy as a family of apertures.
+The \emph{generalized inverse Gaussian} laws are self-decomposable in their
+entirety (\sscite{halgreen1979self} --- the citation
+Proposition~\ref{prop:bessel-family} already rests on, the Bessel family being the
+inverse-Gamma member); the inverse
+Gaussian member has the closed-form exponent $F(s) = \sqrt{1 + 2s} - 1$, the
+first-passage time of a drifting Brownian motion, so its kernels are hitting-time
+delays with all moments finite. The \emph{lognormal} law is admissible: Thorin
+proved its infinite divisibility by exhibiting it as a generalized Gamma
+convolution (\sscite{thorin1977lognormal}) --- the theorem for which the Thorin
+class was created --- giving kernels whose delay is a product of many independent
+small factors, multiplicative rather than additive accumulation of latency. The
+\emph{Pareto} laws are admissible by the companion result
+(\sscite{thorin1977pareto}); a Pareto kernel of index $a$ has exactly the moments
+of order below $a$, the Bessel family's position on the moment dial with an exact
+power tail. Two boundaries frame the catalogue. Outward: nothing with tail lighter
+than $e^{-c\,t\log t}$ is admissible at all (Remark~\ref{rem:tail-dichotomy}), so
+no windowed or truncated Gaussian appears however the data $(b_0,k)$ are chosen.
+Inward: every law just named lies in the Thorin subclass --- the classical
+catalogue is classical largely because completely monotone structure is where the
+classical proofs live --- while the admissible class is strictly larger, and its
+non-Thorin territory, with plateaus, kinks and cutoffs in $k$, is largely
+unexplored as a source of scale spaces; the Dickman family of
+Remark~\ref{rem:extreme-rays} is its paradigm, and its systematic development lies
+beyond this paper's scope.
+\end{remark}
