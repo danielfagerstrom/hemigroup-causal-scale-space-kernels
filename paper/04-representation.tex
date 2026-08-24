@@ -145,6 +145,56 @@ continuity of $\hat\mu_{x,y}(s)$, and composing with $-\log$, legitimate because
 never vanishes, gives it for $g_{x,y}(s)$.
 \end{proof}
 
+% Paper-side expository addition (reader's thread; the transform-side companion to
+% rem:delay-dictionary, whose absorbance clause it develops). Placed here because
+% Lemma 4.2 has just established the two facts the language rests on: the transform
+% lies in (0,1], and eq. (4.1) reads it off as a multiplier on probe exponentials.
+\begin{remark}[transmittance and optical depth]\label{rem:optical-depth}
+The transform and the exponent deserve physical names, used from here on as a guide.
+Causal convolution acts on a probe exponential $e^{-st}$ as multiplication --- that is
+what \eqref{eq:clamped} measures --- and the multiplier $\hat\mu_{x,y}(s) \in (0,1]$ is
+the stage's \emph{transmittance} at probe rate $s$: the fraction of the probe that
+survives. Transmittances multiply along the cascade, so their negative logarithms, the
+exponents $g_{x,y}(s)$, add: $g$ is the stage's \emph{absorbance}, and
+$G(x,s) = g_{0,x}(s)$ will be the \emph{optical depth} of the medium between the
+surface $x = 0$ and depth $x$. Lemma~\ref{lem:transform-continuity} says the medium is
+physically sane: no layer is opaque, none amplifies, and the absorbance varies
+continuously with the layer and the probe.
+
+The analogy is in fact literal, not visual. Beer--Lambert's law is, microscopically, a
+survival probability: a photon crossing a slab is absorbed at a constant rate per unit
+path length, so it survives a traverse of length $L$ with probability $e^{-\alpha L}$.
+Here, absorb the traversing signal at rate $s$ per unit of \emph{accumulated delay} ---
+dwell time playing the role of path length --- and the transmittance is exactly the
+survival probability $\Ex\,e^{-sT_{x,y}}$, the slab's effective thickness being the
+random delay $T_{x,y}$. Equivalently, $e^{-sT} = \mathbb{P}(E > T)$ for an independent
+exponential deadline $E$ of rate $s$: transmittance is the probability that the stage's
+delay beats a memoryless alarm clock, and transmittances multiply across independent
+stages \emph{because} the exponential clock is memoryless --- having survived one
+stage, it is statistically fresh for the next. So $s$ is not a wavelength but an
+absorption rate (equivalently a discount rate, killing and discounting being the same
+computation), and varying $s$ probes the medium with dyes of graded strength rather
+than light of graded color.
+
+What plays the role of wavelength is the probe's \emph{time constant} $1/s$: a
+small-$s$ probe is long and patient, responding only to gross features --- at
+$s = 0{+}$ it sees only total mass, which is $g(0) = 0$ being unit area --- while a
+large-$s$ probe has died by time $1/s$ and sees only the immediate response. Sweeping
+$s$ scans lateness structure from coarse to fine, as sweeping frequency scans
+oscillation structure. The normalized probes $s\,e^{-st}$ are, moreover, the impulse
+responses of first-order lag sections: the transform reads the kernels out through a
+bank of leaky integrators --- the theory's own simplest member, and the hardware of
+\S\ref{sec:implementation}.
+
+In this language the next two sections say: absorbances of stacked layers add, so
+depth is measured from the surface (\S\ref{sec:cascade}); and the medium is
+\emph{self-similar} --- descending the scale axis is indistinguishable from probing
+faster --- so there is a coordinate in which one absorption spectrum describes it
+entirely (\S\ref{sec:covariance}). The physical reading of the spectrum's parts ---
+drift as latency, the Lévy measure as a catalogue of delays --- is
+Remark~\ref{rem:delay-dictionary}.
+\end{remark}
+
 % Verbatim from the blueprint's rem:wendel (remarks are not statement nodes); "Chapter 11"
 % adapted to the paper's section reference.
 \begin{remark}[what the representation is, and what it is not]\label{rem:wendel}
