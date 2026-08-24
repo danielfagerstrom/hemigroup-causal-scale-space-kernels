@@ -23,6 +23,12 @@ DEFAULT_GLOBS = [
     "draft/*.md",
     "*.md",
     "Formalization/**/*.lean",
+    # paper/ added 2026-08-24: two corruption incidents (a CR in 10-locality.tex, four
+    # BELLs in 08-examples.tex) reached commits because the paper tree was not scanned;
+    # linkage check's [chars] pass covers it, but this script is the first gate.
+    "paper/*.tex",
+    "paper/*.bib",
+    "paper/*.md",
 ]
 
 LF = 0x0A
