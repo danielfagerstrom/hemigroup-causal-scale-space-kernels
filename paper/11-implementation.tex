@@ -4,8 +4,8 @@
 % Adapted refs: "§11" (draft's memory-line evolution) → §9; Prop 9.7(3) → the appendix's
 % prop:pair-regularity. Revised in the content review 2026-08-24 (step 10): engineering
 % commentary out of statements, ZOH/covariance claims made honest, tables promoted to
-% floats, fig-filterbank added. "Fractional-order elements" citation pending library
-% acquisition URBZNXEX (Oustaloup et al. 2000).
+% floats, fig-filterbank added. Fractional-order elements cited to
+% oustaloup2000frequency (library-verified, 2026-08-24).
 
 \section{Implementation}\label{sec:implementation}
 
@@ -107,7 +107,7 @@ $\partial_t u = \tfrac12 u_{\xi\xi} + \tfrac{\beta}{\xi}u_\xi$ in time (implicit
 care at the degenerate boundary), which reintroduces scale-direction discretization error; or
 (iii)
 rational approximation of the irrational symbol, in the manner standard for
-fractional-order elements in filter and control design, with state count growing logarithmically in the required bandwidth ---
+fractional-order elements in filter and control design (\sscite{oustaloup2000frequency}), with state count growing logarithmically in the required bandwidth ---
 made systematic within the axioms in Proposition~\ref{prop:thorin-subclass} below. All three
 are workable; none matches the cascade of Proposition~\ref{prop:gamma-cascade} in simplicity
 or exactness. This is the practical face of Theorem~\ref{thm:locality}: locality of the

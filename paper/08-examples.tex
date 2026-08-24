@@ -310,10 +310,13 @@ Figure~\ref{fig:kernels}.
 % exclusion; this remark states it where the moment dial lives and adds the two-sided
 % dichotomy, which prices the Thorin subclass's smoothness in tail weight.
 %
-% TODO(librarian): the two-sided form below is Sato Thm 26.1 as recalled -- verify the
-% exact statement (bounded Lévy support, supremum c: -log tail ~ (r/c) log r; unbounded
-% support: -log tail = o(r log r)) against sato1999levy p. 168 before publication; the
-% one-sided floor at that page is already anchored in rem:extreme-rays.
+% Librarian-verified 2026-08-24 against sato1999levy Thm 26.1, p. 168: clause (i)
+% (a < 1/c: tail = o(e^{-ar log r})) and clause (ii) (a > 1/c: tail/e^{-ar log r} -> inf)
+% both as recalled; the asymptotic reading -log P/(r log r) -> 1/c is the squeeze of
+% (i) against (ii), a corollary rather than a verbatim line of the book. The floor
+% "off the drift ray" holds in both support cases ((ii) at any a > 1/c, and for
+% unbounded support at every a > 0); on the drift ray Remark 26.3's Gaussian tail is
+% lighter, so the qualifier is necessary.
 \begin{remark}[the tail dichotomy: how light can an aperture be?]\label{rem:tail-dichotomy}
 The moment criterion (Proposition~\ref{prop:moment-criterion}) reads the
 \emph{polynomial} weight of a kernel's tail off the tail of $k$. The
@@ -357,17 +360,20 @@ turned by the same object, the tail of $k$.
 % scale space out. Prose citations on the rem:extreme-rays precedent (no ledger
 % entries: no proof consumes them).
 %
-% TODO(librarian): three further catalogue entries are drafted below as comments,
-% pending page-verified anchors and (for Kent) a verified bib entry:
-%   - powers and ratios of Gamma variables are HCM, hence GGC: locate the theorem in
-%     bondesson1992generalized ch. 5 and anchor;
-%   - Mittag-Leffler laws (transform (1+s^alpha)^{-1} and powers) are GGC: needs a
-%     source (Bondesson or a survey);
-%   - first-passage times of one-dimensional diffusions have mixture-of-exponentials
-%     Lévy densities, hence lie in the Thorin subclass: Kent, "The spectral
-%     decomposition of a diffusion hitting time", Ann. Probab. ~1982 -- verify
-%     statement, bib data, and page before activating; if confirmed, it is the general
-%     phenomenon behind the Bessel family, whose memory-line reading §9 develops.
+% Three further catalogue entries, librarian-checked 2026-08-24; anchors ready,
+% activation (writing the entries) is an editorial decision not yet taken:
+%   - powers and ratios of Gamma variables are HCM, hence GGC: VERIFIED --
+%     bondesson1992generalized SS4.3, Ex. 4.3.1 p. 59 (ratio), Ex. 4.3.4 p. 60
+%     (power X^{1/alpha}, |1/alpha| >= 1), via Thm 4.3.1 p. 57; closure under
+%     products/ratios Thm 5.1.1 p. 69 and Thm 6.2.1 p. 92.
+%   - Mittag-Leffler laws are GGC: NO SOURCE IN LIBRARY (Bondesson, Steutel-van Harn,
+%     Gorenflo et al. all checked); James-Roynette-Yor, Probab. Surveys 5 (2008),
+%     queued as acquisition GZIDSU6X -- do not activate until it lands.
+%   - first-passage times of one-dimensional diffusions lie in the Bondesson
+%     (mixtures-of-exponentials / Thorin) class: VERIFIED -- kent1982spectral (in the
+%     library), Ann. Probab. 10(1) 1982, abstract p. 207 and Def. 2.1 p. 208; the
+%     general phenomenon behind the Bessel family. Bib entry needed in references.bib
+%     when activated.
 \begin{remark}[the classical catalogue]\label{rem:classical-catalogue}
 Theorem~\ref{thm:main-characterization} is a machine: any single self-decomposable
 law on $[0,\infty)$, with Laplace exponent $F$, generates a complete time-causal
