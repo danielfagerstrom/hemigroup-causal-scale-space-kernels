@@ -363,12 +363,13 @@ turned by the same object, the tail of $k$.
 % Catalogue entries, librarian-checked 2026-08-24; two activated, one pending:
 %   - powers and ratios of Gamma variables are HCM, hence GGC: VERIFIED and
 %     ACTIVATED 2026-08-24 (the multiplicative-calculus sentence in the remark).
-%   - Mittag-Leffler laws are GGC: STILL UNSOURCED. James-Roynette-Yor was acquired
-%     2026-08-24 (jamesroynette2008generalized, arXiv:0708.3932 -- the queued id
-%     0802.0621 was wrong) and librarian-searched in full: the statement is NOT in it.
-%     Nearest leads: James-Yor 2006 (arXiv:math/0701049, tilted stable subordinators,
-%     cited in JRY Remark 3.2(3)) or Pillai 1990. Do not activate without a verified
-%     source.
+%   - Mittag-Leffler laws are GGC: VERIFIED and ACTIVATED 2026-08-24. The source is
+%     bondesson1992generalized Ex. 3.2.4, p. 38 (page-image-verified; Bondesson does
+%     not use the name Mittag-Leffler -- the identification of Y^{1/alpha}X_alpha with
+%     the ML law is standard). Found by following James-Yor 2006's own p. 38 pointer;
+%     neither jamesroynette2008generalized (arXiv:0708.3932) nor jamesyor2006tilted
+%     (arXiv:math/0701049, acquired, in the library) contains the statement -- the
+%     first searches missed Bondesson's example because he never names the law.
 %   - first-passage times of one-dimensional diffusions lie in the Bondesson
 %     (mixtures-of-exponentials / Thorin) class: VERIFIED and ACTIVATED 2026-08-24
 %     (kent1982spectral; bib entry added).
@@ -392,7 +393,13 @@ small factors, multiplicative rather than additive accumulation of latency. The
 \emph{Pareto} laws are admissible by the companion result
 (\sscite{thorin1977pareto}); a Pareto kernel of index $a$ has exactly the moments
 of order below $a$, the Bessel family's position on the moment dial with an exact
-power tail. The class is closed under a multiplicative calculus of delays: the pdf of
+power tail. The \emph{Mittag-Leffler} laws are admissible: the law with transform
+$(1 + s^{lpha})^{-\gamma}$, $0 < lpha < 1$ --- the delay $Y^{1/lpha}X_lpha$
+of a Gamma variable's power times an independent stable factor --- is a generalized
+Gamma convolution with explicit Thorin density
+(\sscite{bondesson1992generalized}, Ex.~3.2.4, p.~38, where the object appears
+unnamed), interpolating the Gamma and stable corners on one dial. The class is
+closed under a multiplicative calculus of delays: the pdf of
 a ratio of independent Gamma variables is hyperbolically completely monotone
 (\sscite{bondesson1992generalized}, Ex.~4.3.1, p.~59), as is any power $X^{q}$,
 $|q| \ge 1$, of a Gamma variable (Ex.~4.3.4, p.~60), and $\HCM$ laws are $\GGC$
