@@ -30,10 +30,11 @@ signaling equation --- as the unique member of the stable family whose memory-li
 a local, positivity-respecting differential equation. This chapter proves the hemigroup
 analogue.
 
-The structure is genuinely two-layered: locality \emph{alone} opens a countable ladder of
-admissible local media of every order, and it is the positive maximum principle --- the
-requirement that the medium be a physical transport medium --- that closes the ladder at order
-two, where it leaves exactly the Bessel family. Throughout we assume (H), work in the
+The structure is genuinely two-layered: locality \emph{alone} opens a ladder of admissible local
+media of every order, each rung an $(n-1)$-parameter family, and it is the positive maximum
+principle --- the requirement that the medium be a physical transport medium --- that closes the
+ladder at order two, where it leaves the Bessel family together with the degenerate transport
+member of case (1). Throughout we assume (H), work in the
 canonical gauge, write $m(z) := \Ex[T_1^{-z}]$, and take $A$ and $B$ as in Chapter~11.
 
 % draft: Definition 12.1
@@ -46,15 +47,18 @@ $c_n \not\equiv 0$, on $C_c^\infty((0,\infty))$ \emph{and on the profiles $H(s\,
 $s > 0$}. It satisfies the \emph{positive maximum principle} (PMP) if $(Ag)(x_0) \le 0$ whenever
 $g \in C_c^\infty((0,\infty))$ attains a nonnegative maximum at $x_0$.
 
-\emph{The profiles were added to the test class after formalisation, and the reason is given in
-the proof of \ref{lem:local-polynomial-symbol}: without them that lemma's ($\Rightarrow$)
-direction cannot reach the symbol, because $C_c^\infty((0,\infty))$ is disjoint from the only
-class on which $B$'s behaviour is controlled. The maximum principle is left on
-$C_c^\infty((0,\infty))$, where it belongs --- a profile has no interior maximum and would say
-nothing.}
+The profiles are part of the test class because the ($\Rightarrow$) direction of
+\ref{lem:local-polynomial-symbol} must reach the symbol, and $C_c^\infty((0,\infty))$ is
+disjoint from the only class on which $B$'s behaviour is controlled; the maximum principle
+stays on $C_c^\infty((0,\infty))$, where a profile, having no interior maximum, would say
+nothing.
 \statusT\quad\emph{(\textbf{Formalised}, as
 \texttt{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder} and \texttt{SatisfiesPMP} in
-\texttt{LocalOperator.lean}. Three readings had to be fixed, and each is a choice rather
+\texttt{LocalOperator.lean}. \textbf{The profiles were added to the test class after
+formalisation}, and the reason is exactly the one given above: without them
+\ref{lem:local-polynomial-symbol}'s ($\Rightarrow$) direction cannot reach the symbol, since
+$C_c^\infty((0,\infty))$ is disjoint from the only class on which $B$'s behaviour is controlled.
+Three readings had to be fixed, and each is a choice rather
 than a transcription.
 \textbf{Locality is bundled as data, not as an existential.} ``Agrees with \emph{some}
 differential expression'' would make the coefficients inaccessible, and
@@ -98,10 +102,11 @@ proving that $A$ preserves realness, and therefore the safer of the two.)}
 
 % draft: Lemma 12.2
 \begin{lemma}[covariant local = polynomial symbol]\label{lem:local-polynomial-symbol}
-\uses{def:locality-pmp,def:inversion-operator,def:covariant-mellin-class,lem:mellin-data}
+\uses{def:locality-pmp,def:inversion-operator,def:covariant-mellin-class,lem:mellin-data,thm:signaling-form}
 \lean{Hemigroup.SelfDecomposableExponent.nonempty_isLocalOfOrder_iff_symbol_eq}\leanok
 $A$ is local of order $n$ if and only if $B$ is a polynomial of degree $n$; in that case the
-covariance built into the Mellin class forces the coefficients
+covariance built into the Mellin class (Definition~\ref{def:covariant-mellin-class}) forces the
+coefficients
 \[
   c_j(x) \;=\; \gamma_j\, x^{\,j-1}, \qquad
   A \;=\; \frac{1}{x}\sum_{j=0}^n \gamma_j\,\theta(\theta-1)\cdots(\theta-j+1)
@@ -251,7 +256,7 @@ $P(w) = \sum_j \gamma_j E_j(w)$, where $E_j(w) = \prod_{i<j}(-w-i)$.
 It remains to identify $P$ with $B$, and the comparison is made on the profiles rather than on
 $C_c^\infty((0,\infty))$ --- the class \ref{def:locality-pmp} was widened to include, and the only
 one on which $B$'s behaviour is known. Fix $s > 0$ and put $g = H(s\,\cdot)$. Locality gives
-$(Ag)(x) = \sum_j \gamma_j x^{j-1}\partial_x^j H(sx)$, while \ref{lem:symbol-uniqueness}'s
+$(Ag)(x) = \sum_j \gamma_j x^{j-1}\partial_x^j H(sx)$, while \ref{thm:signaling-form}(1)'s
 eigenfunction relation gives $(Ag)(x) = sH(sx)$; equating them and clearing the weight,
 \[
   s\,x\,H(sx) \;=\; \sum_{j=0}^{n} \gamma_j\, x^{j}\,\partial_x^{j} H(sx),
@@ -275,7 +280,7 @@ No injectivity of the inverse Mellin transform is used, and none is available.
 
 % draft: Lemma 12.3
 \begin{lemma}[the moment recursion]\label{lem:moment-recursion}
-\uses{lem:local-polynomial-symbol,lem:mellin-data}
+\uses{lem:local-polynomial-symbol,lem:inversion-symbol}
 Suppose $A$ is local of order $n$, i.e.\ $B$ is a polynomial of degree $n$. Then:
 \begin{enumerate}
 \item $B(0) = 0$; write $B(-z) = z\,Q(z)$ with $Q$ a polynomial of degree $n - 1$;
@@ -307,19 +312,20 @@ showing a general Laplace integral need have no singularity on its axis.)}
 \end{lemma}
 
 \begin{proof}
-(1) By \ref{lem:mellin-data}, $B(-z) = z\,m(z+1)/m(z)$ on the strip. As $z \downarrow 0$,
+(1) By \ref{lem:inversion-symbol}, $B(-z) = z\,m(z+1)/m(z)$ on the strip. As $z \downarrow 0$,
 $m(z) \to 1$ by dominated convergence and $m(z+1) \to m(1) < \infty$ by (H), so $B(0) = 0$;
 since $B$ is a polynomial, $Q(z) := B(-z)/z$ is one of degree $n-1$.
 
 (2) On $0 < z < z_* - 1$ we have the identity $\tilde H(z+1) = B(-z)\tilde H(z)$ between
 functions analytic on the strip $0 < \operatorname{Re} z < z_*$. If $z_* < \infty$, the right
 side is analytic at $z = z_* - 1 + \varepsilon$ for small $\varepsilon$, which extends
-$\tilde H$ analytically through the real point $z_*$. But $\tilde H$ is the Mellin transform
-of the nonnegative $H$, and \ledger{A13} makes the real endpoint of its convergence strip a
-singularity when finite. Hence $z_* = \infty$.
+$\tilde H$ analytically through the real point $z_*$. But $\tilde H(z) = \int_0^\infty
+x^{z-1}H(x)\,dx$ has nonnegative integrand --- $H(x) = \Ex\,e^{-xT_1} \ge 0$ --- which is
+exactly the hypothesis \ledger{A13} is anchored on, and that theorem makes the real endpoint of
+the convergence strip a singularity when finite. Hence $z_* = \infty$.
 
-(3) The recursion is now \ref{lem:mellin-data} on all of $(0,\infty)$, and positivity of $Q$
-follows from $m > 0$.
+(3) The recursion is now \ref{lem:inversion-symbol} on all of $(0,\infty)$, and positivity of
+$Q$ follows from $m > 0$.
 \end{proof}
 
 % draft: Lemma 12.4
@@ -373,7 +379,7 @@ $A = -c'\,\partial_x$, the kernels are the deterministic delays $\mu_{0,x} = \de
 and the signaling problem is the transport equation. This member has no smoothing and is
 excluded by requiring absolutely continuous kernels (\ref{rem:drift-boundary}).
 \item \emph{(Order 2; the Bessel family.)} After normalizing the unit of time so that
-$c_2 = 2$: $B(\theta) = 2\,\theta(\theta - a)$ for some $a > 0$; the kernels are the
+$q_1 = 2$: $B(\theta) = 2\,\theta(\theta - a)$ for some $a > 0$; the kernels are the
 inverse-gamma family $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ of \ref{prop:bessel-family}; and in
 the parabolic gauge the signaling problem is the classical degenerate-parabolic PDE
 \[
@@ -410,15 +416,16 @@ the principle costs an interface when half of it costs nothing. The homogeneity 
 \textbf{[T]} through \ref{cor:semigroup-case}.
 \textbf{The order-2 branch of ($\Rightarrow$) is now machine-checked}, as
 \texttt{exists\_gamma\_form\_of\_isLocalOfOrder\_two}: a local operator of order $2$ forces
-$m(z) = c_2^{\,z}\Gamma(a+z)/\Gamma(a)$ on $(0,\infty)$ with $c_2, a > 0$, which is
-$T_1 \stackrel{d}{=} 1/(c_2\gamma_a)$. \textbf{Both citations enter as hypotheses rather than as
+$m(z) = q_1^{\,z}\Gamma(a+z)/\Gamma(a)$ on $(0,\infty)$ with $q_1, a > 0$, which is
+$T_1 \stackrel{d}{=} 1/(q_1\gamma_a)$ (the Lean declaration names this witness \texttt{c\_2}).
+\textbf{Both citations enter as hypotheses rather than as
 axioms}, phrased so either can be demoted the day it is proved: clause~(2) of
 \ref{lem:moment-recursion} is the named hypothesis \texttt{AllNegMomentsFinite}, and the order
 bound is simply the order $2$. \texttt{\#print axioms} accordingly shows A17 and \emph{neither}
 \ledger{A13} nor \ledger{A14} --- the interfaces sit in the statement, where a reader sees them,
 and not in the trust base.
 \textbf{Where that step's work actually is}: not in the Gamma form, which is one application of
-\ref{lem:gamma-recursion-uniqueness}, but in $a > 0$. Writing $Q(z) = c_2 z + a_0$, positivity of
+\ref{lem:gamma-recursion-uniqueness}, but in $a > 0$. Writing $Q(z) = q_1 z + a_0$, positivity of
 $Q$ on the open half-line gives only $a_0 \ge 0$ --- a linear function positive on $(0,\infty)$
 may vanish at the origin --- so $a_0 = Q(0) = m(1) > 0$ has to be taken as a limit, and that needs
 $m(z+1) \to m(1)$, which is \ref{lem:symbol-vanishes-at-origin}'s dominated-convergence argument
@@ -466,31 +473,46 @@ moments.)}
 \end{theorem}
 
 \begin{proof}
-($\Rightarrow$) A local operator satisfying the positive maximum principle has order at most
-$2$: this is the local case of Courrège's classification, \ledger{A14} --- the jump measure
-vanishes by locality, leaving $c_2(x)\partial^2 + c_1(x)\partial + c_0(x)$ with $c_2 \ge 0$ and
-$c_0 \le 0$. By \ref{lem:local-polynomial-symbol}, $\deg B \le 2$, and $B(0) = 0$ by
-\ref{lem:moment-recursion}(1) --- equivalently, there is no killing, which is (A5).
+($\Rightarrow$) \ref{def:locality-pmp}'s pair of hypotheses --- locality (agreement with a
+differential expression on $C_c^\infty((0,\infty))$) together with the positive maximum
+principle there --- is exactly Courrège's \emph{local} positive maximum principle, whose
+Corollaire~2 (p.~2-10), \ledger{A14}, bounds the order of such an operator by $2$: it is a pure
+second-order diffusion operator with no jump part. By \ref{lem:local-polynomial-symbol},
+$\deg B \le 2$, and $B(0) = 0$ by \ref{lem:moment-recursion}(1) --- equivalently, there is no
+killing, which is (A5).
 
 \emph{Order 1.} Here $Q \equiv c'$ is constant, so $m(z+1) = c'm(z)$ with $m(0)=1$. By
-\ref{lem:log-convexity}, $\log m$ is convex with constant unit increments, hence affine; so
-$m(z) = c'^{\,z}$. Thus $T_1 = 1/c'$ a.s., $B(-z) = c'z$, i.e.\ $B(\theta) = -c'\theta$ and
+\ref{lem:log-convexity}, $\varphi := \log m$ is convex on $(0,\infty)$ and satisfies
+$\varphi(z+1) - \varphi(z) = \log c'$ for every $z > 0$. The difference quotients of a convex
+function are nondecreasing, and on each unit interval they average to $\log c'$; a nondecreasing
+function whose average over every unit interval is the same constant equals that constant
+identically, so $\varphi$ is affine. Hence $m(z) = c'^{\,z}$, the constant fixed by
+$m(0^+) = 1$. Thus $T_1 = 1/c'$ a.s., $B(-z) = c'z$, i.e.\ $B(\theta) = -c'\theta$ and
 $A = -c'x^{-1}\theta = -c'\partial_x$; positivity of $Q$ gives $c' > 0$.
 
-\emph{Order 2.} Here $Q(z) = c_2 z + q_0$ with $c_2 > 0$, by positivity of $Q$ as
+\emph{Order 2.} Here $Q(z) = q_1 z + q_0$ with $q_1 > 0$, by positivity of $Q$ as
 $z \to \infty$ in \ref{lem:moment-recursion}(3), and $q_0 = Q(0) = m(1) > 0$; write
-$Q(z) = c_2(z + a)$ with $a := q_0/c_2 > 0$. The recursion $m(z+1) = c_2(z+a)\,m(z)$ with
+$Q(z) = q_1(z + a)$ with $a := q_0/q_1 > 0$. The recursion $m(z+1) = q_1(z+a)\,m(z)$ with
 $m(0{+}) = 1$ --- the normalisation being \ref{lem:symbol-vanishes-at-origin}'s first limit ---
 has a \emph{unique} log-convex solution by \ref{lem:gamma-recursion-uniqueness}, namely
 \[
-  m(z) \;=\; c_2^{\,z}\,\frac{\Gamma(a + z)}{\Gamma(a)}
-  \;=\; \Ex\Bigl[\bigl(c_2\,\gamma_a\bigr)^{z}\Bigr],
+  m(z) \;=\; q_1^{\,z}\,\frac{\Gamma(a + z)}{\Gamma(a)}
+  \;=\; \Ex\Bigl[\bigl(q_1\,\gamma_a\bigr)^{z}\Bigr],
 \]
-and $m$ is log-convex by \ref{lem:log-convexity}, hence equals it. Thus
-$T_1 \stackrel{d}{=} 1/(c_2\gamma_a)$; the time normalization $c_2 = 2$ gives
-\ref{prop:bessel-family}, the profile is the Bessel-K function, and the operator is computed
-in \ref{ex:bessel-quadratic}: $B(\theta) = 2\theta(\theta - a)$, with the parabolic-gauge form
-as displayed.
+and $m$ is log-convex by \ref{lem:log-convexity}, hence equals it. So $m(z) = \Ex[(q_1\gamma_a)^z]$
+for every real $z > 0$. Both sides are, as functions of $z$, the moment functions of
+$\log(1/T_1)$ and of $\log(q_1\gamma_a)$: they are analytic for $\operatorname{Re} z > 0$
+($m = \tilde H/\Gamma$ by \ref{lem:inversion-symbol} and $\Gamma$'s own analyticity, the right
+side being entire), and, since $|T_1^{-z}|$ and $|(q_1\gamma_a)^z|$ are bounded by $1$ on the
+line $\operatorname{Re} z = 0$, each is continuous up to it as well. The identity therefore
+extends, first by the identity theorem across the open half-plane, then by continuity to the
+line $\operatorname{Re} z = 0$, where it says that $\log(1/T_1)$ and $\log(q_1\gamma_a)$ have
+the same Fourier transform; Fourier uniqueness then identifies the two laws, giving
+$T_1 \stackrel{d}{=} 1/(q_1\gamma_a)$. (This is the one place in this proof that spends
+transform uniqueness on the scale variable itself, rather than on moment data alone.) The time
+normalization $q_1 = 2$ gives \ref{prop:bessel-family}, the profile is the
+Bessel-K function, and the operator is computed in \ref{ex:bessel-quadratic}: $B(\theta) =
+2\theta(\theta - a)$, with the parabolic-gauge form as displayed.
 
 ($\Leftarrow$) \emph{Case (1).} Admissibility is the pure-drift member $F(s) = s/c'$ of (7.1),
 and a first-order operator satisfies the PMP trivially, since $g'(x_0) = 0$ at an interior
@@ -502,7 +524,15 @@ $g''(x_0) \le 0$, so $(Ag)(x_0) = \tfrac12 g''(x_0) \le 0$.
 
 \emph{The homogeneity claim.} By \ref{cor:semigroup-case}, depth-homogeneous members have
 $F(s) = c\,s^{\alpha}$; within the inverse-gamma family the exponent is a pure power only for
-$a = \tfrac12$, where $K_{1/2}$ is elementary and $H(y) = e^{-\sqrt{2y}}$ --- the
+$a = \tfrac12$. Indeed, by \ref{prop:bessel-family}, $e^{-F(s)} =
+\tfrac{2^{1-a}}{\Gamma(a)}(\sqrt{2s})^a K_a(\sqrt{2s})$, and the large-argument asymptotic
+$K_a(w) \sim \sqrt{\pi/(2w)}\,e^{-w}$ as $w \to \infty$ gives
+\[
+  F(s) \;=\; \sqrt{2s} \;-\; \Bigl(\tfrac a2 - \tfrac14\Bigr)\log s \;+\; O(1),
+  \qquad s \to \infty,
+\]
+which is a pure power of $s$ only when the logarithmic coefficient vanishes, i.e.\
+$a = \tfrac12$ --- where $K_{1/2}$ is elementary and $H(y) = e^{-\sqrt{2y}}$ exactly, the
 $\tfrac12$-stable, i.e.\ heat, case. The moment statement is \ref{prop:bessel-family}.
 \end{proof}
 
@@ -523,27 +553,28 @@ Then the family is admissible in the sense of \ref{thm:main-characterization} an
 the kernels are Meijer $G$-function densities. Conversely, every local admissible family of
 order $n$ has $m$ equal to the unique log-convex solution of $m(z+1) = Q(z)m(z)$ for its
 polynomial $Q$; when the roots of $Q$ are real --- necessarily $\le 0$, giving
-$Q(z) = c'\prod(z+a_i)$ with $a_i > 0$ --- this is the family above. Whether
-complex-conjugate root pairs can support an admissible family is left open; we conjecture not.
-
-For the Meijer $G$ identification: the product $\gamma_{a_1}\cdots\gamma_{a_{n-1}}$ has a
-$G^{\,n-1,0}_{\,0,n-1}$ density, for arbitrary distinct shapes, by
-\sscite{springer1970distribution}, Thm.~1, p.~722; the reciprocal and the scale factor $c'$ are
-then absorbed by the $G$-function transformation rules (\sscite{samko1993fractional},
-eqs.~(1.96) and (1.97), p.~22).
+$Q(z) = c'\prod(z+a_i)$ with $a_i > 0$ --- this is the family above, and the laws are
+identified from $m$ as in the proof of \ref{thm:locality}.
 \statusA\quad\ledger{A16}\quad\ledger{A15}\quad\emph{(the HCM tower,
 \sscite{bondesson1992generalized}, Thm.~5.1.1 p.~69 and Thm.~4.3.1 p.~57 with its hypotheses
 on p.~56; and Krull--Webster, \sscite{webster1997log}, Thm.~3.1. Cited, not reproven here.
 \textbf{Assignment.} \ledger{A16} carries admissibility of the displayed family, in two steps:
 that $\HCM$ is closed under products of independent variables and under reciprocals, and that
-$\HCM \subset \GGC \subset \SDclass$. A caution the ledger records and the proof must respect:
+$\HCM \subset \GGC \subset \SDclass$. The first inclusion, $\HCM \subset \GGC$, is
+Theorem~4.3.1, p.~57, whose regularity hypotheses (a)--(c) on p.~56 Bondesson removes on p.~68,
+so it applies to the Gamma densities used here without a separate check. A caution the ledger
+records and the proof must respect:
 $\HCM$ is \emph{not} closed under convolution, so only the multiplicative structure is
 available here --- and the second inclusion, $\GGC \subset \SDclass$, is asserted by Bondesson
 in a single sentence on p.~30 rather than as a numbered theorem, which makes it the thinnest
 link in this node. \ledger{A15} carries the converse direction only, exactly as in
-\ref{thm:locality}. The Meijer $G$ identification is carried by neither entry and needs
-neither: nothing later uses it, and it is cited in the statement to a stated theorem plus two
-printed transformation rules. Two things about it are deliberate. It takes \emph{two} sources
+\ref{thm:locality}; the two hypotheses of Webster's theorem it must discharge are handled in
+the proof below, for the general degree-$(n-1)$ $Q$. \textbf{Two sentences moved out of the
+statement (2026-08-24).} The Meijer $G$ identification is now the proof's closing paragraph,
+and the complex-conjugate-roots aside is now \ref{rem:complex-roots}; neither reordering
+changes what is claimed. The Meijer $G$ identification is carried by neither ledger entry and
+needs neither: nothing later uses it, and it is cited to a stated theorem plus two printed
+transformation rules. Two things about it are deliberate. It takes \emph{two} sources
 because \sscite{springer1970distribution} covers products of gamma variables but not
 reciprocals of them --- its only quotient result is for two factors --- so the inversion
 routes through \sscite{samko1993fractional}. And the $G$-parameters of $T_1$ itself are not
@@ -566,10 +597,31 @@ finite and $\mathbb{P}(T_1 = 0) = 0$.
 of order $n$ by \ref{lem:local-polynomial-symbol}.
 
 \emph{The converse.} This is \ref{lem:moment-recursion} and \ref{lem:log-convexity} together
-with \ledger{A15}, as in the proof of \ref{thm:locality}. A real root $-a_i \ge 0$ of $Q$
+with \ledger{A15}, as in the proof of \ref{thm:locality}, now for the general polynomial $Q$ of
+degree $n-1$. Two hypotheses of Webster's theorem must be discharged, not assumed. The
+asymptotic condition is automatic: $Q$ is a polynomial, so $Q(z+w)/Q(z) \to 1$ as
+$z \to \infty$ for each fixed $w > 0$. The normalization is not automatic --- Webster pins the
+solution with $f(1) = 1$, where this proposition's normalization is $m(0^+) = 1$ --- so apply
+Webster to $\hat m := m/m(1)$, which satisfies $\hat m(1) = 1$ and the same recursion; this
+gives uniqueness of $\hat m$ and hence of $m$, the constant $m(1) = Q(0)\,m(0^+) = Q(0)$ being
+read off the recursion at $z = 0$. A real root $-a_i \ge 0$ of $Q$
 would contradict $Q > 0$ on $(0,\infty)$ together with $Q(0) = m(1) > 0$, so real roots give
 $a_i > 0$, and the Krull--Webster solution is the displayed gamma product.
+
+\emph{The Meijer $G$ identification.} The product $\gamma_{a_1}\cdots\gamma_{a_{n-1}}$ has a
+$G^{\,n-1,0}_{\,0,n-1}$ density, for arbitrary distinct shapes, by
+\sscite{springer1970distribution}, Thm.~1, p.~722; the reciprocal and the scale factor $c'$ are
+then absorbed by the $G$-function transformation rules (\sscite{samko1993fractional},
+eqs.~(1.96) and (1.97), p.~22).
 \end{proof}
+
+% additive: not in the draft. Split off prop:local-ladder's statement (2026-08-24), where it
+% was an aside rather than a mathematical clause of the proposition.
+\begin{remark}[complex roots]\label{rem:complex-roots}
+\uses{prop:local-ladder}
+Whether complex-conjugate root pairs can support an admissible family is left open; we
+conjecture not.
+\end{remark}
 
 % draft: Remark 12.7
 \begin{remark}[the stable slice; Gauss multiplication]\label{rem:stable-slice}
@@ -881,11 +933,11 @@ that $A$ is local of order $n \le 2$ (\ref{thm:locality}'s order bound). Then ex
 \[
   m(z) \;=\; c'^{\,z}
   \qquad\text{or}\qquad
-  m(z) \;=\; c_2^{\,z}\,\frac{\Gamma(a+z)}{\Gamma(a)}
+  m(z) \;=\; q_1^{\,z}\,\frac{\Gamma(a+z)}{\Gamma(a)}
   \qquad (z > 0)
 \]
-holds, with $c' > 0$ in the first case and $c_2, a > 0$ in the second --- that is,
-$T_1 = 1/c'$ almost surely, or $T_1 \stackrel{d}{=} 1/(c_2\gamma_a)$.
+holds, with $c' > 0$ in the first case and $q_1, a > 0$ in the second --- that is,
+$T_1 = 1/c'$ almost surely, or $T_1 \stackrel{d}{=} 1/(q_1\gamma_a)$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{exists\_moment\_form\_of\_isLocalOfOrder}, on A17 and \emph{neither} \ledger{A13} nor
 \ledger{A14}: both are hypotheses of the statement rather than axioms, phrased as \ledger{A17} is
@@ -911,7 +963,8 @@ what the rest of the chapter consumes.)}
 \leanok
 \uses{lem:local-polynomial-symbol,lem:moment-recursion-quotient}
 Order $0$ is excluded as above. At order $1$, $Q \equiv -\gamma_1 =: c'$ is constant and positive,
-so $\log m$ is convex with constant unit increments, hence affine, and $m(z) = c'^{\,z}$. At order
-$2$, $Q(z) = c_2 z + a_0$ with $c_2, a_0 > 0$, and \ref{lem:gamma-recursion-uniqueness} applied to
-$Q(z) = c_2(z + a_0/c_2)$ gives the Gamma form. Orders above $2$ are excluded by hypothesis.
+so $\log m$ is convex with constant unit increments, hence affine (\ref{thm:locality}'s Order-1
+step), and $m(z) = c'^{\,z}$. At order $2$, $Q(z) = q_1 z + a_0$ with $q_1, a_0 > 0$, and
+\ref{lem:gamma-recursion-uniqueness} applied to $Q(z) = q_1(z + a_0/q_1)$ gives the Gamma form.
+Orders above $2$ are excluded by hypothesis.
 \end{proof}
