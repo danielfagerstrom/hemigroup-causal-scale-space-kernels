@@ -135,8 +135,11 @@ Per-section notes known now (from the reports and the current state):
 ### Step 15 — global sweep on the frozen content
 
 **Repetition check (author, after §2).** Local improvements — a fuller section lead, per-axiom
-motivation, then the axioms — can add up to a section that says each thing more than once. Not acted
-on now; at the sweep, read each section once for lead/body/statement redundancy and cut.
+motivation, then the axioms — can add up to a section that says each thing more than once. Done 2026-08-24 (after the sweep):
+four content-level doubles cut — the §2.5 δ-analogy repeat, the §4/§5 additivity-chain
+double, rem:sato-reading's first sentence (superseded by §7's new lead; mirrored), and
+§1/§2's near-verbatim embodiment sentence. The conventional promise/theorem/recap triples
+(embodiment, containment, fractional integration) were kept as convention.
 
 Mechanical re-checks across all files, since each section step could only see its own instance:
 gauge names; every "(H)"/"Assume (H)"; every "absolutely continuous"/"density"; the economy sentences;
