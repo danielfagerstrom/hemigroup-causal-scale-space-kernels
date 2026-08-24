@@ -2,8 +2,10 @@
 % exists for this chapter, so labels are paper-only and there are no shared-statement
 % edges. prop:thorin-subclass is the label §3's vocabulary paragraph forward-references.
 % Adapted refs: "§11" (draft's memory-line evolution) → §9; Prop 9.7(3) → the appendix's
-% prop:pair-regularity. Citekeys (devries1992gamma, thorin1977pareto, thorin1977lognormal,
-% ismail1979special) to be verified by the bibliography task.
+% prop:pair-regularity. Revised in the content review 2026-08-24 (step 10): engineering
+% commentary out of statements, ZOH/covariance claims made honest, tables promoted to
+% floats, fig-filterbank added. "Fractional-order elements" citation pending library
+% acquisition URBZNXEX (Oustaloup et al. 2000).
 
 \section{Implementation}\label{sec:implementation}
 
@@ -18,19 +20,26 @@ cascade
 \[
   u_0 := f, \qquad u_{k+1} := \mu_{x_k,\,x_{k+1}} * u_k .
 \]
-Then $u_k = \Phi_{0, x_k} f$ \emph{exactly}, for every knot set. Consequently the only
-discretization error in a digital implementation is the time discretization of the increment
-filters; moreover, refining the knot set changes nothing at the old knots, so intermediate
-scales can be added at any time without recomputation error.
+Then $u_k = \Phi_{0, x_k} f$ \emph{exactly}, for every knot set; and refining the knot set
+changes nothing at the old knots.
 \end{proposition}
 
 \begin{proof}
 Immediate induction from the hemigroup (A6): $\mu_{0,x_{k+1}} = \mu_{x_k, x_{k+1}} * \mu_{0,x_k}$.
 \end{proof}
 
-This is a genuine advantage over discretizing the memory-line evolution of
-\S\ref{sec:signaling}, where the scale direction carries truncation error; the cascade is not
-an approximation scheme for the family but the family itself, sampled.
+So the only discretization error in a digital implementation is the time discretization of
+the increment filters, and intermediate scales can be added at any time without
+recomputation error. This is a genuine advantage over discretizing the memory-line evolution
+of \S\ref{sec:signaling}, where the scale direction carries truncation error; the cascade is
+not an approximation scheme for the family but the family itself, sampled.
+
+For an implementer the property to want next is \emph{rationality} of the increment
+transfer: a rational transfer function is realized by finitely many first-order states,
+time-recursively, with no stored history. The Gamma family has it
+(Figure~\ref{fig:filterbank}).
+
+\input{fig-filterbank}
 
 \begin{proposition}[the Gamma cascade]\label{prop:gamma-cascade}
 For the Gamma family with integer $\gamma$, the increment filter is rational:
@@ -43,35 +52,47 @@ $1/x_k$). Each section admits the one-state realization, free of input different
   \dot w = \frac{y - w}{x_{k+1}}, \qquad
   v \;=\; \frac{x_k}{x_{k+1}}\, y \;+\; \Bigl(1 - \frac{x_k}{x_{k+1}}\Bigr)\, w,
 \]
-($y$ input, $v$ output), whose transfer is $(1 + x_k s)/(1 + x_{k+1} s)$; the output is a
-\emph{convex combination} of input and state, so positivity and unit mass are manifest at the
-realization level. With sampled-and-held input the exact (exponential-integrator) update is
-\[
-  w_{n+1} = e^{-\Delta/x_{k+1}}\, w_n + \bigl(1 - e^{-\Delta/x_{k+1}}\bigr)\, y_n ,
-\]
-so the discrete filter is exact for zero-order-held signals, unconditionally stable (real pole
-in $(0,1)$), and free of overshoot and ringing. A full scale space over knots
-$x_1 < \cdots < x_M$ costs $\gamma M$ first-order states and $O(\gamma M)$ multiply-adds per
-sample.
+($y$ input, $v$ output), whose transfer is $(1 + x_k s)/(1 + x_{k+1} s)$. The output is a
+\emph{convex combination} of input and state.
 \end{proposition}
 
 \begin{proof}
 The transfer identity:
 $v = \tfrac{x_k}{x_{k+1}} y + \bigl(1 - \tfrac{x_k}{x_{k+1}}\bigr)\tfrac{y}{1 + x_{k+1}s}
-= y\,\tfrac{1 + x_k s}{1 + x_{k+1} s}$; the rest is standard first-order filter theory.
+= y\,\tfrac{1 + x_k s}{1 + x_{k+1} s}$; the convex-combination clause is
+$0 < x_k/x_{k+1} < 1$.
 \end{proof}
 
+The convex combination is what makes positivity and unit mass manifest at the realization
+level. In discrete time, write $\Delta$ for the sample interval and $y_n := y(n\Delta)$; with
+sampled-and-held input each section admits the exact exponential-integrator update
+\[
+  w_{n+1} = e^{-\Delta/x_{k+1}}\, w_n + \bigl(1 - e^{-\Delta/x_{k+1}}\bigr)\, y_n ,
+\]
+unconditionally stable (real pole in $(0,1)$) and free of overshoot and ringing. Each
+\emph{section} is exact for zero-order-held input; the cascade is not exact end-to-end, the
+input to the next section being the previous section's response rather than a held signal,
+so time discretization is a genuine approximation --- what it preserves exactly is
+positivity, unit mass and stability, the update being a convex combination; what it does not
+preserve is the end-to-end kernel and covariance under dilations not commensurate with
+$\Delta$. A full scale space over knots $x_1 < \cdots < x_M$ costs $\gamma M$ first-order
+states and $O(\gamma M)$ multiply-adds per sample.
+
 \begin{remark}[covariance in practice]\label{rem:covariance-practice}
-With geometric knots $x_k = q^k x_0$ the discrete system is exactly covariant under rescalings
-$\sigma \in q^{\ZZ}$ by a shift of the ladder; and because the underlying continuum family
-exists at \emph{every} scale, arbitrary $\sigma$ are handled by re-evaluating the same family
-at shifted knots --- kernels between knots belong to the family, so resampling the ladder is
-principled. This is the operational content of continuous covariance, and the point of the
-pole--zero structure: a pure-pole cascade (truncated exponentials with distinct time
-constants) also marches a hemigroup, but its kernels are hypoexponential laws whose family is
-\emph{not} dilation-closed, so only the discrete covariance of the ladder itself survives.
-The zeros are what the hemigroup increments of the Sato--Gamma process add, and they are
-exactly what buys the continuum.
+With geometric knots $x_k = q^k x_0$ the \emph{continuum} cascade is carried to itself by
+every rescaling $\sigma \in q^{\ZZ}$, as a shift of the ladder; in the sampled system the
+time constants are tied to the sample interval $\Delta$, so the shift is exact on the knot
+set but not on the sampled filters. Because the underlying family exists at \emph{every}
+scale, an arbitrary $\sigma$ is handled by instantiating the same family at the shifted
+knots --- a new filter bank with new time constants and re-initialized state, not a
+relabelling of the running one; the operation is principled exactly because the kernels
+between knots belong to the family. This is the operational content of continuous
+covariance, and the point of the pole--zero structure: a pure-pole cascade (truncated
+exponentials with distinct time constants), the finite form of the time-causal limit-kernel
+construction of \sscite{lindeberg2016time}, also marches a hemigroup, but its kernels are
+hypoexponential laws whose family is \emph{not} dilation-closed, so only the discrete
+covariance of the ladder itself survives. The zeros are what the hemigroup increments of the
+Sato--Gamma process add, and they are exactly what buys the continuum.
 \end{remark}
 
 \begin{remark}[implementing the local corner]\label{rem:local-implementation}
@@ -83,8 +104,8 @@ kernels per knot --- burdened by the polynomial tails $t^{-1-a}$, so truncation 
 only polynomially in the window length; (ii) marching the memory-line PDE
 $\partial_t u = \tfrac12 u_{xx} + \tfrac{\beta}{x}u_x$ in time (implicit in $x$, with care at
 the degenerate boundary), which reintroduces scale-direction discretization error; or (iii)
-rational approximation of the irrational symbol, as for fractional-order elements in filter
-and control design, with state count growing logarithmically in the required bandwidth ---
+rational approximation of the irrational symbol, in the manner standard for
+fractional-order elements in filter and control design, with state count growing logarithmically in the required bandwidth ---
 made systematic within the axioms in Proposition~\ref{prop:thorin-subclass} below. All three
 are workable; none matches the cascade of Proposition~\ref{prop:gamma-cascade} in simplicity
 or exactness. This is the practical face of Theorem~\ref{thm:locality}: locality of the
@@ -129,14 +150,16 @@ Proposition~\ref{prop:pair-regularity}(2);
 \]
 \item the kernels are generalized gamma convolutions (GGC).
 \end{enumerate}
-In that case, for any atomic approximation $U_N = \sum_{i=1}^N w_i\,\delta_{\tau_i}$
-converging to $U$, the exponents $F_N(s) = b_0 s + \sum_i w_i \log(1 + s/\tau_i)$ are
-\emph{themselves admissible} --- finite multi-Gamma members of
-Theorem~\ref{thm:main-characterization} --- with $F_N \to F$ pointwise, hence weak convergence
-of the kernel families at every scale; positivity and unit mass hold \emph{exactly at every
-truncation level}, the approximation staying inside the axiom class rather than merely near
-it. For integer weights the increments over any knot ladder are rational of order
-$\sum_i w_i$, realized by the cascade of Proposition~\ref{prop:gamma-cascade} applied per
+In that case, for any atomic $U_N = \sum_{i=1}^N w_i\,\delta_{\tau_i}$ such that
+$F_N(s) := b_0 s + \sum_i w_i \log(1 + s/\tau_i)$ converges to $F$ pointwise --- as it does
+for the standard quadratures of $U$, the weights carrying the two integrability conditions
+--- the exponents $F_N$ are \emph{themselves admissible}, finite multi-Gamma members of
+Theorem~\ref{thm:main-characterization}, and the kernel families converge weakly at every
+scale; positivity and unit mass hold \emph{exactly at every truncation level}, the
+approximation staying inside the axiom class rather than merely near it. For integer weights
+the increments over any knot ladder are rational of order $\sum_i w_i$ up to the pure delay
+$e^{-b_0(x_{k+1}-x_k)s}$ contributed by the drift --- itself exactly implementable as a
+sample delay --- realized by the cascade of Proposition~\ref{prop:gamma-cascade} applied per
 Thorin node, with time constants $x/\tau_i$.
 \end{proposition}
 % (environment closes here; the discussion paragraph after the proof is body text)
@@ -166,24 +189,32 @@ Bessel operator and density expressible through the Bessel functions of the firs
 kind, $u(\tau) \propto \bigl[\tau\,\bigl(J_a^2 + Y_a^2\bigr)\bigl(\sqrt{2\tau}\bigr)\bigr]^{-1}$
 (\sscite{ismail1979special}), decaying like $\tau^{-1/2}$ at infinity in accordance with
 $F(s) \sim \sqrt{2s}$. And the gamma-product ladder of Proposition~\ref{prop:local-ladder} is
-GGC since $\HCM \subset \GGC$ (\sscite{bondesson1992generalized}). The conclusion deserves
-stating plainly: \textbf{the Gamma family is the implementation substrate for the entire
-theory} --- even when Bessel semantics are wanted, the machine one builds is a bank of
-first-order Gamma sections; and since the Bessel Thorin density decays like $\tau^{-1/2}$,
-logarithmically spaced nodes, a fixed number per decade of covered bandwidth, suffice ---
-substantiating the state-count claim of Remark~\ref{rem:local-implementation}(iii). In
-practice the node data $(\tau_i, w_i)$ come either from quadrature of $U$ or from direct
-rational fitting of the increment transfer functions; the Thorin structure guarantees that a
-fit with \emph{positive} weights exists.
+GGC since $\HCM \subset \GGC$ (\sscite{bondesson1992generalized}). The conclusion deserves stating plainly: \textbf{the Gamma family is the implementation
+substrate for the entire Thorin subclass} --- every family named in this paper --- even when
+Bessel semantics are wanted, the machine one builds is a bank of first-order Gamma sections.
+(Outside the subclass --- the non-completely-monotone kernels, the Dickman rays with their
+echo singularities foremost --- no Gamma bank converges from inside the class, and an
+implementer is left with direct convolution.) As a design heuristic: the Bessel Thorin
+density is asymptotically a power law, hence scale-invariant over the covered band, so
+logarithmically spaced nodes --- a fixed number per decade of bandwidth --- are the natural
+quadrature; we state this as a heuristic, with no error bound claimed, which is the honest
+form of the state-count claim of Remark~\ref{rem:local-implementation}(iii). In practice the
+node data $(\tau_i, w_i)$ come either from quadrature of $U$ or from direct rational fitting
+of the increment transfer functions; the Thorin structure guarantees that a fit with
+\emph{positive} weights exists.
 
 \paragraph{Comparison of the three corners.}
+Table~\ref{tab:corners} collects the comparison.
 
-\begin{center}
+\begin{table}[t]
+\centering
+\caption{The three corners from the implementer's point of view.}
+\label{tab:corners}
 \begin{tabular}{@{}llll@{}}
 \toprule
- & Gamma (Prop.~\ref{prop:gamma-kernels}) & Bessel (Prop.~\ref{prop:bessel-family}) & stable (\sscite{fagerstrom2005temporal}) \\
+ & Gamma (Prop.~\ref{prop:gamma-kernels}) & Bessel (Prop.~\ref{prop:bessel-family}) & stable (Cor.~\ref{cor:semigroup-case}, Prop.~\ref{prop:stable-family}) \\
 \midrule
-axiomatic role & nonlocal medium, order-$0$ symbol & local medium + PMP (Thm~\ref{thm:locality}) & homogeneous (Cor.~\ref{cor:semigroup-case}) \\
+axiomatic role & nonlocal medium, rational symbol (Ex.~\ref{ex:gamma-signaling}) & local medium + PMP (Thm~\ref{thm:locality}) & homogeneous (Cor.~\ref{cor:semigroup-case}) \\
 kernels & $\Gamma(\gamma,\,x)$ & inverse-gamma, shape $a$ & one-sided $\alpha$-stable \\
 moments & all finite; $\Ex\,T_x = \gamma x$ & $n$-th iff $n < a$ & none \\
 tails & exponential & $t^{-1-a}$ & $t^{-1-\alpha}$ \\
@@ -193,13 +224,30 @@ scale covariance & continuous & continuous & continuous \\
 medium (Rmk~\ref{rem:markov-media}) & multiplicative jump process & diffusion + drift & $\alpha \ge \tfrac12$: Lévy; $\alpha < \tfrac12$: none \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
-The recommendation implicit in the table: the Gamma family as the default measurement
+The recommendation implicit in Table~\ref{tab:corners}: the Gamma family as the default measurement
 front-end; the Bessel family when a local PDE medium or a diffusion interpretation is
 required; the stable family when strict depth-homogeneity is required and heavy tails are
 acceptable.
 
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig-kernels.png}
+\caption{Time-causal scale-space kernels at matched mean delay $1$ (stable: median $1$, its
+mean being infinite). (a) linear scale; (b) log--log,
+with the power-law guides $t^{-3}$ (inverse-gamma, $a=2$) and $t^{-3/2}$
+($\tfrac12$-stable).}
+\label{fig:kernels}
+\end{figure}
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig-kernels-mode.png}
+\caption{The same comparison at matched mode delay $= 1$, the normalization of the 2005
+influence-curve discussion. (a) linear scale; (b) log--log, with the exact power-law
+asymptotes.}
+\label{fig:kernels-mode}
+\end{figure}
 \begin{example}[numerical illustration]\label{ex:tail-contrast}
 Figure~\ref{fig:kernels} compares the kernels of the three corners at matched delay: Gamma
 kernels with $\gamma \in \{1, 2, 4\}$ and scale $x = 1/\gamma$ (mean delay $1$); the
@@ -207,14 +255,6 @@ Bessel/inverse-gamma kernel with $a = 2$ and scale $x^2/2 = a - 1$ (mean delay $
 $\tfrac12$-stable kernel of \sscite{fagerstrom2005temporal} normalized to median delay $1$,
 its mean being infinite.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{fig-kernels.png}
-\caption{Time-causal scale-space kernels at matched delay. (a) linear scale; (b) log--log,
-with the power-law guides $t^{-3}$ (inverse-gamma, $a=2$) and $t^{-3/2}$
-($\tfrac12$-stable).}
-\label{fig:kernels}
-\end{figure}
 
 Panel (a) shows the bodies: at matched mean the Gamma kernels are the most concentrated,
 sharpening with $\gamma$ (mode $(\gamma - 1)/\gamma \to$ mean), while the inverse-gamma
@@ -225,9 +265,12 @@ tails fall exponentially, the inverse-gamma and stable tails follow the powers $
 $t^{-3/2}$ of Remark~\ref{rem:trilemma}. The practical consequence is quantified by the
 window length $T_p$ capturing a fraction $p$ of the kernel mass ($\int_0^{T_p}\phi = p$), the
 quantity governing the truncation error of route (i) in
-Remark~\ref{rem:local-implementation}:
+Remark~\ref{rem:local-implementation} (Table~\ref{tab:windows-mean}):
 
-\begin{center}
+\begin{table}[t]
+\centering
+\caption{Window lengths $T_p$ capturing mass $p$, at matched delay $1$ (stable: median $1$).}
+\label{tab:windows-mean}
 \begin{tabular}{@{}lrr@{}}
 \toprule
 kernel (delay $1$) & $T_{0.99}$ & $T_{0.999}$ \\
@@ -239,37 +282,34 @@ inverse-gamma, $a = 2$ & $6.73$ & $22.0$ \\
 $\tfrac12$-stable & $2.90 \times 10^{3}$ & $2.90 \times 10^{5}$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 For the Gamma family each extra decade of captured mass costs a fixed additive window
 increment (exponential tails); for the inverse-gamma with $a = 2$ it costs a factor
-$10^{1/a} \approx 3.2$; for the $\tfrac12$-stable a factor $10^{1/a} = 100$ --- capturing
+$10^{1/a} \approx 3.2$; for the $\tfrac12$-stable, of index $\alpha = \tfrac12$, a factor
+$10^{1/\alpha} = 100$ --- capturing
 $99.9\%$ of its mass requires a window five orders of magnitude longer than its median
 delay. This is the quantitative content of the statement that the 2005 kernels are too
 heavy-tailed for practical measurement, and of its resolution within the hemigroup class.
 
 Since the stable mean is infinite, the delay proxy used in the influence-curve discussion of
-\sscite{fagerstrom2005temporal}, \S7, is the \emph{mode}, and Figure~\ref{fig:kernels-mode}
+\sscite{fagerstrom2005temporal}, \S8, is the \emph{mode}, and Figure~\ref{fig:kernels-mode}
 repeats the experiment in that normalization: matched mode delay $1$, i.e.\
 $x = 1/(\gamma - 1)$ for the Gamma kernels ($\gamma = 1$ is omitted, its mode sitting at the
 onset), $x^2/2 = a + 1 = 3$ for the inverse-gamma, and $x^2/2 = 3/2$ for the
 $\tfrac12$-stable.
 
-\begin{figure}[t]
-\centering
-\includegraphics[width=\textwidth]{fig-kernels-mode.png}
-\caption{The same comparison at matched mode delay $= 1$, the normalization of the 2005
-influence-curve discussion. (a) linear scale; (b) log--log, with the exact power-law
-asymptotes.}
-\label{fig:kernels-mode}
-\end{figure}
 
 Matching at the peak is the normalization most favorable to the heavy-tailed kernels in the
 body --- panel (a) shows the $\Gamma(\gamma{=}2)$ and inverse-gamma bodies nearly coinciding
 through the peak, so the families are barely distinguishable by their peak response --- and it
-makes the separation in the delay statistics all the starker:
+makes the separation in the delay statistics all the starker
+(Table~\ref{tab:windows-mode}):
 
-\begin{center}
+\begin{table}[t]
+\centering
+\caption{The same comparison at matched mode delay $1$, the 2005 normalization.}
+\label{tab:windows-mode}
 \begin{tabular}{@{}lrrr@{}}
 \toprule
 kernel (mode $1$) & mean & $T_{0.99}$ & $T_{0.999}$ \\
@@ -280,10 +320,12 @@ inverse-gamma, $a = 2$ & $3$ & $20.2$ & $66.1$ \\
 $\tfrac12$-stable & $\infty$ & $1.91 \times 10^{4}$ & $1.91 \times 10^{6}$ \\
 \bottomrule
 \end{tabular}
-\end{center}
+\end{table}
 
 At matched mode, capturing $99.9\%$ of the $\tfrac12$-stable kernel requires a window six
 orders of magnitude beyond the peak. Both figures and both tables are generated by the
 accompanying script \texttt{make-figures.py}; the power-law guides in the tail panels are the
-exact asymptotes $\theta^a t^{-1-a}/\Gamma(a)$ and $\sqrt{\theta/\pi}\, t^{-3/2}$.
+exact asymptotes $\vartheta^{\,a}\, t^{-1-a}/\Gamma(a)$ and $\sqrt{\vartheta/\pi}\, t^{-3/2}$,
+with $\vartheta := x^2/2$ the scale parameter of the inverse-gamma law in the respective
+normalization.
 \end{example}
