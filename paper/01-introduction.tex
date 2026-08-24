@@ -10,30 +10,38 @@
 
 This paper characterizes the time-causal scale spaces: the families of smoothing operators
 through which an uncommitted observer can measure a temporal signal at all scales at once.
-The axioms are those of causal, covariant measurement, with one change against the classical
-axiomatics --- the cascade property is stated in its weakest defensible form, as a
-two-parameter \emph{hemigroup}
+A visual or auditory front end measures its input before anything is known about what the
+signal will contain, so it must hold records at every scale simultaneously; and in time it
+must do so causally --- the future is unavailable --- and out of its own state --- the past
+cannot be revisited. The spatial form of this programme is Gaussian scale space; this paper
+settles the temporal form. The axioms are those of causal, covariant measurement, with one
+change against the classical axiomatics --- the cascade property is stated in its weakest
+defensible form, as a two-parameter \emph{hemigroup}
 \[
   \Phi_{y,z}\,\Phi_{x,y} \;=\; \Phi_{x,z}, \qquad 0 \le x \le y \le z,
 \]
-rather than a one-parameter semigroup $\Phi_\tau \Phi_{\tau'} = \Phi_{\tau+\tau'}$. Under
-these axioms the admissible kernel families are completely characterized
-(Theorem~\ref{thm:main-characterization}): they are exactly
+rather than a one-parameter semigroup $\Phi_\tau \Phi_{\tau'} = \Phi_{\tau+\tau'}$: the
+composite of two measurements is a measurement, but it need not depend on the amount of
+scale crossed alone (Figure~\ref{fig:cascade}). Under these axioms the admissible kernel
+families are completely characterized (Theorem~\ref{thm:main-characterization}): in the
+canonical scale parametrization fixed in \S\ref{sec:covariance}, they are exactly
 \[
   \phi_x(t) \;=\; \Lap^{-1}\bigl[\,e^{-F(xs)}\,\bigr](t), \qquad
   F(s) = b_0\,s + \int_0^\infty\bigl(1 - e^{-st}\bigr)\,\frac{k(t)}{t}\,dt,
   \quad k \ \text{nonincreasing},
 \]
-the Laplace exponents of the \emph{self-decomposable} laws --- equivalently, the kernels are
-the marginal densities of self-similar additive (Sato) subordinators. The class contains
-members with all moments finite. The simplest of these, and the one the implementation half
-of the paper builds on, is the Gamma family
+the Laplace exponents of the \emph{self-decomposable} laws --- the delays $T$ that shrink
+into themselves, $T \stackrel{d}{=} cT + R_c$ with $R_c$ independent, for every
+$c \in (0,1)$ --- equivalently, the kernels are the marginal laws of self-similar additive
+(Sato) subordinators. The class contains members with all moments finite. The simplest of
+these, and the one the implementation half of the paper builds on, is the Gamma family
 \[
   \phi_x(t) \;=\; \frac{t^{\gamma-1}\,e^{-t/x}}{\Gamma(\gamma)\,x^{\gamma}},
 \]
-attractive on every practical axis at once: its mean delay is finite, $\gamma x$; its tails
-are exponential; its scale covariance is exact and continuous; and it is computed by a
-cascade of first-order recursive filters.
+whose mean delay is finite, $\gamma x$; whose tails are exponential; whose scale covariance
+is exact and continuous; and which is computed, for integer $\gamma$, by a cascade of
+first-order recursive filters. (What the family gives up is locality of its memory-line
+medium --- the trade-off classified in \S\ref{sec:locality}.)
 
 The classical constructions are recovered inside this class, and their limitations are
 located by it. The Gaussian scale space that answers the corresponding spatial question
@@ -58,26 +66,33 @@ assumption: that the composite depends only on the total \emph{amount} of scale 
 measurement stages are interchangeable (\S\ref{sec:measurement-cascade}). The hemigroup form
 keeps the first assumption and drops the second; every other axiom --- causality, linearity,
 positivity, unit area, continuity, translation covariance, and \emph{full continuous} scale
-covariance --- is retained verbatim, and the derivation of the semigroup theory is rerun in
-the same order with the same tools: Laplace transforms, two functional equations, and the
+covariance --- is retained, restated only as the two-parameter setting requires: scale
+covariance with the relabelling of the scale axis left free
+(\S\ref{sec:measurement-covariance}), and the extended point as the diagonal condition
+$\Phi_{x,x} = \Id$. One further difference is disclosed where it matters
+(Remarks~\ref{rem:axiom-provenance} and~\ref{rem:drift-boundary}): the kernels are no longer
+required to be continuous functions, which admits a degenerate pure-delay member. The
+derivation of the semigroup theory is then rerun in the same order with the same tools: Laplace transforms, two functional equations, and the
 Bernstein-function calculus. The analogues of its Theorems~3--5 are numbered $3'$--$5'$
-below. The extremal stable family is precisely the sub-case recovered when
-stage-interchangeability is reimposed (Corollary~\ref{cor:semigroup-case}), and the heavy
-tails are thereby exposed as the price of that tacit assumption, not of causality and
-covariance (Remark~\ref{rem:heavy-tails}).
+below. When stage-interchangeability is reimposed, the recovered sub-case is the extremal stable
+family together with the pure delay at its boundary (Corollary~\ref{cor:semigroup-case}),
+and the heavy tails are thereby exposed as the price of that tacit assumption, not of
+causality and covariance (Remark~\ref{rem:heavy-tails}).
 
 The second half of the paper develops the theory over the memory line, and the embodiment
-principle of the semigroup theory, \S5 --- the observer cannot revisit its past, so whatever
-of the signal's history is to influence the present output must be carried in the observer's
-own state --- appears as theorem content. The signaling form, Theorem~$4'$
-(Theorem~\ref{thm:signaling-form}), inverts the evolution across scale into an evolution in
-present time over the memory half-line,
+principle of the semigroup theory (\S5 of that paper) --- the observer cannot revisit its
+past, so whatever of the signal's history is to influence the present output must be carried
+in the observer's own state --- appears as theorem content. Under a mild standing hypothesis
+on the exponent --- (H), stated in \S\ref{sec:signaling} and satisfied by every family of
+\S\ref{sec:examples} except the Gamma family at small shape --- the signaling form,
+Theorem~$4'$ (Theorem~\ref{thm:signaling-form}), inverts the evolution across scale into an
+evolution in present time over the memory half-line,
 \[
   \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t),
 \]
 with the signal entering as boundary data at zero scale. The operator $A$ is constructed in
 \S\ref{sec:signaling} by harmonic analysis in the scale variable, and it is the unique
-operator of its kind; the construction comes with an exact account of what the memory holds.
+inversion in its covariance class (Theorem~\ref{thm:signaling-form}(3)); the construction comes with an exact account of what the memory holds.
 At each instant, the memory line stores the analytic family of Riemann--Liouville integrals
 of the past signal: the observer's embodiment of its past is fractional integration.
 
@@ -87,24 +102,28 @@ derivative-of-Gaussian receptive fields, is an instantaneous readout of that sam
   \partial_t^n u \;=\; A^n u :
 \]
 differentiation is a re-indexing of the embodied record --- for the Gamma family, a binomial
-subtraction of coexisting filter states --- and no second memory is needed to differentiate.
-And the locality theorem, Theorem~$5'$ (Theorem~\ref{thm:locality}), classifies the
-memory-line media: locality of the operator alone admits a ladder of every differential
-order, and the positive maximum principle closes the ladder at order two, where it leaves
-the one-parameter Bessel family
+subtraction of coexisting filter states --- and no second memory is needed to differentiate,
+up to an order bound set by the same hypothesis (H). And the locality theorem, Theorem~$5'$
+(Theorem~\ref{thm:locality}), classifies the memory-line media: locality of the operator
+alone admits a ladder of every differential order, and the positive maximum principle closes
+the ladder at order two, where it leaves a degenerate transport member and the
+one-parameter Bessel family
 \[
   A \;=\; \tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x ,
 \]
 unfolding the isolated heat case of the semigroup theory's Theorem~5, with the drift weight
 $\beta$ buying any prescribed finite number of kernel moments. On the implementation side
 (\S\ref{sec:implementation}) the hemigroup itself is the algorithm: the discrete cascade
-over any set of scale knots reproduces the continuum family exactly at the knots, and finite
-Gamma cascades approximate the entire completely-monotone-kernel subclass from inside the
-axiom class. Appendix~\ref{sec:appendix-memory} carries Theorem~$3'$, the scale-Cauchy
+over any set of scale knots reproduces the continuum family exactly at the knots --- each
+increment, for the Gamma family, a pole--zero filter section whose zero moves with the finer
+scale, the zeros being exactly what the hemigroup adds --- and finite Gamma cascades
+approximate the entire completely-monotone-kernel subclass from inside the axiom class, with
+rational cascade realizations at integer weights.
+Appendix~\ref{sec:appendix-memory} carries Theorem~$3'$, the scale-Cauchy
 problem (Theorem~\ref{thm:scale-cauchy}) --- a fractional relaxation equation across scale
 whose memory kernel is the function $k$ of the representation itself --- together with the
-Sonine conservation identity, by which the infinitesimal smoothing applied at each scale is
-exactly invertible: no step of the cascade destroys information.
+Sonine conservation identity, by which the memory operator applied at each scale has an
+explicit inverse, the potential kernel.
 
 One paragraph on the relation to the existing time-causal scale-space theory, since a
 complete time-causal, time-recursive construction already exists in the literature
@@ -114,10 +133,26 @@ which contain the Poisson scale space; covariance under the discrete subgroup $q
 gives the semi-selfdecomposable stratum; and full covariance gives the present class. The
 time-causal limit kernel itself has a completely monotone memory kernel, so it is a fully
 covariant member of the class characterized here --- in retrospect, the first-discovered
-member: a construction that preceded the classification explaining it. What this paper adds
-is the classification, the continuous-covariance guarantee for the whole class, and the
-structure that comes with it --- the signaling form, the locality classification, and the
-exactness of the cascade at arbitrary knots.
+member: a construction that preceded the classification explaining it.
+
+The contributions, each with the section that carries it:
+\begin{itemize}
+\item the characterization of the time-causal scale spaces under the hemigroup axioms ---
+  exactly the self-decomposable Laplace exponents, with the gauge and exponent unique
+  (Theorem~\ref{thm:main-characterization}, \S\ref{sec:characterization});
+\item continuous scale covariance for the whole class, with the discrete cascade exact at
+  every set of scale knots (\S\ref{sec:implementation});
+\item the signaling form: the scale evolution inverted into an evolution in present time,
+  with the unique covariant inversion and the exact account of what the memory holds
+  (Theorem~\ref{thm:signaling-form}, \S\ref{sec:signaling});
+\item the classification of the local, positivity-respecting memory-line media --- the
+  Bessel family, closing the ladder at order two (Theorem~\ref{thm:locality},
+  \S\ref{sec:locality});
+\item the temporal $N$-jet as an instantaneous readout of the embodied state
+  (\S\ref{sec:jet});
+\item machine-checked proofs of the central results, resting on two cited analytic facts
+  (\S\ref{sec:machine-checked}).
+\end{itemize}
 
 The paper is purely temporal; composition with a spatial scale space is orthogonal to
 everything done here. The organization follows the derivation. \S\ref{sec:measurement}
@@ -142,8 +177,9 @@ exactly what. It is self-contained: nothing below depends on reading the formal 
 \begin{itemize}
 \item Theorem~\ref{thm:main-characterization}, the characterization: a family
 $(\Phi_{x,y})$ satisfies (A1)--(A8) and (ND) if and only if it is convolution by the kernels
-of an exponent of the form (7.1), read through a gauge --- together with the uniqueness of
-the pair (gauge, exponent). All three parts are verified: the construction, the analysis,
+of an exponent of the form (7.1) --- the representation displayed at the start of this
+introduction --- read through a gauge, an increasing reparametrization of the scale axis
+(\S\ref{sec:covariance}); together with the uniqueness of the pair (gauge, exponent). All three parts are verified: the construction, the analysis,
 and the uniqueness.
 \item Theorem~\ref{thm:signaling-form}, the signaling form: the profiles $H(s\,\cdot)$ are
 eigenfunctions of the inversion operator $A$ with eigenvalue $s$; the field solves the
@@ -157,8 +193,9 @@ infinite divisibility of the exponents (Theorem~\ref{thm:increments-bernstein}),
 similarity form forced by covariance. In the appendix, the memory kernel, its transform, the
 Sonine conservation identity $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}$ and the existence
 and uniqueness of the potential kernel are verified. Of \S\ref{sec:signaling}, every
-numbered item is. Of \S\ref{sec:locality}, the log-convexity of the moment function
-(Lemma~\ref{lem:log-convexity}), the vanishing $B(0) = 0$
+numbered result is. Of \S\ref{sec:locality}, the classification step
+(Lemma~\ref{lem:local-polynomial-symbol}, both directions), the log-convexity of the moment
+function (Lemma~\ref{lem:log-convexity}), the vanishing $B(0) = 0$
 (Lemma~\ref{lem:moment-recursion}(1)) and the uniqueness of the log-convex solution of the
 moment recursion in the order-2 case (Lemma~\ref{lem:gamma-recursion-uniqueness}) are.
 
@@ -192,12 +229,7 @@ the theory of completely monotone and Bernstein functions --- the Bernstein--Wid
 closure of $\BF$ under pointwise limits, uniqueness of the Lévy--Khintchine triple,
 composition rules. Formalizing led us to replace five arguments by shorter ones that use the
 \emph{representation} (7.1) directly, and those five are now the proofs printed in this
-paper: Theorem~\ref{thm:increments-bernstein} extracts the limiting triple from a weak limit
-instead of invoking closure; Lemma~\ref{lem:potential-kernel} constructs the potential
-kernel as a subordinator's potential measure instead of representing it by
-Bernstein--Widder; and three proofs in \S\ref{sec:signaling} lose an appeal to Stirling's
-formula, to the semigroup property of the Riemann--Liouville family, and to Mellin
-uniqueness respectively. What survives is exactly the place where the derivative-sign
+paper; \S\ref{sec:conclusions} names them. What survives is exactly the place where the derivative-sign
 definition is irreducible: $B(s) = sF'(s)$ in Lemma~\ref{lem:selfdecomposable-exponents} has
 no meaning until the representation is in hand, which is why fact~(2) above is expected to
 be permanent. The same policy runs in the other direction: classical results of structural
@@ -220,20 +252,20 @@ development deliberately does not define; it is cited, not verified.
 implementation, formalized only where they were cheap.
 
 \S\ref{sec:locality} is a mixed case and worth separating out, because the obstruction there
-is narrower than it first appears. Three of its lemmas are verified --- the log-convexity of
-the moment function, the vanishing $B(0) = 0$, and the uniqueness of the log-convex solution
-of the moment recursion in the order-2 case --- and none of them needed anything Mathlib
-lacks. That last one deserves a word, because it removes a citation the theorem was stated
-to rest on: Theorem~\ref{thm:locality} applies the recursion $m(z{+}1) = Q(z)m(z)$ only
-where $Q$ is linear, and there the Krull--Webster uniqueness theorem is the classical
-Bohr--Mollerup theorem, which is available; the order-$n$ ladder of
+is narrower than it first appears. Its structural spine is verified: the classification step
+--- Lemma~\ref{lem:local-polynomial-symbol}, local operators are exactly the polynomial
+symbols, in both directions --- together with the log-convexity of the moment function, the
+vanishing $B(0) = 0$, and the uniqueness of the log-convex solution of the moment recursion
+in the order-2 case. That last one deserves a word, because it removes a citation the
+theorem was stated to rest on: Theorem~\ref{thm:locality} applies the recursion
+$m(z{+}1) = Q(z)m(z)$ only where $Q$ is linear, and there the Krull--Webster uniqueness
+theorem is the classical Bohr--Mollerup theorem, which is available; the order-$n$ ladder of
 Proposition~\ref{prop:local-ladder} has $n-1$ Gamma factors and does still need the general
-result. What remains unverified in \S\ref{sec:locality} is therefore
-Lemma~\ref{lem:local-polynomial-symbol}, where an operator must be compared with a
-differential expression on $C_c^\infty$ --- available but laborious; Courrège's
-classification, that a local operator satisfying the positive maximum principle has order at
-most two, which is cited; and the Bessel identifications, which need $K_\nu$. So the gap is
-one citation, one laborious lemma, and one special function --- not an absent theory.
+result. What remains cited in \S\ref{sec:locality} are the analytic interfaces --- Widder's
+singularity theorem (behind $z_* = \infty$), Courrège's order bound, Krull--Webster for the
+general ladder, and Bondesson's theory for the ladder's admissibility --- and the Bessel
+identifications, which need $K_\nu$. So the gap is four citations and one special function
+--- not an absent theory.
 
 \paragraph{Where to look.} The development, its axiom ledger with page-verified citations
 for every cited interface, and a dependency graph in which each statement is coloured by its
