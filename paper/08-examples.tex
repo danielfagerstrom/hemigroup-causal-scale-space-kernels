@@ -360,20 +360,15 @@ turned by the same object, the tail of $k$.
 % scale space out. Prose citations on the rem:extreme-rays precedent (no ledger
 % entries: no proof consumes them).
 %
-% Three further catalogue entries, librarian-checked 2026-08-24; anchors ready,
-% activation (writing the entries) is an editorial decision not yet taken:
-%   - powers and ratios of Gamma variables are HCM, hence GGC: VERIFIED --
-%     bondesson1992generalized SS4.3, Ex. 4.3.1 p. 59 (ratio), Ex. 4.3.4 p. 60
-%     (power X^{1/alpha}, |1/alpha| >= 1), via Thm 4.3.1 p. 57; closure under
-%     products/ratios Thm 5.1.1 p. 69 and Thm 6.2.1 p. 92.
+% Catalogue entries, librarian-checked 2026-08-24; two activated, one pending:
+%   - powers and ratios of Gamma variables are HCM, hence GGC: VERIFIED and
+%     ACTIVATED 2026-08-24 (the multiplicative-calculus sentence in the remark).
 %   - Mittag-Leffler laws are GGC: NO SOURCE IN LIBRARY (Bondesson, Steutel-van Harn,
 %     Gorenflo et al. all checked); James-Roynette-Yor, Probab. Surveys 5 (2008),
 %     queued as acquisition GZIDSU6X -- do not activate until it lands.
 %   - first-passage times of one-dimensional diffusions lie in the Bondesson
-%     (mixtures-of-exponentials / Thorin) class: VERIFIED -- kent1982spectral (in the
-%     library), Ann. Probab. 10(1) 1982, abstract p. 207 and Def. 2.1 p. 208; the
-%     general phenomenon behind the Bessel family. Bib entry needed in references.bib
-%     when activated.
+%     (mixtures-of-exponentials / Thorin) class: VERIFIED and ACTIVATED 2026-08-24
+%     (kent1982spectral; bib entry added).
 \begin{remark}[the classical catalogue]\label{rem:classical-catalogue}
 Theorem~\ref{thm:main-characterization} is a machine: any single self-decomposable
 law on $[0,\infty)$, with Laplace exponent $F$, generates a complete time-causal
@@ -394,7 +389,18 @@ small factors, multiplicative rather than additive accumulation of latency. The
 \emph{Pareto} laws are admissible by the companion result
 (\sscite{thorin1977pareto}); a Pareto kernel of index $a$ has exactly the moments
 of order below $a$, the Bessel family's position on the moment dial with an exact
-power tail. Two boundaries frame the catalogue. Outward: nothing with tail lighter
+power tail. The class is closed under a multiplicative calculus of delays: the pdf of
+a ratio of independent Gamma variables is hyperbolically completely monotone
+(\sscite{bondesson1992generalized}, Ex.~4.3.1, p.~59), as is any power $X^{q}$,
+$|q| \ge 1$, of a Gamma variable (Ex.~4.3.4, p.~60), and $\HCM$ laws are $\GGC$
+(Thm.~4.3.1, p.~57), with closure under independent products and ratios
+(Thm.~5.1.1, p.~69; Thm.~6.2.1, p.~92) --- so compound latencies assembled
+multiplicatively from Gamma factors stay admissible. And the phenomenon behind the
+Bessel family is general: the first-passage time of \emph{every} one-dimensional
+diffusion is a generalized convolution of mixtures of exponentials
+(\sscite{kent1982spectral}, p.~207, the completely monotone L\'evy density being
+Definition~2.1 there, p.~208) --- every diffusion hitting time lies in the Thorin
+subclass, and the memory-line reading of \S\ref{sec:signaling} applies to each. Two boundaries frame the catalogue. Outward: nothing with tail lighter
 than $e^{-c\,t\log t}$ is admissible at all (Remark~\ref{rem:tail-dichotomy}), so
 no windowed or truncated Gaussian appears however the data $(b_0,k)$ are chosen.
 Inward: every law just named lies in the Thorin subclass --- the classical
