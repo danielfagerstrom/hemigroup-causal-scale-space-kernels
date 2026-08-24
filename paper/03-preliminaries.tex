@@ -232,3 +232,69 @@ Three are classes of laws on $[0,\infty)$:
   on p.~68).
 \end{itemize}
 So $\HCM \subset \GGC \subset \SDclass$.
+
+% Paper-side expository addition (no blueprint counterpart; reader's thread, like the
+% rewritten §1): the physical reading of every Laplace-exponent integral, stated once so
+% no later section re-derives it. The shape conditions it previews are proved in §7.
+\begin{remark}[the delay dictionary]\label{rem:delay-dictionary}
+Every integral formula in this paper is an instance of one physical picture, worth
+fixing once. A causal kernel is the law of a \emph{random delay}: the measurement
+$\Phi_{x,y}f$ reports the signal late by a random amount $T_{x,y} \sim \mu_{x,y}$,
+the transform $\hat\mu_{x,y}(s) = \Ex\, e^{-sT_{x,y}}$ is the fraction of a probe
+exponential surviving the stage, and the exponent $g = -\log\hat\mu$ is the
+attenuation it accumulates --- additive along the cascade, as absorbances are
+additive through layered media. In this reading the Lévy--Khintchine form
+\[
+  g(s) \;=\; b_0\,s \;+\; \int_0^\infty \bigl(1 - e^{-st}\bigr)\,\nu(dt)
+\]
+is an inventory of the two mechanisms by which delay can accumulate.
+
+\emph{The drift $b_0$ is deterministic latency}: a fixed transport lag, shifting
+every kernel bodily; its extreme case is the pure delay family
+$\mu_{0,x} = \delta_{b_0 x}$.
+
+\emph{The measure $\nu$ is a catalogue of random delay events}: $\nu(dt)$ is the
+rate, per unit of scale, at which lag increments of size $\approx t$ occur. Each
+size contributes independently as a Poisson stream, and the integrand is that
+stream's cost: over an infinitesimal stretch of scale $dx$, a size-$t$ event
+occurs with probability $\nu(dt)\,dx$ and multiplies the transform by $e^{-st}$,
+so the stage's factor is $1 - \nu(dt)\,dx\,(1 - e^{-st})$ and the exponent picks
+up $(1 - e^{-st})\,\nu(dt)\,dx$. The integral is therefore literally a positive
+superposition --- the catalogue lists which delays are available and how often.
+(``Event'' here means an increment of the observer's accumulated \emph{lag} as
+the aperture widens; the signal itself is never discontinuous.)
+
+\emph{There is no diffusion term, and its absence is a theorem, not a choice.} On
+the full line the Lévy--Khintchine formula carries a Gaussian term
+$\tfrac12\sigma^2 s^2$; on the half-line it cannot appear, because a diffusing
+quantity oscillates and an accumulated delay only grows. The term that generates
+spatial scale space is thus structurally deleted from the time-causal axis ---
+causality does not merely disfavor the Gaussian aperture, it removes its slot in
+the generator --- and classifying time-causal scale spaces becomes classifying
+delay catalogues. (Diffusion will reappear, but on the observer's memory line
+rather than the signal axis: the locality theorem of \S\ref{sec:locality} closes
+that ladder at the Bessel operator, an honest second-order generator over the
+embodied record.)
+
+\emph{The natural coordinate for catalogues is log-delay.} Writing $t = e^\theta$
+turns the density shape the characterization singles out into a profile per unit
+log-delay,
+\[
+  \nu(dt) = \frac{k(t)}{t}\,dt = \tilde k(\theta)\,d\theta,
+  \qquad \tilde k(\theta) := k(e^\theta),
+\]
+since $dt/t$ is the invariant measure of the dilation group --- so \emph{dilation
+acts on catalogues by translation in $\theta$}. The classification results of
+\S\ref{sec:characterization} then become shape conditions on one curve
+(Figure~\ref{fig:delay-catalogue}): full scale covariance forces $\tilde k$
+nonincreasing --- zooming out may only add delay intensity, which is
+self-decomposability; the semigroup subclass is the exactly scale-free profile
+$\tilde k(\theta) = c\,e^{-\alpha\theta}$, whose refusal to decay faster
+\emph{is} the heavy tail; the extreme rays are unit steps --- log-uniform bands
+of delays, the Dickman exponents --- and every admissible catalogue is a unique
+stack of such steps; the completely monotone profiles form the Thorin subclass
+$\GGC$ above, whose finite moments correspond to a cliff-like cutoff of long
+delays.
+\end{remark}
+
+\input{fig-delay-catalogue}
