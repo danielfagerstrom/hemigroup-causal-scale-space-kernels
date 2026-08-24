@@ -32,23 +32,23 @@
 \begin{scope}[yshift=-3.6cm]
 \node[anchor=west] at (-0.3,1.35) {(b) the Thorin bank for one increment: one Gamma cascade per node $(\tau_i, w_i)$};
 \node[anchor=east] at (0.35,0) {$u_k$};
-\draw (0.4,0) -- (0.85,0);
-\node[sect] (t1) at (1.9,0.75) {$w_1$ sections, $\tau_1$};
-\node[sect] (t2) at (1.9,0) {$w_2$ sections, $\tau_2$};
-\node[anchor=center] at (1.9,-0.6) {$\vdots$};
-\node[sect] (tN) at (1.9,-1.2) {$w_N$ sections, $\tau_N$};
-\draw[->] (0.85,0) |- (t1.west);
-\draw[->] (0.85,0) -- (t2.west);
-\draw[->] (0.85,0) |- (tN.west);
-\draw[->] (t1.east) -| (3.6,0.4);
-\draw[->] (t2.east) -- (3.38,0);
-\draw[->] (tN.east) -| (3.6,-0.4);
-\node[draw, circle, inner sep=1.5pt] (comp) at (3.6,0) {$\ast$};
-\draw[->] (comp) -- (4.6,0); \node[anchor=west] at (4.6,0) {$u_{k+1}$};
-\node[anchor=west] at (5.6,0.75) {time constants $x/\tau_i$;};
-\node[anchor=west] at (5.6,0.35) {positivity and unit mass exact};
-\node[anchor=west] at (5.6,-0.05) {at every truncation level};
-\node[anchor=west] at (5.6,-0.45) {(Prop.~\ref{prop:thorin-subclass})};
+\draw (0.4,0) -- (0.7,0);
+\node[sect] (t1) at (2.5,0.75) {$w_1$ sections, $\tau_1$};
+\node[sect] (t2) at (2.5,0) {$w_2$ sections, $\tau_2$};
+\node[anchor=center] at (2.5,-0.6) {$\vdots$};
+\node[sect] (tN) at (2.5,-1.2) {$w_N$ sections, $\tau_N$};
+\draw[->] (0.7,0) -- (0.7,0.75) -- (t1.west);
+\draw[->] (0.7,0) -- (t2.west);
+\draw[->] (0.7,0) -- (0.7,-1.2) -- (tN.west);
+\node[draw, circle, inner sep=1.5pt] (comp) at (4.6,0) {$\ast$};
+\draw[->] (t1.east) -- (4.6,0.75) -- (comp);
+\draw[->] (t2.east) -- (comp);
+\draw[->] (tN.east) -- (4.6,-1.2) -- (comp);
+\draw[->] (comp) -- (5.6,0); \node[anchor=west] at (5.6,0) {$u_{k+1}$};
+\node[anchor=west] at (6.6,0.75) {time constants $x/\tau_i$;};
+\node[anchor=west] at (6.6,0.35) {positivity and unit mass exact};
+\node[anchor=west] at (6.6,-0.05) {at every truncation level};
+\node[anchor=west] at (6.6,-0.45) {(Prop.~\ref{prop:thorin-subclass})};
 \end{scope}
 
 \end{tikzpicture}

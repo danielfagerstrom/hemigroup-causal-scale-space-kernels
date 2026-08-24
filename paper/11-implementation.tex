@@ -210,18 +210,20 @@ Table~\ref{tab:corners} collects the comparison.
 \centering
 \caption{The three corners from the implementer's point of view.}
 \label{tab:corners}
+\footnotesize
+\setlength{\tabcolsep}{3.5pt}
 \begin{tabular}{@{}llll@{}}
 \toprule
- & Gamma (Prop.~\ref{prop:gamma-kernels}) & Bessel (Prop.~\ref{prop:bessel-family}) & stable (Cor.~\ref{cor:semigroup-case}, Prop.~\ref{prop:stable-family}) \\
+ & Gamma (Prop.~\ref{prop:gamma-kernels}) & Bessel (Prop.~\ref{prop:bessel-family}) & stable (Prop.~\ref{prop:stable-family}) \\
 \midrule
-axiomatic role & nonlocal medium, rational symbol (Ex.~\ref{ex:gamma-signaling}) & local medium + PMP (Thm~\ref{thm:locality}) & homogeneous (Cor.~\ref{cor:semigroup-case}) \\
+axiomatic role & nonlocal, rational symbol (Ex.~\ref{ex:gamma-signaling}) & local + PMP (Thm~\ref{thm:locality}) & homogeneous (Cor.~\ref{cor:semigroup-case}) \\
 kernels & $\Gamma(\gamma,\,x)$ & inverse-gamma, shape $a$ & one-sided $\alpha$-stable \\
 moments & all finite; $\Ex\,T_x = \gamma x$ & $n$-th iff $n < a$ & none \\
 tails & exponential & $t^{-1-a}$ & $t^{-1-\alpha}$ \\
 increment transfer & rational, order $\gamma$ & transcendental (Bessel-K) & transcendental \\
-recursive states per knot & $\gamma$ & --- (approximation only) & --- (approximation only) \\
+recursive states per knot & $\gamma$ & --- (approx.\ only) & --- (approx.\ only) \\
 scale covariance & continuous & continuous & continuous \\
-medium (Rmk~\ref{rem:markov-media}) & multiplicative jump process & diffusion + drift & $\alpha \ge \tfrac12$: Lévy; $\alpha < \tfrac12$: none \\
+medium (Rmk~\ref{rem:markov-media}) & multiplicative jumps & diffusion + drift & $\alpha \ge \tfrac12$: Lévy; $\alpha < \tfrac12$: none \\
 \bottomrule
 \end{tabular}
 \end{table}
