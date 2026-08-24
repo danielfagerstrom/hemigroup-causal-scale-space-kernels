@@ -168,6 +168,6 @@ per pass; em-dashes and >30-word sentences first (the only two features over bot
 | 11 | §12 | done | see git log |
 | 12 | App. A | done | see git log |
 | 13 | §1 | done | see git log |
-| 14 | §13 | | |
+| 14 | §13 | done | see git log |
 | 15 | global sweep | | |
 | 16 | language pass | | |
