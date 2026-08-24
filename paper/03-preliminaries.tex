@@ -128,6 +128,73 @@ of this paper argue mostly in the representation, and the machine-checked develo
 monotonicity at all --- so a statement whose conclusion is given in $\LE$ is one the
 formalisation can state verbatim.
 
+% Paper-side expository addition (no blueprint counterpart; reader's thread, the
+% companion piece to rem:delay-dictionary below): the toolbox's four clauses and the two
+% definitions above read as one picture rather than a list of theorems. No new
+% citations -- every fact invoked is a clause of prop:bernstein-toolbox, already
+% page-anchored above.
+\begin{remark}[the circle of ideas]\label{rem:circle-of-ideas}
+The classes just named are one circle of ideas, and the reader who sees the circle once
+does not need to memorize the toolbox. Start with complete monotonicity. The prototype
+completely monotone function is a single decaying exponential $e^{-st}$, whose
+derivatives alternate for the trivial reason that each differentiation pulls down a
+factor $-t \le 0$; the sign conditions are linear in $f$ and survive pointwise limits,
+so every positive mixture $\int e^{-st}\,F(dt)$ --- every Laplace transform of a
+positive measure --- is completely monotone for free. The Bernstein--Widder theorem,
+Proposition~\ref{prop:bernstein-toolbox}(1), is the remarkable converse: \emph{every}
+completely monotone function is such a mixture, for a unique $F$. Geometrically: $\CM$
+is the closed convex cone whose extreme rays are the exponentials, and the countably
+many derivative-sign conditions are exactly the visible shadow of positivity of the
+mixing measure. Complete monotonicity is to the Laplace transform what positive
+definiteness is to the Fourier transform --- the intrinsic, transform-free description
+of ``comes from a positive mass.''
+
+Bernstein functions are the same picture one level up, prompted by the question the
+cascade forces: for which $g \ge 0$ does $e^{-\tau g}$ remain a Laplace transform for
+\emph{every} $\tau > 0$ --- every $\tau$, because a cascade subdivides its exponents
+without limit (\S\ref{sec:cascade})? The answer is
+Proposition~\ref{prop:bernstein-toolbox}(2): exactly the Bernstein functions. And the
+cone $\BF$ has its own extreme rays, mirroring $\CM$'s exponentials: the elementary
+exponents $1 - e^{-st}$, the drift $s$, and the constants. That is what the
+Lévy--Khintchine representation, Proposition~\ref{prop:bernstein-toolbox}(3),
+\emph{says} --- the same cone described twice, once by sign conditions (checkable on a
+given function) and once by its extreme rays (structural). Definition~\ref{def:levy-exponent}
+above chooses the extreme-ray description as primary, which is also the machine-checked
+development's choice.
+
+Probability owns this cone through infinite divisibility. A law $\mu$ on $[0,\infty)$
+divides, $\mu = \mu_n^{*n}$ for every $n$, exactly when $\hat\mu^{1/n}$ is again a
+transform for every $n$ --- that is, when $\hat\mu = e^{-g}$ with $e^{-g/n}$ completely
+monotone for all $n$, i.e.\ $g \in \BFz$. And each extreme ray then acquires a
+probabilistic identity. Let delay events of size $t$ occur at rate $\lambda$,
+independently across disjoint stretches of an interval of length $\tau$: one
+infinitesimal slot contributes the transform factor
+$\bigl(1 - \lambda\,d\tau\bigr) + \lambda\,d\tau\,e^{-st}
+ = 1 - \lambda\,d\tau\,(1 - e^{-st})$,
+and compounding the independent slots gives
+\[
+  \Ex\, e^{-sX_\tau} \;=\; \exp\bigl[-\lambda\tau\,(1 - e^{-st})\bigr] :
+\]
+the extreme ray $1 - e^{-st}$ is the exponent of a Poisson stream of size-$t$ jumps,
+and the Lévy--Khintchine integral is a superposition of independent such streams, one
+per jump size --- with the drift as the deterministic limit and the killing constant
+$a$, excluded from $\LE$ by $g(0) = 0$, as loss of mass. Spread the divisions out as a
+flow and this is a \emph{subordinator}: an increasing process with stationary
+independent increments and $\Ex\,e^{-sX_\tau} = e^{-\tau g(s)}$, whose triple describes
+the path --- speed $b_0$, jumps of size in $dt$ at rate $\nu(dt)$, the integrability
+$\int (1 \wedge t)\,\nu(dt) < \infty$ being exactly path-finiteness. The hemigroup of
+this paper relaxes precisely the stationarity: its exponent is $G(x,s)$ rather than
+$\tau g(s)$, its increments are independent but not stationary, and the classes
+$\SDclass \supset \GGC$ below are the strata of that relaxation under covariance.
+
+The physical reading of the triple --- drift as latency, $\nu$ as a catalogue of
+delays, the missing Gaussian term --- is Remark~\ref{rem:delay-dictionary} below; and
+the extreme-ray pattern returns twice more, with the atoms reshaped by each added
+constraint: the Dickman exponents as the extreme rays of the self-decomposable cone
+(Proposition~\ref{prop:extreme-rays}), and the Gamma exponents as the atoms of its
+Thorin subcone (Proposition~\ref{prop:thorin-subclass}).
+\end{remark}
+
 % shared with blueprint lem:vanishing
 \begin{lemma}[vanishing lemma]\label{lem:vanishing}
 If $g \in \BFz$ and $g(s_0) = 0$ for some $s_0 > 0$, then $g \equiv 0$.
