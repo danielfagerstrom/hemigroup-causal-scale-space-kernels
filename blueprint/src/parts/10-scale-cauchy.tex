@@ -124,7 +124,7 @@ one change of variables apart (\texttt{phillipsGenerator\_eq\_smul\_integral}).)
 
 % draft: Lemma 10.3
 \begin{lemma}[properties of the generator]\label{lem:generator-properties}
-\uses{def:phillips-generator,lem:delay-core,lem:memory-kernel,prop:laplace-uniqueness}
+\uses{def:phillips-generator,lem:delay-core,lem:memory-kernel,prop:laplace-uniqueness-sigma-finite}
 \lean{Hemigroup.generator_properties}\leanok
 For $f \in \core$ and $x > 0$:
 \begin{enumerate}
@@ -172,7 +172,7 @@ measure, being (A2) for the $L^1$ convolution plus linearity. (4) forms no compa
 $\min(2\|f\|_1, xr\|f'\|_1)$ increases in $x$, so one bound at the top of a neighbourhood covers
 it, compactness having stood in for monotonicity. And \textbf{(5) needs no uniqueness theorem}:
 the primitive of $\varphi_x(\partial_t)f$ is \emph{evaluated} rather than characterised, so
-\ref{prop:laplace-uniqueness} is not spent, and the conclusion is equality at every $t$ rather
+\ref{prop:laplace-uniqueness-sigma-finite} is not spent, and the conclusion is equality at every $t$ rather
 than almost every --- with the trailing $(\kappa^{(x)}*f)(\zp)=0$ free, a primitive vanishing at
 the origin by construction. What replaces the uniqueness step is one signed exchange, got from the
 layer cake by splitting the integrand at zero; splitting $f'$ instead, which an earlier reading
@@ -203,7 +203,7 @@ $\nu_1$-integrable. Apply dominated convergence; the drift term is trivial.
 causal with finite Laplace transforms. By (2) and \ref{lem:memory-kernel} the causal function
 $V(t) := \int_0^t \bigl(\varphi_x(\partial_t)f\bigr)(\rho)\,d\rho - (\kappa^{(x)} * f)(t)$ has
 transform $\varphi_x(s)\hat f(s)/s - F'(xs)\hat f(s) = 0$ for all $s > 0$, so $V = 0$ a.e.\ by
-\ref{prop:laplace-uniqueness}. That is the claim; the value $(\kappa^{(x)}*f)(\zp) = 0$
+\ref{prop:laplace-uniqueness-sigma-finite}. That is the claim; the value $(\kappa^{(x)}*f)(\zp) = 0$
 follows from $\kappa^{(x)}([0,t]) \to b_0$ and $\sup_{[0,t]}|f| \to 0$.
 \end{proof}
 

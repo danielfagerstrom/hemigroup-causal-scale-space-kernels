@@ -4,9 +4,12 @@
 % X₀/\shift_r/core (→ §3). Included splits: lem:memory-kernel-transform, lem:transform-ode,
 % lem:potential-kernel-scaling, prop:volterra-density. Skipped: prop:sonine-pair-exists
 % (a blueprint restatement node; its content is the three adjacent results).
-% Equation tags (9.1)/(9.2) are kept by hand for concordance with the blueprint and the
-% draft. Ledger references in proofs rendered as citations (A9 → SSV Thms 11.3/7.3/6.2,
-% A10 → Sato Thm 27.13, A11 → Phillips Thm 4.3 + Engel–Nagel Prop. II.1.7).
+% Equation tags V.1/V.2 (content review item D, 2026-08-24): the blueprint numbers these
+% (9.1)/(9.2), correctly, being its own chapter 9; here they sit in Appendix A, where §9 is
+% the (unrelated) Mellin signaling section, so they are retagged V.1/V.2 by hand in both
+% documents to avoid a reader looking in the wrong place. Ledger references in proofs
+% rendered as citations (A9 → SSV Thms 11.3/7.3/6.2, A10 → Sato Thm 27.13, A11 → Phillips
+% Thm 4.3 + Engel–Nagel Prop. II.1.7).
 
 \section{Memory kernels, Sonine conservation, and the scale-Cauchy problem}\label{sec:appendix-memory}
 
@@ -15,12 +18,17 @@ through the memory kernel. Lemma~\ref{lem:memory-kernel} identified $F'$ as, up 
 the Laplace transform of the nonincreasing function $k$; here that identity becomes the
 evolution of the scale space across scale --- a general fractional relaxation equation whose
 kernel is $k$ itself, dilated to the current scale --- together with the Sonine conservation
-identity that makes each infinitesimal smoothing exactly invertible, a Volterra derivation of
-the kernels that requires no Laplace inversion, and finally the classical scale-Cauchy problem
-(Theorem~3$'$). Throughout we work in the canonical gauge, with the causal vocabulary of
-\S\ref{sec:preliminaries}.
+identity that makes each infinitesimal smoothing exactly invertible, a Volterra equation from
+which the kernels can be computed without Laplace inversion, and finally the classical
+scale-Cauchy problem (Theorem~3$'$). Throughout we work in the canonical gauge --- so that
+$\mu_{0,x}$ is the law of $x\,T_1$ --- with the causal vocabulary of \S\ref{sec:preliminaries}.
+Throughout, $F$ is an admissible exponent as in (7.1), with drift $b_0$ and kernel $k$, and
+$F \not\equiv 0$ (equivalently (ND); Corollary~\ref{cor:strict-monotonicity}).
 
 \subsection{Memory kernels, Sonine conservation, and a Volterra derivation}\label{sec:appendix-sonine}
+
+The first lemma restates, dilated to the current scale, the object already fixed at the tail
+of \S\ref{sec:characterization}: the measure $\kappa^{(x)}$ there is the one defined here.
 
 % shared with blueprint lem:memory-kernel-transform
 \begin{lemma}[the memory kernel's transform]\label{lem:memory-kernel-transform}
@@ -104,7 +112,7 @@ with $W \in L^1_{\mathrm{loc}}$ and causal.
 \emph{Inversion.} The causal, locally integrable function
 $V(t) := \int_0^t \bigl(u(r, b) - u(r, a)\bigr)\,dr + W(t)$ has Laplace transform
 $\bigl(\hat u(s,b) - \hat u(s,a)\bigr)/s + \widehat W(s) = 0$ for every $s > 0$, so $V = 0$
-a.e.\ by Proposition~\ref{prop:laplace-uniqueness}. That is the displayed identity. The final
+a.e.\ by Proposition~\ref{prop:laplace-uniqueness-sigma-finite}. That is the displayed identity. The final
 statement holds because $u(\cdot, x)$ vanishes on $(-\infty, 0)$, so no boundary term arises
 when moving $\partial_t$ through the convolution.
 \end{proof}
@@ -147,7 +155,7 @@ the subordinator's \emph{potential measure}. By Tonelli its transform is
 $\int_0^\infty e^{-\tau\varphi_x(s)}\,d\tau = 1/\varphi_x(s)$ for every $s > 0$, which is
 finite, so $\ell^{(x)}$ is locally finite; and uniqueness is uniqueness of the Laplace
 transform for locally finite measures whose transform converges somewhere
-(Proposition~\ref{prop:laplace-uniqueness}).
+(Proposition~\ref{prop:laplace-uniqueness-sigma-finite}).
 
 Two remarks on this route. It uses no property of the $\CM$ class: neither
 $\CM \circ \BF \subseteq \CM$ nor Bernstein--Widder in its general form, both of which the
@@ -195,13 +203,19 @@ those transforms agree:
 \]
 using Lemma~\ref{lem:memory-kernel-transform} for the first factor and
 Lemma~\ref{lem:potential-kernel} for the second.
-Proposition~\ref{prop:laplace-uniqueness} concludes.
+Proposition~\ref{prop:laplace-uniqueness-sigma-finite} concludes.
 \end{proof}
 
-Note the scaling structure: $\kappa^{(x)}$ dilates with $L^1$ normalization and $\ell^{(x)}$
-with sup normalization (Lemma~\ref{lem:potential-kernel-scaling}), and it is exactly this
-mismatch that renders the identity scale-invariant --- the pair $(\kappa^{(x)}, \ell^{(x)})$
-is itself scale-covariant.
+Note the scaling structure, on the absolutely continuous parts: the density of
+$\kappa^{(x)}$ dilates with $L^1$ normalization, $\tfrac1x k(\tfrac tx)$, and $\ell^{(x)}$
+with sup normalization, $\ell^{(x)} = x\,(\ell^{(1)} \circ (x\,\cdot)^{-1})$
+(Lemma~\ref{lem:potential-kernel-scaling}); in the convolution the two normalizations cancel
+--- substituting $t \mapsto xt$ carries $\kappa^{(x)} * \ell^{(x)}$ onto
+$\kappa^{(1)} * \ell^{(1)}$ scaled back to Lebesgue measure, the $\tfrac1x$ against the $x$
+--- so the identity holds at every scale because it holds at one: the pair
+$(\kappa^{(x)}, \ell^{(x)})$ is itself scale-covariant. The drift atom is the exception that
+proves the rule: $b_0\delta_0$ does not dilate at all, and its counterpart in $\ell^{(x)}$
+carries the compensating scale factor instead (Proposition~\ref{prop:pair-regularity}).
 
 % shared with blueprint cor:exact-inversion
 \begin{corollary}[exact invertibility; conservation of information]\label{cor:exact-inversion}
@@ -219,26 +233,36 @@ and $\partial_t \int_0^t v = v$.
 \end{proof}
 
 Corollary~\ref{cor:exact-inversion} is the conservation content of the axioms in Volterra
-form: the infinitesimal smoothing applied at each scale is exactly invertible, so no single
-step of the cascade destroys information --- it only redistributes it, consistently with
-(A5), which fixes the mass. Probabilistically, $\ell^{(x)}$ is the potential (renewal)
+form, and it is worth being exact about what it proves: the generalized derivative
+$D^{(x)}$ has the explicit right inverse $I^{(x)}$ --- the memory operator at each scale is
+exactly inverted by the potential kernel, in the one composition order stated. What this
+says about the cascade itself is indirect: the steps $\Phi_{x,y}$ are not the operators
+$D^{(x)}$, but the identity is what makes the memory-kernel form of the evolution
+(Proposition~\ref{prop:scale-evolution}) solvable for the input, consistently with (A5),
+which fixes the mass. Probabilistically, $\ell^{(x)}$ is the potential (renewal)
 measure of the subordinator with exponent $\varphi_x$, $\kappa^{(x)}$ is its
 drift-plus-Lévy-tail, and Theorem~\ref{thm:sonine-conservation} is the renewal identity
 balancing expected occupation against tail decay.
 
 % shared with blueprint prop:pair-regularity
 \begin{proposition}[regularity of the pair]\label{prop:pair-regularity}
-Modulo the drift atoms $b_0\delta_0$:
+Write $\kappa^{(x)} = b_0\,\delta_0 + \kappa_c^{(x)}$, with
+$\kappa_c^{(x)}(dt) := \tfrac1x\,k\bigl(\tfrac tx\bigr)\,dt$ the absolutely continuous part of
+Lemma~\ref{lem:memory-kernel-transform} --- an unconditional decomposition, $k$ being
+nonincreasing. The two clauses below record when $\ell^{(x)}$ admits an analogous
+decomposition $\ell^{(x)} = c\,\delta_0 + \ell_c^{(x)}$, for a constant $c \ge 0$ not in
+general equal to $b_0$, and describe the regularity of $\kappa_c^{(x)}$ and $\ell_c^{(x)}$:
 \begin{enumerate}
-\item $\ell^{(x)}$ has the form $c\,\delta_0 + (\text{nonincreasing density})$, $c \ge 0$, if
+\item $\ell^{(x)}$ admits such a decomposition with $\ell_c^{(x)}$ a nonincreasing density if
 and only if $1/F'$ is a Bernstein function --- equivalently, $\varphi_x$ is a \emph{special}
 Bernstein function; by dilation invariance the condition does not depend on $x$.
-\item $\kappa^{(x)}$ has a completely monotone density iff $k$ is completely monotone, which
-holds iff $F'$ belongs to the Stieltjes class
+\item $\kappa_c^{(x)}$ is completely monotone iff $k$ is completely monotone, which holds iff
+$F'$ belongs to the Stieltjes class
 $\mathcal{S} := \bigl\{\,h(s) = \tfrac{a}{s} + b + \int_{(0,\infty)} \tfrac{\sigma(d\tau)}{s + \tau}\,\bigr\}$.
-In that case $\ell^{(x)}$ also has a drift-atom-plus-completely-monotone density, i.e.\
-$(\kappa^{(x)}, \ell^{(x)})$ is a classical Sonine pair of CM kernels; moreover $k$ completely
-monotone implies $F$ is a complete Bernstein function.
+In that case $\ell^{(x)}$ also admits the decomposition above with $\ell_c^{(x)}$ completely
+monotone, i.e.\ the absolutely continuous parts $(\kappa_c^{(x)}, \ell_c^{(x)})$ form a
+classical Sonine pair of CM kernels; moreover $k$ completely monotone implies $F$ is a
+complete Bernstein function.
 \end{enumerate}
 \end{proposition}
 
@@ -260,7 +284,7 @@ $\widehat{\ell^{(x)}}(s) = g(s)/s$. Writing the Lévy--Khintchine triple of $g$ 
 $(a_g, b_g, \nu_g)$, with completely monotone Lévy density because $g \in \CBF$
 (\sscite{schilling2012bernstein}, Thm.~6.2), gives
 $g(s)/s = \tfrac{a_g}{s} + b_g + \widehat{\bar\nu_g}(s)$, that is
-$\ell^{(x)} = b_g\,\delta_0 + \bigl(a_g + \bar\nu_g(t)\bigr)\,dt$; and
+$\ell^{(x)} = b_g\,\delta_0 + \ell_c^{(x)}$ with $\ell_c^{(x)}(t) := a_g + \bar\nu_g(t)$; and
 $a_g + \bar\nu_g(t) = a_g + \int_t^\infty(\text{completely monotone})$ is completely
 monotone.
 
@@ -281,7 +305,7 @@ Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. Then, as meas
 $[0,\infty)$,
 \[
   t\,\mu_x(dt) \;=\; \bigl(\theta_x * \mu_x\bigr)(dt),
-  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt. \tag{9.1}
+  \qquad \theta_x(dt) := b_0\,x\,\delta_0(dt) + k\bigl(\tfrac{t}{x}\bigr)\,dt. \tag{V.1}
 \]
 \end{proposition}
 
@@ -289,13 +313,13 @@ $[0,\infty)$,
 Taking Laplace transforms, $\Lap[t\,\mu_x](s) = -\tfrac{d}{ds} e^{-F(xs)} = x F'(xs)\,
 e^{-F(xs)}$, while by Lemma~\ref{lem:memory-kernel} with the substitution $\tau = t/x$,
 $\widehat{\theta_x}(s) = b_0 x + \int_0^\infty e^{-st} k(t/x)\,dt = x F'(xs)$. So both sides
-of (9.1) have the finite transform $x F'(xs)e^{-F(xs)}$ and coincide by
-Proposition~\ref{prop:laplace-uniqueness}.
+of (V.1) have the finite transform $x F'(xs)e^{-F(xs)}$ and coincide by
+Proposition~\ref{prop:laplace-uniqueness-sigma-finite}.
 \end{proof}
 
 % shared with blueprint prop:volterra-uniqueness
 \begin{proposition}[the Volterra equation determines the kernel]\label{prop:volterra-uniqueness}
-$\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (9.1).
+$\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (V.1).
 \end{proposition}
 
 \begin{proof}
@@ -310,28 +334,34 @@ Proposition~\ref{prop:laplace-uniqueness}.
 \begin{proposition}[the Volterra equation for the density]\label{prop:volterra-density}
 Let $F$ be as in (7.1), let $x > 0$, and set $\mu_x := \mu_{0,x}$. If $k \not\equiv 0$ then
 $\mu_x$ is absolutely continuous, and its density $\phi_x$ solves the linear Volterra
-equation of the second kind
+equation
 \[
   \bigl(t - b_0 x\bigr)\,\phi_x(t)
   \;=\; \int_0^t k\bigl(\tfrac{u}{x}\bigr)\,\phi_x(t - u)\,du
-  \qquad \text{for a.e.\ } t > 0. \tag{9.2}
+  \qquad \text{for a.e.\ } t > 0. \tag{V.2}
 \]
+Away from its left endpoint $t = b_0 x$ --- where $\phi_x$ itself vanishes, the drift shifting
+every kernel by $b_0 x$ (Remark~\ref{rem:drift-boundary}) --- this is a Volterra equation of
+the second kind.
 \end{proposition}
 
 \begin{proof}
 When $k \not\equiv 0$, $\mu_x$ is a nondegenerate self-decomposable law by
 Remark~\ref{rem:sato-reading}, hence absolutely continuous (\sscite{sato1999levy},
-Thm.~27.13). Restricting the identity (9.1) of Proposition~\ref{prop:volterra} to densities
-yields (9.2).
+Thm.~27.13). Restricting the identity (V.1) of Proposition~\ref{prop:volterra} to densities
+yields (V.2).
 \end{proof}
 
-Equation (9.2) is the constructive counterpart of the inverse Laplace transform in
+Equation (V.2) is the constructive counterpart of the inverse Laplace transform in
 Theorem~\ref{thm:main-characterization}: the kernels are \emph{derived} from the memory
-kernel $k$ by Volterra integration. Note the role of the axioms in closing the derivation.
-Equation (9.2) is linear and homogeneous, so it determines $\phi_x$ only up to a
-multiplicative constant --- it is the unit-area axiom (A5) that selects the solution.
-Positivity of that solution is manifest from Picard iteration, all of whose terms are
-nonnegative.
+kernel $k$ by Volterra integration. We record here, without a formal statement, why this
+determines $\phi_x$ rather than proving it: on $(b_0x, \infty)$, where $\phi_x$ is supported,
+(V.2) is linear and homogeneous, and a \emph{regular} equation of that form --- continuous
+coefficient, bounded away from zero --- has the trivial solution only; it is the vanishing of
+the coefficient $t - b_0x$ exactly at the left endpoint of that interval that admits a
+nontrivial family instead, from which the unit-area axiom (A5) selects $\phi_x$. Positivity
+of that choice is the property Picard iteration of (V.2) preserves term by term, starting
+from a nonnegative seed, on the interior where the equation is regular.
 
 % Verbatim from the blueprint's ex:gamma-volterra.
 \begin{example}[verification: the Gamma family]\label{ex:gamma-volterra}
@@ -343,15 +373,26 @@ Proposition~\ref{prop:gamma-kernels}. Indeed, since $e^{-u/x}e^{-(t-u)/x} = e^{-
   \;=\; \frac{\gamma\, e^{-t/x}}{\Gamma(\gamma)\,x^{\gamma}} \cdot \frac{t^{\gamma}}{\gamma}
   \;=\; t\,\phi_x(t),
 \]
-which is (9.2) for this family, as required.
+which is (V.2) for this family, as required.
+
+The Sonine pair is equally explicit here. With $\varphi_x(s) = sF'(xs) = \gamma s/(1+xs)$,
+\[
+  \kappa^{(x)}(dt) = \frac{\gamma}{x}\,e^{-t/x}\,dt, \qquad
+  \ell^{(x)} = \frac{1}{\gamma}\,\mathrm{Leb} + \frac{x}{\gamma}\,\delta_0,
+\]
+with transforms $\gamma/(1+xs)$ and $(1+xs)/(\gamma s)$, whose product is $1/s$: the
+conservation identity $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}$ by inspection. The atom
+$\tfrac{x}{\gamma}\delta_0$ in the potential kernel is the $b_g$-atom of
+Proposition~\ref{prop:pair-regularity}, present although $b_0 = 0$ --- the pair's two atoms
+are genuinely independent.
 \end{example}
 
 % Verbatim from the blueprint's rem:volterra-computation.
 \begin{remark}[computation; relation to the 2005 series]\label{rem:volterra-computation}
 For $F(s) = s^\alpha$, i.e.\ $k(u) = \alpha u^{-\alpha}/\Gamma(1-\alpha)$, Picard iteration of
-(9.2) regenerates term by term the series expansion following Theorem~2 of
+(V.2) regenerates term by term the series expansion following Theorem~2 of
 \sscite{fagerstrom2005temporal}; the Volterra route thus contains the original series as its
-homogeneous special case. Numerically, (9.2) is a weakly singular Volterra equation of the
+homogeneous special case. Numerically, (V.2) is a weakly singular Volterra equation of the
 second kind, amenable to standard product-integration quadrature, and it provides an
 inversion-free forward scheme for the kernels for arbitrary admissible $k$.
 \end{remark}
@@ -367,7 +408,7 @@ Volterra-equation theory the kernels $\kappa^{(x)}$ are the \emph{completely pos
 kernels of \sscite{clement1981asymptotic}; the resolvent theory of
 \sscite{pruss1993evolutionary} then yields well-posedness and positivity of the evolution in
 Proposition~\ref{prop:scale-evolution} by purely deterministic arguments. The integral
-equation (9.1) is the classical characterization of infinitely divisible laws on the
+equation (V.1) is the classical characterization of infinitely divisible laws on the
 half-line of \sscite{steutel2004infinite}.
 \end{remark}
 
@@ -409,6 +450,10 @@ $\tfrac{1}{h}\int_0^h |f| + \int_0^h |f'| \le \sup_{[0,h]}|f| + o(1) \to |f(0)| 
 integrated form of the limit --- together with $\|T_\rho f'\|_1 = \|f'\|_1$ and the trivial
 bound $\|T_rf - f\|_1 \le 2\|f\|_1$.
 \end{proof}
+
+The memory-kernel operator $\varphi_x(\partial_t)$ has so far acted through transforms and
+convolutions; on the core $\core$ it also has a pointwise-defined presentation, and that is
+what the Cauchy problem needs. The following is the Phillips form of the generator.
 
 % shared with blueprint def:phillips-generator
 \begin{definition}[per-scale generator; Phillips form]\label{def:phillips-generator}
@@ -459,7 +504,7 @@ causal with finite Laplace transforms. By (2) and Lemma~\ref{lem:memory-kernel} 
 function
 $V(t) := \int_0^t \bigl(\varphi_x(\partial_t)f\bigr)(\rho)\,d\rho - (\kappa^{(x)} * f)(t)$
 has transform $\varphi_x(s)\hat f(s)/s - F'(xs)\hat f(s) = 0$ for all $s > 0$, so $V = 0$
-a.e.\ by Proposition~\ref{prop:laplace-uniqueness}. That is the claim; the value
+a.e.\ by Proposition~\ref{prop:laplace-uniqueness-sigma-finite}. That is the claim; the value
 $(\kappa^{(x)}*f)(\zp) = 0$ follows from $\kappa^{(x)}([0,t]) \to b_0$ and
 $\sup_{[0,t]}|f| \to 0$.
 \end{proof}
@@ -525,6 +570,15 @@ $\varepsilon \downarrow 0$, using continuity at $0$, gives $\eta(x) = \hat f(s)\
 Thus $\hat v(s, x) = \hat u(s, x)$ for all $s > 0$, and $v = u$ by
 Proposition~\ref{prop:laplace-uniqueness}.
 \end{proof}
+
+Two things about the proof deserve saying. The uniqueness class is the natural one --- norm
+$C^1$ solutions through the core --- and what it excludes are solutions that leave the core
+or lose the boundary value; within it, uniqueness is a \emph{scalar} linear ODE per Laplace
+frequency, and no semigroup generation theory is invoked anywhere in the theorem. Generation
+theory is nevertheless available, and Proposition~\ref{prop:fixed-scale-semigroup} below
+records what it gives: at each fixed scale the Phillips form generates the subordinate
+contraction semigroup, with $\core$ as a core --- a reading of the same objects, not a
+dependency of the theorem.
 
 % shared with blueprint prop:fixed-scale-semigroup
 \begin{proposition}[fixed-scale semigroups; core property]\label{prop:fixed-scale-semigroup}

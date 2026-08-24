@@ -11,7 +11,7 @@
 %     §1.1's account;
 %   - the causal vocabulary (causal functions, X₀, T_r, the core 𝒟) LIFTED here from
 %     draft §§9–10 heads (NOTES-exposition Part 4 repair 1), so §9 (signaling) stands
-%     on this section and cites nothing in Appendix A.
+%     mostly on this section (it still cites lem:delay-core and ex:gamma-recursive).
 
 \section{Preliminaries and notation}\label{sec:preliminaries}
 
@@ -19,7 +19,8 @@
 and $\int f := \int_{\RR} f(t)\,dt$; its dual is $X^* = L^\infty(\RR)$, with pairing
 $\langle g, f\rangle = \int g f$. We write $\Mplus(\RR)$ for the finite positive Borel
 measures on $\RR$, with total mass $\|\mu\| = \mu(\RR)$. For a function $g$ on $(0,\infty)$,
-$g(\zp)$ denotes its limit from the right at $0$.
+$g(\zp)$ denotes its limit from the right at $0$; and $\Distr(\RR)$ denotes the space of
+distributions, the dual of $C_c^\infty(\RR)$, used only in Appendix~\ref{sec:appendix-memory}.
 
 \emph{Actions.} Translations are $(\shift_a f)(t) = f(t-a)$, $a \in \RR$. Dilations act on
 functions by $(\dil_\sigma f)(t) = \sigma^{-1} f(t/\sigma)$, $\sigma > 0$, which preserves
@@ -155,6 +156,18 @@ only if $\hat\mu_n(s) \to \hat\mu(s)$ for every $s > 0$.
 \begin{proposition}[uniqueness of the Laplace transform]\label{prop:laplace-uniqueness}
 A measure on $[0,\infty)$ is determined by its Laplace transform: if $\hat\mu(s) = \hat\rho(s)$
 for all $s$ in some interval $(a,\infty)$, then $\mu = \rho$.
+\end{proposition}
+
+The appendix compares measures --- the memory kernel $\kappa^{(x)}$, the potential kernel
+$\ell^{(x)}$, and Lebesgue measure --- none of which is finite, so it needs the following
+refinement, in which finiteness of the measures is replaced by convergence of the transform
+at a single point.
+
+% shared with blueprint prop:laplace-uniqueness-sigma-finite
+\begin{proposition}[uniqueness without a finiteness assumption]\label{prop:laplace-uniqueness-sigma-finite}
+Let $\mu, \rho$ be measures on $\RR$ carried by $[0,\infty)$, not assumed finite, and let
+$s_0 \in \RR$ be such that $\hat\mu(s_0) < \infty$. If $\hat\mu(s) = \hat\rho(s)$ for every
+$s \ge s_0$, then $\mu = \rho$.
 \end{proposition}
 
 \emph{The causal vocabulary}, used from \S\ref{sec:signaling} on and in the appendix, is
