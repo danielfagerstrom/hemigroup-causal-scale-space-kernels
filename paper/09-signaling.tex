@@ -1,21 +1,46 @@
-% §9 The signaling form (Theorem 4′) — statements verbatim from blueprint part 11.
-% The blueprint splits the draft's items into per-clause nodes; the paper includes the
-% split lemmas that aid reading (mellin-vertical, inversion-symbol, operator-action,
-% symbol-rigidity, profile-eigenfunction — def:inversion-operator's statement cites it
-% directly, matching the blueprint) and folds the remaining splits back into the nodes
-% they came from (delayed-average-mellin, signaling-mellin-form,
-% fractional-integral-derivative → the proofs that contain them).
+% §9 The signaling form (Theorem 4′) — statements and proofs verbatim from blueprint
+% part 11; the paper REORDERS for reading (the §8 precedent), telling the section as a
+% story: the signaling problem and the informal theorem first, then the machinery built
+% toward the formal statement. The order: lead (the demand; signaling vs. Cauchy; the
+% problem displayed) → pivot (profiles are dilates; covariance forces x^{-1}B(θ); the
+% symbol as Mellin recursion; the theorem announced) → the stage ((H), Mellin data,
+% vertical integrability) → the operator (symbol, the realising-function contract,
+% action, eigenfunctions) → the field (the storage law, core accounting, embodiment —
+% the last moved up from after the theorem, citing only the storage lemma and the main
+% theorem) → uniqueness (rigidity, the covariant class, symbol uniqueness) → assembly
+% (problem recalled, Theorem 4′, poles) → the payoff ladder (examples reordered by
+% symbol growth: Gamma rational, Bessel quadratic, stable fractional — the stable case
+% adjacent to the Markov remark that consumes it).
+% Blueprint node splits handled as before: the split lemmas that aid reading are
+% included; delayed-average-mellin, signaling-mellin-form and
+% fractional-integral-derivative stay folded into the proofs that contain them.
 % Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10.
 
 \section{The signaling form}\label{sec:signaling}
 
-Theorem~4 of \sscite{fagerstrom2005temporal} inverts the scale-Cauchy problem into an
-evolution \emph{in time} over the memory line: $\partial_t u = D^{1/\alpha}_{x,-} u$ --- with
-$D^{1/\alpha}_{x,-}$ the right-sided Liouville derivative in the scale variable
-(\sscite{samko1993fractional}) --- with boundary data $u(t, 0) = f(t)$ and $u(0, x) = 0$: the
-signaling problem (Figure~\ref{fig:signaling}). The operator there is translation-invariant in
-$x$, which is available only in the homogeneous (semigroup) case. This section constructs the
-general inversion.
+Everything so far describes the observer from outside: the record at scale $x$ is
+$u(t, x) = (\mu_{0,x} * f)(t)$, a convolution reaching back into the raw past. The
+embodiment principle of \S\ref{sec:measurement} demands more --- the past is gone, and
+whatever of it influences the present must be carried in the observer's own state. This
+section shows that the demand is met, in the strongest sense: the field can be evolved
+out of its present state alone, with the signal entering only where it physically
+enters, at the fine-scale end. In the language of classical PDE this is a
+\emph{signaling} problem rather than a Cauchy problem --- the data live on the spatial
+boundary for all time, not on an initial time-slice --- the model being a rod driven at
+its end:
+\[
+  \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t), \qquad u(0, x) = 0,
+\]
+with $A$ an operator in the scale variable alone (Figure~\ref{fig:signaling}). Scale
+becomes space, time the evolution variable, and the memory line a medium whose interior
+transport law is $A$. Theorem~4 of \sscite{fagerstrom2005temporal} solved this in the
+homogeneous case, with $A = D^{1/\alpha}_{x,-}$ the right-sided Liouville derivative
+(\sscite{samko1993fractional}) --- a \emph{translation-invariant} operator in $x$,
+available because the semigroup's scale axis carries an additive structure. The
+hemigroup removes that structure, and with it the operator; this section constructs the
+general inversion from what survives.
+
+\input{fig-signaling}
 
 Throughout we work in the canonical gauge, so that $\mu_{0,x}$ is the law of $x\,T_1$ with
 $\Ex[e^{-sT_1}] = H(s)$, $H := e^{-F}$; we write $\hat g(s) := \int_0^\infty e^{-st}g(t)\,dt$
@@ -25,21 +50,39 @@ variable, $\theta := x\,\partial_x$ for the Euler operator, and
 $(I^z f)(t) := \tfrac{1}{\Gamma(z)}\int_0^t (t-r)^{z-1} f(r)\,dr$ for the Riemann--Liouville
 integral of complex order $z$, $\operatorname{Re} z > 0$ (\sscite{samko1993fractional}).
 
-The structural observation that replaces homogeneity is this: by
-Theorem~\ref{thm:main-characterization}, the Laplace-domain profiles of the field,
+What survives is dilation structure, and it is enough. By
+Theorem~\ref{thm:main-characterization} the Laplace-domain profiles of the field,
 \[
   \hat u(s, x) = \hat f(s)\, H(sx),
 \]
-are \emph{dilates of a single profile} $H$, with the eigenvalue $s$ appearing as the dilation
-parameter. Operators diagonal on dilation families are the subject of multiplicative harmonic
-analysis, so the inversion operator lives in the \textbf{Mellin calculus} --- the
-multiplicative-group counterpart of the Wendel step of \S\ref{sec:representation} on the
-additive group.
+are \emph{dilates of a single profile} $H$, with the time-eigenvalue $s$ appearing as
+the dilation parameter; and $\partial_t$ acts on the causal mode at rate $s$ by
+multiplication by $s$. So the sought operator must read off where a profile sits on its
+dilation orbit and return that position as a number: $A[H(s\,\cdot)] = s\,H(s\,\cdot)$
+for every $s$. Operators diagonal on dilation orbits are the subject of multiplicative
+harmonic analysis, so $A$ lives in the \textbf{Mellin calculus} --- the
+multiplicative-group counterpart of the Wendel step of \S\ref{sec:representation}, now
+run in reverse: there an operator was given and its kernel extracted; here the spectral
+data are prescribed and the operator must be synthesized. Covariance fixes its shape
+outright --- under $(t,x) \mapsto (\sigma t, \sigma x)$ an inversion must scale like
+$\partial_t$, and in the canonical gauge $x$ carries the dimension of time while the
+Euler operator $\theta = x\partial_x$ is dimensionless, so $A = x^{-1}B(\theta)$ ---
+and the eigenvalue demand then determines the symbol with no freedom left: on
+transforms the weight $x$ shifts the Mellin argument by one, forcing $B(-z) =
+\tilde H(z+1)/\tilde H(z)$, the recursion of the profile's Mellin data. The theorem of
+this section (Theorem~\ref{thm:signaling-form}) makes all of this precise: \emph{the
+signaling problem has a covariant inversion; the scale-space field solves it; and no
+other covariant Mellin operator does}. What stands between the ansatz and the theorem
+is analytic honesty --- the symbol is a ratio and may have poles, so the strip, the
+transforms, and a careful functional calculus must be built first; that is the business
+of the lemmas below.
 
-\input{fig-signaling}
-
-The transforms of the profile and of the field are the section's working objects, and they
-need a strip of the complex plane to live on; the standing hypothesis is what opens one.
+The transforms of the profile and of the field are the section's working objects, and
+they need a strip of the complex plane to live on; the standing hypothesis is what
+opens one. The strip must moreover have width greater than one, because the equation
+shifts the Mellin argument by exactly one --- differentiation in time and the weight
+$x$ are the same shift seen from two sides --- which is where the condition $z_* > 1$
+comes from.
 
 % shared with blueprint def:standing-hypothesis
 \begin{definition}[the standing hypothesis (H)]\label{def:standing-hypothesis}
@@ -117,6 +160,11 @@ and $(1+\tau^2)^{-1}$ is integrable on the line. (The classical asymptotic
 $|\Gamma(c+i\tau)| \sim \sqrt{2\pi}\,|\tau|^{c-1/2}e^{-\pi|\tau|/2}$ is stronger, but it needs
 Stirling in the complex plane and nothing below uses it.)
 \end{proof}
+
+The stage set, the ansatz of the lead is made honest in three steps: the symbol exists
+as a meromorphic function, the functional calculus $x^{-1}B(\theta)$ is given a
+definition that survives the symbol's poles, and the profiles are verified to be its
+eigenfunctions.
 
 % shared with blueprint lem:inversion-symbol
 \begin{lemma}[the inversion symbol]\label{lem:inversion-symbol}
@@ -219,6 +267,72 @@ power of $A$, and by induction $A^n[H(s\,\cdot)] = s^n\,H(s\,\cdot)$, each itera
 the exhibited $h(x) = s^n x\,H(sx)$. This is what the jet construction of \S\ref{sec:jet}
 iterates.
 
+The first verification concerned the operator on single modes; the second concerns the
+field itself, and it is the section's central identity: what the memory line actually
+stores.
+
+% shared with blueprint lem:memory-fractional-integrals — "§10" now a \ref to the node it meant.
+\begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
+Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
+and $1 < \operatorname{Re} z < z_*$,
+\[
+  \widetilde{u(t, \cdot)}(z) \;=\; \int_0^\infty x^{z-1}\, u(t, x)\,dx
+  \;=\; \tilde H(z)\,\bigl(I^{z} f\bigr)(t),
+\]
+absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ --- the
+$\Xz$-derivative of Lemma~\ref{lem:delay-core}, i.e.\ $u(\cdot, x)$ is the primitive of
+$\Ex[f'(\cdot - xT_1)]$ --- with $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the
+identity extends to the wider strip $0 < \operatorname{Re} z < z_*$.
+\end{lemma}
+
+\begin{proof}
+In the canonical gauge $u(t, x) = \Ex\bigl[f(t - x T_1)\bigr]$. Tonelli applies, since for
+$c = \operatorname{Re} z > 1$,
+$\Ex[T_1^{-c}]\int_0^t y^{c-1}|f(t-y)|\,dy \le \Ex[T_1^{-c}]\, t^{c-1}\|f\|_1 < \infty$, and
+gives
+\[
+  \int_0^\infty x^{z-1}\,\Ex\bigl[f(t - xT_1)\bigr]\,dx
+  \;=\; \Ex\bigl[T_1^{-z}\bigr]\int_0^t y^{z-1} f(t - y)\,dy
+  \;=\; \Ex\bigl[T_1^{-z}\bigr]\,\Gamma(z)\,(I^z f)(t),
+\]
+which is the claim by Lemma~\ref{lem:mellin-data}. (For bounded $f$ the inner integral
+converges for every $c > 0$, which is the wider strip.) For $f \in \core$, $f$ is bounded ---
+$f(0) = 0$ and $f' \in \Xz$ give $\|f\|_\infty \le \|f'\|_1$ --- so the weight $x^{z-1}$ is then
+integrable at the origin on its own, which is where that extension is used. Also for
+$f \in \core$: $u(\cdot,x) = \mu_{0,x} * f$ and $f = \mathbf{1}_{[0,\infty)} * f'$, so
+$u(\cdot,x) = \mathbf{1}_{[0,\infty)} * (\mu_{0,x} * f')$ --- that is, $u(\cdot,x)$ is the
+primitive of $\Ex[f'(\cdot - xT_1)]$, which is what $\partial_t u = \Ex[f'(\cdot - xT_1)]$
+asserts in $\Xz$. (It is \emph{not} an assertion about pointwise derivatives, and would be
+false as one: $f'$ exists only a.e., and $\mu_{0,x} * f'$ is an $L^1$ function with no
+pointwise values to be a derivative at.) Finally $I^z f' = I^{z-1} f$: substituting
+$f(r) = \int_0^r f'$ and exchanging the order of integration over $0 < \rho \le r \le t$
+leaves $\int_\rho^t (t-r)^{z-2}dr = (t-\rho)^{z-1}/(z-1)$, and
+$\Gamma(z) = (z-1)\Gamma(z-1)$; the semigroup identity $I^{z-1}I^1 = I^z$ is not needed.
+\end{proof}
+
+\begin{remark}[what the core supplies]\label{rem:core-accounting}
+Of the three conditions defining $\core$ the proofs use exactly three consequences and no
+others: boundedness, which is what widens the strip; that $f$ is the primitive of $f'$, which
+is what the derivative clause asserts; and $f \in \Xz$ itself, needed for the Laplace form of
+Theorem~\ref{thm:signaling-form}(2) and \emph{not} implied by the other two, a primitive of an
+$L^1$ function lying in $L^1$ only when $\int_0^\infty f' = 0$. Density and invariance under
+$\shift_r$ and $\Phi_{x,y}$ --- the substance of Lemma~\ref{lem:delay-core} --- are not used
+here.
+\end{remark}
+
+% Verbatim from the blueprint's rem:embodiment.
+\begin{remark}[reading of Lemma~\ref{lem:memory-fractional-integrals}; embodiment]\label{rem:embodiment}
+Lemma~\ref{lem:memory-fractional-integrals} gives the motivation of
+\sscite{fagerstrom2005temporal}, \S5, an exact form: at each instant $t$, the Mellin analysis
+of the memory line holds precisely the analytic family of Riemann--Liouville integrals
+$\{(I^z f)(t)\}$ of the \emph{past} signal, weighted by the negative delay-moments
+$\Ex[T_1^{-z}]$. The observer's embodiment of its past is fractional integration, with the
+admissible weightings classified by Theorem~\ref{thm:main-characterization}.
+\end{remark}
+
+It remains to show that nothing else could have been built. The uniqueness argument
+needs an arena --- what counts as a competitor --- and one rigidity lemma.
+
 % shared with blueprint lem:symbol-rigidity
 \begin{lemma}[rigidity of the symbol]\label{lem:symbol-rigidity}
 Assume (H), and let $B_1, B_2$ satisfy
@@ -279,54 +393,16 @@ information that injectivity would otherwise have to recover; and a single dilat
 all $s > 0$, the dilate contributing only the factor $s^{-z}$, which never vanishes.
 \end{proof}
 
-% shared with blueprint lem:memory-fractional-integrals — "§10" now a \ref to the node it meant.
-\begin{lemma}[the memory line stores fractional integrals]\label{lem:memory-fractional-integrals}
-Under (H), let $f \in \Xz$ be causal and $u(\cdot, x) := \Phi_{0,x} f$. Then for every $t > 0$
-and $1 < \operatorname{Re} z < z_*$,
+The pieces assemble. Recall the problem: evolve the field in present time over the
+memory line, the signal entering as boundary data,
 \[
-  \widetilde{u(t, \cdot)}(z) \;=\; \int_0^\infty x^{z-1}\, u(t, x)\,dx
-  \;=\; \tilde H(z)\,\bigl(I^{z} f\bigr)(t),
+  \partial_t u = A\,u, \qquad u(t,0) = f(t), \qquad u(0,x) = 0 .
 \]
-absolutely convergent. If moreover $f \in \core$, the same holds for $\partial_t u$ --- the
-$\Xz$-derivative of Lemma~\ref{lem:delay-core}, i.e.\ $u(\cdot, x)$ is the primitive of
-$\Ex[f'(\cdot - xT_1)]$ --- with $I^z f$ replaced by $I^z f' = I^{z-1} f$; and in that case the
-identity extends to the wider strip $0 < \operatorname{Re} z < z_*$.
-\end{lemma}
-
-\begin{proof}
-In the canonical gauge $u(t, x) = \Ex\bigl[f(t - x T_1)\bigr]$. Tonelli applies, since for
-$c = \operatorname{Re} z > 1$,
-$\Ex[T_1^{-c}]\int_0^t y^{c-1}|f(t-y)|\,dy \le \Ex[T_1^{-c}]\, t^{c-1}\|f\|_1 < \infty$, and
-gives
-\[
-  \int_0^\infty x^{z-1}\,\Ex\bigl[f(t - xT_1)\bigr]\,dx
-  \;=\; \Ex\bigl[T_1^{-z}\bigr]\int_0^t y^{z-1} f(t - y)\,dy
-  \;=\; \Ex\bigl[T_1^{-z}\bigr]\,\Gamma(z)\,(I^z f)(t),
-\]
-which is the claim by Lemma~\ref{lem:mellin-data}. (For bounded $f$ the inner integral
-converges for every $c > 0$, which is the wider strip.) For $f \in \core$, $f$ is bounded ---
-$f(0) = 0$ and $f' \in \Xz$ give $\|f\|_\infty \le \|f'\|_1$ --- so the weight $x^{z-1}$ is then
-integrable at the origin on its own, which is where that extension is used. Also for
-$f \in \core$: $u(\cdot,x) = \mu_{0,x} * f$ and $f = \mathbf{1}_{[0,\infty)} * f'$, so
-$u(\cdot,x) = \mathbf{1}_{[0,\infty)} * (\mu_{0,x} * f')$ --- that is, $u(\cdot,x)$ is the
-primitive of $\Ex[f'(\cdot - xT_1)]$, which is what $\partial_t u = \Ex[f'(\cdot - xT_1)]$
-asserts in $\Xz$. (It is \emph{not} an assertion about pointwise derivatives, and would be
-false as one: $f'$ exists only a.e., and $\mu_{0,x} * f'$ is an $L^1$ function with no
-pointwise values to be a derivative at.) Finally $I^z f' = I^{z-1} f$: substituting
-$f(r) = \int_0^r f'$ and exchanging the order of integration over $0 < \rho \le r \le t$
-leaves $\int_\rho^t (t-r)^{z-2}dr = (t-\rho)^{z-1}/(z-1)$, and
-$\Gamma(z) = (z-1)\Gamma(z-1)$; the semigroup identity $I^{z-1}I^1 = I^z$ is not needed.
-\end{proof}
-
-\begin{remark}[what the core supplies]\label{rem:core-accounting}
-Of the three conditions defining $\core$ the proofs use exactly three consequences and no
-others: boundedness, which is what widens the strip; that $f$ is the primitive of $f'$, which
-is what the derivative clause asserts; and $f \in \Xz$ itself, needed for the Laplace form of
-Theorem~\ref{thm:signaling-form}(2) and \emph{not} implied by the other two, a primitive of an
-$L^1$ function lying in $L^1$ only when $\int_0^\infty f' = 0$. Density and invariance under
-$\shift_r$ and $\Phi_{x,y}$ --- the substance of Lemma~\ref{lem:delay-core} --- are not used
-here.
-\end{remark}
+The theorem states that this problem is well posed over the covariant Mellin class:
+the inversion exists and has the field's Laplace profiles as eigenfunctions (1); the
+scale-space field solves the problem, the equation holding mode-by-mode in the
+Laplace variable and as an identity of Mellin transforms in the scale variable (2);
+and the inversion is unique (3).
 
 % shared with blueprint thm:signaling-form
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
@@ -400,16 +476,6 @@ strip off an isolated set:
 (3) is Lemma~\ref{lem:symbol-uniqueness}.
 \end{proof}
 
-% Verbatim from the blueprint's rem:embodiment.
-\begin{remark}[reading of Lemma~\ref{lem:memory-fractional-integrals}; embodiment]\label{rem:embodiment}
-Lemma~\ref{lem:memory-fractional-integrals} gives the motivation of
-\sscite{fagerstrom2005temporal}, \S5, an exact form: at each instant $t$, the Mellin analysis
-of the memory line holds precisely the analytic family of Riemann--Liouville integrals
-$\{(I^z f)(t)\}$ of the \emph{past} signal, weighted by the negative delay-moments
-$\Ex[T_1^{-z}]$. The observer's embodiment of its past is fractional integration, with the
-admissible weightings classified by Theorem~\ref{thm:main-characterization}.
-\end{remark}
-
 % Verbatim from the blueprint's rem:poles; "Chapter 12" adapted to §10.
 \begin{remark}[classical interpretation; poles]\label{rem:poles}
 The time-domain equation in Theorem~\ref{thm:signaling-form}(2) is stated at the level of
@@ -430,20 +496,10 @@ equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in
 \S\ref{sec:locality}, and of Example~\ref{ex:bessel-quadratic} below.
 \end{remark}
 
-% Verbatim from the blueprint's ex:stable-signaling.
-\begin{example}[extremal stable; recovering Theorem 4 of 2005]\label{ex:stable-signaling}
-For $F(s) = s^\alpha$ we have $\tilde H(z) = \Gamma(z/\alpha)/\alpha$ and
-\[
-  B(-z) \;=\; \frac{\Gamma\bigl(\tfrac{z+1}{\alpha}\bigr)}{\Gamma\bigl(\tfrac{z}{\alpha}\bigr)}
-  \;\sim\; \Bigl(\tfrac{z}{\alpha}\Bigr)^{1/\alpha} \quad (z \to \infty),
-\]
-a symbol of order $1/\alpha$. On the profiles $e^{-(sx)^\alpha}$ the right-sided Liouville
-derivative acts by $D^{1/\alpha}_{x,-} e^{-cx} = c^{1/\alpha} e^{-cx}$ with $c = s^\alpha$,
-i.e.\ it also produces the eigenvalue $s$; so the Mellin representative and the operator of
-\sscite{fagerstrom2005temporal}, Thm.~4, agree on the span of the field profiles. The
-translation-invariant representative is a coincidence of homogeneity; the Mellin
-representative is the one that survives in general.
-\end{example}
+Three worked cases calibrate the construction, ordered by the growth of the symbol ---
+bounded, quadratic, fractional --- which is the order of the media's regularity: an
+integral operator, a classical PDE, and a fractional operator whose medium, for
+$\alpha < \tfrac12$, does not exist at all.
 
 % Verbatim from the blueprint's ex:gamma-signaling; ex:gamma-recursive lives in Appendix A.
 \begin{example}[the Gamma family; scale-recursive form]\label{ex:gamma-signaling}
@@ -485,6 +541,21 @@ Bessel-K scale space is exactly the Bessel diffusion-with-drift medium, and
 Theorem~\ref{thm:signaling-form}(2) becomes the classical signaling problem
 $\partial_t u = \tfrac12 u_{\xi\xi} + \tfrac{\beta}{\xi}u_\xi$ with $u(t,0) = f(t)$ and
 $u(0,\xi) = 0$.
+\end{example}
+
+% Verbatim from the blueprint's ex:stable-signaling.
+\begin{example}[extremal stable; recovering Theorem 4 of 2005]\label{ex:stable-signaling}
+For $F(s) = s^\alpha$ we have $\tilde H(z) = \Gamma(z/\alpha)/\alpha$ and
+\[
+  B(-z) \;=\; \frac{\Gamma\bigl(\tfrac{z+1}{\alpha}\bigr)}{\Gamma\bigl(\tfrac{z}{\alpha}\bigr)}
+  \;\sim\; \Bigl(\tfrac{z}{\alpha}\Bigr)^{1/\alpha} \quad (z \to \infty),
+\]
+a symbol of order $1/\alpha$. On the profiles $e^{-(sx)^\alpha}$ the right-sided Liouville
+derivative acts by $D^{1/\alpha}_{x,-} e^{-cx} = c^{1/\alpha} e^{-cx}$ with $c = s^\alpha$,
+i.e.\ it also produces the eigenvalue $s$; so the Mellin representative and the operator of
+\sscite{fagerstrom2005temporal}, Thm.~4, agree on the span of the field profiles. The
+translation-invariant representative is a coincidence of homogeneity; the Mellin
+representative is the one that survives in general.
 \end{example}
 
 % Verbatim from the blueprint's rem:markov-media.
