@@ -9,6 +9,14 @@
 % distinguished families are slices cut through it by three different principles; the
 % stable ray and the Bessel line meet at the heat-signaling member α = ½ — the one point
 % the semigroup axioms allowed.
+%
+% 2026-08-30: the (H) collar added — the hatched region at the apex is the set {z_* ≤ 1}
+% excluded by the standing hypothesis of §9 (def:standing-hypothesis). Its geometry is
+% lem:zstar-log-growth: z_* is homogeneous of degree one along rays, so the excluded set is
+% a collar of radial thickness 1/z_* per unit ray — zero on every exponent with drift and on
+% the stable and Bessel slices (z_* = ∞), reaching the unit point of each Dickman ray
+% (z_* = k(0⁺) = 1 there), crossing the Gamma ray at γ = 1. Drawn pinching at the stable
+% ray, maximal at the Dickman edge. Needs \usetikzlibrary{patterns} (loaded in main.tex).
 
 \begin{figure}[t]
 \centering
@@ -28,6 +36,15 @@
 \draw[fill=gray!12,draw=gray!60] (O) -- (6.0,3.3) .. controls (7.2,1.9) and (7.3,0.4) .. (6.6,-0.3) -- cycle;
 \node[gray!40!black,anchor=west] at (-0.4,-1.55) {shaded: the Thorin subclass, $k$ completely monotone};
 
+% the (H) collar: {z_* ≤ 1}, excluded by the standing hypothesis of §9. Pinches at the
+% stable ray (z_* = ∞ there and on everything above it), reaches the Dickman edge at the
+% unit point of the ray, crosses the Gamma ray at γ = 1.
+\draw[pattern=north east lines, pattern color=gray!75, draw=gray!75]
+  (O) .. controls (1.5,0.50) and (2.1,0.44) .. (2.40,0.37)
+      .. controls (2.85,0.22) and (3.15,-0.05) .. (3.17,-0.45) -- cycle;
+\node[gray!30!black,anchor=west] at (3.35,-0.02) {$z_* = 1$};
+\node[gray!40!black,anchor=west] at (-0.4,-2.05) {hatched: the collar $z_* \le 1$, excluded by the standing hypothesis (H) of \S\ref{sec:signaling}};
+
 % the three slices
 \draw[very thick] (O) -- (8.2,2.9);
 \node[anchor=west] at (8.85,2.9) {stable $s^{\alpha}$ (dilation symmetry)};
@@ -37,6 +54,10 @@
 \node[anchor=south] at (1.6,3.15) {Bessel (locality)};
 \fill (4.3,1.52) circle (2pt);
 \node[anchor=north west] at (4.35,1.45) {$\alpha = \tfrac12$};
+
+% where the collar's boundary crosses the Gamma ray: the unit member, γ = 1
+\fill[gray!30!black] (2.40,0.37) circle (1.6pt);
+\node[gray!30!black,anchor=south] at (2.40,0.46) {$\gamma = 1$};
 
 \end{tikzpicture}
 \caption{The admissible cone. Theorem~\ref{thm:main-characterization} identifies the
@@ -49,6 +70,14 @@ distinguished families of the paper is extreme; each is a slice cut by a differe
 the Gamma family as the atoms of the Thorin representation, the Bessel family by locality
 (\S\ref{sec:locality}) --- and the stable and Bessel slices meet at $\alpha = \tfrac12$, the
 heat-signaling member, which is the one point the semigroup axioms allowed on the memory
-line. The drawing is schematic: the cone is infinite-dimensional.}
+line. The hatched collar at the apex is excluded by the standing hypothesis (H) of
+\S\ref{sec:signaling} (Definition~\ref{def:standing-hypothesis}). Unlike the Thorin
+condition, which selects rays and so cuts a subcone, (H) cuts \emph{across} rays: $z_*$ is
+homogeneous of degree one along them (Lemma~\ref{lem:zstar-log-growth}), so a ray of finite
+$z_*$ enters (H) beyond the threshold multiple $1/z_*$, and the excluded set
+$\{z_* \le 1\}$ is a collar around the apex --- pinching to nothing on every exponent with
+drift and on the stable and Bessel slices, where $z_* = \infty$, reaching the unit point of
+each Dickman ray, where $z_* = k(0^+) = 1$, and crossing the Gamma ray at $\gamma = 1$. The
+drawing is schematic: the cone is infinite-dimensional.}
 \label{fig:admissible-cone}
 \end{figure}
