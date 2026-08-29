@@ -23,7 +23,9 @@ positioning and literature work live in the wiki hub's outline page.
 **Written through §12; formalised through §9, chapter 11 entire, and chapter 12's classification
 step, plus all three halves of the main theorem.**
 
-The blueprint carries all of §§2–12 — 69 statement nodes — and `AXIOMS.md` has 18 ledger
+The blueprint carries all of §§2–12 — 90 statement nodes (the count `linkage check` reports;
+definitions, lemmas, propositions, theorems and corollaries, remarks and examples not counted)
+— and `AXIOMS.md` has 18 ledger
 entries, each with a page anchor. The Lean development is ~8,500 lines, `sorry`-free, and rests
 on Lean core plus **two** axioms, which do not mix:
 
@@ -60,7 +62,7 @@ statement-tightenings were landed as conjuncts (Theorem 2′'s analysis directio
 its domain claim, `u = Φ_{0,x}f`, boundary value, derivative reading and Mellin convergence), and
 two places where the article's statement outran its proof were corrected in the text of record.
 
-Sixty-six nodes carry `\lean{...}\leanok`:
+Sixty-seven nodes carry `\lean{...}\leanok`:
 
 | Chapter | Proved in Lean |
 |---|---|
