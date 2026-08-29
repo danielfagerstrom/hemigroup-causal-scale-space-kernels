@@ -5,10 +5,12 @@ Authors: Daniel Fagerström
 -/
 import Mathlib.MeasureTheory.Integral.Bochner.Basic
 import Mathlib.MeasureTheory.Integral.Lebesgue.Basic
+import Mathlib.MeasureTheory.Integral.Lebesgue.DominatedConvergence
 import Mathlib.MeasureTheory.Measure.Dirac
 import Mathlib.MeasureTheory.Measure.Typeclasses.Probability
 import Mathlib.Analysis.SpecialFunctions.Exp
 import Mathlib.MeasureTheory.Group.Convolution
+import Mathlib.Order.Filter.AtTopBot.Field
 
 /-!
 # Causal measures and their Laplace transforms
@@ -34,8 +36,8 @@ Two decisions, both taken from `blueprint/DESIGN-formalization-strategy.md`.
 
 namespace Hemigroup
 
-open MeasureTheory Set
-open scoped ENNReal
+open MeasureTheory Set Filter
+open scoped ENNReal Topology
 
 /-! ## An elementary inequality
 
@@ -113,6 +115,44 @@ lemma laplaceL_antitone {μ : Measure ℝ} (h : IsCausal μ) :
   refine lintegral_mono_ae ?_
   filter_upwards [h.ae_nonneg] with t ht
   exact ENNReal.ofReal_le_ofReal (Real.exp_le_exp.mpr (by nlinarith))
+
+/-- **The transform tends to the mass at the origin.** As `s → ∞` the integrand `e^{-st}`
+degenerates to the indicator of `{0}` — `1` there, `0` off it — dominated throughout by the
+constant `1` on a causal measure. Added for `lem:standing-kernel-readings` (11.21): it is the
+converse of the fact `laplaceL_le_mass`-adjacent computations already used, that the mass at the
+origin bounds the transform from below; this is the matching limit statement, that the transform
+*attains* that bound as `s → ∞`. -/
+theorem tendsto_laplaceL_atTop {μ : Measure ℝ} [IsFiniteMeasure μ] (h : IsCausal μ) :
+    Tendsto (laplaceL μ) atTop (𝓝 (μ {(0 : ℝ)})) := by
+  have hlim : ∀ᵐ t ∂μ, Tendsto (fun s : ℝ => ENNReal.ofReal (Real.exp (-(s * t)))) atTop
+      (𝓝 (Set.indicator ({0} : Set ℝ) (fun _ => (1 : ℝ≥0∞)) t)) := by
+    filter_upwards [h.ae_nonneg] with t ht
+    rcases ht.eq_or_lt with h0 | h0
+    · rw [← h0]
+      simp
+    · rw [Set.indicator_of_notMem (by simp [h0.ne'] : t ∉ ({0} : Set ℝ))]
+      have hmul : Tendsto (fun s : ℝ => s * t) atTop atTop :=
+        (tendsto_id : Tendsto (fun s : ℝ => s) atTop atTop).atTop_mul_const h0
+      have hneg : Tendsto (fun s : ℝ => -(s * t)) atTop atBot :=
+        tendsto_neg_atTop_atBot.comp hmul
+      have hexp0 : Tendsto (fun s : ℝ => Real.exp (-(s * t))) atTop (𝓝 0) :=
+        Real.tendsto_exp_atBot.comp hneg
+      have hlast := (ENNReal.continuous_ofReal.tendsto (0 : ℝ)).comp hexp0
+      simpa [Function.comp_def] using hlast
+  have hconv : Tendsto (fun s : ℝ => ∫⁻ t, ENNReal.ofReal (Real.exp (-(s * t))) ∂μ) atTop
+      (𝓝 (∫⁻ t, Set.indicator ({0} : Set ℝ) (fun _ => (1 : ℝ≥0∞)) t ∂μ)) :=
+    tendsto_lintegral_filter_of_dominated_convergence (F := fun s t : ℝ =>
+        ENNReal.ofReal (Real.exp (-(s * t)))) (fun _ : ℝ => (1 : ℝ≥0∞))
+      (Filter.Eventually.of_forall fun s : ℝ => by fun_prop)
+      ((eventually_ge_atTop (0 : ℝ)).mono fun s hs => by
+        filter_upwards [h.ae_nonneg] with t ht
+        rw [← ENNReal.ofReal_one]
+        exact ENNReal.ofReal_le_ofReal (Real.exp_le_one_iff.mpr (by nlinarith)))
+      (by simp) hlim
+  have hval : ∫⁻ t, Set.indicator ({0} : Set ℝ) (fun _ => (1 : ℝ≥0∞)) t ∂μ = μ {(0 : ℝ)} := by
+    rw [lintegral_indicator (measurableSet_singleton (0 : ℝ)), setLIntegral_const, one_mul]
+  rw [hval] at hconv
+  exact hconv
 
 /-- Integrability of the exponential against a finite causal measure, for `s ≥ 0`. The bridge
 from `laplaceL` to `laplace`. -/

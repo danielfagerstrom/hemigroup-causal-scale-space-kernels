@@ -68,12 +68,23 @@ $(I^z f)(t) := \tfrac{1}{\Gamma(z)}\int_0^t (t-r)^{z-1} f(r)\,dr$ for the Rieman
 integral of complex order $z$, $\operatorname{Re} z > 0$ (\sscite{samko1993fractional}).
 
 % draft: Definition 11.1
+% NARROWED 2026-08-29: the two clauses were followed by parenthetical glosses -- "equivalently
+% b_0 > 0 or ... i.e. no atom ... at zero delay" -- that are theorems, not restatements, and were
+% sitting inside a definition where the dependency graph could not see them: nothing checked
+% them, and one of the two (the adjacent paragraph's "the second condition is equivalent to
+% \int_0^\infty e^{-F(s)}ds < \infty") was not exactly true, the converse failing at z_* = 1
+% (the Gamma family there has an infinite first negative moment). The statement below is now
+% verbatim the two clauses \ref{lem:mellin-data} and every later node already consume -- and
+% verbatim what \texttt{StandingHypothesis} has always said in Lean, so \lean/\leanok below were
+% never at risk. The glosses are promoted to their own nodes, \ref{lem:standing-kernel-readings}
+% and \ref{lem:standing-levy-reading}, appended at the end of the chapter (11.21, 11.22); the
+% \uses edge to \ref{lem:selfdecomposable-exponents} moves there with the second gloss, since it
+% is what grounded that gloss and nothing else in this definition.
 \begin{definition}[the standing hypothesis (H)]\label{def:standing-hypothesis}
-\uses{lem:selfdecomposable-exponents,thm:main-characterization}
+\uses{thm:main-characterization}
 \lean{Hemigroup.SelfDecomposableExponent.StandingHypothesis}\leanok
 An admissible exponent $F$ satisfies the \emph{standing hypothesis} (H) if
-$F(\infty) = \infty$ --- equivalently $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$,
-i.e.\ no atom of the kernels at zero delay --- and
+$F(\infty) = \infty$ and
 \[
   z_* \;:=\; \sup\bigl\{\, \zeta > 0 :\ \Ex\bigl[T_1^{-\zeta}\bigr] < \infty \,\bigr\} \;>\; 1 .
 \]
@@ -105,7 +116,14 @@ hypothesis every downstream statement carries. A hypothesis that a chapter's own
 is a defect only visible to something that tries to use both.)}
 \end{definition}
 
-The second condition is equivalent to $\int_0^\infty e^{-F(s)}\,ds < \infty$. It holds with
+Both clauses are conditions at the zero-delay end of the kernels, and
+\ref{lem:standing-kernel-readings} and \ref{lem:standing-levy-reading} supply the readings the
+definition used to assert in passing: the first clause says exactly that the kernels put no atom
+at zero delay, is equivalent to $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$, and is
+automatic for every admissible $F \not\equiv 0$ --- so all of (H)'s bite is in the second clause
+--- while the second implies $\int_0^\infty e^{-F(s)}\,ds = \Ex[T_1^{-1}] < \infty$, the converse
+failing only at the endpoint $z_* = 1$, an endpoint genuinely reached: the Gamma family at
+$\gamma = 1$ has $z_* = 1$ with $\Ex[T_1^{-1}] = \infty$. The second clause holds with
 $z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of
 \ref{prop:bessel-family}; for the Gamma family $z_* = \gamma$, so (H) requires $\gamma > 1$
 there. The construction extends below $z_* = 1$ by meromorphic continuation, which we do not
@@ -1040,4 +1058,124 @@ $0 < \rho \le r \le t$, which is legitimate because the same computation on abso
 bounded by $t^{z-1}\|g\|_1/(\operatorname{Re} z - 1)$. The inner integral is
 $\int_\rho^t (t-r)^{z-2}dr = (t-\rho)^{z-1}/(z-1)$, so the double integral is
 $(z-1)^{-1}\Gamma(z)(I^zg)(t)$; and $\Gamma(z) = (z-1)\Gamma(z-1)$.
+\end{proof}
+
+% additive: not in the draft. def:standing-hypothesis carried two parenthetical glosses on its
+% clauses -- theorems, not restatements, sitting inside a definition where the graph could not
+% see them, and one of them (the integral-test "equivalence") was not exactly true. This is the
+% first of the two nodes those glosses are promoted to (2026-08-29); the second is 11.22, below.
+% Both are appended at the end of the chapter, a number the draft does not use, on the pattern of
+% every other split in this chapter (11.13 through 11.20).
+\begin{lemma}[kernel readings of the standing hypothesis]\label{lem:standing-kernel-readings}
+\uses{def:standing-hypothesis,thm:main-characterization}
+\lean{Hemigroup.SelfDecomposableExponent.standing_kernel_readings}\leanok
+In the canonical gauge, with $T_1$ as in \ref{def:standing-hypothesis}:
+\begin{enumerate}
+\item $F(\infty) = \infty$ if and only if the kernels have no atom at zero delay:
+$\mu_{0,x}(\{0\}) = \Pr[T_1 = 0] = 0$ for every $x > 0$.
+\item Suppose $F(\infty) = \infty$. Then $\int_0^\infty e^{-F(s)}\,ds = \Ex[T_1^{-1}]$ in
+$[0,\infty]$; consequently $z_* > 1$ implies $\int_0^\infty e^{-F(s)}\,ds < \infty$, and
+$\int_0^\infty e^{-F(s)}\,ds < \infty$ implies $z_* \ge 1$.
+\end{enumerate}
+\statusT\quad\emph{(\textbf{Machine-checked}, as
+\texttt{Hemigroup.SelfDecomposableExponent.standing\_kernel\_readings}, a conjunction of four
+parts, each with its own declaration: \texttt{tendsto\_toRealExponent\_atTop\_iff} (clause~1),
+\texttt{lintegral\_profile\_eq\_negMoment\_one} (clause~2's identity), and
+\texttt{negMoment\_one\_ne\_top\_of\_one\_lt\_zStar} /
+\texttt{one\_le\_zStar\_of\_negMoment\_one\_ne\_top} (clause~2's two consequences).
+\texttt{\#print axioms} gives \ledger{A17} throughout, on every part including the two
+consequences: they are the general downward-closure and abscissa lemmas
+\ref{lem:mellin-data} already uses, restated at $\zeta = 1$ for \emph{this} $F$, and a statement
+about \emph{this} $F$'s $z_*$ or negative moments quantifies over the family \ledger{A17}
+constructs however elementary its own argument is --- the same point \ref{def:standing-hypothesis}
+records about $z_*$ itself. One general fact underneath clause~1's converse,
+\texttt{Hemigroup.tendsto\_laplaceL\_atTop} (any finite causal measure's transform tends to its
+mass at the origin as $s \to \infty$), reduces to Lean core alone, carrying no hemigroup object.
+\textbf{The two consequences are proved without the hypothesis "$F(\infty)=\infty$" the statement
+poses them under} --- they are unconditional facts about $z_*$ and \texttt{negMoment}, so what is
+proved is strictly more than clause~2 asks for, not less.}
+\end{lemma}
+
+\begin{proof}
+\leanok
+(1) $s \mapsto H(s) := \Ex[e^{-sT_1}]$ decreases to $\Pr[T_1 = 0]$ as $s \to \infty$: the
+integrand $e^{-sT_1}$ is dominated by the constant $1$ and converges pointwise to the indicator
+of $\{T_1 = 0\}$, so dominated convergence gives $H(s) \to \Pr[T_1=0]$. Since $H(s) = e^{-F(s)}$,
+$F(\infty) = \infty$ iff $H(s) \to 0$ iff $\Pr[T_1 = 0] = 0$. For general $x > 0$, $\mu_{0,x}$ is
+the law of $xT_1$ (the canonical gauge), and multiplication by $x \ne 0$ carries $\{0\}$ to
+itself and nowhere else, so $\mu_{0,x}(\{0\}) = \Pr[xT_1 = 0] = \Pr[T_1 = 0]$ for every $x > 0$;
+the case $x=1$ already gives the stated equivalence, and every other $x$ agrees with it.
+
+(2) By Tonelli, $\int_0^\infty e^{-F(s)}\,ds = \int_0^\infty \Ex[e^{-sT_1}]\,ds =
+\Ex\bigl[\int_0^\infty e^{-sT_1}\,ds\bigr] = \Ex[T_1^{-1}]$ in $[0,\infty]$, the inner integral
+$\int_0^\infty e^{-sT_1}ds = T_1^{-1}$ being licensed pointwise because $T_1 > 0$ almost surely
+by~(1). For the two consequences, the finiteness set
+$\{\zeta > 0 : \Ex[T_1^{-\zeta}] < \infty\}$ is downward closed --- $t^{-\zeta'} \le
+t^{-\zeta} + 1$ for $t > 0$ and $\zeta' \le \zeta$, so a finite $\zeta$-th moment bounds every
+smaller one up to an additive unit of mass --- so $z_* > 1$ puts a real $\zeta > 1$ in the set,
+and hence $1$ in it too, giving $\Ex[T_1^{-1}] < \infty$; conversely if $\Ex[T_1^{-1}] < \infty$
+then $1$ is itself a member of the set whose supremum is $z_*$, so $z_* \ge 1$.
+\end{proof}
+
+% additive: not in the draft. The second of the two nodes def:standing-hypothesis's glosses were
+% promoted to (2026-08-29); see 11.21 above. This one is stated in the (b_0,k) data of (7.1)
+% rather than in the law of T_1, so it needs the two-vocabularies bridge (BF_0 concludes here,
+% LE is what the Lean development argues in) -- see DESIGN-formalization-strategy.md -- and it is
+% NOT machine-checked: writing the target types down (Formalization/Skeleton/Chapter11.lean)
+% found that clause (1)'s forward AND converse directions need a monotone-convergence argument
+% for the Levy jump as s -> infty bridged into an ENNReal-to-real atTop statement, and clause (2)
+% needs a small divergence computation (\int_0^{t_0} t^{-1}dt = \infty) the library does not
+% currently state -- real work, disproportionate to what anything downstream consumes, since
+% 11.21 already records that all of (H)'s bite is in its second clause. So this stays [T],
+% \notready, with the target types written and sorry-marked rather than attempted inline.
+\begin{lemma}[Lévy-data reading; the first clause is automatic]\label{lem:standing-levy-reading}
+\uses{def:standing-hypothesis,lem:selfdecomposable-exponents}
+\lean{Skeleton.tendsto_toRealExponent_atTop_iff_levy,Skeleton.tendsto_toRealExponent_atTop_of_ne_zero}\notready
+Let $F$ be admissible with representation (7.1). Then:
+\begin{enumerate}
+\item $F(\infty) = \infty$ if and only if $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$
+--- i.e.\ the exponent carries drift or infinite Lévy mass.
+\item If $F \not\equiv 0$ then $F(\infty) = \infty$; within the admissible class the standing
+hypothesis therefore reduces to its second clause, $z_* > 1$.
+\end{enumerate}
+\statusT\quad\emph{(\textbf{Not yet proved.} Target types are written, sorry-marked, as
+\texttt{Skeleton.tendsto\_toRealExponent\_atTop\_iff\_levy} and
+\texttt{Skeleton.tendsto\_toRealExponent\_atTop\_of\_ne\_zero} in
+\texttt{Formalization/Skeleton/Chapter11.lean}; nothing here is cited by the library or listed in
+\texttt{CIAxiomGuard.lean}, per the article's decomposition discipline.
+\textbf{Why this clause and not \ref{lem:standing-kernel-readings}'s.} That node's clause~1 is
+stated in $T_1$'s law and its proof is a direct dominated-convergence limit plus a
+change-of-variables that is already in the library
+(\texttt{kernel\_zero\_eq\_map\_lawT}$_1$). This one is stated in the $(b_0,k)$ data of (7.1) ---
+the two-vocabulary bridge \texttt{CLAUDE.md} names, that a node concluding in $\BFz$
+needs the $\LE$ reading stated alongside it before it can carry a \texttt{\textbackslash
+lean} tag with \texttt{\textbackslash leanok}. Writing the target types down (the discipline this
+article keeps, statement first) is what turned "looks like the same kind of fact" into a real
+cost estimate: clause~(1) needs a monotone-convergence argument for \texttt{levyJump} as
+$s \to \infty$ in \emph{both} directions of an iff, together with the bridge from a
+$[0,\infty]$-valued limit to the $\RR$-valued \texttt{atTop} reading \texttt{toRealExponent}
+already carries (the same bridge, \texttt{tendsto\_toRealExponent\_atTop\_of\_lawT}$_1$
+\texttt{\_singleton\_zero}, needed once, for one direction, in
+\ref{lem:standing-kernel-readings}); clause~(2) needs
+$\int_0^{t_0} t^{-1}dt = \infty$, a divergence fact the library does not currently carry in any
+form. Priced against the target types rather than the paper proof --- the paper's own route, via
+complete monotonicity, is not available here at all, the development having no \texttt{CM}
+predicate --- this is genuinely more expensive than \ref{lem:standing-kernel-readings}, and
+nothing downstream needs it: every proof through chapter~12 consumes (H)'s two clauses as the
+Lean has always stated them, never this reading of them.)}
+\end{lemma}
+
+\begin{proof}
+(1) ($\Leftarrow$) If $b_0 > 0$ then $F(s) \ge b_0 s \to \infty$. If $\int_0^\infty k(t)t^{-1}dt =
+\infty$, monotone convergence in (7.1) --- $1 - e^{-st}$ increases pointwise to $1$ on
+$(0,\infty)$ as $s \to \infty$ --- gives $F(s) \to b_0\cdot\infty + \int_0^\infty k(t)t^{-1}dt =
+\infty$. ($\Rightarrow$) Contrapositive: if $b_0 = 0$ and $\int_0^\infty k(t)t^{-1}dt =: M <
+\infty$, the same monotone limit gives $F(s)$ increasing to $M < \infty$, so
+$F(\infty) \ne \infty$.
+
+(2) If $k \not\equiv 0$, nonincreasing $k$ that is positive somewhere is bounded below by that
+value on the interval below it: pick $t_0$ with $k(t_0) > 0$, then $k(t) \ge k(t_0)$ for
+$t \in (0,t_0]$, so $\int_0^{t_0} k(t)t^{-1}dt \ge k(t_0)\int_0^{t_0}t^{-1}dt = \infty$, and (1)
+gives $F(\infty) = \infty$. If $k \equiv 0$ and $F \not\equiv 0$, (7.1) reduces to $F(s) = b_0 s$
+with $b_0 > 0$, and (1) again gives $F(\infty) = \infty$.
 \end{proof}

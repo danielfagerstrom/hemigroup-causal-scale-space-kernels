@@ -538,6 +538,82 @@ theorem norm_mellin_profile_le (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c
   rw [F.mellin_profile hH (by rw [hre]; exact hc) (by rw [hre]; exact hc'), norm_mul, mul_comm]
   gcongr
 
+/-! ## `lem:standing-kernel-readings` (11.21), the part stateable here
+
+The two readings of `def:standing-hypothesis`'s clauses that the definition used to assert in
+passing, now a node of their own: the first clause is exactly "no atom at zero delay", and under
+it, the integral `∫₀^∞ e^{-F(s)}ds` reads off the first negative moment. The clause comparing
+`F.kernel 0 x {0}` for general `x` needs `kernel_zero_eq_map_lawT₁`, which lives in
+`MemoryFractional.lean` (downstream of this file, to avoid a cycle); it and the assembled bundle
+`standing_kernel_readings` are there, right after that lemma. -/
+
+/-- The converse of `lawT₁_singleton_zero`: no atom at the origin forces `F(∞) = ∞`.
+
+`laplaceL F.lawT₁` tends to the mass at the origin as `s → ∞` (`tendsto_laplaceL_atTop`); with
+that mass `0` the transform tends to `0`, and `profile = laplaceL.toReal` inherits the limit.
+Composing with `Real.exp` — via `Real.comap_exp_nhds_zero`, that the preimage filter of `𝓝 0`
+under `exp` is `atBot` — turns "the transform tends to `0`" into "the exponent tends to `∞`". -/
+theorem tendsto_toRealExponent_atTop_of_lawT₁_singleton_zero
+    (h0 : F.lawT₁ {(0 : ℝ)} = 0) : Tendsto F.toRealExponent atTop atTop := by
+  have hL : Tendsto (laplaceL F.lawT₁) atTop (𝓝 (F.lawT₁ {(0 : ℝ)})) :=
+    tendsto_laplaceL_atTop F.isCausal_lawT₁
+  rw [h0] at hL
+  have hprofile : Tendsto F.profile atTop (𝓝 0) := by
+    change Tendsto (fun s => laplace F.lawT₁ s) atTop (𝓝 0)
+    simp_rw [laplace_eq_toReal_laplaceL]
+    have hcont := (ENNReal.tendsto_toReal (a := (0 : ℝ≥0∞)) (by simp)).comp hL
+    simpa [Function.comp_def] using hcont
+  have hexp : Tendsto (fun s : ℝ => Real.exp (-F.toRealExponent s)) atTop (𝓝 0) := by
+    refine hprofile.congr' ?_
+    filter_upwards [eventually_ge_atTop (0 : ℝ)] with s hs using F.profile_eq_exp_neg hs
+  have hneg : Tendsto (fun s : ℝ => -F.toRealExponent s) atTop atBot := by
+    rw [← Real.comap_exp_nhds_zero, tendsto_comap_iff]
+    exact hexp
+  simpa [Function.comp_def] using tendsto_neg_atBot_atTop.comp hneg
+
+/-- **`lem:standing-kernel-readings`(2), the identity**: under no atom at the origin, the
+integral `∫₀^∞ e^{-F(s)}ds` — the profile's Mellin data at the left edge — is exactly the first
+negative moment `E[T₁^{-1}]`, both read in `[0,∞]`.
+
+Tonelli swaps `∫⁻ s in Ioi 0, laplaceL F.lawT₁ s ds` into the shape `lintegral_lintegral_gamma`
+computes at `c = 1`, where the weight `s^{c-1}` is `1` and drops out. `ofReal (profile s)` agrees
+with `laplaceL F.lawT₁ s` for `s > 0` because the transform is finite there
+(`laplaceL_ne_top_of_causal`), so passing through `ofReal` costs nothing on the strip. -/
+theorem lintegral_profile_eq_negMoment_one (h0 : F.lawT₁ {(0 : ℝ)} = 0) :
+    ∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (F.profile s) = F.negMoment 1 := by
+  have heq : Set.EqOn (fun s => ENNReal.ofReal (F.profile s)) (laplaceL F.lawT₁) (Ioi 0) := by
+    intro s hs
+    change ENNReal.ofReal (F.profile s) = laplaceL F.lawT₁ s
+    rw [profile, laplace_eq_toReal_laplaceL,
+      ENNReal.ofReal_toReal (laplaceL_ne_top_of_causal F.isCausal_lawT₁ (mem_Ioi.mp hs).le)]
+  rw [setLIntegral_congr_fun measurableSet_Ioi heq]
+  have hswap : ∫⁻ s in Ioi (0 : ℝ), laplaceL F.lawT₁ s
+      = ∫⁻ t, (∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (Real.exp (-(t * s)))) ∂F.lawT₁ := by
+    have hswap' := lintegral_lintegral_swap (μ := volume.restrict (Ioi (0 : ℝ))) (ν := F.lawT₁)
+      (f := fun s t : ℝ => ENNReal.ofReal (Real.exp (-(s * t))))
+      (by unfold Function.uncurry; fun_prop)
+    rw [show (∫⁻ s in Ioi (0 : ℝ), laplaceL F.lawT₁ s)
+        = ∫⁻ s in Ioi (0 : ℝ), ∫⁻ t, ENNReal.ofReal (Real.exp (-(s * t))) ∂F.lawT₁ from rfl,
+      hswap']
+    refine lintegral_congr fun t => ?_
+    exact setLIntegral_congr_fun measurableSet_Ioi fun s _ => by rw [mul_comm]
+  rw [hswap]
+  have hgamma := F.lintegral_lintegral_gamma (c := 1) one_pos h0
+  simp only [show (1 : ℝ) - 1 = 0 from by norm_num, Real.rpow_zero, one_mul, Real.Gamma_one,
+    ENNReal.ofReal_one] at hgamma
+  exact hgamma
+
+/-- **`lem:standing-kernel-readings`(2), the two consequences.** `z_* > 1` forces the first
+negative moment finite. Neither this nor its converse below needs the no-atom hypothesis: both
+are the general moment/abscissa lemmas above, instantiated at `ζ = 1`. -/
+theorem negMoment_one_ne_top_of_one_lt_zStar (hz : 1 < F.zStar) : F.negMoment 1 ≠ ⊤ :=
+  F.negMoment_ne_top_of_lt_zStar one_pos (by rwa [ENNReal.ofReal_one])
+
+/-- Finiteness of the first negative moment forces `z_* ≥ 1`. -/
+theorem one_le_zStar_of_negMoment_one_ne_top (h1 : F.negMoment 1 ≠ ⊤) : (1 : ℝ≥0∞) ≤ F.zStar := by
+  have := F.le_zStar_of_negMoment_ne_top (ζ := 1) one_pos h1
+  rwa [ENNReal.ofReal_one] at this
+
 end SelfDecomposableExponent
 
 /-- `E[T₁^{-c}]` as a Bochner-integrable function.

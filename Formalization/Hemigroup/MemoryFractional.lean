@@ -55,7 +55,7 @@ namespace Hemigroup
 
 open MeasureTheory Set Filter
 
-open scoped Topology
+open scoped Topology ENNReal
 
 /-- The **Riemann–Liouville integral of complex order** `z`,
 `(Iᶻf)(t) = Γ(z)⁻¹ ∫₀ᵗ (t-r)^{z-1} f(r) dr`.
@@ -522,6 +522,44 @@ theorem kernel_zero_eq_map_lawT₁ {x : ℝ} (hx : 0 < x) :
   refine (kernel_unique (isCausal_map_mul F.isCausal_lawT₁ hx) le_rfl hx.le fun s hs => ?_).symm
   rw [laplace_map_mul, show laplace F.lawT₁ (x * s) = F.profile (x * s) from rfl,
     F.profile_eq_exp_neg (mul_nonneg hx.le hs), increment_zero_left hx.le, toRealExponent]
+
+/-! ## `lem:standing-kernel-readings` (11.21), assembled
+
+`MellinData.lean` carries everything about the first clause of `def:standing-hypothesis` that is
+stateable in terms of `F.lawT₁` alone; this is the one clause that needs comparing `F.kernel 0 x`
+across every `x > 0`, which needs `kernel_zero_eq_map_lawT₁` just proved, and so has to live here,
+downstream of it. -/
+
+/-- The general kernel `μ_{0,x}` has no atom at zero delay exactly when `T₁` does not, for any
+`x > 0`: `μ_{0,x}` is the law of `x T₁` (`kernel_zero_eq_map_lawT₁`), and multiplication by a
+nonzero `x` carries `{0}` to `{0}` and nothing else there. -/
+theorem kernel_zero_singleton_zero_eq {x : ℝ} (hx : 0 < x) :
+    F.kernel 0 x {(0 : ℝ)} = F.lawT₁ {(0 : ℝ)} := by
+  rw [F.kernel_zero_eq_map_lawT₁ hx,
+    Measure.map_apply (by fun_prop) (measurableSet_singleton (0 : ℝ))]
+  congr 1
+  ext t
+  simp [hx.ne']
+
+/-- **`lem:standing-kernel-readings`(1)**: `F(∞) = ∞` iff none of the kernels `μ_{0,x}`, `x > 0`,
+has an atom at zero delay. -/
+theorem tendsto_toRealExponent_atTop_iff :
+    Tendsto F.toRealExponent atTop atTop ↔ ∀ x : ℝ, 0 < x → F.kernel 0 x {(0 : ℝ)} = 0 :=
+  ⟨fun h _x hx => (F.kernel_zero_singleton_zero_eq hx).trans (F.lawT₁_singleton_zero h),
+    fun h => F.tendsto_toRealExponent_atTop_of_lawT₁_singleton_zero
+      (show F.kernel 0 1 {(0 : ℝ)} = 0 from h 1 one_pos)⟩
+
+/-- **`lem:standing-kernel-readings`**, assembled: both clauses of `def:standing-hypothesis`
+that used to be asserted in passing, now proved. `#print axioms` on this bundle is the
+load-bearing check for the node: the two moment-side conjuncts are unconditional (Lean core plus
+nothing), and the atom-side conjuncts and the identity rest on `A17`, through the constructed
+family, exactly as `lem:mellin-data` does. -/
+theorem standing_kernel_readings :
+    (Tendsto F.toRealExponent atTop atTop ↔ ∀ x : ℝ, 0 < x → F.kernel 0 x {(0 : ℝ)} = 0) ∧
+    (F.lawT₁ {(0 : ℝ)} = 0 → ∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (F.profile s) = F.negMoment 1) ∧
+    (1 < F.zStar → F.negMoment 1 ≠ ⊤) ∧ (F.negMoment 1 ≠ ⊤ → (1 : ℝ≥0∞) ≤ F.zStar) :=
+  ⟨F.tendsto_toRealExponent_atTop_iff, F.lintegral_profile_eq_negMoment_one,
+    F.negMoment_one_ne_top_of_one_lt_zStar, F.one_le_zStar_of_negMoment_one_ne_top⟩
 
 /-- **The field, as a genuine function of `(t,x)`**: `u(t,x) = E[f(t - x T₁)]`.
 

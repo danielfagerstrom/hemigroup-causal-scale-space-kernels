@@ -218,6 +218,27 @@ and not this node.
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_profile
 #print axioms Hemigroup.SelfDecomposableExponent.norm_mellin_profile_le
 
+/-! ### `lem:standing-kernel-readings` (11.21), the two glosses `def:standing-hypothesis` used
+to assert in passing
+
+`tendsto_laplaceL_atTop` is general (any finite causal measure) and reduces to Lean core alone.
+Everything below it quantifies over `F.lawT₁ = F.kernel 0 1` or `F.kernel 0 x`, hence **A17**,
+except the two moment/abscissa consequences, which are the general lemmas of `lem:mellin-data`'s
+section again and carry nothing beyond what they already did there. The bundle
+`standing_kernel_readings` is what the node's `\lean` tag names; its parts are listed separately
+because they are what shows the atom-side conjuncts and the moment-side conjuncts do not share a
+ledger entry with each other.
+-/
+
+#print axioms Hemigroup.tendsto_laplaceL_atTop
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_atTop_of_lawT₁_singleton_zero
+#print axioms Hemigroup.SelfDecomposableExponent.kernel_zero_singleton_zero_eq
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_atTop_iff
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_profile_eq_negMoment_one
+#print axioms Hemigroup.SelfDecomposableExponent.negMoment_one_ne_top_of_one_lt_zStar
+#print axioms Hemigroup.SelfDecomposableExponent.one_le_zStar_of_negMoment_one_ne_top
+#print axioms Hemigroup.SelfDecomposableExponent.standing_kernel_readings
+
 /-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
 
 Analyticity of `H̃` on the strip, its non-vanishing at real points, the isolation of its zeros,

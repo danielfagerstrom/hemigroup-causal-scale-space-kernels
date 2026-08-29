@@ -12,7 +12,9 @@
 % symbol growth: Gamma rational, Bessel quadratic, stable fractional — the stable case
 % adjacent to the Markov remark that consumes it).
 % Blueprint node splits handled as before: the split lemmas that aid reading are
-% included; delayed-average-mellin, signaling-mellin-form and
+% included — among them standing-kernel-readings and standing-levy-reading, the two nodes
+% the definition's former glosses were promoted to (2026-08-29), placed directly after
+% (H); delayed-average-mellin, signaling-mellin-form and
 % fractional-integral-derivative stay folded into the proofs that contain them.
 % Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10.
 
@@ -84,22 +86,87 @@ shifts the Mellin argument by exactly one --- differentiation in time and the we
 $x$ are the same shift seen from two sides --- which is where the condition $z_* > 1$
 comes from.
 
-% shared with blueprint def:standing-hypothesis
+% shared with blueprint def:standing-hypothesis — the glosses formerly embedded in the
+% statement are now Lemmas standing-kernel-readings / standing-levy-reading (2026-08-29).
 \begin{definition}[the standing hypothesis (H)]\label{def:standing-hypothesis}
 An admissible exponent $F$ satisfies the \emph{standing hypothesis} (H) if
-$F(\infty) = \infty$ --- equivalently $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$,
-i.e.\ no atom of the kernels at zero delay --- and
+$F(\infty) = \infty$ and
 \[
   z_* \;:=\; \sup\bigl\{\, \zeta > 0 :\ \Ex\bigl[T_1^{-\zeta}\bigr] < \infty \,\bigr\} \;>\; 1 .
 \]
 \end{definition}
 
-The second condition is equivalent to $\int_0^\infty e^{-F(s)}\,ds < \infty$. It holds with
+Both clauses are conditions at the zero-delay end of the kernels, and
+Lemmas~\ref{lem:standing-kernel-readings} and~\ref{lem:standing-levy-reading} below make the
+readings precise: the first clause says exactly that the kernels put no atom at zero delay, is
+equivalent to $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$, and is automatic for every
+admissible $F \not\equiv 0$ --- so all of (H)'s bite is in the second clause --- while the
+second implies $\int_0^\infty e^{-F(s)}\,ds = \Ex[T_1^{-1}] < \infty$, the converse failing
+only at the endpoint $z_* = 1$, an endpoint genuinely reached: the Gamma family at
+$\gamma = 1$ has $z_* = 1$ with $\Ex[T_1^{-1}] = \infty$. The second clause holds with
 $z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of
 Proposition~\ref{prop:bessel-family}; for the Gamma family $z_* = \gamma$, so (H) requires
 $\gamma > 1$ there, and $\gamma \le 1$ is among the open problems of
 \S\ref{sec:conclusions}. The construction extends below $z_* = 1$ by meromorphic
 continuation, which we do not pursue.
+
+% shared with blueprint lem:standing-kernel-readings
+\begin{lemma}[kernel readings of the standing hypothesis]\label{lem:standing-kernel-readings}
+In the canonical gauge, with $T_1$ as in Definition~\ref{def:standing-hypothesis}:
+\begin{enumerate}
+\item $F(\infty) = \infty$ if and only if the kernels have no atom at zero delay:
+$\mu_{0,x}(\{0\}) = \Pr[T_1 = 0] = 0$ for every $x > 0$.
+\item Suppose $F(\infty) = \infty$. Then $\int_0^\infty e^{-F(s)}\,ds = \Ex[T_1^{-1}]$ in
+$[0,\infty]$; consequently $z_* > 1$ implies $\int_0^\infty e^{-F(s)}\,ds < \infty$, and
+$\int_0^\infty e^{-F(s)}\,ds < \infty$ implies $z_* \ge 1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) $s \mapsto H(s) := \Ex[e^{-sT_1}]$ decreases to $\Pr[T_1 = 0]$ as $s \to \infty$: the
+integrand $e^{-sT_1}$ is dominated by the constant $1$ and converges pointwise to the indicator
+of $\{T_1 = 0\}$, so dominated convergence gives $H(s) \to \Pr[T_1=0]$. Since $H(s) = e^{-F(s)}$,
+$F(\infty) = \infty$ iff $H(s) \to 0$ iff $\Pr[T_1 = 0] = 0$. For general $x > 0$, $\mu_{0,x}$ is
+the law of $xT_1$ (the canonical gauge), and multiplication by $x \ne 0$ carries $\{0\}$ to
+itself and nowhere else, so $\mu_{0,x}(\{0\}) = \Pr[xT_1 = 0] = \Pr[T_1 = 0]$ for every $x > 0$;
+the case $x=1$ already gives the stated equivalence, and every other $x$ agrees with it.
+
+(2) By Tonelli, $\int_0^\infty e^{-F(s)}\,ds = \int_0^\infty \Ex[e^{-sT_1}]\,ds =
+\Ex\bigl[\int_0^\infty e^{-sT_1}\,ds\bigr] = \Ex[T_1^{-1}]$ in $[0,\infty]$, the inner integral
+$\int_0^\infty e^{-sT_1}ds = T_1^{-1}$ being licensed pointwise because $T_1 > 0$ almost surely
+by~(1). For the two consequences, the finiteness set
+$\{\zeta > 0 : \Ex[T_1^{-\zeta}] < \infty\}$ is downward closed --- $t^{-\zeta'} \le
+t^{-\zeta} + 1$ for $t > 0$ and $\zeta' \le \zeta$, so a finite $\zeta$-th moment bounds every
+smaller one up to an additive unit of mass --- so $z_* > 1$ puts a real $\zeta > 1$ in the set,
+and hence $1$ in it too, giving $\Ex[T_1^{-1}] < \infty$; conversely if $\Ex[T_1^{-1}] < \infty$
+then $1$ is itself a member of the set whose supremum is $z_*$, so $z_* \ge 1$.
+\end{proof}
+
+% shared with blueprint lem:standing-levy-reading
+\begin{lemma}[Lévy-data reading; the first clause is automatic]\label{lem:standing-levy-reading}
+Let $F$ be admissible with representation (7.1). Then:
+\begin{enumerate}
+\item $F(\infty) = \infty$ if and only if $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$
+--- i.e.\ the exponent carries drift or infinite Lévy mass.
+\item If $F \not\equiv 0$ then $F(\infty) = \infty$; within the admissible class the standing
+hypothesis therefore reduces to its second clause, $z_* > 1$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+(1) ($\Leftarrow$) If $b_0 > 0$ then $F(s) \ge b_0 s \to \infty$. If $\int_0^\infty k(t)t^{-1}dt =
+\infty$, monotone convergence in (7.1) --- $1 - e^{-st}$ increases pointwise to $1$ on
+$(0,\infty)$ as $s \to \infty$ --- gives $F(s) \to b_0\cdot\infty + \int_0^\infty k(t)t^{-1}dt =
+\infty$. ($\Rightarrow$) Contrapositive: if $b_0 = 0$ and $\int_0^\infty k(t)t^{-1}dt =: M <
+\infty$, the same monotone limit gives $F(s)$ increasing to $M < \infty$, so
+$F(\infty) \ne \infty$.
+
+(2) If $k \not\equiv 0$, nonincreasing $k$ that is positive somewhere is bounded below by that
+value on the interval below it: pick $t_0$ with $k(t_0) > 0$, then $k(t) \ge k(t_0)$ for
+$t \in (0,t_0]$, so $\int_0^{t_0} k(t)t^{-1}dt \ge k(t_0)\int_0^{t_0}t^{-1}dt = \infty$, and (1)
+gives $F(\infty) = \infty$. If $k \equiv 0$ and $F \not\equiv 0$, (7.1) reduces to $F(s) = b_0 s$
+with $b_0 > 0$, and (1) again gives $F(\infty) = \infty$.
+\end{proof}
 
 The threshold $1$ is not an artefact of one estimate. It arises three separate times, for
 three different reasons: in the convergence of the Mellin integral of the delayed field

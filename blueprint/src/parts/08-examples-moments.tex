@@ -106,7 +106,7 @@ $F$ is finite and of the form (7.1); hence $F$ is admissible by
 
 % draft: Example 8.3
 \begin{proposition}[the Bessel-K family; preview of the memory line]\label{prop:bessel-family}
-\uses{lem:selfdecomposable-exponents,thm:main-characterization,prop:moment-criterion,lem:criterion-converse,prop:admissibility-criterion}
+\uses{lem:selfdecomposable-exponents,thm:main-characterization,lem:criterion-converse,prop:admissibility-criterion}
 For $a > 0$ let $T_1 \stackrel{d}{=} 1/(2\gamma_a)$ be the scaled inverse-gamma law, where
 $\gamma_a$ has the Gamma density of shape $a$, and let $F$ be its Laplace exponent. Then
 \[
@@ -120,7 +120,9 @@ laws; \sscite{halgreen1979self}. A cited interface, not reproven here.
 which is what makes $F$ admissible and puts the family inside
 \ref{thm:main-characterization}. Everything else is \textbf{[T]} and proved below --- the
 evaluation of the transform in terms of $K_a$ is a classical integral representation, and the
-moment criterion is \ref{prop:moment-criterion} applied to this $k$. Note also that Halgreen proves the
+moments are a direct Gamma-integral computation from $T_1 = 1/(2\gamma_a)$, not routed through
+\ref{prop:moment-criterion}: the edge to that node is dropped below along with the sentence that
+used it (2026-08-29). Note also that Halgreen proves the
 stronger statement that the law is a generalized Gamma convolution; self-decomposability
 follows through $\GGC \subset \SDclass$, which is a clause of \ledger{A16} --- so A8 and A16
 rest on the same tower and should be reviewed together.}
@@ -136,6 +138,20 @@ the memory-line theorems is prose, not a mathematical clause of this proposition
 at the point of citation instead.}
 \end{proposition}
 
+% CORRECTED 2026-08-29: the proof's closing sentence asserted a Lévy-density asymptotic,
+% "k(t) ~ a as t -> 0", that contradicts the exponent's own growth. k(0+) < infty with b_0 = 0
+% forces F(s) = O(log s) as s -> infty (a bounded density integrates against dt/t to a
+% logarithmically divergent tail at best); but the display two lines above gives, via the K_a
+% asymptotic at infinity, F(s) ~ sqrt(2s), which is not O(log s). The true small-t behaviour is
+% the stable-1/2 singularity k(t) ~ (2 pi t)^{-1/2} (inverse-gamma laws are heavy-tailed at their
+% own origin), not a finite limit; the tail claim "decays like t^{-a}" was also never cited.
+% Nothing downstream used the clause: the moment criterion route consumed only the tail exponent,
+% and the direct computation below needs no Levy-density asymptotics at all, at either end.
+% Librarian-verified against halgreen1979self, printed p. 15 (2026-08-29): the Thorin density
+% g_v there has g_v(x) ~ x^{-1/2} as x -> infty and ~ x^{v-1} as x -> 0, which by a
+% Watson's-lemma step give exactly k(t) ~ c t^{-1/2} at 0 and ~ c' t^{-a} at infinity -- so both
+% ends are now anchored should the Levy-asymptotics route ever be wanted; ledger A8's pp. 13-15
+% anchors were re-verified against the page images in the same pass.
 \begin{proof}
 Write $\gamma_a$ for a Gamma$(a,1)$ variable and $T_1 = 1/(2\gamma_a)$. Substituting
 $u = 1/(2t)$ in the Gamma density gives the density of $T_1$,
@@ -155,10 +171,18 @@ Self-decomposability of $T_1$ is \ledger{A8}; by
 \ref{lem:selfdecomposable-exponents} its exponent is of the form (7.1), and both integrability
 conditions of \ref{prop:admissibility-criterion} hold for the resulting $(b_0,k)$ by
 \ref{lem:criterion-converse}, since $F(1) = -\log\Ex\,e^{-T_1} < \infty$; so $F$ is finite and
-\ref{thm:main-characterization} makes the family admissible. Finally, the Lévy density factor
-of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$ at infinity, so
-$\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$; \ref{prop:moment-criterion} converts
-that into $\Ex\,T_x^n < \infty$ iff $a > n$.
+\ref{thm:main-characterization} makes the family admissible. Finally, since $T_x \stackrel{d}{=}
+x\,T_1$ in the canonical gauge, for every $x > 0$ and $n \in \NN$,
+\[
+  \Ex\,T_x^n = x^n\,\Ex\,T_1^n = \frac{x^n}{2^n}\,\Ex\bigl[\gamma_a^{-n}\bigr],
+  \qquad
+  \Ex\bigl[\gamma_a^{-n}\bigr]
+  = \frac{1}{\Gamma(a)}\int_0^\infty u^{a-n-1}e^{-u}\,du
+  = \frac{\Gamma(a-n)}{\Gamma(a)},
+\]
+the last integral (hence the moment) finite exactly when $a - n > 0$; so $\Ex\,T_x^n < \infty$ iff
+$a > n$. This is a direct computation from the defining substitution $T_1 = 1/(2\gamma_a)$ and
+cites no Lévy-density asymptotics.
 \end{proof}
 
 % draft: Proposition 8.4

@@ -2696,3 +2696,63 @@ Nothing on the *available* row. What remains in chapters 8–12, all of it delib
 
 The next substantive move is upstream-dependent, not schedulable here — which is the first time
 that has been true of this plan.
+
+---
+
+# `def:standing-hypothesis`'s embedded glosses, repaired — 2026-08-29
+
+Not a new node in the queue: a defect found in an *existing* one, `def:standing-hypothesis`
+(11.1). Its two clauses each carried a parenthetical gloss — "$F(\infty)=\infty$, equivalently
+$b_0 > 0$ or $\int k(t)t^{-1}dt = \infty$, i.e. no atom at zero delay" and the following
+paragraph's "the second condition is equivalent to $\int_0^\infty e^{-F(s)}ds < \infty$". Both
+are theorems, not restatements, sitting inside a `definition` environment where `\uses` cannot
+reach them — invisible to the graph, and unformalised (the Lean `StandingHypothesis` was always
+just the two bare clauses). Worse, the second gloss was **not exactly true**: the true relation
+is $\int_0^\infty e^{-F(s)}ds = \Ex[T_1^{-1}]$ (Tonelli), so $z_* > 1 \Rightarrow$ finite $\Rightarrow
+z_* \ge 1$, and the converse of the stated "equivalent" fails exactly at $z_* = 1$ — the Gamma
+family there has $\Ex[T_1^{-1}] = \int_0^\infty t^{-1}e^{-t}dt = \infty$.
+
+**The definition is now verbatim the two clauses the Lean has always had**, and the glosses are
+promoted to their own nodes, `lem:standing-kernel-readings` (11.21) and `lem:standing-levy-reading`
+(11.22), appended at the end of chapter 11 on the pattern of every earlier split there. The
+tempting truly-minimal form — drop the first clause as redundant given (ND) — is a formalisation
+trap and is *not* taken: `negMoment` integrates over `Ioi 0` and cannot see an atom at the origin,
+so without the first clause (H) would hold junk-vacuously on a profile that keeps mass at zero
+delay. This is recorded in 11.22's own note as the reason the clause stays in the definition
+despite being automatic for $F \not\equiv 0$ on paper.
+
+**11.21 is proved, entire — `standing_kernel_readings`, A17 throughout** (through the
+constructed family, on every conjunct including the two moment/abscissa consequences, which
+restate general lemmas already on A17 at $\zeta=1$). One new general fact underneath it,
+`Hemigroup.tendsto_laplaceL_atTop` (a finite causal measure's transform tends to its mass at the
+origin as $s \to \infty$), is Lean core alone and belongs in `Levy.lean`, not tied to any one
+family.
+
+**11.22 is not proved, and the estimate was written against the target type, not the paper
+proof** (the discipline this file has argued for all week, applied to itself): it is stated in
+the $(b_0,k)$ data of (7.1), the two-vocabulary bridge `CLAUDE.md` names, so the paper's own
+route — through complete monotonicity — is not even available; the development has no `CM`
+predicate. Writing `Skeleton.tendsto_toRealExponent_atTop_iff_levy` and
+`Skeleton.tendsto_toRealExponent_atTop_of_ne_zero` down (`Formalization/Skeleton/Chapter11.lean`)
+found the actual cost: clause (1)'s `iff` needs a monotone-convergence argument for `levyJump` as
+`s → ∞` in *both* directions, bridged from an `ℝ≥0∞`-valued limit into the `ℝ`-valued `atTop`
+reading `toRealExponent` carries; clause (2) needs $\int_0^{t_0}t^{-1}dt = \infty$, which the
+library does not currently state in any form. Neither is hard mathematics, but both are real
+work, and — the point 11.21's own remark already makes — nothing downstream needs this reading:
+every proof through chapter 12 consumes (H) as the two bare clauses, never the Lévy-data gloss.
+So it stays `\notready`, statement-first, rather than attempted inline; it is not on the
+*available* row because nothing depends on it, matching the discipline the empty row already
+established for this file.
+
+**Also repaired: `prop:bessel-family`'s proof (8.3).** Its closing sentence asserted a
+Lévy-density asymptotic, "$k(t) \sim a$ as $t \to 0$", that contradicts the exponent's own
+growth: $k(0^+) < \infty$ with $b_0 = 0$ forces $F(s) = O(\log s)$, but the display two lines
+above it gives, via the $K_a$ asymptotic at infinity, $F(s) \sim \sqrt{2s}$. The true small-$t$
+behaviour is the stable-$1/2$ singularity $k(t) \sim (2\pi t)^{-1/2}$ (inverse-gamma laws are
+heavy-tailed at their own origin), and the tail claim beside it was never cited either. Nothing
+downstream used the clause — this node is not formalised and carries no `\lean` tag — so the fix
+is proof-only: replace the moment-criterion route with the direct computation
+$\Ex T_x^n = x^n 2^{-n}\Ex[\gamma_a^{-n}] = x^n 2^{-n}\Gamma(a-n)/\Gamma(a)$, finite exactly when
+$n < a$, which cites no Lévy asymptotics at either end and drops the `\uses` edge to
+`prop:moment-criterion`. Same escape as `prop:gamma-moments`' and `prop:stable-moments`' (see
+above): a third family, a third route around the criterion.

@@ -251,6 +251,9 @@ and $T_1$ is self-decomposable, so $F$ is of the form (7.1) and the family is ad
 moments satisfy $\Ex\,T_x^n < \infty$ if and only if $a > n$.
 \end{proposition}
 
+% Proof corrected 2026-08-29 with the blueprint: the closing sentence asserted a false
+% small-t Lévy asymptotic (k(t) ~ a; truly a stable-1/2 singularity, Halgreen p. 15); the
+% moments are now computed directly from the density, citing no Lévy asymptotics.
 \begin{proof}
 Write $\gamma_a$ for a Gamma$(a,1)$ variable and $T_1 = 1/(2\gamma_a)$. Substituting
 $u = 1/(2t)$ in the Gamma density gives the density of $T_1$,
@@ -272,9 +275,17 @@ Lemma~\ref{lem:selfdecomposable-exponents} its exponent is of the form (7.1), an
 integrability conditions of Proposition~\ref{prop:admissibility-criterion} hold for the resulting
 $(b_0,k)$ by Lemma~\ref{lem:criterion-converse}, since $F(1) = -\log\Ex\,e^{-T_1} < \infty$; so
 $F$ is finite and Theorem~\ref{thm:main-characterization} makes the family admissible. Finally,
-the Lévy density factor of this $F$ satisfies $k(t) \sim a$ as $t \to 0$ and decays like $t^{-a}$
-at infinity, so $\int_1^\infty t^{n-1}k(t)\,dt < \infty$ exactly when $n < a$;
-Proposition~\ref{prop:moment-criterion} converts that into $\Ex\,T_x^n < \infty$ iff $a > n$.
+since $T_x \stackrel{d}{=} x\,T_1$ in the canonical gauge, for every $x > 0$ and $n \in \NN$,
+\[
+  \Ex\,T_x^n = x^n\,\Ex\,T_1^n = \frac{x^n}{2^n}\,\Ex\bigl[\gamma_a^{-n}\bigr],
+  \qquad
+  \Ex\bigl[\gamma_a^{-n}\bigr]
+  = \frac{1}{\Gamma(a)}\int_0^\infty u^{a-n-1}e^{-u}\,du
+  = \frac{\Gamma(a-n)}{\Gamma(a)},
+\]
+the last integral (hence the moment) finite exactly when $a - n > 0$; so $\Ex\,T_x^n < \infty$ iff
+$a > n$. This is a direct computation from the defining substitution $T_1 = 1/(2\gamma_a)$ and
+cites no Lévy-density asymptotics.
 \end{proof}
 
 In the parabolic gauge $\xi$ of Remark~\ref{rem:gauge-freedom}, $\tilde x = \xi^2$, these

@@ -98,5 +98,47 @@ it, not because the *obligation* needs it. That is the third time in this chapte
 pattern deserves its name: **what a proof cites is an upper bound on what a statement needs.**
 
 Both pieces are proved, and with them `thm:signaling-form`(2)'s Mellin form
-(`mellin_signaling_form`). **This file holds no declarations.**
+(`mellin_signaling_form`).
+
+## `lem:standing-levy-reading` (11.22) — the two target types below
+
+Added 2026-08-29, alongside `lem:standing-kernel-readings` (11.21, proved, in
+`Hemigroup/MemoryFractional.lean`), when `def:standing-hypothesis`'s embedded glosses were split
+out of the definition. This is the one of the two glosses stated in the `(b₀,k)` data of (7.1)
+rather than in `T₁`'s law, and it is genuinely more work: the first clause needs a monotone
+(or dominated) convergence argument for `levyJump` as `s → ∞`, bridging an `ℝ≥0∞`-valued limit at
+`s → ∞` to the `ℝ` atTop reading `toRealExponent` already carries, in *both* directions of an
+`iff`; the second needs a small divergence computation, `∫₀^{t₀} t⁻¹dt = ∞`, that nothing in the
+library currently states. Priced against the target types below, not against the paper proof
+(the paper proof's own route — through complete monotonicity — is not available at all, the
+development having no `CM` predicate; see `DESIGN-formalization-strategy.md`): this is
+**statable, not cheap**, and nothing downstream consumes it (the definition's own clauses are
+what every proof in chapters 11–12 actually uses, per 11.21's remark that all of (H)'s bite is in
+the second clause). So it stays here, `\notready`, rather than being attempted inline.
 -/
+
+namespace Skeleton
+
+open MeasureTheory Set Filter
+open scoped ENNReal Topology
+
+open Hemigroup Hemigroup.SelfDecomposableExponent
+
+/-- **`lem:standing-levy-reading`(1)**: `F(∞) = ∞` iff the exponent carries drift or infinite
+Lévy mass — the reading of the first clause of (H) in the `(b₀, k)` data of (7.1), rather than in
+the law of `T₁` that `lem:standing-kernel-readings` uses. -/
+theorem tendsto_toRealExponent_atTop_iff_levy (F : SelfDecomposableExponent) :
+    Tendsto F.toRealExponent atTop atTop ↔
+      0 < F.b₀ ∨ ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (F.k t / t) = ⊤ := by
+  sorry
+
+/-- **`lem:standing-levy-reading`(2)**: a nonzero admissible exponent automatically satisfies the
+first clause of (H) — so, within the admissible class, (H) reduces to its second clause, `z_* >
+1`. `F ≢ 0` is phrased as `exponent_strictMono` already phrases it: some positive point where the
+exponent does not vanish. -/
+theorem tendsto_toRealExponent_atTop_of_ne_zero (F : SelfDecomposableExponent)
+    (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) :
+    Tendsto F.toRealExponent atTop atTop := by
+  sorry
+
+end Skeleton
