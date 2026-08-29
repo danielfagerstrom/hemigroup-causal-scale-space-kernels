@@ -17,7 +17,12 @@
 % (H), and zstar-log-growth, the Lévy-data reading of (H)'s second clause (2026-08-30);
 % delayed-average-mellin, signaling-mellin-form and
 % fractional-integral-derivative stay folded into the proofs that contain them.
-% Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10.
+% The well-posedness arc (2026-08-30) — def:mellin-solution, lem:mode-rigidity,
+% cor:signaling-wellposed, cor:signaling-classical, rem:classical-families — sits after
+% rem:poles, before the examples, matching the blueprint's arc paragraph placement (the
+% blueprint appends the nodes at chapter end).
+% Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10;
+% prop:laplace-uniqueness-causal → the paper's prop:laplace-uniqueness.
 
 \section{The signaling form}\label{sec:signaling}
 
@@ -541,11 +546,15 @@ memory line, the signal entering as boundary data,
 \[
   \partial_t u = A\,u, \qquad u(t,0) = f(t), \qquad u(0,x) = 0 .
 \]
-The theorem states that this problem is well posed over the covariant Mellin class:
-the inversion exists and has the field's Laplace profiles as eigenfunctions (1); the
-scale-space field solves the problem, the equation holding mode-by-mode in the
-Laplace variable and as an identity of Mellin transforms in the scale variable (2);
-and the inversion is unique (3).
+The theorem delivers, over the covariant Mellin class: the inversion exists and has
+the field's Laplace profiles as eigenfunctions (1); the scale-space field solves the
+problem, the equation holding mode-by-mode in the Laplace variable and as an identity
+of Mellin transforms in the scale variable (2); and the inversion is unique (3) ---
+the \emph{operator}, that is, not yet the solution. What ``solves'' means, and the
+sense in which the problem is genuinely \emph{well posed}, is settled after the
+theorem: Definition~\ref{def:mellin-solution} names the notion of solution that
+clause~(2) informally reads off, and Corollary~\ref{cor:signaling-wellposed} adds
+\emph{solution}-uniqueness.
 
 % shared with blueprint thm:signaling-form
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
@@ -637,6 +646,266 @@ used.
 When the symbol $B$ is a \emph{polynomial}, $A$ is a local differential operator and the
 equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in
 \S\ref{sec:locality}, and of Example~\ref{ex:bessel-quadratic} below.
+\end{remark}
+
+Theorem~\ref{thm:signaling-form}(2) closes with an informal gloss --- ``that is,
+$\partial_t u = A\,u$ read through the Mellin transform in $x$'' --- and clause~(3) proves
+uniqueness of the \emph{operator} $A$ within the covariant Mellin class, not uniqueness of the
+\emph{solution} $u$: two different claims the single word ``unique'' can hide. The gap is not
+merely presentational. The eigenvalue recursion $s\,\tilde g(z) = B(1-z)\,\tilde g(z-1)$ that
+pins $\hat u(s,\cdot)$'s Mellin data has the classical period-one ambiguity: its general
+solution is $\tilde g(z) = s^{-z}\tilde H(z)\,p(z)$ for an \emph{arbitrary} $1$-periodic $p$,
+the same obstruction Bohr--Mollerup closes for $\Gamma$, one level down. What follows closes it
+here. Definition~\ref{def:mellin-solution} names what a solution of the signaling problem
+\emph{is}, mirroring Theorem~\ref{thm:signaling-form}(2)'s own clauses rather than restating
+them; Lemma~\ref{lem:mode-rigidity} kills the periodic ambiguity, under a normalisation the
+field satisfies for free --- its own modes are dominated by the profile, uniformly over one
+period, the theory's counterpart of the log-convexity hypothesis Bohr--Mollerup imposes; and
+Corollary~\ref{cor:signaling-wellposed} assembles existence with \emph{solution}-uniqueness
+under that normalisation --- the corollary that earns the phrase ``well posed'', which
+Theorem~\ref{thm:signaling-form} alone does not. A classical-solution clause, under an extra
+decay hypothesis on the negative-moment function $m$ that the Gamma, stable and Bessel-K
+families satisfy and the pure delay fails --- correctly, that family belonging instead to
+Theorem~\ref{thm:locality}'s territory --- closes the arc as
+Corollary~\ref{cor:signaling-classical}.
+
+% shared with blueprint def:mellin-solution
+\begin{definition}[a Mellin solution of the signaling problem]\label{def:mellin-solution}
+Assume (H) and work in the canonical gauge, and let $f \in \core$. A \emph{Mellin solution of the
+signaling problem for $f$} is a field $u : \RR \times (0,\infty) \to \RR$ such that $u(\cdot, x)
+\in \Xz$ for every $x > 0$ --- causal in $t$ at every scale, the honest form of the boundary
+condition $u(0,\cdot) = 0$, since $\Xz$ is by definition the causal elements of $X$ --- with
+$u(\cdot, x) \to f$ in $\Xz$ as $x \downarrow 0$, and, writing
+$\hat u(s,x) := \int_0^\infty e^{-st}u(t,x)\,dt$ for $s > 0$:
+\begin{enumerate}
+\item \emph{(Laplace form.)} For every $s > 0$: $x \mapsto \hat u(s,x)$ is continuous on
+$(0,\infty)$; its Mellin transform $z \mapsto \widetilde{\hat u(s,\cdot)}(z)$ is analytic on the
+whole strip $0 < \operatorname{Re} z < z_*$; at every height $c \in (0, z_*-1)$, $\hat u(s,\cdot)$ lies in the
+domain of $A$ (Definition~\ref{def:inversion-operator}); and
+\[
+A\bigl[\hat u(s,\cdot)\bigr] \;=\; s\,\hat u(s,\cdot), \qquad \hat u(s, \zp) \;=\; \hat f(s);
+\]
+\item \emph{(Mellin form.)} For every $t > 0$ and every $z$ with $1 < \operatorname{Re} z < z_*$ and
+$\tilde H(z-1) \ne 0$,
+\[
+\widetilde{\partial_t u(t, \cdot)}(z) \;=\; B(1-z)\,\widetilde{u(t,\cdot)}(z-1),
+\]
+both transforms absolutely convergent.
+\end{enumerate}
+\end{definition}
+
+% shared with blueprint lem:mode-rigidity
+\begin{lemma}[rigidity of a profile-dominated mode]\label{lem:mode-rigidity}
+Assume (H) and fix $s > 0$. Let $\tilde g$ be analytic on the strip $0 < \operatorname{Re} z < z_*$ and satisfy
+the pole-free eigenvalue recursion
+\[
+s\,\tilde g(z)\,\tilde H(z-1) \;=\; \tilde H(z)\,\tilde g(z-1), \qquad 1 < \operatorname{Re} z < z_*,
+\]
+an identity of holomorphic functions on that range, with no exceptional set. Suppose the
+\emph{periodic factor}
+\[
+p(z) \;:=\; \frac{s^z\,\tilde g(z)}{\tilde H(z)},
+\]
+a priori meromorphic on $0 < \operatorname{Re} z < z_*$ with possible poles only at the isolated zeros of
+$\tilde H$ (Lemma~\ref{lem:inversion-symbol}), is bounded on some period substrip
+$\{c \le \operatorname{Re} z \le c+1\} \subset (0, z_*)$, off those zeros. Then $p$ is constant: there is
+$\kappa \in \CC$ with
+\[
+\tilde g(z) \;=\; \kappa\, s^{-z}\,\tilde H(z), \qquad 0 < \operatorname{Re} z < z_*.
+\]
+\end{lemma}
+
+\begin{proof}
+Where $\tilde H(z) \ne 0$ and $\tilde H(z-1) \ne 0$, dividing the recursion by
+$s\,\tilde H(z)\tilde H(z-1)$ and multiplying by $s^{z}$ gives $p(z) = p(z-1)$, so the periodic
+factor satisfies the shift relation off the (isolated) zeros of $\tilde H$ on both sides.
+
+\textbf{Step 1: $p$ extends to a meromorphic, $1$-periodic function on $\CC$.} $\tilde H$'s zeros
+in $(0,z_*)$ are isolated (Lemma~\ref{lem:inversion-symbol}), hence --- being isolated in a strip
+of finite or infinite width --- meet every bounded region in only finitely many points; so, writing
+$S := (0,z_*)$ as a set of vertical strips $S_n := S + n = \{z : n < \operatorname{Re} z < n + z_*\}$ for
+$n \in \ZZ$, and $p_n(z) := p(z-n)$, meromorphic on $S_n$ with poles only at the (finitely many, in
+any bounded region) translated zeros of $\tilde H$: for $n \le k \le m$ and $z \in S_n \cap S_m$,
+$z$ lies in every intermediate $S_k$ (since $\operatorname{Re} z > m \ge k$ and $\operatorname{Re} z < n + z_* \le k + z_*$),
+so the shift relation applied at each consecutive pair $(k,k+1)$, $n \le k < m$, gives
+$p_n(z) = p_{n+1}(z) = \dots = p_m(z)$: every two translates agree wherever they overlap. Since
+$z_* > 1$ (H), consecutive strips overlap and $\{S_n\}_{n \in \ZZ}$ covers $\CC$, so there is a
+well-defined meromorphic $P : \CC \to \CC$ with $P|_{S_n} = p_n$ for every $n$; it is $1$-periodic,
+since for $z \in S_n$, $z+1 \in S_{n+1}$ and $P(z+1) = p_{n+1}(z+1) = p(z-n) = p_n(z) = P(z)$.
+
+\textbf{Step 2: $P$ is bounded off its poles, on all of $\CC$.} $P|_{S_0} = p$ is bounded on the
+given substrip $\{c \le \operatorname{Re} z \le c+1\}$, off the zeros of $\tilde H$ there, by hypothesis. By
+periodicity, $P$ is bounded by the \emph{same} constant on every unit translate
+$\{c+n \le \operatorname{Re} z \le c+1+n\}$, $n \in \ZZ$, off $P$'s poles there; and these translates cover
+$\CC$, consecutive ones sharing an edge. So $P$ is bounded, by one constant, off its (isolated)
+poles, everywhere.
+
+\textbf{Step 3: removability and Liouville.} At each pole $w_0$ of $P$, $P$ is bounded on a
+punctured neighbourhood of $w_0$ (Step 2), so by Riemann's removable singularity theorem $P$
+extends to be analytic at $w_0$, with value the limit from nearby --- hence bounded by the same
+constant, since nearby values are. Doing this at every pole (isolated, so no accumulation in any
+bounded region) gives an \emph{entire} function $\hat P$, equal to $P$ off its poles and bounded on
+all of $\CC$ by the constant of Step 2. Liouville's theorem gives $\hat P \equiv \kappa$ for some
+$\kappa \in \CC$.
+
+\textbf{Closing.} On $S_0 = (0,z_*)$, $\hat P = P = p$ off the zeros of $\tilde H$, so
+$s^z\tilde g(z) = \kappa\,\tilde H(z)$ for every $z \in (0,z_*)$ off that isolated set. Both sides
+are analytic on the whole (connected, open) strip $(0,z_*)$ --- the left because $\tilde g$ is, by
+hypothesis; the right because $\tilde H$ is (Lemma~\ref{lem:inversion-symbol}) --- and agree off a
+set with no accumulation point in the strip, so by the identity theorem they agree everywhere on
+it. Dividing by $s^z \ne 0$ gives $\tilde g(z) = \kappa\,s^{-z}\tilde H(z)$ for every
+$z \in (0,z_*)$.
+\end{proof}
+
+% shared with blueprint cor:signaling-wellposed
+\begin{corollary}[the signaling problem, well posed]\label{cor:signaling-wellposed}
+Assume (H), let $f \in \core$, and let $A$ be the inversion operator of
+Definition~\ref{def:inversion-operator}. Then:
+\begin{enumerate}
+\item \emph{(Existence.)} The scale-space field $u(t,x) := (\Phi_{0,x}f)(t)$ is a Mellin solution
+of the signaling problem for $f$ (Definition~\ref{def:mellin-solution}); its periodic factor
+$p_s(z) := s^z\widetilde{\hat u(s,\cdot)}(z)/\tilde H(z)$ (Lemma~\ref{lem:mode-rigidity}) is the
+\emph{constant} $\hat f(s)$, for every $s > 0$ --- in particular profile-dominated.
+\item \emph{(Uniqueness.)} It is the \emph{unique} Mellin solution of the signaling problem for
+$f$ whose modes are profile-dominated --- i.e., such that for every $s > 0$ the periodic factor of
+Lemma~\ref{lem:mode-rigidity} is bounded on some period substrip: if $v$ is another such solution,
+then $v(\cdot,x) = u(\cdot,x) = (\Phi_{0,x}f)(\cdot)$ in $\Xz$, for every $x > 0$.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(1) is Theorem~\ref{thm:signaling-form}(1) for the domain and eigenfunction clauses and
+Theorem~\ref{thm:signaling-form}(2) for causality, the boundary limit, the Laplace and Mellin
+forms; continuity of $x \mapsto \hat u(s,x) = \hat f(s)H(sx)$ and analyticity of its transform on
+the whole strip are as in the statement. Since $\widetilde{\hat u(s,\cdot)}(z) =
+\hat f(s)\,s^{-z}\tilde H(z)$, the periodic factor is
+$p_s(z) = s^z\cdot\hat f(s)\,s^{-z}\tilde H(z)/\tilde H(z) = \hat f(s)$ identically.
+
+(2) Let $v$ be a Mellin solution for $f$ with profile-dominated modes, and fix $s > 0$. Write
+$\tilde g(z) := \widetilde{\hat v(s,\cdot)}(z)$, analytic on the whole strip by
+Definition~\ref{def:mellin-solution}(1). At every height $c \in (0,z_*-1)$, $\hat v(s,\cdot)$ lies
+in the domain of $A$ with $A[\hat v(s,\cdot)] = s\,\hat v(s,\cdot)$; taking Mellin transforms
+(Definition~\ref{def:inversion-operator}'s transform identity, as in the proof of
+Theorem~\ref{thm:signaling-form}(1)) gives $s\,\tilde g(z) = B(1-z)\tilde g(z-1)$ off the zeros of
+$\tilde H(z-1)$ on the line $\operatorname{Re} z = c+1$; multiplying out
+$B(1-z) = \tilde H(z)/\tilde H(z-1)$ clears the denominator to
+$s\,\tilde g(z)\tilde H(z-1) = \tilde H(z)\tilde g(z-1)$ off an isolated set of the line, and both
+sides are analytic on the strip $1 < \operatorname{Re} z < z_*$ (the left by hypothesis, the right by
+Lemma~\ref{lem:inversion-symbol}), so by the identity theorem the identity holds \emph{everywhere}
+on that range --- the pole-free recursion Lemma~\ref{lem:mode-rigidity} asks for. By hypothesis
+its periodic factor is bounded on some period substrip, so Lemma~\ref{lem:mode-rigidity} gives
+$\kappa_s \in \CC$ with $\tilde g(z) = \kappa_s\,s^{-z}\tilde H(z)$ for every $z \in (0,z_*)$ ---
+that is, $\widetilde{\hat v(s,\cdot)}$ and $\widetilde{\kappa_s H(s\cdot)}$ agree on the strip.
+
+Both $x \mapsto \hat v(s,x)$ (continuous, Definition~\ref{def:mellin-solution}(1)) and
+$x \mapsto \kappa_s H(sx)$ (continuous, $H$ a Laplace transform) have this same Mellin transform,
+absolutely convergent on the line $\operatorname{Re} z = c+1$ for any $c \in (0,z_*-1)$
+(Lemma~\ref{lem:mellin-vertical}, up to the constant $\kappa_s$). Mellin inversion on a line of
+absolute convergence recovers a continuous function from its transform, so
+\[
+\hat v(s,x) \;=\; \kappa_s\,H(sx), \qquad x > 0.
+\]
+Letting $x \downarrow 0$ on both (continuous) sides and using $\hat v(s,\zp) = \hat f(s)$
+(Definition~\ref{def:mellin-solution}(1)) and $H(0) = 1$ ($H$ the Laplace transform of the law of
+$T_1$) gives $\kappa_s = \hat f(s)$. So $\hat v(s,x) = \hat f(s)H(sx) = \hat u(s,x)$ for every
+$x>0$ and every $s>0$: $t \mapsto v(t,x)$ and $t \mapsto u(t,x)$, both in $\Xz$
+(Definition~\ref{def:mellin-solution}(1) for $v$, Lemma~\ref{lem:delay-core} for
+$u = \Phi_{0,x}f \in \core \subset \Xz$), have the same Laplace transform for every $s>0$, so by
+Proposition~\ref{prop:laplace-uniqueness} % blueprint: prop:laplace-uniqueness-causal
+they agree: $v(\cdot,x) = u(\cdot,x)$ in $\Xz$, for every $x>0$.
+\end{proof}
+
+% shared with blueprint cor:signaling-classical
+\begin{corollary}[classical solutions of the signaling problem]\label{cor:signaling-classical}
+Assume (H), let $f \in \core$ with $f'$ additionally bounded and continuous, and let
+$u(t,x) := (\Phi_{0,x}f)(t)$ be the scale-space field. Suppose that for some $c \in (0,z_*-1)$,
+\[
+\int_{\RR} (1+|\tau|)\,\bigl|m(c+1+i\tau)\bigr|\,d\tau \;<\; \infty, \qquad m(z) := \Ex\bigl[T_1^{-z}\bigr]
+\]
+--- decay of the negative-moment function along one vertical line. Then for every $t > 0$, the
+function $x \mapsto u(t,x)$ lies in the domain of $A$ at height $c$, with realising function
+$h(x) = x\,\partial_t u(t,x)$, and
+\[
+\partial_t u(t,x) \;=\; \bigl(A\,u(t,\cdot)\bigr)(x) \qquad \text{at every } x > 0:
+\]
+the field solves the signaling equation \emph{classically}, pointwise in $x$ and at every $t$, not
+merely at the level of Mellin transforms.
+\end{corollary}
+
+\begin{proof}
+By Lemma~\ref{lem:memory-fractional-integrals}, $u(\cdot,x)$ is the primitive of the field of
+$f'$: $u(t,x) = \int_0^t \Ex[f'(\rho - xT_1)]\,d\rho$ for every $t$. The integrand
+$\rho \mapsto \Ex[f'(\rho-xT_1)]$ is continuous, by dominated convergence ($f'$ bounded and
+continuous, $|f'| \le \|f'\|_\infty$ an integrable dominating constant on any compact
+$\rho$-range), so the fundamental theorem of calculus gives $t \mapsto u(t,x)$ a genuine pointwise
+derivative at \emph{every} $t$, equal to $g(x) := \Ex[f'(t-xT_1)]$ --- continuous in $x$ by the
+same dominated convergence argument, run in $x$ instead of $\rho$. Set
+$h(x) := x\,g(x) = x\,\partial_t u(t,x)$, continuous.
+
+$\tilde H(z)(I^{z-1}f)(t) = \widetilde{\partial_t u(t,\cdot)}(z)$ for $0 < \operatorname{Re} z < z_*$
+(Lemma~\ref{lem:memory-fractional-integrals}, the derivative clause, extended strip since
+$f \in \core$ is bounded), and the weight $x$ shifts the Mellin argument by one, so
+$\tilde h(z) = \widetilde{\partial_t u(t,\cdot)}(z+1)$. By Lemma~\ref{lem:inversion-symbol}'s
+recursion $B(-z) = \tilde H(z+1)/\tilde H(z)$ and Theorem~\ref{thm:signaling-form}(2)'s transform
+identity shifted by one, $\tilde h(z) = B(-z)\,\widetilde{u(t,\cdot)}(z)$ for
+$0 < \operatorname{Re} z < z_*-1$, off the isolated zeros of $\tilde H(z)$: the realising-function condition
+for $g = u(t,\cdot)$ at symbol $B$, height $c$.
+
+For the vertical-integrability bound, write $z = c+1+i\tau$. By definition of $I$,
+$\Gamma(z-1)(I^{z-1}f)(t) = \int_0^t (t-r)^{z-2}f(r)\,dr$, and $f \in \core$ is bounded
+($\|f\|_\infty \le \|f'\|_1$, Lemma~\ref{lem:delay-core}), so
+\[
+\bigl|\Gamma(z-1)(I^{z-1}f)(t)\bigr| \;\le\; \|f\|_\infty \int_0^t (t-r)^{\operatorname{Re} z - 2}\,dr
+\;=\; \|f\|_\infty\,\frac{t^{\operatorname{Re} z - 1}}{\operatorname{Re} z - 1} \;=\; \|f\|_\infty\,\frac{t^{c}}{c}
+\]
+(using $\operatorname{Re} z = c+1 > 1$). Since $\Gamma(z) = (z-1)\Gamma(z-1)$,
+$|\Gamma(z)(I^{z-1}f)(t)| \le |z-1|\,\|f\|_\infty\,t^c/c$, and
+$\widetilde{\partial_t u(t,\cdot)}(z) = m(z)\,\Gamma(z)(I^{z-1}f)(t)$
+(Lemma~\ref{lem:mellin-data}), so
+\[
+\bigl|\tilde h(c+i\tau)\bigr| \;=\; \bigl|\widetilde{\partial_t u(t,\cdot)}(c+1+i\tau)\bigr|
+\;\le\; \frac{\|f\|_\infty\,t^c}{c}\;|c+i\tau|\;\bigl|m(c+1+i\tau)\bigr|.
+\]
+Since $|c+i\tau| \le (c+1)(1+|\tau|)$, the displayed hypothesis makes the right side integrable in
+$\tau$ over $\RR$: $\tilde h$ is vertically integrable at height $c$.
+
+So $u(t,\cdot)$ lies in the domain of $A$ at height $c$ with realising function $h$, which is
+continuous; Lemma~\ref{lem:inversion-operator-action} gives
+$A[u(t,\cdot)](x) = h(x)/x = g(x) = \partial_t u(t,x)$, at every $x > 0$.
+\end{proof}
+
+% Verbatim from the blueprint's rem:classical-families.
+\begin{remark}[which families are classical]\label{rem:classical-families}
+Corollary~\ref{cor:signaling-classical}'s hypothesis is a statement about
+$m(z) = \Ex[T_1^{-z}]$'s decay along one vertical line, checked against every family the article
+names.
+
+\textbf{Gamma} ($F(s) = \gamma\log(1+s)$, $\gamma>1$, Example~\ref{ex:gamma-signaling}):
+$m(z) = \Gamma(\gamma-z)/\Gamma(\gamma)$, analytic for $\operatorname{Re} z < \gamma$. For
+$c \in (0,\gamma-1)$, $\gamma - (c+1) \in (0,\gamma-1)$ avoids $\Gamma$'s poles, and the classical
+vertical-line decay $|\Gamma(\sigma+i\tau)| \sim \sqrt{2\pi}\,|\tau|^{\sigma-1/2}e^{-\pi|\tau|/2}$
+(already used at Lemma~\ref{lem:mellin-vertical}) gives $|m(c+1+i\tau)|$ exponential decay in
+$|\tau|$: the hypothesis holds.
+
+\textbf{Stable}, $\alpha<1$ ($F(s)=s^\alpha$, Example~\ref{ex:stable-signaling}):
+$m(z) = \Gamma(z/\alpha)/(\alpha\Gamma(z))$. The same asymptotic applied to numerator and
+denominator gives $|m(c+1+i\tau)|$ decaying like $e^{-(\pi/2)(1/\alpha-1)|\tau|}$ up to a
+polynomial factor, exponential since $\alpha<1$: the hypothesis holds.
+
+\textbf{Bessel-K} ($T_1 = 1/(2\gamma_a)$, Proposition~\ref{prop:bessel-family};
+$m(z) = 2^z\Gamma(a+z)/\Gamma(a)$, Example~\ref{ex:bessel-quadratic}):
+$|2^{c+1+i\tau}| = 2^{c+1}$ is constant in $\tau$, so the decay of $|m(c+1+i\tau)|$ is exactly
+that of $|\Gamma(a+c+1+i\tau)|$ --- exponential, by the same asymptotic as the Gamma family.
+\textbf{Checked directly, not assumed}: the closed form $2^z\Gamma(a+z)$ looks, read along the
+real axis, like it grows without bound, but $2^{i\tau}$ has modulus $1$ and contributes nothing to
+the decay along a \emph{vertical} line; the family is classical.
+
+\textbf{Pure delay} ($F(s)=b_0s$, $b_0>0$): $T_1 \equiv b_0$ a.s., so $m(z) = b_0^{-z}$, and
+$|m(c+1+i\tau)| = b_0^{-(c+1)}$ is constant in $\tau$: not integrable against $(1+|\tau|)\,d\tau$.
+The hypothesis fails, correctly. The transport operator's eigenfunctions are the constant-modulus
+exponentials, whose Mellin data does not decay, and this family's inversion is instead
+Theorem~\ref{thm:locality}'s territory --- a polynomial (here, first-order) symbol, local by
+construction, not reached by Corollary~\ref{cor:signaling-classical}'s route at all.
 \end{remark}
 
 Three worked cases calibrate the construction, ordered by the growth of the symbol ---

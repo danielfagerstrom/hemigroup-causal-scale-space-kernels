@@ -601,6 +601,27 @@ articles that have not yet pinned a ledger.
   both sides vanish). Weakest hypothesis the consumer can use, strongest the producer can supply;
   they meet exactly, and it took writing the consumer to see it.
 
+- **Eighth reading, 2026-08-29 — a second, cheaper use, in `cor:signaling-wellposed` (11.26).**
+  Theorem 4′ was given a solution-uniqueness ending (`def:mellin-solution`, `lem:mode-rigidity`,
+  `cor:signaling-wellposed`, `cor:signaling-classical`; blueprint `blueprint/src/parts/11-signaling.tex`,
+  end of chapter 11): clause (3) of the theorem proves uniqueness of the *operator*, and the new
+  corollary proves uniqueness of the *solution*, under a normalisation the field satisfies for
+  free. Its proof identifies two continuous functions of `x` — a candidate solution's Laplace
+  profile `x ↦ û(s,x)` and the field's own `x ↦ κ_s H(sx)` — from the fact that they share a Mellin
+  transform, `κ_s` a constant determined by `lem:mode-rigidity`. That step is Widder Theorem 9a,
+  applied **directly to two functions with a common transform**, not through the operator's
+  functional-calculus reading (no symbol `B`, no realising function `h`): a second, and cheaper,
+  use of the same citation. Were it formalised, it would go through Mathlib's
+  `mellinInv_mellin_eq` applied to each function separately rather than through
+  `RealisesAction` — the same pattern the sixth reading found for `lem:profile-eigenfunction`,
+  where the article's use of `A`'s remaining step turned out to be empty because the referent is
+  always exhibited. Not formalised here (`cor:signaling-wellposed` carries no `\lean` tag, on the
+  pattern `def:covariant-mellin-class` set), so nothing about this reading is machine-checked yet
+  — but the reuse is recorded because the assignment clause's accounting of what the entry
+  carries should list every place the paper spends it, not only the first. **No new ledger name
+  was created**; A12's `**Blueprint:**` header line stays `def:inversion-operator`, the ledger's
+  format allowing one anchor label per entry, with this second use recorded here in prose instead.
+
 ## A13 — A Laplace transform with nonnegative integrand is singular at its abscissa of convergence
 **Blueprint:** `lem:moment-recursion` · **Lean:** *(not stated yet)*
 **Cite:** @widder1941laplace — Ch. II, §5, Theorem 5b, pp. 58–59

@@ -2804,3 +2804,90 @@ brought in line with it. The divergence had reached the paper but not the node i
 worth naming because it is the same failure mode as the standing-hypothesis glosses above, one
 level down: a correction that lands in prose the graph does not track can still fail to propagate
 to the document that is supposed to be authoritative.
+
+# Theorem 4′ gets a well-posedness ending — `def:mellin-solution`, `lem:mode-rigidity`,
+# `cor:signaling-wellposed`, `cor:signaling-classical` (11.24–11.27) — 2026-08-29
+
+`thm:signaling-form`(2) closes with an informal gloss (`∂_t u = A u` "read through the Mellin
+transform in `x`") and clause~(3) proves uniqueness of the *operator* `A`, not of the *solution*
+`u` — the pre-theorem prose in the paper calls the problem "well posed," which the theorem alone
+does not deliver. The gap is real: the eigenvalue recursion `s·g̃(z) = B(1-z)·g̃(z-1)` has the
+classical period-one ambiguity, general solution `g̃(z) = s^{-z}·H̃(z)·p(z)` for an arbitrary
+1-periodic `p` — the same obstruction Bohr–Mollerup closes for `Γ`. Four nodes close it here,
+appended without touching `thm:signaling-form`'s statement, proof, `\lean` tag or `\leanok` status
+at all.
+
+**`def:mellin-solution` (11.24)** turns the gloss into a formal notion, mirroring
+`thm:signaling-form`(2)'s own clauses rather than restating them. Writing it down found three
+places the general definition has to say more than the one-field theorem does: causality has to
+be asked for at every scale (the honest reading of `u(0,·)=0`, which for one particular field —
+built from `Φ_{0,x}`, an axiom — comes for free); domain membership needs an explicit hypothesis,
+and — this is the one that was not anticipated — it needs to say `\widetilde{\hat u(s,\cdot)}` is
+analytic on the *whole* strip `(0,z_*)`, one step more than "lies in the domain of `A` at every
+height `c∈(0,z_*-1)`" gives on its own, because `lem:mode-rigidity`'s recursion has to hold with no
+exceptional set. The field satisfies this for free (its transform is `ŝf(s)H(s·)`'s, analytic
+wherever `H̃` is); a definition that omitted it would have left the rigidity lemma's hypothesis
+unmet by construction rather than by content, exactly the kind of implicit reading `CLAUDE.md`
+asks a formal statement to name.
+
+**`lem:mode-rigidity` (11.25) is the priced item, and the route was checked.** Statement: a mode
+`g̃` analytic on the whole strip, satisfying the pole-free recursion, with periodic factor
+`p(z) := s^z g̃(z)/H̃(z)` bounded on one period substrip off `H̃`'s zeros, is pinned:
+`g̃(z) = κ s^{-z} H̃(z)`. Proof: Riemann removability at each isolated pole, patch translates of the
+base strip into one entire `1`-periodic function on `ℂ` (the recursion says `p(z)=p(z-1)`
+consistently on overlaps, which chains through non-adjacent translates too — this is where `z_*>1`,
+(H), is spent), transport the substrip's boundedness across every translate by periodicity, remove
+the now-global poles a second time, Liouville. **The order in the checked sketch (remove
+singularities on the substrip, then extend by periodicity) does not survive writing it down for
+`z_*` close to `1`:** a zero of `H̃` outside the given substrip is not obviously *bounded* near
+before the periodic gluing supplies boundedness there, so the proof written into the blueprint
+does the gluing on the *meromorphic* level first (patch, transport the hypothesis's boundedness by
+periodicity, remove all poles at once), which is correct for every `z_* > 1` and not just for
+`z_* ≥ 2`. Small, but the kind of thing only writing the full argument catches.
+**Priced against the target type, not the proof sketch**: every individual step is classical and
+either elementary or already in Mathlib (`Complex.differentiableOn_update_limUnder_of_bddAbove` for
+removability, `Differentiable.exists_eq_const_of_bounded` for Liouville), but the *patching*
+construction — gluing a function on overlapping strip-translates, related by a functional equation
+on the overlaps, into one entire periodic function — is scaffolding this development does not have,
+and Mathlib's nearest relative (`Complex.Periodic`'s `cuspFunction`/`qParam`) is built for one-sided
+behaviour at a single end (the modular-forms use case), not this two-sided argument. A target type
+is written and compiles (`Skeleton.mode_rigidity`, sorry-marked, `Formalization/Skeleton/Chapter11.lean`),
+`\notready`; building the patching construction is a session's work, not a sitting's, and was not
+attempted.
+
+**`cor:signaling-wellposed` (11.26)** assembles existence (`thm:signaling-form` verbatim, plus the
+trivial fact that the field's own periodic factor is the constant `f̂(s)`) and *solution*-uniqueness
+under the profile-dominated normalisation. The identification step — two continuous functions with
+the same Mellin transform are equal, so `x ↦ û(s,x)` and `x ↦ κ_s H(sx)` coincide — reuses ledger
+**A12** (Widder Thm. 9a, `def:inversion-operator`'s citation) for a *second*, cheaper purpose: not
+the operator's functional-calculus reading, but Mellin inversion applied directly to two functions
+sharing a transform, the same pattern `lem:profile-eigenfunction` found for clause~(1) of
+`thm:signaling-form`. `blueprint/AXIOMS.md` records this as a new reading under the existing A12
+entry; **no new ledger name was created**, and A12's "Blueprint:" header line stays
+`def:inversion-operator`, per the ledger's one-anchor-per-entry format.
+
+**`cor:signaling-classical` (11.27), split from 11.26 on the Lemma 7.1 precedent** — its cost is
+genuinely different, a vertical-decay estimate rather than the rigidity lemma. Under `f' ∈ core`
+additionally bounded and continuous, plus `∫(1+|τ|)|m(c+1+iτ)|dτ < ∞` for the negative-moment
+function `m` on one line, the field solves the signaling equation *classically*: `∂_t u(t,x) =
+(A u(t,·))(x)` at every `x`, not merely at the level of Mellin transforms. The bound in the
+dispatch's checked route (`t^{c-1}‖f‖₁`) was re-derived rather than copied: writing
+`Γ(z-1)(I^{z-1}f)(t) = ∫₀ᵗ(t-r)^{z-2}f(r)dr` bounded by `‖f‖∞ t^{Re z-1}/(Re z-1)` gives
+`t^c/c` at `Re z=c+1`, not `t^{c-1}` — a different constant, using `‖f‖∞ ≤ ‖f'‖₁` (`lem:delay-core`)
+rather than `‖f‖₁` directly. Only the *shape* of the bound (polynomial in `τ` against `m`) matters
+for vertical integrability, so nothing downstream depended on the exact power, but the blueprint
+states the constant actually derived, not the one handed down.
+
+**The Bessel-K family's hypothesis was flagged as needing an independent check, and it does hold.**
+`m(z) = 2^z Γ(a+z)/Γ(a)` (`ex:bessel-quadratic`): `|2^{c+1+iτ}| = 2^{c+1}` is constant in `τ`, so
+the vertical decay is exactly `Γ`'s — exponential, the same mechanism as the Gamma family. The
+closed form's real-axis growth (`2^z`) is not vertical-line growth; `2^{iτ}` has modulus `1`. Gamma
+and stable (`α<1`) decay for the same Stirling reason; the pure delay's `m(z)=b₀^{-z}` has constant
+modulus on every vertical line and the hypothesis fails, correctly — that family's operator is
+`thm:locality`'s territory, not reached by this corollary's route.
+
+**Node count: 91 → 95** (`linkage check`; README's top line and chapter-11 row updated). None of
+the four new nodes carry `\leanok`; `lem:mode-rigidity` carries `\lean{...}\notready`, the other
+three are untagged, on the pattern `def:covariant-mellin-class` set. The blueprint's paragraph
+after `rem:poles` narrates the arc; `thm:signaling-form` itself — statement, proof, `\lean` tag,
+`\leanok` status — is untouched, per the constraint this round was written under.
