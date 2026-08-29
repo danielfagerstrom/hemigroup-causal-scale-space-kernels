@@ -5,6 +5,7 @@ Authors: Daniel Fagerström
 -/
 import Hemigroup.MemoryFractional
 import Hemigroup.InversionOperator
+import Hemigroup.AdmissibleCone
 
 /-!
 # The target types of chapter 11
@@ -115,6 +116,29 @@ development having no `CM` predicate; see `DESIGN-formalization-strategy.md`): t
 **statable, not cheap**, and nothing downstream consumes it (the definition's own clauses are
 what every proof in chapters 11–12 actually uses, per 11.21's remark that all of (H)'s bite is in
 the second clause). So it stays here, `\notready`, rather than being attempted inline.
+
+## `lem:zstar-log-growth` (11.23) — the four target types below
+
+Added 2026-08-29: the Lévy-data reading of (H)'s *second* clause, which 11.22 does not supply (it
+reads only the first). `z_* = lim F(s)/log s`, and — the finding writing the type down produced —
+only the identification of that limit *with* `z_*` needs a no-atom hypothesis; the value of the
+limit itself, `∞` if `b₀ > 0` and `k(0⁺) := sup_{t>0} k(t)` if `b₀ = 0`, is an unconditional fact
+about the exponent, via `B(s) := s F'(s) = b₀ s + ∫₀^∞ e^{-u} k(u/s) du` (substitute `u = st`) and
+monotone convergence in `k(u/s) ↑ k(0⁺)` as `s → ∞`. That splits the `\lean` tag into four
+declarations rather than one: `tendsto_toRealExponent_div_log_atTop_zStar` needs the no-atom
+hypothesis (`negMoment`/`zStar` integrate over `Ioi 0` and are blind to an atom at the origin, the
+same trap `lem:standing-levy-reading`'s target types were written to avoid); the other three do
+not. `zStar_smul` is priced as the cheapest of the four — a direct corollary of the first once it
+exists, via `exponent_smul` (already proved, `Hemigroup/AdmissibleCone.lean`) and the arithmetic of
+a scaled limit.
+
+**A plausible shortcut, not yet acted on.** The blueprint proof of clause (1) invokes
+`lem:selfdecomposable-exponents`(2) — `B` is a Bernstein function, hence nondecreasing — to get
+`F(e^{(\cdot)})` convex and hence its difference quotient convergent. But `B`'s monotonicity is
+also immediate from the explicit formula above (increasing `s` increases each `k(u/s)`
+pointwise), without appeal to the general Bernstein-closure fact, which is ledger A18. If that
+substitutes cleanly, clause (1) would reduce to Lean core plus A17 rather than crossing A18 — a
+question only an attempt at the proof, not this survey, can settle.
 -/
 
 namespace Skeleton
@@ -139,6 +163,42 @@ exponent does not vanish. -/
 theorem tendsto_toRealExponent_atTop_of_ne_zero (F : SelfDecomposableExponent)
     (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) :
     Tendsto F.toRealExponent atTop atTop := by
+  sorry
+
+/-- **`lem:zstar-log-growth`(1)**: the log-growth limit `F(s)/log s` exists in `[0,∞]` and equals
+`z_*`. The no-atom hypothesis is load-bearing: `negMoment` and `zStar` integrate over `Ioi 0` and
+are blind to an atom at the origin, exactly as in `lem:mellin-data` and
+`lem:standing-kernel-readings`. -/
+theorem tendsto_toRealExponent_div_log_atTop_zStar (F : SelfDecomposableExponent)
+    (hF : F.lawT₁ {(0 : ℝ)} = 0) :
+    Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop (𝓝 F.zStar) := by
+  sorry
+
+/-- **`lem:zstar-log-growth`(2), drift case**: `b₀ > 0` forces the log-growth rate to diverge.
+Unconditional — no no-atom hypothesis, since this is a statement about the exponent alone, not
+about `T₁`'s moments. -/
+theorem tendsto_toRealExponent_div_log_atTop_of_b₀_pos (F : SelfDecomposableExponent)
+    (hb : 0 < F.b₀) :
+    Tendsto (fun s => F.toRealExponent s / Real.log s) atTop atTop := by
+  sorry
+
+/-- **`lem:zstar-log-growth`(2), driftless case**: with `b₀ = 0` the log-growth rate is the
+catalogue height `k(0⁺) = sup_{t>0} k(t)`, valued in `[0,∞]` for the same reason `zStar` is (a
+nonincreasing `k` unbounded near `0` would junk a real-valued supremum to `0`). Also
+unconditional. -/
+theorem tendsto_toRealExponent_div_log_atTop_of_b₀_zero (F : SelfDecomposableExponent)
+    (hb : F.b₀ = 0) :
+    Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop
+      (𝓝 (⨆ t ∈ Ioi (0 : ℝ), ENNReal.ofReal (F.k t))) := by
+  sorry
+
+/-- **`lem:zstar-log-growth`(4)**: `z_*` is homogeneous of degree one on the admissible cone.
+Priced as the cheapest of the four target types here — a direct corollary of
+`tendsto_toRealExponent_div_log_atTop_zStar` via `exponent_smul` (already proved) and the
+arithmetic of a scaled limit, once that declaration exists. -/
+theorem zStar_smul (F : SelfDecomposableExponent) (hF : F.lawT₁ {(0 : ℝ)} = 0) {c : ℝ}
+    (hc : 0 < c) :
+    (F.smul hc.le).zStar = ENNReal.ofReal c * F.zStar := by
   sorry
 
 end Skeleton

@@ -2756,3 +2756,51 @@ $\Ex T_x^n = x^n 2^{-n}\Ex[\gamma_a^{-n}] = x^n 2^{-n}\Gamma(a-n)/\Gamma(a)$, fi
 $n < a$, which cites no Lévy asymptotics at either end and drops the `\uses` edge to
 `prop:moment-criterion`. Same escape as `prop:gamma-moments`' and `prop:stable-moments`' (see
 above): a third family, a third route around the criterion.
+
+---
+
+# `lem:zstar-log-growth` (11.23) added, and the extreme-rays paragraph repaired — 2026-08-29
+
+11.22 reads only the *first* clause of (H) in the `(b_0,k)` data; the second clause's Lévy-data
+reading — the rate `z_* = lim F(s)/log s`, `k(0^+)` when `b_0 = 0` and `\infty` otherwise — was
+missing entirely, and it is what makes (H) read as "drift, or catalogue height above one at the
+origin." Verified against every family the article names before landing: Gamma (`\gamma`),
+stable/Bessel/pure delay (`\infty`), Dickman rays and the leaky integrator (`1`). Appended as
+`lem:zstar-log-growth`, `\notready`, with four sorry-marked target types in
+`Formalization/Skeleton/Chapter11.lean`.
+
+**The naive proof sketch is wrong, and existence of the limit is the reason.** A
+subsequence/comparison argument on `lem:mellin-data`'s Mellin integral proves only
+`z_* = liminf F(s)/log s`; nothing controls the limsup for a general Bernstein `F`. The paper's
+own route to existence goes through `lem:selfdecomposable-exponents`(2) — `B(s) := sF'(s)` a
+Bernstein function, hence nondecreasing — which is ledger A18. **Writing the target type down
+found a cheaper route**: `lem:memory-kernel`'s already-machine-checked formula
+`F'(s) = b_0 + \int e^{-st}k(t)dt` gives `B`'s monotonicity directly, by the substitution
+`u = st` and the definition of `k` nonincreasing, with no appeal to the general Bernstein-closure
+fact. The blueprint proof was rewritten to take that route, so the node's `\uses` edge is to
+`lem:memory-kernel`, not to `lem:selfdecomposable-exponents` — and its four target types, if ever
+attempted, are priced against A17 and Lean core only, never A18. This is the same discipline
+11.22's own estimate practiced (price the target type, not the paper proof), applied a second
+time in the same chapter and finding a real saving rather than confirming the paper's cost.
+
+**Only one of the four target types needs a no-atom hypothesis.** Clauses (2)–(4) are
+unconditional statements about the exponent's own growth; only clause (1)'s identification of the
+limit with `z_*` needs `F.lawT₁ {0} = 0`, since `negMoment`/`zStar` integrate over `Ioi 0` and are
+blind to an atom at the origin — the same trap 11.22's target types were written to avoid.
+
+**Detector, not dependency.** Nothing through chapter 12 consumes this reading; every proof uses
+`z_*` as the bare abscissa `def:standing-hypothesis` states. But the node already caught a live
+error: §8's Bessel-K proof once asserted `k(t) \sim a` as `t \to 0`, a finite limit that, with
+`b_0 = 0`, contradicts clause (2) against the family's own `F(s) \sim \sqrt{2s}` — corrected
+above, in the entry immediately before this one, once the contradiction was visible.
+
+**Also repaired: the paragraph after `def:standing-hypothesis`'s closing claim.** It asserted
+"(H) excludes the cone's extreme boundary and nothing else," which is false in both directions —
+the pure delay is an extreme ray with `b_0 > 0` and satisfies (H) outright, and the Gamma family
+at `\gamma \le 1` is excluded without being extreme. `paper/09-signaling.tex`'s threshold
+paragraph already carried the careful version (the correspondence holds only at the extreme rays'
+*abscissa*, `z_* = 1`, not at the boundary set-wise); the blueprint, the text of record, is now
+brought in line with it. The divergence had reached the paper but not the node it transcribes —
+worth naming because it is the same failure mode as the standing-hypothesis glosses above, one
+level down: a correction that lands in prose the graph does not track can still fail to propagate
+to the document that is supposed to be authoritative.

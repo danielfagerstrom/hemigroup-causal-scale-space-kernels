@@ -14,7 +14,8 @@
 % Blueprint node splits handled as before: the split lemmas that aid reading are
 % included — among them standing-kernel-readings and standing-levy-reading, the two nodes
 % the definition's former glosses were promoted to (2026-08-29), placed directly after
-% (H); delayed-average-mellin, signaling-mellin-form and
+% (H), and zstar-log-growth, the Lévy-data reading of (H)'s second clause (2026-08-30);
+% delayed-average-mellin, signaling-mellin-form and
 % fractional-integral-derivative stay folded into the proofs that contain them.
 % Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10.
 
@@ -107,8 +108,10 @@ $\gamma = 1$ has $z_* = 1$ with $\Ex[T_1^{-1}] = \infty$. The second clause hold
 $z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of
 Proposition~\ref{prop:bessel-family}; for the Gamma family $z_* = \gamma$, so (H) requires
 $\gamma > 1$ there, and $\gamma \le 1$ is among the open problems of
-\S\ref{sec:conclusions}. The construction extends below $z_* = 1$ by meromorphic
-continuation, which we do not pursue.
+\S\ref{sec:conclusions}. The rate is what Lemma~\ref{lem:zstar-log-growth} computes in general:
+$z_* = \lim F(s)/\log s$, which is $k(0^+)$ when $b_0 = 0$ and $\infty$ otherwise, so (H) reads:
+drift, or catalogue height above one at the origin. The construction extends below $z_* = 1$ by
+meromorphic continuation, which we do not pursue.
 
 % shared with blueprint lem:standing-kernel-readings
 \begin{lemma}[kernel readings of the standing hypothesis]\label{lem:standing-kernel-readings}
@@ -168,13 +171,67 @@ gives $F(\infty) = \infty$. If $k \equiv 0$ and $F \not\equiv 0$, (7.1) reduces 
 with $b_0 > 0$, and (1) again gives $F(\infty) = \infty$.
 \end{proof}
 
+% shared with blueprint lem:zstar-log-growth
+\begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
+Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
+\begin{enumerate}
+\item The limit $\lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$ and equals $z_*$.
+\item The limit is $\infty$ if $b_0 > 0$, and equals $k(0^+) := \sup_{t>0} k(t)$ if $b_0 = 0$
+(finite or infinite).
+\item Consequently, (H) holds if and only if $b_0 > 0$ or $k(0^+) > 1$.
+\item $z_*$ is homogeneous of degree one on the admissible cone: $z_*(cF) = c\,z_*(F)$ for every
+$c > 0$.
+\end{enumerate}
+\end{lemma}
+
+\begin{proof}
+Since $F \not\equiv 0$ is admissible, Lemma~\ref{lem:standing-levy-reading}(2) gives
+$F(\infty) = \infty$, and Lemma~\ref{lem:standing-kernel-readings}(1) turns that into $T_1 > 0$
+almost surely, so $\Ex[T_1^{-\zeta}]$ is an honest integral over $(0,\infty)$ for every
+$\zeta > 0$.
+
+\textbf{The exponent's slope.} By Lemma~\ref{lem:memory-kernel}, $F'(s) = b_0 + \int_0^\infty
+e^{-st}k(t)\,dt$, so $B(s) := sF'(s) = b_0 s + \int_0^\infty e^{-u}\,k(u/s)\,du$ after the
+substitution $u = st$. For $0 < s_1 \le s_2$: $b_0 s_1 \le b_0 s_2$, and $k$ nonincreasing gives
+$k(u/s_1) \le k(u/s_2)$ pointwise, since $u/s_1 \ge u/s_2$; so $B$ is nondecreasing --- no appeal
+to Lemma~\ref{lem:selfdecomposable-exponents} or to $B$ being a Bernstein function as a class,
+only to the explicit formula and the definition of nonincreasing. And since $k(u/s)$ increases
+pointwise to $k(0^+)$ as $s \to \infty$, monotone convergence gives
+$B(\infty) = b_0\cdot\infty + k(0^+)\int_0^\infty e^{-u}\,du$: $\infty$ if $b_0 > 0$, and $k(0^+)$
+if $b_0 = 0$. That is clause~(2).
+
+(1) $G(u) := F(e^u)$ has $G'(u) = e^u F'(e^u) = B(e^u)$ nondecreasing by the above, so $G$ is
+convex in $u = \log s$. A convex function's difference quotient $G(u)/u$ increases, past any zero
+of $u$, to its terminal slope, so
+$L := \lim_{s\to\infty} F(s)/\log s = \lim_{u\to\infty} G(u)/u = \lim_{s\to\infty} B(s)$ exists in
+$[0,\infty]$, with value given by clause~(2). To identify $L$ with $z_*$: by Tonelli,
+$\Gamma(\zeta)\,\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}\,ds$ for every $\zeta > 0$,
+the exchange licensed exactly as in Lemma~\ref{lem:standing-kernel-readings}(2), now at general
+$\zeta$ rather than at $\zeta = 1$. For $0 < \zeta < L$, eventually
+$F(s) \ge (\zeta+\varepsilon)\log s$ for some $\varepsilon > 0$, so
+$e^{-F(s)} \le s^{-\zeta-\varepsilon}$ eventually and the integral converges; for $\zeta > L$,
+eventually $F(s) \le (\zeta - \varepsilon)\log s$, so the integrand is eventually
+$\ge s^{\varepsilon - 1}$ and the integral diverges. Hence
+$\{\zeta > 0 : \Ex[T_1^{-\zeta}] < \infty\}$ contains every $\zeta < L$ and excludes every
+$\zeta > L$, so its supremum, $z_*$, is $L$.
+
+(3) is~(1)--(2) read against (H)'s two clauses. The first is automatic here by
+Lemma~\ref{lem:standing-levy-reading}(2), so (H) reduces to $z_* > 1$, which by~(2) is exactly
+$b_0 > 0$ or $k(0^+) > 1$ --- an equality throughout, so with no boundary subtlety.
+
+(4) $cF$ is admissible by Lemma~\ref{lem:admissible-cone}, with data $(cb_0, ck)$, so
+$k_{cF}(0^+) = c\,k(0^+)$ and $(cF)$'s drift is $cb_0$; applying~(1)--(2) to $cF$ in place of $F$
+gives $z_*(cF) = c\,z_*(F)$, whether $b_0 > 0$ or $b_0 = 0$.
+\end{proof}
+
 The threshold $1$ is not an artefact of one estimate. It arises three separate times, for
 three different reasons: in the convergence of the Mellin integral of the delayed field
 (Lemma~\ref{lem:memory-fractional-integrals}), in the application of that lemma at $z - 1$
 in Theorem~\ref{thm:signaling-form}(2), and in the convergence of $\int_\rho^t (t-r)^{z-2}dr$
 inside the same proof --- three obligations, one endpoint. And it is where the cone's extreme
 rays sit: every extreme ray with $b_0 = 0$ has $F(s) \sim \log s$, hence $z_* = 1$
-(Proposition~\ref{prop:extreme-rays}), so those rays lie exactly \emph{on} the boundary of
+(Proposition~\ref{prop:extreme-rays}; also Lemma~\ref{lem:zstar-log-growth}(2), since
+$k(0^+) = 1$ on every Dickman ray), so those rays lie exactly \emph{on} the boundary of
 (H). The correspondence is not exact in either direction --- the pure delay is an extreme ray
 and satisfies (H) outright, having $b_0 > 0$, and the Gamma family at $\gamma \le 1$ fails
 (H) without being extreme --- but the coincidence of the three obligations at the extreme

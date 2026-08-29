@@ -126,12 +126,26 @@ failing only at the endpoint $z_* = 1$, an endpoint genuinely reached: the Gamma
 $\gamma = 1$ has $z_* = 1$ with $\Ex[T_1^{-1}] = \infty$. The second clause holds with
 $z_* = \infty$ whenever $b_0 > 0$, for the stable family, and for the Bessel-K family of
 \ref{prop:bessel-family}; for the Gamma family $z_* = \gamma$, so (H) requires $\gamma > 1$
-there. The construction extends below $z_* = 1$ by meromorphic continuation, which we do not
-pursue. The threshold $1$ is the one this chapter keeps meeting --- see
+there. The rate is what \ref{lem:zstar-log-growth} computes in general: $z_* = \lim F(s)/\log s$,
+which is $k(0^+)$ when $b_0 = 0$ and $\infty$ otherwise, so (H) reads: drift, or catalogue height
+above one at the origin. The construction extends below $z_* = 1$ by meromorphic continuation,
+which we do not pursue. The threshold $1$ is the one this chapter keeps meeting --- see
 \ref{lem:delayed-average-mellin}, \ref{lem:fractional-integral-derivative} and
 \ref{thm:signaling-form}(2), where it arises three separate times for three different reasons ---
-and by \ref{prop:extreme-rays} it is exactly the abscissa of the extreme rays of the admissible
-cone: (H) excludes the cone's extreme boundary and nothing else.
+% REPAIRED 2026-08-29: the tail below used to close "and by prop:extreme-rays it is exactly the
+% abscissa of the extreme rays ... (H) excludes the cone's extreme boundary and nothing else",
+% which is false in both directions -- the pure delay is an extreme ray with b_0>0 and satisfies
+% (H) outright, and the Gamma family at gamma<1 is excluded without being extreme. The paper's
+% threshold paragraph (paper/09-signaling.tex) already carried the careful version; this is the
+% blueprint, the text of record, catching up to it -- the divergence had reached the paper but
+% not the node it transcribes.
+And it is where the cone's extreme rays sit: every extreme ray with $b_0 = 0$ has
+$F(s) \sim \log s$, hence $z_* = 1$ (\ref{prop:extreme-rays}; also \ref{lem:zstar-log-growth}(2),
+since $k(0^+) = 1$ on every Dickman ray), so those rays lie exactly \emph{on} the boundary of (H).
+The correspondence is not exact in either direction --- the pure delay is an extreme ray and
+satisfies (H) outright, having $b_0 > 0$, and the Gamma family at $\gamma \le 1$ fails (H) without
+being extreme --- but the coincidence of the three obligations at the extreme rays' abscissa marks
+the boundary of (H) as characteristic of the theory rather than of any one argument.
 
 % draft: Lemma 11.2
 % THE SPLIT (2026-08-11). The draft's Lemma 11.2 states four things at once: the identity, the
@@ -1178,4 +1192,107 @@ value on the interval below it: pick $t_0$ with $k(t_0) > 0$, then $k(t) \ge k(t
 $t \in (0,t_0]$, so $\int_0^{t_0} k(t)t^{-1}dt \ge k(t_0)\int_0^{t_0}t^{-1}dt = \infty$, and (1)
 gives $F(\infty) = \infty$. If $k \equiv 0$ and $F \not\equiv 0$, (7.1) reduces to $F(s) = b_0 s$
 with $b_0 > 0$, and (1) again gives $F(\infty) = \infty$.
+\end{proof}
+
+% additive: not in the draft. The Levy-data reading of (H)'s SECOND clause -- 11.22 reads only
+% the first. Verified against every family the article names: Gamma (rate gamma), stable, Bessel
+% and the pure delay (infinite), Dickman rays (1), the leaky integrator (1, being Gamma at
+% gamma=1). Appended 2026-08-29, a number the draft does not use, on the pattern of every earlier
+% split in this chapter.
+\begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
+\uses{def:standing-hypothesis,lem:memory-kernel,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
+\lean{Skeleton.tendsto_toRealExponent_div_log_atTop_zStar,Skeleton.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Skeleton.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Skeleton.zStar_smul}\notready
+Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
+\begin{enumerate}
+\item The limit $\lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$ and equals $z_*$.
+\item The limit is $\infty$ if $b_0 > 0$, and equals $k(0^+) := \sup_{t>0} k(t)$ if $b_0 = 0$
+(finite or infinite).
+\item Consequently, (H) holds if and only if $b_0 > 0$ or $k(0^+) > 1$.
+\item $z_*$ is homogeneous of degree one on the admissible cone: $z_*(cF) = c\,z_*(F)$ for every
+$c > 0$.
+\end{enumerate}
+\statusT\quad\emph{(\textbf{Not yet proved.} Target types are written, sorry-marked, as
+\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_zStar},
+\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_pos},
+\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_zero} and
+\texttt{Skeleton.zStar\_smul} in \texttt{Formalization/Skeleton/Chapter11.lean}; nothing here is
+cited by the library or listed in \texttt{CIAxiomGuard.lean}.
+\textbf{The gap the obvious sketch has.} A subsequence/comparison argument on the Mellin integral
+of \ref{lem:mellin-data} shows only $z_* = \liminf_{s\to\infty} F(s)/\log s$: nothing controls the
+limsup for a general Bernstein $F$, whose $F/\log s$ can oscillate. \textbf{Existence of the limit
+is where self-decomposability enters} --- but not by way of the derivative-sign ($\BFz$)
+machinery its usual proof reaches for. The textbook route identifies $B(s) := sF'(s)$ as a
+Bernstein function (\ref{lem:selfdecomposable-exponents}(2)), hence nondecreasing, and that
+implication is ledger \ledger{A18}. \textbf{Writing the target type found a cheaper route: the
+explicit formula of \ref{lem:memory-kernel}, already machine-checked, gives $B$'s monotonicity
+directly}, with no appeal to the general Bernstein-closure fact --- see the proof below, which
+takes it. So this node, unlike \ref{lem:selfdecomposable-exponents} itself, has no route through
+\ledger{A18} at all; its four target types are priced against \ledger{A17} and Lean core only,
+the way \ref{lem:mellin-data} already reduces off \ledger{A7}. That is exactly the caution
+\texttt{CLAUDE.md} names about writing the cost estimate from the target type rather than from
+the paper proof --- here the paper proof itself is the one that reaches for the expensive tool,
+and the cheaper one was sitting one chapter earlier.
+\textbf{Priced against the target types, not the paper proof.} Writing them down found that
+clauses~(2)--(4) need \emph{no} no-atom hypothesis at all --- they are unconditional statements
+about the exponent's own growth, via the explicit formula
+$B(s) = b_0 s + \int_0^\infty e^{-u}k(u/s)\,du$ (substitute $u = st$) and monotone convergence in
+$k(u/s) \uparrow k(0^+)$ as $s \to \infty$ --- only clause~(1)'s identification of the limit with
+$z_*$ needs it, since \texttt{negMoment} and \texttt{zStar} integrate over \texttt{Ioi 0} and are
+blind to an atom at the origin, the trap \ref{lem:standing-levy-reading}'s target types were
+already written to avoid.
+\textbf{Shares machinery with \ref{lem:standing-levy-reading}}: both run a monotone-convergence
+argument on \texttt{levyJump} as $s \to \infty$ (there for $\int k(t)t^{-1}dt$, here for
+$k(u/s)$ itself), so the two nodes should be formalised together if either is attempted.
+\textbf{Nothing downstream needs this reading.} Every proof through chapter~12 consumes $z_*$ as
+the abscissa \ref{def:standing-hypothesis} states it, never its log-growth rate; this node is a
+detector, not a dependency, and it has already caught one live error --- \S8's Bessel-K proof once
+asserted $k(t) \sim a$ as $t \to 0$, a finite limit that, with $b_0 = 0$, would force
+$F(s) = O(\log s)$ by clause~(2), against the family's own $F(s) \sim \sqrt{2s}$; the correction is
+the dated comment in \texttt{blueprint/src/parts/08-examples-moments.tex} (2026-08-29).)}
+
+\emph{\textbf{Checked against every family the article names.} Gamma: $b_0 = 0$,
+$k(t) = \gamma e^{-t}$, so $k(0^+) = \gamma$, matching $z_* = \gamma$. Stable, Bessel-K and the
+pure delay: $z_* = \infty$, matching $b_0 > 0$ (pure delay) or $k(0^+) = \infty$ (stable and
+Bessel-K, whose $k$ carries the $(2\pi t)^{-1/2}$ singularity at $t = 0^+$ corrected in
+\ref{prop:bessel-family}'s proof). Dickman rays: $k = \mathbf{1}_{(0,\tau)}$, so $k(0^+) = 1$,
+matching \ref{prop:extreme-rays}'s $z_* = 1$ at every extreme ray with $b_0 = 0$. The leaky
+integrator, the Gamma family at $\gamma = 1$, agrees with the Gamma case.}
+\end{lemma}
+
+\begin{proof}
+Since $F \not\equiv 0$ is admissible, \ref{lem:standing-levy-reading}(2) gives
+$F(\infty) = \infty$, and \ref{lem:standing-kernel-readings}(1) turns that into $T_1 > 0$ almost
+surely, so $\Ex[T_1^{-\zeta}]$ is an honest integral over $(0,\infty)$ for every $\zeta > 0$.
+
+\textbf{The exponent's slope.} By \ref{lem:memory-kernel}, $F'(s) = b_0 + \int_0^\infty
+e^{-st}k(t)\,dt$, so $B(s) := sF'(s) = b_0 s + \int_0^\infty e^{-u}\,k(u/s)\,du$ after the
+substitution $u = st$. For $0 < s_1 \le s_2$: $b_0 s_1 \le b_0 s_2$, and $k$ nonincreasing gives
+$k(u/s_1) \le k(u/s_2)$ pointwise, since $u/s_1 \ge u/s_2$; so $B$ is nondecreasing --- no appeal
+to \ref{lem:selfdecomposable-exponents} or to $B$ being a Bernstein function as a class, only to
+the explicit formula and the definition of nonincreasing. And since $k(u/s)$ increases pointwise
+to $k(0^+)$ as $s \to \infty$, monotone convergence gives
+$B(\infty) = b_0\cdot\infty + k(0^+)\int_0^\infty e^{-u}\,du$: $\infty$ if $b_0 > 0$, and $k(0^+)$
+if $b_0 = 0$. That is clause~(2).
+
+(1) $G(u) := F(e^u)$ has $G'(u) = e^u F'(e^u) = B(e^u)$ nondecreasing by the above, so $G$ is
+convex in $u = \log s$. A convex function's difference quotient $G(u)/u$ increases, past any zero
+of $u$, to its terminal slope, so
+$L := \lim_{s\to\infty} F(s)/\log s = \lim_{u\to\infty} G(u)/u = \lim_{s\to\infty} B(s)$ exists in
+$[0,\infty]$, with value given by clause~(2). To identify $L$ with $z_*$: by Tonelli,
+$\Gamma(\zeta)\,\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}\,ds$ for every $\zeta > 0$,
+the exchange licensed exactly as in \ref{lem:standing-kernel-readings}(2), now at general $\zeta$
+rather than at $\zeta = 1$. For $0 < \zeta < L$, eventually $F(s) \ge (\zeta+\varepsilon)\log s$
+for some $\varepsilon > 0$, so $e^{-F(s)} \le s^{-\zeta-\varepsilon}$ eventually and the integral
+converges; for $\zeta > L$, eventually $F(s) \le (\zeta - \varepsilon)\log s$, so the integrand is
+eventually $\ge s^{\varepsilon - 1}$ and the integral diverges. Hence
+$\{\zeta > 0 : \Ex[T_1^{-\zeta}] < \infty\}$ contains every $\zeta < L$ and excludes every
+$\zeta > L$, so its supremum, $z_*$, is $L$.
+
+(3) is~(1)--(2) read against (H)'s two clauses. The first is automatic here by
+\ref{lem:standing-levy-reading}(2), so (H) reduces to $z_* > 1$, which by~(2) is exactly
+$b_0 > 0$ or $k(0^+) > 1$ --- an equality throughout, so with no boundary subtlety.
+
+(4) $cF$ is admissible by \ref{lem:admissible-cone}, with data $(cb_0, ck)$, so
+$k_{cF}(0^+) = c\,k(0^+)$ and $(cF)$'s drift is $cb_0$; applying~(1)--(2) to $cF$ in place of $F$
+gives $z_*(cF) = c\,z_*(F)$, whether $b_0 > 0$ or $b_0 = 0$.
 \end{proof}
