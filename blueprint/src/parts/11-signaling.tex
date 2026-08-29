@@ -1446,11 +1446,12 @@ $s\,\tilde H(z)\tilde H(z-1)$ and multiplying by $s^{z}$ gives $p(z) = p(z-1)$, 
 factor satisfies the shift relation off the (isolated) zeros of $\tilde H$ on both sides.
 
 \textbf{Step 1: $p$ extends to a meromorphic, $1$-periodic function on $\CC$.} $\tilde H$'s zeros
-in $(0,z_*)$ are isolated (\ref{lem:inversion-symbol}), hence --- being isolated in a strip of
-finite or infinite width --- meet every bounded region in only finitely many points; so, writing
+in $(0,z_*)$ are isolated (\ref{lem:inversion-symbol}), hence locally finite there: every compact
+subset of the open strip contains finitely many of them --- accumulation at the strip's
+\emph{boundary} is not excluded, and is not needed; so, writing
 $S := (0,z_*)$ as a set of vertical strips $S_n := S + n = \{z : n < \operatorname{Re} z < n + z_*\}$ for
-$n \in \ZZ$, and $p_n(z) := p(z-n)$, meromorphic on $S_n$ with poles only at the (finitely many, in
-any bounded region) translated zeros of $\tilde H$: for $n \le k \le m$ and $z \in S_n \cap S_m$,
+$n \in \ZZ$, and $p_n(z) := p(z-n)$, meromorphic on $S_n$ with possible poles only at the (locally
+finite) translated zeros of $\tilde H$: for $n \le k \le m$ and $z \in S_n \cap S_m$,
 $z$ lies in every intermediate $S_k$ (since $\operatorname{Re} z > m \ge k$ and $\operatorname{Re} z < n + z_* \le k + z_*$),
 so the shift relation applied at each consecutive pair $(k,k+1)$, $n \le k < m$, gives
 $p_n(z) = p_{n+1}(z) = \dots = p_m(z)$: every two translates agree wherever they overlap. Since
@@ -1458,20 +1459,23 @@ $z_* > 1$ (H), consecutive strips overlap and $\{S_n\}_{n \in \ZZ}$ covers $\CC$
 well-defined meromorphic $P : \CC \to \CC$ with $P|_{S_n} = p_n$ for every $n$; it is $1$-periodic,
 since for $z \in S_n$, $z+1 \in S_{n+1}$ and $P(z+1) = p_{n+1}(z+1) = p(z-n) = p_n(z) = P(z)$.
 
-\textbf{Step 2: $P$ is bounded off its poles, on all of $\CC$.} $P|_{S_0} = p$ is bounded on the
-given substrip $\{c \le \operatorname{Re} z \le c+1\}$, off the zeros of $\tilde H$ there, by hypothesis. By
+\textbf{Step 2: $P$ is bounded off its singular set, on all of $\CC$.} $P|_{S_0} = p$ is bounded on
+the given substrip $\{c \le \operatorname{Re} z \le c+1\}$, off the zeros of $\tilde H$ there, by hypothesis. By
 periodicity, $P$ is bounded by the \emph{same} constant on every unit translate
-$\{c+n \le \operatorname{Re} z \le c+1+n\}$, $n \in \ZZ$, off $P$'s poles there; and these translates cover
-$\CC$, consecutive ones sharing an edge. So $P$ is bounded, by one constant, off its (isolated)
-poles, everywhere.
+$\{c+n \le \operatorname{Re} z \le c+1+n\}$, $n \in \ZZ$, off $P$'s singular set there; and these translates
+cover $\CC$, consecutive ones sharing an edge. So $P$ is bounded, by one constant, off its singular
+set, everywhere.
 
-\textbf{Step 3: removability and Liouville.} At each pole $w_0$ of $P$, $P$ is bounded on a
-punctured neighbourhood of $w_0$ (Step 2), so by Riemann's removable singularity theorem $P$
-extends to be analytic at $w_0$, with value the limit from nearby --- hence bounded by the same
-constant, since nearby values are. Doing this at every pole (isolated, so no accumulation in any
-bounded region) gives an \emph{entire} function $\hat P$, equal to $P$ off its poles and bounded on
-all of $\CC$ by the constant of Step 2. Liouville's theorem gives $\hat P \equiv \kappa$ for some
-$\kappa \in \CC$.
+\textbf{Step 3: removability and Liouville.} At each point $w_0$ of $P$'s singular set --- a priori
+a pole, though this step shows it is not --- $P$ is bounded on a punctured neighbourhood of $w_0$
+(Step 2), so by Riemann's removable singularity theorem $P$ extends to be analytic at $w_0$, with
+value the limit from nearby --- hence bounded by the same constant, since nearby values are. Doing
+this at every such point is licensed because the singular set is locally finite in $\CC$: every
+point of $\CC$ has a compact neighbourhood inside some open $S_n$ --- again $z_* > 1$, the open
+intervals $(n, n+z_*)$ covering $\RR$ --- and there the possible poles are the finitely many
+translated zeros of Step 1. The result is an \emph{entire} function $\hat P$, equal to $P$ off its
+singular set and bounded on all of $\CC$ by the constant of Step 2. Liouville's theorem gives
+$\hat P \equiv \kappa$ for some $\kappa \in \CC$.
 
 \textbf{Closing.} On $S_0 = (0,z_*)$, $\hat P = P = p$ off the zeros of $\tilde H$, so
 $s^z\tilde g(z) = \kappa\,\tilde H(z)$ for every $z \in (0,z_*)$ off that isolated set. Both sides
@@ -1619,8 +1623,8 @@ is bounded), and the weight $x$ shifts the Mellin argument by one, so
 $\tilde h(z) = \widetilde{\partial_t u(t,\cdot)}(z+1)$. By \ref{lem:inversion-symbol}'s recursion
 $B(-z) = \tilde H(z+1)/\tilde H(z)$ and \ref{thm:signaling-form}(2)'s transform identity shifted by
 one, $\tilde h(z) = B(-z)\,\widetilde{u(t,\cdot)}(z)$ for $0 < \operatorname{Re} z < z_*-1$, off the isolated
-zeros of $\tilde H(z)$: the realising-function condition for $g = u(t,\cdot)$ at symbol $B$, height
-$c$.
+zeros of $\tilde H(z)$: the realising-function condition of \ref{def:inversion-operator}, with
+$u(t,\cdot)$ in the role of its $g$, at symbol $B$, height $c$.
 
 For the vertical-integrability bound, write $z = c+1+i\tau$. By definition of $I$,
 $\Gamma(z-1)(I^{z-1}f)(t) = \int_0^t (t-r)^{z-2}f(r)\,dr$, and $f \in \core$ is bounded
