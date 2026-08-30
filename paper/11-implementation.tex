@@ -46,8 +46,8 @@ For the Gamma family with integer $\gamma$, the increment filter is rational:
 \[
   \widehat{\mu}_{x_k, x_{k+1}}(s) \;=\; \left(\frac{1 + x_k\, s}{1 + x_{k+1}\, s}\right)^{\gamma},
 \]
-a cascade of $\gamma$ \emph{identical} first-order pole--zero sections (pole $1/x_{k+1}$, zero
-$1/x_k$). Each section admits the one-state realization, free of input differentiation,
+a cascade of $\gamma$ \emph{identical} first-order pole--zero sections (pole at $-1/x_{k+1}$,
+zero at $-1/x_k$). Each section admits the one-state realization, free of input differentiation,
 \[
   \dot w = \frac{y - w}{x_{k+1}}, \qquad
   v \;=\; \frac{x_k}{x_{k+1}}\, y \;+\; \Bigl(1 - \frac{x_k}{x_{k+1}}\Bigr)\, w,
@@ -57,7 +57,10 @@ $1/x_k$). Each section admits the one-state realization, free of input different
 \end{proposition}
 
 \begin{proof}
-The transfer identity:
+The increment transfer is the ratio of the endpoint transforms: by the hemigroup (A6),
+$\widehat{\mu}_{0,x_{k+1}} = \widehat{\mu}_{x_k,x_{k+1}}\,\widehat{\mu}_{0,x_k}$, and
+$\widehat{\mu}_{0,x}(s) = (1 + x s)^{-\gamma}$ is nonvanishing for $\operatorname{Re} s \ge 0$,
+so dividing gives the display. The transfer identity of the section:
 $v = \tfrac{x_k}{x_{k+1}} y + \bigl(1 - \tfrac{x_k}{x_{k+1}}\bigr)\tfrac{y}{1 + x_{k+1}s}
 = y\,\tfrac{1 + x_k s}{1 + x_{k+1} s}$; the convex-combination clause is
 $0 < x_k/x_{k+1} < 1$.
@@ -196,6 +199,10 @@ $F(s) \sim \sqrt{2s}$. And the gamma-product ladder of Proposition~\ref{prop:loc
 GGC since $\HCM \subset \GGC$ (\sscite{bondesson1992generalized}). The conclusion deserves stating plainly: \textbf{the Gamma family is the implementation
 substrate for the entire Thorin subclass} --- every family named in this paper --- even when
 Bessel semantics are wanted, the machine one builds is a bank of first-order Gamma sections.
+And by Proposition~\ref{prop:gamma-regularity}, the substrate is also the regularity class:
+rational increments, exact first-order realizability, and the variation-diminishing property
+of \S\ref{sec:examples} select the same members --- drift plus integer Thorin atoms of
+finite mean.
 (Outside the subclass --- the non-completely-monotone kernels, the Dickman rays with their
 echo singularities foremost --- no Gamma bank converges from inside the class, and an
 implementer is left with direct convolution.) As a design heuristic: the Bessel Thorin
@@ -224,6 +231,7 @@ axiomatic role & nonlocal, rational symbol (Ex.~\ref{ex:gamma-signaling}) & loca
 kernels & $\Gamma(\gamma,\,x)$ & inverse-gamma, shape $a$ & one-sided $\alpha$-stable \\
 moments & all finite; $\Ex\,T_x = \gamma x$ & $n$-th iff $n < a$ & none \\
 tails & exponential & $t^{-1-a}$ & $t^{-1-\alpha}$ \\
+non-creation in time (Prop.~\ref{prop:gamma-regularity}) & yes (integer $\gamma$; VD) & no & no \\
 increment transfer & rational, order $\gamma$ & transcendental (Bessel-K) & transcendental \\
 recursive states per knot & $\gamma$ & --- (approx.\ only) & --- (approx.\ only) \\
 scale covariance & continuous & continuous & continuous \\
