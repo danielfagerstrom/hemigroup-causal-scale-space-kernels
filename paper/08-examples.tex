@@ -224,6 +224,97 @@ particular $\Ex\,T_x = \gamma x$ and $\Ex\,T_x^{2} = \gamma(\gamma+1)x^2$, so
 $\operatorname{Var} T_x = \gamma(\gamma+1)x^2 - \gamma^2x^2 = \gamma x^2$.
 \end{proof}
 
+% Paper-only (2026-08-31): the regularity face of the recommended family, added on
+% review. Anchors verified against the library's stored copy of karlin1968total:
+% Thm 3.2 (Ch. 7, p. 345) is the Schoenberg representation, its clause (b) the
+% one-sided case, with the one-sided form C e^{delta s} prod(1 + lambda_i s),
+% delta >= 0, lambda_i >= 0, sum lambda_i < infty, in Remark 3.1 (p. 346); the
+% variation-diminishing <=> totally positive equivalence for convolution kernels is
+% Ch. 5, Thm 4.2 (pp. 242-243); the semigroup rigidity of the remark is Ch. 7,
+% Thm 5.2 (p. 354). Candidate for blueprint promotion (an [A]-status node on the
+% Karlin anchors); kept paper-only pending that decision, like the propositions
+% of the implementation section.
+\begin{proposition}[non-creation in time; the P\'olya frequency members]\label{prop:gamma-regularity}
+Write $S^-(g)$ for the number of sign changes of a function $g$ on $\RR$.
+\begin{enumerate}
+\item For integer $\gamma$ the Gamma kernels are one-sided P\'olya frequency densities, and
+convolution with them is variation-diminishing: for every level $c \in \RR$ and every
+$x > 0$, the field $u(\cdot, x) := \mu_{0,x} * f$ satisfies
+\[
+  S^-\bigl(u(\cdot, x) - c\bigr) \;\le\; S^-\bigl(f - c\bigr) .
+\]
+In particular the field has, at every scale, no more zero-crossings and no more local
+extrema than the signal. For non-integer $\gamma$ the kernels are not P\'olya frequency
+densities.
+\item An admissible family (Theorem~\ref{thm:main-characterization}) has P\'olya frequency
+kernels if and only if
+\[
+  F(s) \;=\; b_0\,s \;+\; \sum_{i} \log\Bigl(1 + \frac{s}{\tau_i}\Bigr),
+  \qquad \tau_i > 0, \quad \sum_i \frac{1}{\tau_i} < \infty
+\]
+--- drift together with integer-weighted Thorin atoms, the summability condition being
+finiteness of the mean delay, $\Ex\,T_1 = b_0 + \sum_i \tau_i^{-1}$.
+\end{enumerate}
+\end{proposition}
+
+\begin{proof}
+Two classical facts carry the proof. A density supported on $[0,\infty)$ is a P\'olya
+frequency density if and only if the reciprocal of its Laplace transform is an entire
+function of the form $C e^{\delta s}\prod_i (1 + \lambda_i s)$ with $C > 0$, $\delta \ge 0$,
+$\lambda_i \ge 0$ and $\sum_i \lambda_i < \infty$ --- Schoenberg's representation theorem
+(\sscite{karlin1968total}, Ch.~7, Thm~3.2(b), p.~345; the one-sided form, Remark~3.1,
+p.~346). And convolution with a kernel is variation-diminishing if and only if the kernel is
+totally positive (\sscite{karlin1968total}, Ch.~5, Thm~4.2), which for a translation kernel
+is the P\'olya frequency property.
+
+(1) For the Gamma kernel, $1/\widehat{\mu}_{0,x}(s) = (1 + xs)^{\gamma}$: for integer
+$\gamma$ this is a polynomial with the single real negative root $-1/x$, of the displayed
+form with $\delta = 0$ and $\gamma$ equal factors, so the kernels are P\'olya frequency
+densities, and the sign-change bound follows applied to $f - c$, since
+$\mu_{0,x} * (f - c) = u(\cdot,x) - c$ by unit mass. The extremum count reduces to sign
+changes: a function with $n$ local extrema admits a level $c$ with $n + 1$ sign changes of
+the difference (take $c$ strictly between consecutive extreme values), so the bound at
+every level bounds the number of extrema. For non-integer $\gamma$, $(1 + xs)^{\gamma}$ has
+a branch point at $s = -1/x$ and is not entire, so by the same representation theorem the
+kernel is not a P\'olya frequency density.
+
+(2) The kernels are supported on $[0,\infty)$ with transform $e^{-F(xs)}$, so the family is
+P\'olya frequency exactly when $e^{F(xs)}$ has the displayed form --- for one $x$ or,
+equivalently, for all: replacing $s$ by $xs$ rescales $\delta$ and the $\lambda_i$ by $x$
+and preserves the form. Matching at $x = 1$: $F(\zp) = 0$ forces $C = 1$; the exponential
+factor is the drift, $\delta = b_0$; and the linear factors are atoms, $\lambda_i = 1/\tau_i$,
+giving the display, the condition $\sum_i \lambda_i < \infty$ being
+$\sum_i \tau_i^{-1} < \infty$, i.e.\ $F'(\zp) = b_0 + \sum_i \tau_i^{-1} < \infty$.
+Every such $F$ is admissible: it is of the form (7.1) with the nonincreasing memory kernel
+$k(t) = \sum_i e^{-\tau_i t}$ --- a Frullani integral per atom --- and
+$F(1) \le b_0 + \sum_i \tau_i^{-1} < \infty$, so Theorem~\ref{thm:main-characterization}
+applies.
+\end{proof}
+
+\begin{remark}[causal non-creation; a semigroup obstruction dissolved]\label{rem:pf-hemigroup}
+Non-creation is the oldest axiom of the subject: Witkin's founding observation was that
+Gaussian convolution creates no new extrema in one dimension, and non-creation of local
+extrema or zero-crossings is the one-dimensional entry in the standard catalogue of
+scale-space axioms (\sscite{lindeberg2011generalized}, \S2).
+Proposition~\ref{prop:gamma-regularity} places the recommended family inside the class that
+carries it. Three glosses. First, within the \emph{semigroup} axioms, non-creation and
+time-causality are incompatible: any continuous-parameter convolution semigroup of P\'olya
+frequency densities is Gaussian (\sscite{karlin1968total}, Ch.~7, Thm~5.2, p.~354), and the
+Gaussian is two-sided --- so no time-causal semigroup scale space is variation-diminishing
+at all. The hemigroup dissolves the obstruction: the Gamma family is a continuous-parameter
+\emph{hemigroup} of one-sided P\'olya frequency densities, one at every scale. Second, the
+property belongs to the accumulated kernels, not to the increments: the increment
+transforms carry zeros, which by the same Schoenberg representation place them outside the
+P\'olya frequency class, so non-creation holds from the signal to every scale but not
+stage-to-stage along a cascade --- the same zeros that buy continuous covariance in
+\S\ref{sec:implementation} spend the increments' variation-diminishing property. Third, the
+pointwise form of non-enhancement --- the value at a fixed-time extremum must not grow ---
+fails for \emph{every} causal family, because the kernels delay what they smooth: a peak
+decays while traveling down the delay line, and at a fixed time just past it the value
+rises as the delayed mass arrives. Counting, not pointwise decay, is the causal form of
+non-creation.
+\end{remark}
+
 Two facts about the Gamma family belong here although they are proved later. It is the
 family \S\ref{sec:implementation} implements, exactly, by first-order recursive sections, one
 per unit of shape. And the memory-line development of \S\ref{sec:signaling} needs more of it
