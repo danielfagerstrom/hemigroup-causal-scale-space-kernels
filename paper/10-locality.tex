@@ -48,6 +48,45 @@ stays on $C_c^\infty((0,\infty))$, where a profile, having no interior maximum, 
 nothing.
 \end{definition}
 
+% Paper-only signposting (2026-08-30): why the maximum principle, placed against the
+% definition it motivates. Citation verified against the library's stored copy of
+% lindeberg2011generalized: non-enhancement of local extrema is its Definition 3 (p. 7 of
+% the stored copy), and its Appendix B (p. 39, the appendices numbered in roman there)
+% works out the relation to the maximum principle -- close kin, not identical, which is
+% why the text says "counterpart" and never "equivalent". The same source states
+% time-causal analogues of its Definition 3 in a later appendix. The Koenderink anchor
+% (2026-08-31): verified against the library's stored copy of koenderink1984structure --
+% the causality hypothesis is stated on p. 364 ("any feature at a coarse level of
+% resolution is required to possess a (not necessarily unique) 'cause' at a finer level")
+% and is enforced there AT THE EXTREMA, via the convexity of the level surface at
+% stationary points. koenderink1988scale (Scale-time) has an attachment record but its
+% file is missing from the Drive store this session reaches, so it stays uncited here;
+% per the author it is informal and defers to the 1984 paper on this point.
+Why the maximum principle, and why on $C_c^\infty((0,\infty))$? The cascade is positive at
+the level of the axioms --- kernels are probability measures, so a nonnegative signal has a
+nonnegative field --- but that constrains $A$ only along the fields the cascade produces.
+The positive maximum principle is the standard infinitesimal form of the same demand: the
+generator-level certificate of a positivity-preserving evolution on \emph{all} data, not
+merely on the solution manifold, and Courr\`ege's theorem --- the citation carrying the
+order bound in Theorem~\ref{thm:locality}'s proof --- classifies the operators that satisfy
+it. It is also this theory's counterpart of a classical scale-space axiom. The requirement
+descends from Koenderink's causality hypothesis --- every feature at a coarse resolution
+must have a cause at a finer one, enforced at the extrema of the image
+(\sscite{koenderink1984structure}, p.~364) --- and is formalised as \emph{non-enhancement
+of local extrema}: the value at a local maximum must not grow as the evolution runs
+(\sscite{lindeberg2011generalized}, Def.~3; the relation to the maximum principle ---
+close kin, not identical --- is worked out in its Appendix~B). In the spatial
+theory that axiom singles out the Gaussian; here, on the memory line, its operator-side
+form will single out the Bessel rung. Requiring it of a candidate medium is thus no extra
+aesthetic: it asks that the differential expression transport nonnegative quantities
+nonnegatively at every point --- the property the kernels already have globally.
+
+The first step is a dictionary. Locality speaks about the operator, while everything the
+theory controls --- the recursion, the poles, the profiles' transforms --- speaks about the
+symbol; the Euler calculus $x^j\partial_x^j = \theta(\theta-1)\cdots(\theta-j+1)$ is the
+translation between them, and covariance leaves a local operator no freedom beyond a
+polynomial in $\theta$.
+
 % shared with blueprint lem:local-polynomial-symbol
 \begin{lemma}[covariant local = polynomial symbol]\label{lem:local-polynomial-symbol}
 $A$ is local of order $n$ if and only if $B$ is a polynomial of degree $n$; in that case the
@@ -109,6 +148,11 @@ at every point of the strip, and $B(z) = P(z)$ at every point where $\tilde H(z)
 injectivity of the inverse Mellin transform is used, and none is available.
 \end{proof}
 
+% Paper-only signposting (2026-08-30): the section's pivot, made audible.
+With the dictionary in hand the word \emph{operator} can be retired: local means $B$
+polynomial, and the remainder of the section is arithmetic of the moment function
+$m(z) = \Ex[T_1^{-z}]$. Three consequences of a polynomial symbol come at once.
+
 % shared with blueprint lem:moment-recursion — clause (1)'s proof carries the content of
 % the blueprint's split-off lem:symbol-vanishes-at-origin.
 \begin{lemma}[the moment recursion]\label{lem:moment-recursion}
@@ -141,6 +185,21 @@ Pringsheim--Landau theorem, though Widder himself credits Hamburger). Hence $z_*
 (3) The recursion is now Lemma~\ref{lem:inversion-symbol} on all of $(0,\infty)$, and
 positivity of $Q$ follows from $m > 0$.
 \end{proof}
+
+% Paper-only signposting (2026-08-30): the z_* gloss ties clause (2) to the collar of
+% fig-admissible-cone; the period-one paragraph sounds the echo of §9's mode rigidity --
+% the same ambiguity, closed by the other classical mechanism.
+Clause (2) is worth a geometric pause: locality does not merely respect the standing
+hypothesis, it forces $z_* = \infty$, so a local medium sits at infinite distance from the
+excluded collar of Figure~\ref{fig:admissible-cone} --- (H), assumed throughout this
+section, is the one hypothesis that costs nothing here. Clause (3) is the engine, and it
+arrives with the section's central difficulty attached: the recursion
+$m(z+1) = Q(z)\,m(z)$ determines $m$ only up to a $1$-periodic factor. This is the
+period-one ambiguity of \S\ref{sec:signaling} again, met there in the mode recursion and
+closed analytically (Lemma~\ref{lem:mode-rigidity}: boundedness over one period, gluing,
+Liouville); here it is closed by the other classical mechanism, Bohr--Mollerup ---
+log-convexity plus normalisation pins the solution. The hypothesis is free, which is the
+next lemma; the uniqueness it buys, at the linear $Q$ the theorem needs, is the one after.
 
 % shared with blueprint lem:log-convexity
 \begin{lemma}[log-convexity]\label{lem:log-convexity}
@@ -198,6 +257,13 @@ with $z + k > d$ and cancelling $G(z+k) > 0$ extends $m = C\,G$ to all of $(0,\i
 Finally $z \downarrow 0$ gives $C\,\Gamma(a) = 1$, since $c^{\,z} \to 1$ and $\Gamma$ is
 continuous at $a > 0$.
 \end{proof}
+
+% Paper-only signposting (2026-08-30): the assembly map, in the order the proof runs.
+The pieces assemble, in the order the proof runs: Courr\`ege's theorem bounds the order at
+two; the moment recursion is solved rung by rung --- a constant $Q$ forces a deterministic
+delay, a linear $Q$ a Gamma law; and Fourier uniqueness converts the moment data into the
+law of the kernel. What the maximum principle buys is the first step alone --- everything
+after it is the arithmetic prepared above.
 
 % shared with blueprint thm:locality — the pointer to the split origin-limit node is
 % adapted to Lemma \ref{lem:moment-recursion}(1).
@@ -293,6 +359,25 @@ $a = \tfrac12$ --- where $K_{1/2}$ is elementary and $H(y) = e^{-\sqrt{2y}}$ exa
 $\tfrac12$-stable, i.e.\ heat, case. The moment statement is
 Proposition~\ref{prop:bessel-family}.
 \end{proof}
+
+% Paper-only signposting (2026-08-30): what locality alone buys, and where the ladder
+% sits in §7's classification -- inside the Thorin subclass, closing the loop opened by
+% §8's decision to work there. The HCM => GGC step is the one already cited (Bondesson,
+% A16) in prop:local-ladder's proof; nothing new is claimed here.
+What if the maximum principle is dropped? Locality alone is far from empty, and where its
+families sit in the classification of \S\ref{sec:characterization} is specific: strictly
+inside it, twice over. Every rung of the ladder below has $z_* = \infty$
+(Lemma~\ref{lem:moment-recursion}(2)); and every rung --- the real-spectrum families of
+Proposition~\ref{prop:local-ladder} --- is hyperbolically completely monotone, hence a
+generalized gamma convolution: it lies in the \emph{Thorin} subclass of
+Figure~\ref{fig:admissible-cone}. \S\ref{sec:characterization} delivered a continuum of
+admissible media, and \S\ref{sec:examples} cut the Thorin subcone as a tractable
+representation class; locality now cuts, out of the same cone, a countable union of
+finite-parameter slices, and lands inside Thorin of its own accord --- the demand for a
+local embodiment is an independent road into the same subclass, so long as the spectrum is
+real (Remark~\ref{rem:complex-roots}). The homogeneous member of each rung is the stable
+point $\alpha = 1/n$ (Remark~\ref{rem:stable-slice}): what the semigroup could see of the
+ladder was one point per rung.
 
 % shared with blueprint prop:local-ladder
 \begin{proposition}[the ladder: locality without the maximum principle]\label{prop:local-ladder}
