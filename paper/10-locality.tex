@@ -54,10 +54,14 @@ nothing.
 % the stored copy), and its Appendix B (p. 39, the appendices numbered in roman there)
 % works out the relation to the maximum principle -- close kin, not identical, which is
 % why the text says "counterpart" and never "equivalent". The same source states
-% time-causal analogues of its Definition 3 in a later appendix. TODO(librarian): if a
-% Koenderink anchor is wanted alongside (causality / no new level surfaces), verify it
-% against a stored copy first -- koenderink1988scale currently has no artifact in the
-% library, and nothing here should be anchored from recollection.
+% time-causal analogues of its Definition 3 in a later appendix. The Koenderink anchor
+% (2026-08-31): verified against the library's stored copy of koenderink1984structure --
+% the causality hypothesis is stated on p. 364 ("any feature at a coarse level of
+% resolution is required to possess a (not necessarily unique) 'cause' at a finer level")
+% and is enforced there AT THE EXTREMA, via the convexity of the level surface at
+% stationary points. koenderink1988scale (Scale-time) has an attachment record but its
+% file is missing from the Drive store this session reaches, so it stays uncited here;
+% per the author it is informal and defers to the 1984 paper on this point.
 Why the maximum principle, and why on $C_c^\infty((0,\infty))$? The cascade is positive at
 the level of the axioms --- kernels are probability measures, so a nonnegative signal has a
 nonnegative field --- but that constrains $A$ only along the fields the cascade produces.
@@ -65,10 +69,13 @@ The positive maximum principle is the standard infinitesimal form of the same de
 generator-level certificate of a positivity-preserving evolution on \emph{all} data, not
 merely on the solution manifold, and Courr\`ege's theorem --- the citation carrying the
 order bound in Theorem~\ref{thm:locality}'s proof --- classifies the operators that satisfy
-it. It is also this theory's counterpart of a classical scale-space axiom,
-\emph{non-enhancement of local extrema}: the value at a local maximum must not grow as the
-evolution runs (\sscite{lindeberg2011generalized}, Def.~3; the relation to the maximum
-principle --- close kin, not identical --- is worked out in its Appendix~B). In the spatial
+it. It is also this theory's counterpart of a classical scale-space axiom. The requirement
+descends from Koenderink's causality hypothesis --- every feature at a coarse resolution
+must have a cause at a finer one, enforced at the extrema of the image
+(\sscite{koenderink1984structure}, p.~364) --- and is formalised as \emph{non-enhancement
+of local extrema}: the value at a local maximum must not grow as the evolution runs
+(\sscite{lindeberg2011generalized}, Def.~3; the relation to the maximum principle ---
+close kin, not identical --- is worked out in its Appendix~B). In the spatial
 theory that axiom singles out the Gaussian; here, on the memory line, its operator-side
 form will single out the Bessel rung. Requiring it of a candidate medium is thus no extra
 aesthetic: it asks that the differential expression transport nonnegative quantities
