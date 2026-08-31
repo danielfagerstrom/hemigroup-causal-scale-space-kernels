@@ -27,6 +27,25 @@ $F \not\equiv 0$ (equivalently (ND); Corollary~\ref{cor:strict-monotonicity}).
 
 \subsection{Memory kernels, Sonine conservation, and a Volterra derivation}\label{sec:appendix-sonine}
 
+Three readings of one function organize this subsection. The function $k$ enters the paper
+in \S\ref{sec:characterization} as the family's catalogue of delays --- the size-weighted
+density of the subordinator's jumps. The results below prove that the same $k$, dilated to
+the current scale, is also the \emph{physical memory kernel} of the scale space: the
+evolution along the memory line is a conservation law in the $(t,x)$-plane whose flux is a
+$k$-weighted running average of the record --- integrating over $t$ kills the right-hand
+side, so mass is transported across scale, never created, which is axiom (A5) in
+differential form (Proposition~\ref{prop:scale-evolution}); this memory operation destroys
+no information, its algebraic inverse being again a causal positive measure, so each
+infinitesimal smoothing step is exactly invertible (Theorem~\ref{thm:sonine-conservation},
+Corollary~\ref{cor:exact-inversion}); and the temporal kernels themselves are recovered
+from $k$ by forward integration, with no Laplace inversion
+(Propositions~\ref{prop:volterra}--\ref{prop:volterra-density}). One function, three proven
+roles: delay catalogue, scale generator, and Volterra generator of the kernels. The
+subsection is the $t$-convolutional leg of the transform identity
+$\hat u(s, x) = e^{-F(xs)}\hat f(s)$, as \S\ref{sec:signaling} is its $x$-operational leg:
+differentiating in $x$ and inverting the Laplace transform gives the evolution studied
+here; taking the Mellin structure in $x$ at fixed $t$ gives the signaling form there.
+
 The first lemma restates, dilated to the current scale, the object already fixed at the tail
 of \S\ref{sec:characterization}: the measure $\kappa^{(x)}$ there is the one defined here.
 
@@ -242,7 +261,12 @@ $D^{(x)}$, but the identity is what makes the memory-kernel form of the evolutio
 which fixes the mass. Probabilistically, $\ell^{(x)}$ is the potential (renewal)
 measure of the subordinator with exponent $\varphi_x$, $\kappa^{(x)}$ is its
 drift-plus-Lévy-tail, and Theorem~\ref{thm:sonine-conservation} is the renewal identity
-balancing expected occupation against tail decay.
+balancing expected occupation against tail decay. In transform language the theorem is the
+tautology $(\varphi_x/s)\cdot(1/\varphi_x) = 1/s$; its content is entirely in the nature of
+the factors: the algebraic reciprocal of the memory operator's symbol is again the
+transform of a \emph{causal positive} measure, so the inverse exists as a realizable system
+and not merely as a formula --- and causality and positivity are exactly what the renewal
+construction of Lemma~\ref{lem:potential-kernel} supplies.
 
 % shared with blueprint prop:pair-regularity
 \begin{proposition}[regularity of the pair]\label{prop:pair-regularity}
@@ -317,6 +341,14 @@ of (V.1) have the finite transform $x F'(xs)e^{-F(xs)}$ and coincide by
 Proposition~\ref{prop:laplace-uniqueness-sigma-finite}.
 \end{proof}
 
+The measure $\theta_x$ is the drift atom together with the jump measure of $\mu_x$
+weighted by jump size --- its density $k(t/x)$ is $t$ times the Lévy density $k(t/x)/t$ ---
+so (V.1) has a probabilistic reading: \emph{size-biasing the total delay adjoins one
+independent extra jump, drawn from the length-weighted catalogue}. This is the classical
+half-line characterization of infinite divisibility (\sscite{steutel2004infinite}) with
+the catalogue's role made explicit, and it is what makes the equation constructive: the
+kernel is assembled from its own delays.
+
 % shared with blueprint prop:volterra-uniqueness
 \begin{proposition}[the Volterra equation determines the kernel]\label{prop:volterra-uniqueness}
 $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (V.1).
@@ -384,7 +416,11 @@ The Sonine pair is equally explicit here. With $\varphi_x(s) = sF'(xs) = \gamma 
   \ell^{(x)} = \frac{1}{\gamma}\,\mathrm{Leb} + \frac{x}{\gamma}\,\delta_0,
 \]
 with transforms $\gamma/(1+xs)$ and $(1+xs)/(\gamma s)$, whose product is $1/s$: the
-conservation identity $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}$ by inspection. The atom
+conservation identity $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}$ by inspection. In filter
+terms $D^{(x)}$ is the leaky differentiator $\gamma s/(1+xs)$ and $I^{(x)}$ a
+proportional--integral element, and the conservation identity is their exact pole--zero
+cancellation --- the general theorem asserting that such a causal, positive cancellation
+partner exists for every admissible family. The atom
 $\tfrac{x}{\gamma}\delta_0$ in the potential kernel is the $b_g$-atom of
 Proposition~\ref{prop:pair-regularity}, present although $b_0 = 0$ --- the pair's two atoms
 are genuinely independent.
