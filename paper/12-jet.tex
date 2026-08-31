@@ -157,7 +157,10 @@ implicit in \sscite{fagerstrom2005temporal}, Thm.~4, here extended from the loca
 the whole class by the Mellin form.
 \end{remark}
 
-\begin{figure}[t]
+% [tp]: at full text width plus its caption this figure exceeds \topfraction, so a
+% [t]-only spec cannot place it and it (and every float behind it) drifts to the end
+% of the document; the float-page option is what lets it land beside its example.
+\begin{figure}[tp]
 \centering
 \includegraphics[width=\textwidth]{fig-experiment.png}
 \caption{The machine run end to end (Example~\ref{ex:numerical-experiment}): the Gamma
@@ -176,7 +179,7 @@ noise burst in the second-order map, see the example's closing paragraph.}
 \label{fig:experiment}
 \end{figure}
 
-\begin{figure}[t]
+\begin{figure}[tbp]
 \centering
 \includegraphics[width=\textwidth]{fig-fingerprint.png}
 \caption{The fingerprints of the same run: zero-crossings of $\partial_t u$ (the extrema
