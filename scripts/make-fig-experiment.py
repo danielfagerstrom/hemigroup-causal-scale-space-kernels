@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Numerical experiment for the hemigroup Gamma cascade (planned Example, section 12).
+"""Numerical experiment for the hemigroup Gamma cascade (ex:numerical-experiment, section 12).
 
 Runs the section-11 machine -- the ZOH pole--zero cascade over a fine geometric knot
 ladder, gamma = 2 -- on a synthetic grey-level signal, renders the classical

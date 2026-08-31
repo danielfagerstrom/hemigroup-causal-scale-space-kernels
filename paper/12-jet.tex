@@ -156,3 +156,92 @@ curvatures, and iterated curvatures, of its memory trace --- the embodiment read
 implicit in \sscite{fagerstrom2005temporal}, Thm.~4, here extended from the local corner to
 the whole class by the Mellin form.
 \end{remark}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig-experiment.png}
+\caption{The machine run end to end (Example~\ref{ex:numerical-experiment}): the Gamma
+cascade at $\gamma = 2$ on a synthetic grey-level signal, in the orientation of
+Figure~\ref{fig:signaling} --- time horizontal, $\log x$ vertical, the signal entering
+along the bottom edge. Top: the input. Second panel: the field $u$, with the mean-delay
+curves $t_0 + \gamma x$ of the three isolated events (dashed), the tracked maxima of the
+strong (teal) and coarse (blue) events, and the wake companion's track (red, dotted); the
+inset plots the tracked values against scale --- nonincreasing while past-dominating, the
+wake curve (magnified $6\times$) showing the echo uptick before its annihilation
+($\times$). The bend near the top of the strong event's track is its arch merging with a
+neighbour --- structure, not a tracking failure. Lower panels: the scale-normalized jet
+maps $x\,\partial_t u$ and $x^2\,\partial_t^2 u$, computed by binomial subtraction along
+the shape column (Proposition~\ref{prop:gamma-jets}); for the fine streaks under the
+noise burst in the second-order map, see the example's closing paragraph.}
+\label{fig:experiment}
+\end{figure}
+
+\begin{figure}[t]
+\centering
+\includegraphics[width=\textwidth]{fig-fingerprint.png}
+\caption{The fingerprints of the same run: zero-crossings of $\partial_t u$ (the extrema
+of $u$, left) and of $\partial_t^2 u$ (right) across scale. The classical picture ---
+arches closing from below, never re-opening --- holds, sheared rightward along the delay
+direction: the causal counterpart of the Gaussian fingerprint diagrams. The noise burst's
+dense column annihilates pair by pair; the wake companion's arch closes at
+$x \approx 50$.}
+\label{fig:fingerprint}
+\end{figure}
+
+\begin{example}[the machine run end to end]\label{ex:numerical-experiment}
+Figures~\ref{fig:experiment} and~\ref{fig:fingerprint} run the whole architecture of
+\S\ref{sec:implementation} and this section on one signal: the recursive cascade of
+Proposition~\ref{prop:gamma-cascade} at $\gamma = 2$, over a geometric knot ladder of $64$
+knots spanning $x \in [2, 400]$ (the time unit is one sample; $4096$ samples), with the
+jets read by binomial subtraction along the shape column
+(Proposition~\ref{prop:gamma-jets}) --- no temporal differencing anywhere. The signal
+assembles one specimen per prediction: a sharp and a broad bump, a strong event with a
+small companion in its wake, a persistent step, and a broadband noise burst. The maps
+display the qualitative content of the preceding sections at a glance: every ridge shears
+rightward along its mean-delay curve $t_0 + \gamma x$ --- the delay--smoothing coupling of
+Theorem~\ref{thm:signaling-form} made visible --- the events annihilate in order of their
+widths while the step persists, and the fingerprints close from below without re-opening.
+
+Four checks tie the run to numbered results; both figures and every quoted number are
+produced by the accompanying script \texttt{make-fig-experiment.py}.
+\begin{enumerate}
+\item \emph{Knot exactness} (Proposition~\ref{prop:knot-exactness}). Refining the ladder
+from $64$ to $128$ knots moves the final tap by $4.3 \times 10^{-5}$, and the ladder
+agrees with the filter computing the full map $\Phi_{0, x_{\max}}$ in a single increment
+to $2.2 \times 10^{-3}$ --- both pure time discretization, the continuum transfers being
+identical. A forward-Euler march of the scale evolution, run for contrast, errs by
+$1.3 \times 10^{-2}$, halving to $6.0 \times 10^{-3}$ at doubled scale resolution: the
+$O(\Delta x)$ that the exponential-integrator update of
+Proposition~\ref{prop:gamma-cascade} avoids.
+\item \emph{Non-creation in time} (Proposition~\ref{prop:gamma-regularity}). The
+extremum count satisfies $N\bigl(u(\cdot, x)\bigr) \le N(f)$ at every one of the $64$
+scales ($146$ at the input, at most $94$ across the ladder). Scale-to-scale monotonicity
+is \emph{not} asserted by the theory --- the increments carry transform zeros and are not
+variation-diminishing (Remark~\ref{rem:pf-hemigroup}) --- and the run exhibits exactly
+that caveat: the count rises at $7$ of the $64$ steps, and still at $4$ of them when the
+taps are recomputed with exact transform-domain kernels, so the increases are the
+increments', not the discretization's.
+\item \emph{Non-enhancement along the delay path}
+(Corollary~\ref{cor:past-dominating}). The tracked maxima of the strong and the coarse
+event never increase at any scale where the past-dominating condition holds ($0$
+violations; the condition holds at $15$ and $63$ of the $64$ scales respectively). The
+wake companion realizes the corollary's sharp failure mode: its maximum decays to
+$0.0423$ by $x = 35$, is then lifted $8\%$ to $0.0456$ by the strong event's arriving
+delayed mass --- the echo --- and annihilates near $x = 49$ (the inset of
+Figure~\ref{fig:experiment}).
+\item \emph{Jets by subtraction} (Proposition~\ref{prop:gamma-jets}). The identity
+$x\,\partial_t u_2 = u_1 - u_2$ holds to $4.8 \times 10^{-17}$ in transform semantics ---
+the machine floor --- and the recursive shape column satisfies it against temporal
+differencing to $6.7 \times 10^{-3}$, once more the time discretization.
+\end{enumerate}
+
+One feature of the maps should be read off the symbol rather than dismissed as an
+artifact. In the fully normalized second-order map $x^2 \partial_t^2 u$ the noise burst
+leaves fine streaks at \emph{every} scale: the operator's transfer
+$x^2 s^2 (1 + xs)^{-2}$ tends to $1$ as $|s| \to \infty$, so at $n = \gamma$ the
+derivative order exhausts the kernel's pole order and the composite is all-pass at high
+frequency --- broadband input reaches the top-order normalized derivative undiminished at
+all scales. The top of the jet is noise-limited by construction; a clean $n$-th
+derivative wants poles to spare, $\gamma > n$, consistently with
+Proposition~\ref{prop:gamma-jets}'s count of jets available up to order $\gamma$.
+\end{example}
