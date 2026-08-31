@@ -455,7 +455,17 @@ half-line of \sscite{steutel2004infinite}.
 
 This subsection upgrades Proposition~\ref{prop:scale-evolution} from a distributional
 identity to a classical Cauchy problem in the scale variable, on the explicit operator core
-$\core$ of \S\ref{sec:preliminaries}.
+$\core$ of \S\ref{sec:preliminaries}. The upgrade is worth its machinery. A distributional
+identity says the field \emph{satisfies} the equation; a well-posed Cauchy problem says the
+equation \emph{determines} the field --- the memory-line evolution becomes a law of motion,
+the record at one scale fixing the record at every coarser one, with uniqueness in a
+natural class. It is the hemigroup counterpart of Theorem~3 of
+\sscite{fagerstrom2005temporal}, which Remark~\ref{rem:recovering-thm3} recovers verbatim
+--- hence the name Theorem~3$'$. And its pointwise form is what the delay-path corollary
+closing the appendix consumes. The plan: first the domain (Lemma~\ref{lem:delay-core}),
+then the operator (Definition~\ref{def:phillips-generator}, the memory operator
+re-presented as a sum over delay events), then the law (Theorem~3$'$), with two codas ---
+the generation-theory reading, recorded but never used, and the pointwise sign corollary.
 
 % shared with blueprint lem:delay-core
 \begin{lemma}[delay derivative]\label{lem:delay-core}
@@ -492,7 +502,16 @@ bound $\|T_rf - f\|_1 \le 2\|f\|_1$.
 
 The memory-kernel operator $\varphi_x(\partial_t)$ has so far acted through transforms and
 convolutions; on the core $\core$ it also has a pointwise-defined presentation, and that is
-what the Cauchy problem needs. The following is the Phillips form of the generator.
+what the Cauchy problem needs. The two presentations read the function $k$ in two ways. As
+a \emph{memory weight} it smooths the record: the convolution form
+$\partial_t(\kappa^{(x)} * \cdot)$ of the previous subsection. Differentiated, it becomes
+an \emph{event catalogue}: $\nu_1 = -dk$ assigns a rate to each delay depth $r$, the
+kernel $k(r) = \nu_1\bigl((r,\infty)\bigr)$ being the catalogue's tail, and the form below
+says that the infinitesimal scale step compares the record with its own delayed copies ---
+one bracket $f - \shift_{xr} f$ per catalogue entry, at the catalogue's rates. Field
+reading and event reading of one operator; clause (5) of the lemma that follows is exactly
+the statement that they agree on the core. The following is the Phillips form of the
+generator.
 
 % shared with blueprint def:phillips-generator
 \begin{definition}[per-scale generator; Phillips form]\label{def:phillips-generator}
@@ -511,7 +530,10 @@ $\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
 For $f \in \core$ and $x > 0$:
 \begin{enumerate}
 \item The integral converges absolutely in $\Xz$, with
-$\|\varphi_x(\partial_t) f\|_1 \le b_0 \|f'\|_1 + \int_0^\infty \min\bigl(2\|f\|_1,\, xr\,\|f'\|_1\bigr)\,x^{-1}\nu_1(dr) < \infty$.
+\[
+  \|\varphi_x(\partial_t) f\|_1 \;\le\; b_0 \|f'\|_1
+  + \int_0^\infty \min\bigl(2\|f\|_1,\, xr\,\|f'\|_1\bigr)\,x^{-1}\nu_1(dr) \;<\; \infty.
+\]
 \item $\Lap\bigl[\varphi_x(\partial_t) f\bigr](s) = \varphi_x(s)\,\hat f(s)$ for $s > 0$, where
 $\varphi_x(s) = s F'(xs)$.
 \item $\varphi_x(\partial_t)$ commutes with every $\Phi_{y,z}$ on $\core$.
@@ -613,7 +635,10 @@ Proposition~\ref{prop:laplace-uniqueness}.
 Two things about the proof deserve saying. The uniqueness class is the natural one --- norm
 $C^1$ solutions through the core --- and what it excludes are solutions that leave the core
 or lose the boundary value; within it, uniqueness is a \emph{scalar} linear ODE per Laplace
-frequency, and no semigroup generation theory is invoked anywhere in the theorem. Generation
+frequency, and no semigroup generation theory is invoked anywhere in the theorem --- the
+preference of the methodological remark in \S\ref{sec:conclusions} exercised once more, an
+argument about the object where a theory about a class of operators would also have served,
+at greater expense. Generation
 theory is nevertheless available, and Proposition~\ref{prop:fixed-scale-semigroup} below
 records what it gives: at each fixed scale the Phillips form generates the subordinate
 contraction semigroup, with $\core$ as a core --- a reading of the same objects, not a
@@ -640,6 +665,12 @@ invariant under the subordinate semigroup, which consists of convolutions
 this proposition --- the Cauchy problem is solved by a scalar ODE, not by generation theory
 --- so this result adds a reading rather than a dependency.
 \end{proof}
+
+The classical form now pays. Read pointwise, the scale-Cauchy equation becomes a
+difference form --- crossing scale replaces the present value by catalogue-delayed past
+values --- and at an extremum the sign of every term can be inspected. The corollary that
+closes the appendix is the delay-path companion of the counting form of
+\S\ref{sec:examples}.
 
 % Paper-only (2026-08-31): the pointwise non-enhancement that survives causally, along
 % the feature's own delay path -- the companion of rem:pf-hemigroup's counting form
