@@ -171,15 +171,27 @@ Thorin node, with time constants $x/\tau_i$.
 \end{proposition}
 % (environment closes here; the discussion paragraph after the proof is body text)
 \begin{proof}
-(1) $\Leftrightarrow$ (2): $k$ completely monotone means $k(t) = \int e^{-\tau t}\,U(d\tau)$
-for a positive measure $U$; by Lemma~\ref{lem:memory-kernel},
+(1) $\Leftrightarrow$ (2): by Bernstein's theorem (\sscite{schilling2012bernstein},
+Thm.~1.4, p.~3), $k$ completely monotone means $k(t) = \int e^{-\tau t}\,U(d\tau)$ for a
+positive measure $U$ on $[0,\infty)$, finite on compacts since the integral converges; an
+atom of $U$ at $\tau = 0$ would put a constant component into $k$, making
+$\int_1^\infty k(t)\,t^{-1}dt$ --- hence $F$ --- infinite, so $U$ lives on $(0,\infty)$. By
+Lemma~\ref{lem:memory-kernel},
 $F'(s) = b_0 + \int U(d\tau)/(s + \tau)$, and integrating in $s$ from $0$ gives the Thorin
-form, the integrability condition being finiteness of $F(1)$; conversely differentiate.
+form, the integrability condition being finiteness of $F(1)$ --- three regimes:
+$\log(1+1/\tau) \asymp \log(1/\tau)$ as $\tau \downarrow 0$, $\asymp 1/\tau$ as
+$\tau \to \infty$, and bounded on the compact middle, where $U$ is finite; conversely
+differentiate.
 (2) $\Leftrightarrow$ (3) is Thorin's characterization of the GGC class
-(\sscite{thorin1977pareto}, \sscite{thorin1977lognormal};
-\sscite{bondesson1992generalized}, Thm.~3.1.1; \sscite{schilling2012bernstein}, Thm.~8.2).
+(\sscite{thorin1977pareto}, \sscite{thorin1977lognormal}). In the L\'evy-data form --- GGC
+iff the L\'evy density $\ell$ has $y\,\ell(y)$ completely monotone, which is clause (1)
+verbatim, $y\,\ell(y)$ being this paper's $k$ --- it is \sscite{bondesson1992generalized},
+Thm.~3.1.1, p.~30; the exponent-side form is the Thorin--Bernstein class of
+\sscite{schilling2012bernstein}, Thm.~8.2, p.~109.
 Admissibility of $F_N$: $sF_N'(s) = b_0 s + \sum_i w_i\, s/(s + \tau_i)$ is a Bernstein
-function, so Lemma~\ref{lem:selfdecomposable-exponents} applies; $F_N(\zp) = 0$. Pointwise
+function, so Lemma~\ref{lem:selfdecomposable-exponents} applies and $F_N$ is of the form
+(7.1); $F_N(\zp) = 0$, the integrability conditions are trivial for a finite sum, and
+Theorem~\ref{thm:main-characterization} makes the family admissible. Pointwise
 convergence of $F_N$ gives convergence of the transforms $e^{-F_N(xs)}$, hence weak
 convergence of the kernels by the continuity theorem
 (Proposition~\ref{prop:laplace-continuity}).
