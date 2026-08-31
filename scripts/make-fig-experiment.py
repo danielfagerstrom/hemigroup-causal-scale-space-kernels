@@ -13,9 +13,15 @@ to a numbered result of the paper:
       ODE, run for contrast, shows O(Delta x) error.
   C2  non-creation (Prop. gamma-regularity): N(u(., x)) <= N(f) at every scale.
       Scale-to-scale monotonicity is NOT asserted by the theorem -- the increments
-      carry transform zeros and are not variation-diminishing -- and the run indeed
-      exhibits a few scale-to-scale increases, on the exact kernels as well: the
-      per-increment caveat observed.
+      carry an atom and transform zeros and are not variation-diminishing -- and the
+      run exhibits a few scale-to-scale increases. Inspected (2026-08-31), the
+      created pairs are micro-events (prominence <= 6e-3) in the noise remnant and
+      near the dissolving wake, traceable to the time discretization: the sections'
+      feedthrough passes more high frequency than the continuum kernels, and
+      FFT-exact recounts sit at the kernel-discretization floor (~1e-6, and the
+      FFT kernels' plateau ripple pollutes their fine-scale counts outright). The
+      bound holds at every scale; step-monotonicity fails in the implemented
+      system; no continuum creation event is certified.
   C3  non-enhancement along the delay path (Cor. past-dominating): tracked maxima
       are nonincreasing in scale while past-dominating; a small event in the wake of
       a large one is transiently ENHANCED by the arriving delayed mass -- the
@@ -203,8 +209,10 @@ def main():
     print("C2 non-creation     N(x) <= N(f) at every scale: %s  (N(f)=%d, max N(x)=%d)"
           % ("yes" if max(counts[1:]) <= counts[0] else "NO",
              counts[0], max(counts[1:])))
-    print("                    scale-to-scale increases (per-increment caveat):"
-          " ladder %d, exact kernels %d, of %d steps" % (inc, inc_x, len(counts) - 1))
+    print("                    scale-to-scale increases: ladder %d of %d steps"
+          " (micro-events at the discretization floor -- see docstring;"
+          " FFT-exact recount %d, floor-polluted at fine scales)"
+          % (inc, len(counts) - 1, inc_x))
 
     # --- C3: delay-path non-enhancement + the echo --------------------------------
     tsC, valC, domC = track_max(taps, xm, 2000)

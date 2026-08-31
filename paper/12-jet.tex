@@ -219,11 +219,16 @@ Proposition~\ref{prop:gamma-cascade} avoids.
 \item \emph{Non-creation in time} (Proposition~\ref{prop:gamma-regularity}). The
 extremum count satisfies $N\bigl(u(\cdot, x)\bigr) \le N(f)$ at every one of the $64$
 scales ($146$ at the input, at most $94$ across the ladder). Scale-to-scale monotonicity
-is \emph{not} asserted by the theory --- the increments carry transform zeros and are not
-variation-diminishing (Remark~\ref{rem:pf-hemigroup}) --- and the run exhibits exactly
-that caveat: the count rises at $7$ of the $64$ steps, and still at $4$ of them when the
-taps are recomputed with exact transform-domain kernels, so the increases are the
-increments', not the discretization's.
+is \emph{not} asserted by the theory --- the increments carry an atom and transform
+zeros and are not variation-diminishing (Remark~\ref{rem:pf-hemigroup}) --- and the run
+shows the count rising at $7$ of the $64$ steps. Inspected individually, the created
+pairs are micro-events, of prominence $6 \times 10^{-3}$ and below, in the remnant of
+the noise burst and near the dissolving wake, where the sampled cascade retains more
+high frequency than the continuum kernels (the sections' feedthrough); recomputing the
+taps with transform-domain kernels moves the residual increases to the
+kernel-discretization floor. The run thus certifies the bound at every scale and shows
+step-monotonicity failing in the implemented system, without exhibiting a certified
+continuum creation event.
 \item \emph{Non-enhancement along the delay path}
 (Corollary~\ref{cor:past-dominating}). The tracked maxima of the strong and the coarse
 event never increase at any scale where the past-dominating condition holds ($0$
