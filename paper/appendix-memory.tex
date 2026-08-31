@@ -605,6 +605,72 @@ this proposition --- the Cauchy problem is solved by a scalar ODE, not by genera
 --- so this result adds a reading rather than a dependency.
 \end{proof}
 
+% Paper-only (2026-08-31): the pointwise non-enhancement that survives causally, along
+% the feature's own delay path -- the companion of rem:pf-hemigroup's counting form
+% (§8). Everything it consumes is proved above; the only new content is pointwise
+% regularity and a sign inspection. Candidate for blueprint promotion.
+\begin{corollary}[non-enhancement at past-dominating extrema]\label{cor:past-dominating}
+Let $f \in \core$ with $f'$ bounded and continuous, and $u(t, x) := (\Phi_{0,x}f)(t)$. Then
+$u$, $\partial_t u$ and $\partial_x u$ are jointly continuous on $\RR \times (0,\infty)$,
+the scale-Cauchy equation of Theorem~\ref{thm:scale-cauchy} holds pointwise,
+\[
+  \partial_x u(t, x)
+  \;=\; -\,b_0\,\partial_t u(t, x)
+  \;-\; \frac{1}{x}\int_0^\infty \bigl[\,u(t, x) - u(t - xr,\, x)\,\bigr]\,\nu_1(dr),
+\]
+the integral absolutely convergent, and at every \emph{past-dominating} point --- a $t$ with
+$u(t, x) \ge u(t', x)$ for all $t' \le t$ --- at which additionally $b_0 = 0$ or
+$\partial_t u(t, x) = 0$,
+\[
+  \partial_x u(t, x) \;\le\; 0 ,
+\]
+with the dual inequality at past-dominated points. In particular, along any differentiable
+path $x \mapsto t_m(x)$ of temporal critical points,
+$\tfrac{d}{dx}\,u\bigl(t_m(x), x\bigr) = \partial_x u\bigl(t_m(x), x\bigr) \le 0$ wherever
+the tracked maximum dominates its past --- whatever the path's speed.
+\end{corollary}
+
+\begin{proof}
+\emph{Pointwise regularity.} In the canonical gauge $u(t,x) = \Ex\,f(t - xT_1)$ and
+$\partial_t u(t,x) = \Ex\,f'(t - xT_1)$, the latter by dominated convergence ($f'$ bounded);
+both are bounded by $\|f\|_\infty$, $\|f'\|_\infty$ and jointly continuous, again by
+dominated convergence, $f$ and $f'$ being bounded and continuous ($f$ is absolutely
+continuous with $f' \in L^1$, and $f'$ is continuous by hypothesis).
+
+\emph{The pointwise identity.} Set
+$g(t,x) := b_0\,\partial_t u(t,x) + \tfrac1x\int_0^\infty [u(t,x) - u(t-xr,x)]\,\nu_1(dr)$.
+The integral converges absolutely, the integrand being bounded by
+$\min\bigl(2\|f\|_\infty,\, xr\,\|f'\|_\infty\bigr)$ and $\int (1 \wedge r)\,\nu_1(dr)$
+finite as in Lemma~\ref{lem:generator-properties}(1); by the same domination, $g$ is jointly
+continuous. Its Laplace transform is $\varphi_x(s)\,\hat u(s,x)$ --- the computation of
+Lemma~\ref{lem:generator-properties}(2), run pointwise --- so $g(\cdot, x)$ is the
+continuous representative of $\varphi_x(\partial_t)\,u(\cdot,x)$. Theorem~\ref{thm:scale-cauchy}(2)
+gives $u(\cdot,b) - u(\cdot,a) = -\int_a^b \varphi_x(\partial_t)u(\cdot,x)\,dx$ in $\Xz$,
+hence $u(t,b) - u(t,a) = -\int_a^b g(t,x)\,dx$ for almost every $t$; both sides are
+continuous in $t$, so the identity holds for every $t$, and since $g$ is continuous in $x$
+the fundamental theorem of calculus yields the pointwise derivative
+$\partial_x u(t,x) = -g(t,x)$, jointly continuous.
+
+\emph{The sign.} At a past-dominating point every bracket $u(t,x) - u(t-xr,x)$, $r > 0$, is
+nonnegative, so the integral term of $-g$ is $\le 0$, and the drift term $-b_0\partial_t u$
+vanishes under either proviso; the dual statement replaces $\ge$ by $\le$ throughout.
+The path clause is the chain rule --- $u$ is $C^1$ in each variable with jointly continuous
+partials, hence totally differentiable --- with the $\partial_t$ term killed by criticality,
+at whatever speed the path moves.
+\end{proof}
+
+The measure $\nu_1 = -dk$ is the delay-event catalogue of the dictionary of
+\S\ref{sec:preliminaries}, and the identity says that crossing scale replaces the present
+value by catalogue-delayed past values; at a maximum that dominates its past, only smaller
+values can arrive, which is the sign. The proviso is sharp in both directions. A
+\emph{secondary} maximum in the shadow of a larger earlier peak has brackets of both signs
+--- the echo of the peak drains forward and can enhance it --- which is the genuine physics
+of a delay line, not a defect of the formulation; the unconditional statement is the
+counting form of Proposition~\ref{prop:gamma-regularity}, and the two are complementary:
+counting non-creation, unconditional but restricted to the P\'olya frequency members;
+pointwise non-enhancement along the feature's own delay path, conditional on past-domination
+but valid for every admissible family.
+
 % Verbatim from the blueprint's ex:gamma-recursive (examples are not statement nodes,
 % so this is not a `shared with blueprint` edge; keep the two texts in step by hand).
 \begin{example}[the Gamma family: time-recursive form]\label{ex:gamma-recursive}
