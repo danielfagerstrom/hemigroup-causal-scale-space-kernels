@@ -25,19 +25,31 @@
 \draw[->] (4.1,0) -- (4.1,-1.15);
 \draw[->] (6.3,0) -- (6.3,-1.15);
 
-% first difference
-\node[sum] (d1) at (5.2,-1.5) {$-$};
-\draw[->] (4.1,-1.15) -- (4.1,-1.5) -- (d1.west);
-\draw[->] (6.3,-1.15) -- (6.3,-1.5) -- (d1.east);
-\draw[->] (d1.south) -- (5.2,-2.25);
-\node[anchor=west] at (5.35,-1.95) {$u_2 - u_3 = x\,\partial_t u_3$};
+% first differences: adjacent taps, minuend marked +, subtrahend marked -
+% (redrawn 2026-08-31, author review: the second difference was drawn as a "+" node
+% fed by u_1, u_2, u_2 - u_3, whose true signs are (+,-,-); it is now the difference
+% of the two first differences, every input signed)
+\node[sum, minimum size=9pt] (dA) at (3.1,-1.5) {};
+\draw[->] (2.1,-1.15) -- (2.1,-1.5) -- (dA.west);
+\draw[->] (4.1,-1.15) -- (4.1,-1.5) -- (dA.east);
+\node[inner sep=1pt, anchor=south east] at (2.85,-1.46) {$\scriptstyle +$};
+\node[inner sep=1pt, anchor=south west] at (3.35,-1.46) {$\scriptstyle -$};
+\node[sum, minimum size=9pt] (dB) at (5.2,-1.5) {};
+\draw[->] (4.1,-1.5) -- (dB.west);
+\draw[->] (6.3,-1.15) -- (6.3,-1.5) -- (dB.east);
+\node[inner sep=1pt, anchor=south east] at (4.95,-1.46) {$\scriptstyle +$};
+\node[inner sep=1pt, anchor=south west] at (5.45,-1.46) {$\scriptstyle -$};
+\node[anchor=east] at (2.95,-2.1) {$u_1 - u_2$};
+\node[anchor=west] at (5.35,-2.1) {$u_2 - u_3 = x\,\partial_t u_3$};
 
-% second difference
-\node[sum] (d2) at (3.1,-2.6) {$+$};
-\draw[->] (2.1,-1.15) -- (2.1,-2.6) -- (d2.west);
-\draw[->] (4.1,-1.15) .. controls (3.6,-2.0) .. (d2.north);
-\draw[->] (5.2,-2.25) -- (5.2,-2.6) -- (d2.east);
-\node[anchor=north] at (3.1,-2.95) {$u_1 - 2u_2 + u_3 = x^2\,\partial_t^2 u_3$};
+% second difference: difference of the first differences
+\node[sum, minimum size=9pt] (d2) at (4.15,-2.75) {};
+\draw[->] (dA.south) -- (3.1,-2.75) -- (d2.west);
+\draw[->] (dB.south) -- (5.2,-2.75) -- (d2.east);
+\node[inner sep=1pt, anchor=south east] at (3.9,-2.71) {$\scriptstyle +$};
+\node[inner sep=1pt, anchor=south west] at (4.4,-2.71) {$\scriptstyle -$};
+\draw[->] (d2.south) -- (4.15,-3.15);
+\node[anchor=north] at (4.15,-3.2) {$(u_1 - u_2) - (u_2 - u_3) = u_1 - 2u_2 + u_3 = x^2\,\partial_t^2 u_3$};
 
 \end{tikzpicture}
 \caption{Jets by subtraction along the shape column ($\gamma = 3$). The column of
@@ -45,7 +57,8 @@ $\gamma$ identical leaky integrators at time constant $x$ --- the pure-pole casc
 scale zero, the gamma memory of \sscite{devries1992gamma} --- carries the fields
 $u_0, \dots, u_\gamma$ of increasing shape as coexisting states. The scale-normalized jet
 at scale $x$ is read off the taps by binomial-weighted subtraction,
-$x^n\partial_t^n u_\gamma = \sum_j (-1)^{n-j}\binom{n}{j}u_{\gamma-j}$
+$x^n\partial_t^n u_\gamma = \sum_j (-1)^{n-j}\binom{n}{j}u_{\gamma-j}$, realized as
+iterated differences of adjacent taps
 (Proposition~\ref{prop:gamma-jets}): no temporal differencing, and no second memory,
 anywhere in the architecture.}
 \label{fig:jet-taps}
