@@ -130,13 +130,22 @@ Theorem~\ref{thm:embodied-jet}(2), whose symbol $B^{(n)}$ is again rational for 
 $B$. We do not develop that readout here.
 
 \begin{remark}[receptive fields; Laguerre structure]\label{rem:laguerre}
-By Proposition~\ref{prop:gamma-jets} the jet kernels $x^n \partial_t^n \phi_x$, with
-$\phi_x$ the Gamma density of shape $\gamma$ at scale $x$, are Gamma densities times
-polynomials in $t/x$ --- associated Laguerre functions, orthogonal on $(0,\infty)$ with
-respect to the exponential weight $e^{-t/x}$ --- and the shape column spans the
-order-$\gamma$ rational function space with the single pole $1/x$: the classical Laguerre
-filter space at time constant $x$. Both clauses are computations. The comparison they
-support is structural: the temporal receptive-field family stands to the causal scale space
+By Rodrigues' formula the jet kernels are associated Laguerre: with $\phi^{(m)}_x$ the
+Gamma density of shape $m$ at scale $x$ and $\phi_x = \phi^{(\gamma)}_x$,
+\[
+  x^n\,\partial_t^n\, \phi_x \;=\; \frac{n!\,\Gamma(\gamma - n)}{\Gamma(\gamma)}\,
+  \phi^{(\gamma - n)}_x\; L_n^{(\gamma - n - 1)}\!\bigl(t/x\bigr),
+  \qquad 0 \le n < \gamma,
+\]
+a Gamma density of shape $\gamma - n$ times an associated Laguerre polynomial --- the
+shape dropping as the order rises, each derivative spending one of the kernel's poles.
+And the shape column spans the order-$\gamma$ rational function space with the single
+pole at $-1/x$: the classical Laguerre filter space at time constant $x$, exponentials
+times polynomials of degree $< \gamma$, whose orthogonal basis is the Laguerre
+functions. Both clauses are computations; the orthogonality belongs to the basis of the
+space, not to the jet kernels themselves, whose polynomial parts all have degree
+$\gamma - 1$. The comparison the clauses support is structural: the temporal
+receptive-field family stands to the causal scale space
 as the Hermite/derivative-of-Gaussian family stands to the Gaussian one --- a graded basis,
 read off the embodied state by subtraction --- with the difference that the grading here is
 by the shape index rather than by differentiation order alone.
@@ -245,11 +254,18 @@ differencing to $6.7 \times 10^{-3}$, once more the time discretization.
 
 One feature of the maps should be read off the symbol rather than dismissed as an
 artifact. In the fully normalized second-order map $x^2 \partial_t^2 u$ the noise burst
-leaves fine streaks at \emph{every} scale: the operator's transfer
-$x^2 s^2 (1 + xs)^{-2}$ tends to $1$ as $|s| \to \infty$, so at $n = \gamma$ the
-derivative order exhausts the kernel's pole order and the composite is all-pass at high
-frequency --- broadband input reaches the top-order normalized derivative undiminished at
-all scales. The top of the jet is noise-limited by construction; a clean $n$-th
+leaves fine streaks at \emph{every} scale: the jet operator's transfer
+$x^n s^n (1 + xs)^{-\gamma}$ --- here $n = \gamma = 2$ --- behaves as
+$(xs)^{n - \gamma}$ at high frequency, so the \emph{margin} $\gamma - n$ is the
+roll-off order of the composite filter. At $n = \gamma$ the margin is zero: the
+derivative order exhausts the kernel's pole order, the composite is all-pass at high
+frequency, and the normalization cancels the scale dependence exactly --- which is why
+the streaks keep constant amplitude at every scale instead of fading upward. The top of
+the jet is noise-limited by construction; a clean $n$-th
 derivative wants poles to spare, $\gamma > n$, consistently with
-Proposition~\ref{prop:gamma-jets}'s count of jets available up to order $\gamma$.
+Proposition~\ref{prop:gamma-jets}'s count of jets available up to order $\gamma$. This
+is the Fourier face of the Mellin budget $z_* = \gamma$ of
+Theorem~\ref{thm:embodied-jet}, both paid for by the kernel's onset behavior
+$t^{\gamma - 1}$: onset smoothness, high-frequency decay, and negative-moment
+finiteness are one finiteness, and the single number $\gamma$ rations all three.
 \end{example}
