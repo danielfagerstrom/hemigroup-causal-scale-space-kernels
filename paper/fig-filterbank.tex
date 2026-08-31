@@ -36,17 +36,17 @@
 \node[anchor=west] at (-0.3,1.05) {(b) the Thorin chain for one increment: one Gamma cascade per node $(\tau_i, w_i)$, in series};
 \node[anchor=east] at (0.35,0) {$u_k$};
 \draw[->] (0.4,0) -- (0.85,0);
-\node[sect] (d0) at (1.55,0) {delay $b_0\Delta x$};
-\node[sect] (t1) at (3.5,0) {$w_1$ sections, $\tau_1$};
-\node[sect] (t2) at (5.65,0) {$w_2$ sections, $\tau_2$};
+\node[sect] (d0) at (1.75,0) {delay $b_0\Delta x$};
+\node[sect] (t1) at (4.25,0) {$w_1$ sections, $\tau_1$};
+\node[sect] (t2) at (6.95,0) {$w_2$ sections, $\tau_2$};
 \draw[->] (d0) -- (t1);
 \draw[->] (t1) -- (t2);
-\draw[->] (t2) -- (6.9,0);
-\node[anchor=west] at (6.9,0) {$\cdots$};
-\node[sect] (tN) at (8.35,0) {$w_N$ sections, $\tau_N$};
-\draw[->] (7.6,0) -- (tN);
-\draw[->] (tN) -- (9.65,0);
-\node[anchor=west] at (9.65,0) {$u_{k+1}$};
+\draw[->] (t2) -- (8.45,0);
+\node[anchor=west] at (8.5,0) {$\cdots$};
+\node[sect] (tN) at (10.25,0) {$w_N$ sections, $\tau_N$};
+\draw[->] (9.15,0) -- (tN);
+\draw[->] (tN) -- (11.75,0);
+\node[anchor=west] at (11.75,0) {$u_{k+1}$};
 \node[anchor=west] at (-0.3,-0.9) {node $i$'s sections at time constants $x/\tau_i$; the transfers multiply --- the kernels convolve --- so the};
 \node[anchor=west] at (-0.3,-1.3) {chain is serial, in any order; positivity and unit mass exact at every truncation level (Prop.~\ref{prop:thorin-subclass})};
 \end{scope}
