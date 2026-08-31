@@ -28,27 +28,27 @@
 \node[anchor=north] at (6.55,-0.9) {$u_2 = \Phi_{0,x_2}f$};
 \node[anchor=west] at (-0.3,0.85) {$\gamma$ identical first-order sections per increment; each tap is exact (Prop.~\ref{prop:knot-exactness})};
 
-% ---------- panel (b): the Thorin bank for one increment ----------
-\begin{scope}[yshift=-3.6cm]
-\node[anchor=west] at (-0.3,1.35) {(b) the Thorin bank for one increment: one Gamma cascade per node $(\tau_i, w_i)$};
+% ---------- panel (b): the Thorin chain for one increment ----------
+% Redrawn 2026-08-31 (author review): the earlier fan-out/fan-in with a "*" combiner
+% read as a parallel bank; the composition is convolution = series connection, so the
+% chain is drawn serially, matching panel (a), with the drift's delay block leading.
+\begin{scope}[yshift=-3.3cm]
+\node[anchor=west] at (-0.3,1.05) {(b) the Thorin chain for one increment: one Gamma cascade per node $(\tau_i, w_i)$, in series};
 \node[anchor=east] at (0.35,0) {$u_k$};
-\draw (0.4,0) -- (0.7,0);
-\node[sect] (t1) at (2.5,0.75) {$w_1$ sections, $\tau_1$};
-\node[sect] (t2) at (2.5,0) {$w_2$ sections, $\tau_2$};
-\node[anchor=center] at (2.5,-0.6) {$\vdots$};
-\node[sect] (tN) at (2.5,-1.2) {$w_N$ sections, $\tau_N$};
-\draw[->] (0.7,0) -- (0.7,0.75) -- (t1.west);
-\draw[->] (0.7,0) -- (t2.west);
-\draw[->] (0.7,0) -- (0.7,-1.2) -- (tN.west);
-\node[draw, circle, inner sep=1.5pt] (comp) at (4.6,0) {$\ast$};
-\draw[->] (t1.east) -- (4.6,0.75) -- (comp);
-\draw[->] (t2.east) -- (comp);
-\draw[->] (tN.east) -- (4.6,-1.2) -- (comp);
-\draw[->] (comp) -- (5.6,0); \node[anchor=west] at (5.6,0) {$u_{k+1}$};
-\node[anchor=west] at (6.6,0.75) {time constants $x/\tau_i$;};
-\node[anchor=west] at (6.6,0.35) {positivity and unit mass exact};
-\node[anchor=west] at (6.6,-0.05) {at every truncation level};
-\node[anchor=west] at (6.6,-0.45) {(Prop.~\ref{prop:thorin-subclass})};
+\draw[->] (0.4,0) -- (0.85,0);
+\node[sect] (d0) at (1.55,0) {delay $b_0\Delta x$};
+\node[sect] (t1) at (3.5,0) {$w_1$ sections, $\tau_1$};
+\node[sect] (t2) at (5.65,0) {$w_2$ sections, $\tau_2$};
+\draw[->] (d0) -- (t1);
+\draw[->] (t1) -- (t2);
+\draw[->] (t2) -- (6.9,0);
+\node[anchor=west] at (6.9,0) {$\cdots$};
+\node[sect] (tN) at (8.35,0) {$w_N$ sections, $\tau_N$};
+\draw[->] (7.6,0) -- (tN);
+\draw[->] (tN) -- (9.65,0);
+\node[anchor=west] at (9.65,0) {$u_{k+1}$};
+\node[anchor=west] at (-0.3,-0.9) {node $i$'s sections at time constants $x/\tau_i$; the transfers multiply --- the kernels convolve --- so the};
+\node[anchor=west] at (-0.3,-1.3) {chain is serial, in any order; positivity and unit mass exact at every truncation level (Prop.~\ref{prop:thorin-subclass})};
 \end{scope}
 
 \end{tikzpicture}
@@ -57,8 +57,10 @@ adjacent knots is a cascade of $\gamma$ identical first-order pole--zero section
 record at each knot is read off a tap; the taps are exact for every knot set
 (Proposition~\ref{prop:knot-exactness}), so the scale direction is sampled, not
 approximated. (b)~For a general Thorin-subclass member the increment is approximated from
-inside the axiom class by a bank of Gamma cascades, one per atom $(\tau_i, w_i)$ of the
-Thorin measure, composed by convolution; every truncation level is itself an admissible
-family (Proposition~\ref{prop:thorin-subclass}).}
+inside the axiom class by a serial chain of Gamma cascades, one per atom $(\tau_i, w_i)$ of
+the Thorin measure, led by the drift's exact sample delay: the Thorin sum lives in the
+exponent, so the transfer functions multiply and the kernels convolve --- a series
+connection, in any order --- and every truncation level is itself an admissible family
+(Proposition~\ref{prop:thorin-subclass}).}
 \label{fig:filterbank}
 \end{figure}
