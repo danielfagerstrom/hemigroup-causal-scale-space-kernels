@@ -11,8 +11,15 @@
 
 This section records how the scale spaces of Theorem~\ref{thm:main-characterization} are
 computed, and compares the three practically distinguished corners --- Gamma, Bessel, stable
---- from the implementer's point of view. The structural fact that organizes everything is
-that the \emph{scale direction never needs to be discretized approximately}:
+--- from the implementer's point of view. The story is a three-step reduction: the scale
+direction can be sampled \emph{exactly}, for any family
+(Proposition~\ref{prop:knot-exactness}); for the Gamma family the time direction then needs
+only $\gamma$ first-order states per increment (Proposition~\ref{prop:gamma-cascade}); and
+the whole Thorin subclass --- every admissible family with completely monotone memory
+kernel, the Bessel and stable corners included --- reduces to banks of such sections
+(Proposition~\ref{prop:thorin-subclass}), leaving only the genuinely non-Thorin members to
+direct convolution. The structural fact that organizes everything is the first step:
+the \emph{scale direction never needs to be discretized approximately}:
 
 \begin{proposition}[exactness at the knots]\label{prop:knot-exactness}
 Let $0 = x_0 < x_1 < \cdots < x_M$ be any finite set of scale knots and define the discrete
@@ -197,7 +204,8 @@ convergence of the kernels by the continuity theorem
 (Proposition~\ref{prop:laplace-continuity}).
 \end{proof}
 
-Every family named in this paper lies in the Thorin subclass. The Gamma family is its
+The four working families of this paper --- Gamma, Bessel, stable, and the gamma-product
+ladder --- all lie in the Thorin subclass. The Gamma family is its
 \emph{single-atom} member, $U = \gamma\,\delta_1$ --- the cascade of
 Proposition~\ref{prop:gamma-cascade} is literally the atomic case of
 Proposition~\ref{prop:thorin-subclass}. The stable family has the explicit Thorin density
@@ -209,16 +217,18 @@ kind, $u(\tau) \propto \bigl[\tau\,\bigl(J_a^2 + Y_a^2\bigr)\bigl(\sqrt{2\tau}\b
 (\sscite{ismail1979special}), decaying like $\tau^{-1/2}$ at infinity in accordance with
 $F(s) \sim \sqrt{2s}$. And the gamma-product ladder of Proposition~\ref{prop:local-ladder} is
 GGC since $\HCM \subset \GGC$ (\sscite{bondesson1992generalized}). The conclusion deserves stating plainly: \textbf{the Gamma family is the implementation
-substrate for the entire Thorin subclass} --- every family named in this paper --- even when
+substrate for the entire Thorin subclass} --- all four working families --- even when
 Bessel semantics are wanted, the machine one builds is a bank of first-order Gamma sections.
-And by Proposition~\ref{prop:gamma-regularity}, the substrate is also the regularity class:
-rational increments, exact first-order realizability, and the variation-diminishing property
-of \S\ref{sec:examples} select the same members --- drift plus integer Thorin atoms of
-finite mean.
-(Outside the subclass --- the non-completely-monotone kernels, the Dickman rays with their
+And by Proposition~\ref{prop:gamma-regularity}, the substrate is essentially the regularity
+class of \S\ref{sec:examples}: both select drift plus integer Thorin atoms of finite mean,
+the variation-diminishing property admitting countably many atoms where rationality keeps
+finitely many.
+Outside the subclass --- the non-completely-monotone kernels, the Dickman rays with their
 echo singularities foremost --- no Gamma bank converges from inside the class, the GGC
 class being closed under weak limits (\sscite{bondesson1992generalized}, p.~29), and an
-implementer is left with direct convolution.) As a design heuristic: the Bessel Thorin
+implementer is left with direct convolution.
+
+As a design heuristic: the Bessel Thorin
 density is asymptotically a power law, hence scale-invariant over the covered band, so
 logarithmically spaced nodes --- a fixed number per decade of bandwidth --- are the natural
 quadrature; we state this as a heuristic, with no error bound claimed, which is the honest
