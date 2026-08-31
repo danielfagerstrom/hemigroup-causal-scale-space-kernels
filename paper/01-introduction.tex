@@ -91,8 +91,11 @@ evolution in present time over the memory half-line,
   \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t),
 \]
 with the signal entering as boundary data at zero scale. The operator $A$ is constructed in
-\S\ref{sec:signaling} by harmonic analysis in the scale variable, and it is the unique
-inversion in its covariance class (Theorem~\ref{thm:signaling-form}(3)); the construction comes with an exact account of what the memory holds.
+\S\ref{sec:signaling} by harmonic analysis in the scale variable, and the problem is well
+posed: $A$ is the unique inversion in its covariance class
+(Theorem~\ref{thm:signaling-form}(3)), and the solution too is unique in a natural class,
+the classical period-one ambiguity closed by a Bohr--Mollerup-style rigidity
+(Corollary~\ref{cor:signaling-wellposed}); the construction comes with an exact account of what the memory holds.
 At each instant, the memory line stores the analytic family of Riemann--Liouville integrals
 of the past signal: the observer's embodiment of its past is fractional integration.
 
@@ -112,18 +115,34 @@ one-parameter Bessel family
   A \;=\; \tfrac12\,\partial_x^2 + \frac{\beta}{x}\,\partial_x ,
 \]
 unfolding the isolated heat case of the semigroup theory's Theorem~5, with the drift weight
-$\beta$ buying any prescribed finite number of kernel moments. On the implementation side
+$\beta$ buying any prescribed finite number of kernel moments.
+
+A third result belongs to the oldest axiom of the subject. Non-creation of temporal
+structure is recovered inside the class rather than assumed (\S\ref{sec:examples}): the
+members whose kernels are variation-diminishing --- convolution creating no new extrema at
+any scale --- are classified as drift plus integer Thorin atoms of finite mean, the Gamma
+family foremost; the classical obstruction, that no causal convolution \emph{semigroup}
+can be variation-diminishing, dissolves in the hemigroup, whose endpoint maps carry the
+property while its increments do not; and along a feature's own delay path the field is
+non-enhancing at past-dominating extrema, with the echo of a preceding event as the sharp
+failure mode (Corollary~\ref{cor:past-dominating}).
+
+On the implementation side
 (\S\ref{sec:implementation}) the hemigroup itself is the algorithm: the discrete cascade
 over any set of scale knots reproduces the continuum family exactly at the knots --- each
 increment, for the Gamma family, a pole--zero filter section whose zero moves with the finer
 scale, the zeros being exactly what the hemigroup adds --- and finite Gamma cascades
 approximate the entire completely-monotone-kernel subclass from inside the axiom class, with
-rational cascade realizations at integer weights.
+rational cascade realizations at integer weights; the whole architecture --- cascade, jets,
+and the qualitative predictions --- is exercised end to end in a numerical experiment
+(Example~\ref{ex:numerical-experiment}).
 Appendix~\ref{sec:appendix-memory} carries Theorem~$3'$, the scale-Cauchy
 problem (Theorem~\ref{thm:scale-cauchy}) --- a fractional relaxation equation across scale
 whose memory kernel is the function $k$ of the representation itself --- together with the
 Sonine conservation identity, by which the memory operator applied at each scale has an
-explicit inverse, the potential kernel.
+explicit inverse, the potential kernel; a Volterra equation that derives the kernels from
+$k$ by forward integration, with no Laplace inversion; and the pointwise non-enhancement
+corollary above.
 
 One paragraph on the relation to the existing time-causal scale-space theory, since a
 complete time-causal, time-recursive construction already exists in the literature
@@ -132,7 +151,8 @@ complete time-causal, time-recursive construction already exists in the literatu
 which contain the Poisson scale space; covariance under the discrete subgroup $q^{\ZZ}$
 gives the semi-selfdecomposable stratum; and full covariance gives the present class. The
 time-causal limit kernel itself has a completely monotone memory kernel, so it is a fully
-covariant member of the class characterized here --- in retrospect, the first-discovered
+covariant member of the class characterized here, and of its non-creation subclass --- in
+retrospect, the first-discovered
 member: a construction that preceded the classification explaining it.
 
 The contributions, each with the section that carries it:
@@ -148,6 +168,9 @@ The contributions, each with the section that carries it:
 \item the classification of the local, positivity-respecting memory-line media --- the
   Bessel family, closing the ladder at order two (Theorem~\ref{thm:locality},
   \S\ref{sec:locality});
+\item non-creation recovered inside the class: the variation-diminishing members
+  classified, the semigroup obstruction dissolved, and non-enhancement along the feature's
+  delay path (\S\ref{sec:examples}, Appendix~\ref{sec:appendix-memory});
 \item the temporal $N$-jet as an instantaneous readout of the embodied state
   (\S\ref{sec:jet});
 \item machine-checked proofs of the central results, resting on two cited analytic facts
@@ -191,9 +214,15 @@ Everything \S\S\ref{sec:representation}--\ref{sec:covariance} contribute to the
 characterization is verified with it: the convolution representation, the additivity and
 infinite divisibility of the exponents (Theorem~\ref{thm:increments-bernstein}), and the
 similarity form forced by covariance. In the appendix, the memory kernel, its transform, the
-Sonine conservation identity $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}$ and the existence
-and uniqueness of the potential kernel are verified. Of \S\ref{sec:signaling}, every
-numbered result is. Of \S\ref{sec:locality}, the classification step
+Sonine conservation identity $\kappa^{(x)} * \ell^{(x)} = \mathrm{Leb}$, the existence,
+uniqueness and scaling of the potential kernel, the Volterra equation (V.1) with its
+uniqueness clause, the delay-derivative lemma, and the Phillips form of the generator with
+all five clauses of Lemma~\ref{lem:generator-properties} --- the last interface-free ---
+are verified. Of \S\ref{sec:signaling}, every
+numbered result through the signaling theorem is; the well-posedness arc that follows it
+--- Definition~\ref{def:mellin-solution} through
+Corollary~\ref{cor:signaling-classical} --- and the boundary-growth
+Lemma~\ref{lem:zstar-log-growth} are paper-only. Of \S\ref{sec:locality}, the classification step
 (Lemma~\ref{lem:local-polynomial-symbol}, both directions), the log-convexity of the moment
 function (Lemma~\ref{lem:log-convexity}), the vanishing $B(0) = 0$
 (Lemma~\ref{lem:moment-recursion}(1)) and the uniqueness of the log-convex solution of the
@@ -240,11 +269,14 @@ case, since the sharpening the axioms force --- a probability measure carried by
 half-line --- is most of the argument (Remark~\ref{rem:wendel}).
 
 \paragraph{What is not formalized, and why.} The scale-Cauchy problem
-(Theorem~\ref{thm:scale-cauchy}) is not, for a reason external to this paper: it needs the
-theory of $C_0$-semigroups and closed operators, which Mathlib does not yet carry. Two
-results in the appendix --- the distributional scale-evolution identity
-(Proposition~\ref{prop:scale-evolution}) and the exact-inversion corollary --- need
-distributions paired with measures, likewise absent.
+(Theorem~\ref{thm:scale-cauchy}) is not, though the obstruction is narrower than it was
+once thought to be: its proof is a scalar ODE per Laplace frequency and invokes no
+$C_0$-semigroup results --- that theory, absent from Mathlib, is needed only by the
+fixed-scale reading (Proposition~\ref{prop:fixed-scale-semigroup}), which is cited. What
+the theorem still needs is the distributional scale-evolution identity
+(Proposition~\ref{prop:scale-evolution}), which --- like the exact-inversion corollary ---
+requires distributions paired with measures, absent from Mathlib, together with the
+vector-valued fundamental-theorem step.
 Proposition~\ref{prop:pair-regularity}(2), the characterization of when $\kappa^{(x)}$ has a
 completely monotone density, is a statement \emph{about} the CM class, which the formal
 development deliberately does not define; it is cited, not verified.
