@@ -52,7 +52,7 @@ $g \in C_c^\infty((0,\infty))$ attains a nonnegative maximum at $x_0$.
 
 The profiles are part of the test class because the ($\Rightarrow$) direction of
 \ref{lem:local-polynomial-symbol} must reach the symbol, and $C_c^\infty((0,\infty))$ is
-disjoint from the only class on which $B$'s behaviour is controlled; the maximum principle
+disjoint from the only class on which $B$'s behavior is controlled; the maximum principle
 stays on $C_c^\infty((0,\infty))$, where a profile, having no interior maximum, would say
 nothing.
 \statusT\quad\emph{(\textbf{Formalised}, as
@@ -60,7 +60,7 @@ nothing.
 \texttt{LocalOperator.lean}. \textbf{The profiles were added to the test class after
 formalisation}, and the reason is exactly the one given above: without them
 \ref{lem:local-polynomial-symbol}'s ($\Rightarrow$) direction cannot reach the symbol, since
-$C_c^\infty((0,\infty))$ is disjoint from the only class on which $B$'s behaviour is controlled.
+$C_c^\infty((0,\infty))$ is disjoint from the only class on which $B$'s behavior is controlled.
 Three readings had to be fixed, and each is a choice rather
 than a transcription.
 \textbf{Locality is bundled as data, not as an existential.} ``Agrees with \emph{some}
@@ -181,7 +181,7 @@ Mathlib lacks (it has the Fourier analogue, and the two are bridged by its own
 since $E_j(z)\tilde g(z)$ is itself the transform of a test function; but $B\tilde g$ need not be,
 $B = \tilde H(z{+}1)/\tilde H(z)$ carrying no growth bound --- which is precisely why
 \ref{def:inversion-operator} carries integrability as a hypothesis rather than deriving it. So the
-comparison has to be routed through the class where $B$'s behaviour is known, namely the profiles
+comparison has to be routed through the class where $B$'s behavior is known, namely the profiles
 $H(s\,\cdot)$ of \ref{lem:symbol-uniqueness}, and those are \emph{not} test functions: they are
 neither compactly supported nor supported away from the origin. Passing from one class to the
 other is an approximation argument, and it is not made above. That is why \ref{def:locality-pmp}
@@ -258,7 +258,7 @@ $P(w) = \sum_j \gamma_j E_j(w)$, where $E_j(w) = \prod_{i<j}(-w-i)$.
 
 It remains to identify $P$ with $B$, and the comparison is made on the profiles rather than on
 $C_c^\infty((0,\infty))$ --- the class \ref{def:locality-pmp} was widened to include, and the only
-one on which $B$'s behaviour is known. Fix $s > 0$ and put $g = H(s\,\cdot)$. Locality gives
+one on which $B$'s behavior is known. Fix $s > 0$ and put $g = H(s\,\cdot)$. Locality gives
 $(Ag)(x) = \sum_j \gamma_j x^{j-1}\partial_x^j H(sx)$, while \ref{thm:signaling-form}(1)'s
 eigenfunction relation gives $(Ag)(x) = sH(sx)$; equating them and clearing the weight,
 \[
@@ -465,7 +465,7 @@ ladder's Meijer-$G$ densities in \ref{prop:local-ladder} for the same reason.
 \emph{(ii)} In ($\Leftarrow$), admissibility of the family is \ref{prop:bessel-family}, itself an
 \textbf{[A]} node; its locality clause is \ref{ex:bessel-quadratic} again. Of that direction only
 the maximum-principle verification is machine-checked, as \ref{lem:pmp-verification}.
-\emph{(iii)} The homogeneity claim runs through \ref{cor:semigroup-case}, not formalised.
+\emph{(iii)} The homogeneity claim runs through \ref{cor:semigroup-case}, not formalized.
 \emph{(iv)} And the order bound is \ledger{A14} itself.
 So the reachable content sits in the four split-off nodes ---
 \ref{lem:symbol-vanishes-at-origin}, \ref{lem:moment-recursion-quotient},
@@ -497,7 +497,7 @@ $A = -c'x^{-1}\theta = -c'\partial_x$; positivity of $Q$ gives $c' > 0$.
 \emph{Order 2.} Here $Q(z) = q_1 z + q_0$ with $q_1 > 0$, by positivity of $Q$ as
 $z \to \infty$ in \ref{lem:moment-recursion}(3), and $q_0 = Q(0) = m(1) > 0$; write
 $Q(z) = q_1(z + a)$ with $a := q_0/q_1 > 0$. The recursion $m(z+1) = q_1(z+a)\,m(z)$ with
-$m(0{+}) = 1$ --- the normalisation being \ref{lem:symbol-vanishes-at-origin}'s first limit ---
+$m(0{+}) = 1$ --- the normalization being \ref{lem:symbol-vanishes-at-origin}'s first limit ---
 has a \emph{unique} log-convex solution by \ref{lem:gamma-recursion-uniqueness}, namely
 \[
   m(z) \;=\; q_1^{\,z}\,\frac{\Gamma(a + z)}{\Gamma(a)}
@@ -624,8 +624,8 @@ eqs.~(1.96) and (1.97), p.~22).
 \begin{remark}[complex roots]\label{rem:complex-roots}
 \uses{prop:local-ladder}
 Whether complex-conjugate root pairs can support an admissible family is left open; we
-conjecture not. The question is taken up in a companion note, where spectrally leading
-pairs are excluded and order three is settled.
+conjecture not. The question is taken up in a companion note (in preparation), where
+spectrally leading pairs are excluded and order three is settled.
 \end{remark}
 
 % draft: Remark 12.7

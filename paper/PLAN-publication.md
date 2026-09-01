@@ -158,7 +158,41 @@ to P5's read-through.
   verification was grounded (the ledger's image-verified anchors, the Lean development,
   CI gates). Honest, specific, dated.
 
-### P5 — final review and the full artifact gate                        [status: open]
+### P5 — final review and the full artifact gate                        [status: DONE 2026-09-01]
+
+Executed (P4 running in parallel, author-led):
+- **DP4 light review, two fresh agents.** Overclaims/front-matter: ten findings, all
+  fixed — one factually false sentence (§1's "(H)" coverage claimed for every §8 family;
+  the catalogue's Pareto and Mittag-Leffler members fail it — now "every family worked");
+  §1.1's self-contradiction on lem:zstar-log-growth (and lem:standing-levy-reading,
+  verified \notready, added to the exception); the abstract's integer-shape gate on the
+  Gamma cascade; "explicit right inverse" in §1 and §13; the abstract/§13 transport
+  member; §11's lead compressed the graded Thorin claim (now "finite Thorin truncations,
+  realized as banks ... exactly when integer"); §1.1's duplicated §10 inventory deduped;
+  a "The memory line." spine marker; the pointwise qualifier on §1's exponent-dependence
+  claim; the α-gauge named in rem:gauge-freedom (both copies). Verdict: claim layer
+  publish-ready, no further round needed. Copy-editor: ten mechanical findings, all
+  fixed — the "non-completely-monotone monotone" stutter (both copies), a double colon,
+  and eight same-word spelling splits harmonized to the majority forms (normalization,
+  formalized, behavior, artifact, factorization, gray-level, colored; the realis- family
+  kept as the term of art), blueprint copies included where shared.
+- **Read-through of the built PDF, front to back** (88 pages, from the artifacts
+  branch): clean; float placement good; rendered bibliography well-formed, all 43
+  entries cited and resolving both ways, citekey-year quirks canonical.
+- **Figures regenerated**: every quoted number in ex:numerical-experiment and Tables 4-5
+  confirmed against fresh output; fig-kernels/fig-kernels-mode were stale output of an
+  older script (legend drift) — regenerated and committed, and make-figures.py now
+  writes into figures/ (it wrote into scripts/).
+- **PDF mechanics**: hyperref pdftitle/pdfauthor added (the built PDF had none);
+  \emergencystretch clears the paragraph-level overfull boxes; the one display overfull
+  (cor:signaling-hadamard clause 3, 11.9pt) split into two displays in both copies.
+  \date{\today} freeze stays with P7 per the plan.
+- **Companion-note honesty**: "(in preparation)" at the first load-bearing mention in
+  §8, §10 (both copies), and §13.
+- **The Lean gate** (build, sorry guard, axiom guard to completion with exit codes) runs
+  fresh in this PR's CI via a dated trigger comment in CIAxiomGuard.lean — lean.yml is
+  path-filtered and had no reason to run since the last Formalization change; its verdict
+  is checked on the PR before merge. linkage check is the PR's docs/blueprint job.
 
 - Full read-through of the built PDF, front to back (per DP4: with or without a second
   agent-review round first).

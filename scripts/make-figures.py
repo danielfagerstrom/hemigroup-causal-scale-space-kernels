@@ -19,6 +19,7 @@ import matplotlib.pyplot as plt
 from scipy.stats import gamma as gamma_d, invgamma
 
 HERE = os.path.dirname(os.path.abspath(__file__))
+FIGDIR = os.path.normpath(os.path.join(HERE, "..", "figures"))
 plt.rcParams.update({"font.size": 9.5, "axes.linewidth": 0.8})
 COLS = {1: "#1b6ca8", 2: "#2a9d8f", 4: "#6a4c93"}
 RED, GREY = "#d1495b", "#555555"
@@ -77,7 +78,7 @@ def make_figure(fname, gam_list, gam_scale, ig_shape, ig_scale, st_scale,
     ax2.set_title("(b) tails, log--log", fontsize=9.5)
 
     fig.tight_layout()
-    fig.savefig(os.path.join(HERE, fname), dpi=200, bbox_inches="tight")
+    fig.savefig(os.path.join(FIGDIR, fname), dpi=200, bbox_inches="tight")
     plt.close(fig)
     print(f"wrote {fname}")
     return gams, ig, st
