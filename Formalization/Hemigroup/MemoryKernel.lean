@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 Daniel Fagerström. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under the MIT license as described in the file LICENSES/MIT.txt.
 Authors: Daniel Fagerström
 -/
 import Hemigroup.Construction
@@ -21,7 +21,7 @@ fail the build as surely as a real one.)
 
 ## The vocabulary decision, made concrete
 
-`blueprint/PLAN-chapters-8-12.md` Phase 1 asks whether chapter 9 forces the development to define
+`notes/PLAN-chapters-8-12.md` Phase 1 asks whether chapter 9 forces the development to define
 `CompletelyMonotone`, reversing `DESIGN-formalization-strategy.md`. It does not, and this file is
 where that is settled rather than asserted.
 

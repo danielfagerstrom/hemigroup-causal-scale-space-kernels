@@ -1,5 +1,14 @@
 # hemigroup-causal-scale-space-kernels — Claude Code context
 
+> **Note for public readers (2026-09-01).** This file is working context for the author's
+> AI-assisted development sessions, kept in the repository as provenance and so that
+> development can continue. It speaks the internal dialect of the author's research
+> constellation and references private infrastructure — a wiki hub (`$WIKI_VAULT`), a
+> source librarian (`$LIBRARY_DIR`), and the `article-kit` framework — that is not part
+> of this repository. Nothing in the paper, the blueprint, or the Lean development
+> depends on any of it; the public verification route is the two `lake` commands in
+> `README.md`.
+
 **What this is.** An article satellite of the research constellation (slug `hcs`):
 *"Time-Causal Scale Space from Hemigroup Axioms: Characterization of the Kernels."*
 A machine-checked Lean 4 formalisation and a self-published monograph, both driven by one
@@ -42,7 +51,7 @@ blueprint.
 Blueprint written through §12; Lean through §9, §11 entire, and §12's classification step
 `lem:local-polynomial-symbol` (both directions), including both headline theorems
 (2′ `thm:main-characterization`, 4′ `thm:signaling-form`). See `README.md` for the node-level
-state and `blueprint/PLAN-chapters-8-12.md` for the inventory of what is open and *why* — sorted
+state and `notes/PLAN-chapters-8-12.md` for the inventory of what is open and *why* — sorted
 into deliberate, blocked upstream, absent by design, and available. The working text is
 `draft/hemigroup-causal-scale-space-kernels.md` (15 sections, Theorems 3′/4′/5′); the blueprint is
 written *from* it, and corrections found by formalising flow back into both.

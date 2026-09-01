@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 Daniel Fagerström. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under the MIT license as described in the file LICENSES/MIT.txt.
 Authors: Daniel Fagerström
 -/
 -- `Hemigroup.Sonine` rather than `MemoryKernelTransform`: Route B's main argument below uses
@@ -11,7 +11,7 @@ import Hemigroup.Subordinator
 # The target types of chapter 9
 
 **This file carries `sorry`s and is not part of the `Hemigroup` library.** Phase 2 of
-`blueprint/PLAN-chapters-8-12.md`: state the chapter before proving it, so that the design
+`notes/PLAN-chapters-8-12.md`: state the chapter before proving it, so that the design
 decisions are taken once, visibly, and the remaining work becomes countable rather than
 estimated.
 
