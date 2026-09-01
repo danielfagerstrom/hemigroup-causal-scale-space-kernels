@@ -139,7 +139,16 @@ the standard representation of `s^α`, and Frullani for `log(1+s)`.
 blueprint-only, and that is an acceptable outcome — say so in the annotation rather than
 leaving it untagged and ambiguous.
 
-**Added 2026-09-01, on external review (author's instruction):** chapter 8 gained
+**Added 2026-09-01 (completeness pass, author's instruction):** the blueprint now also
+carries chapters 13 (implementation: `prop:knot-exactness`, `prop:gamma-cascade`,
+`prop:thorin-subclass` on the new ledger entry A21, the three remarks and the tail-contrast
+example) and 14 (the jet: `def:jet`, `thm:embodied-jet`, `prop:gamma-jets`, three remarks),
+plus `cor:laplace-uniqueness-signed` (ch. 2), `cor:past-dominating` (ch. 10) and
+`rem:signaling-stability` (ch. 11) — the whole mathematical material of the paper except
+its expository remarks, the machine-run example, and the strata remark (companion-note
+territory). The original §13/§14 exclusion is reversed in `content.tex`'s header; none of
+the new nodes carries a `\lean` tag and none joins a Lean phase — formalisation remains a
+separate decision. **Added 2026-09-01, on external review (author's instruction):** chapter 8 gained
 `prop:gamma-regularity` (the Pólya frequency members and non-creation from the signal),
 `prop:vd-impossibility` (scale-monotone variation diminution forces the pure delay), and
 the remark `rem:ladder-vd` — promoted from the paper's review-response batches R1/R2.

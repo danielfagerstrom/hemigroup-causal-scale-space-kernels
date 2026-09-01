@@ -27,6 +27,7 @@ $I^{z}f^{(n)}$ into $I^{z-n}f$ in the proof. So let
 \]
 so that $\core^1 = \core$.
 
+% shared with blueprint def:jet — promoted 2026-09-01 with chapters 13–14.
 \begin{definition}\label{def:jet}
 The \emph{temporal $N$-jet} of the scale space at $(t, x)$ is
 $\{\partial_t^n u(t, x)\}_{0 \le n \le N}$, and the \emph{scale-normalized jet} is
@@ -34,6 +35,8 @@ $\{x^n \partial_t^n u(t, x)\}_{n \le N}$, which in the canonical gauge transform
 joint dilation $(t, x) \mapsto (\sigma t, \sigma x)$ like the field itself.
 \end{definition}
 
+% shared with blueprint thm:embodied-jet — promoted 2026-09-01; "as in §9" became
+% "as at order one" in the statement so the two copies share verbatim.
 \begin{theorem}[the embodied jet]\label{thm:embodied-jet}
 Assume (H), canonical gauge, $f \in \core^n$, and let $u(\cdot, x) = \Phi_{0,x}f$. Then:
 \begin{enumerate}
@@ -53,7 +56,7 @@ $n + 1 < \operatorname{Re} z < z_*$,
   B^{(n)}(-z) := \frac{\tilde H(z + n)}{\tilde H(z)} = \prod_{j=0}^{n-1} B(-z - j)
 \]
 for $0 < \operatorname{Re} z < z_* - n$ --- the identity evaluating the symbol at the shifted
-argument, as in \S\ref{sec:signaling}.
+argument, as at order one.
 \end{enumerate}
 In particular the temporal jet at time $t$, up to every order $n < z_* - 1$, is an
 instantaneous linear functional of the single profile $x \mapsto u(t, x)$; no record of past
@@ -77,6 +80,8 @@ $\tilde g = \widetilde{u(t,\cdot)}$ from Lemma~\ref{lem:memory-fractional-integr
 compare with (1).
 \end{proof}
 
+% Verbatim from the blueprint's rem:reindexing (remarks are not statement nodes;
+% promoted 2026-09-01), refs prefix-adapted.
 \begin{remark}[differentiation is re-indexing]\label{rem:reindexing}
 Combined with Remark~\ref{rem:embodiment}, Theorem~\ref{thm:embodied-jet}(1) says that the
 memory line stores, once and simultaneously, the analytic family $\{(I^{z} f)(t)\}$ of
@@ -88,6 +93,10 @@ embodiment of the signal already contains its jet, at every order below $z_* - 1
 
 \input{fig-jet-taps}
 
+% shared with blueprint prop:gamma-jets — promoted 2026-09-01; the architecture
+% comparison, the figure pointer, and the beyond-the-strip exactness moved out of the
+% statement into the body text below, on the prop:bessel-family precedent (2026-08-23),
+% so the two copies share verbatim.
 \begin{proposition}[the Gamma family: jets by subtraction along the shape column]\label{prop:gamma-jets}
 For the Gamma family write $u_m(\cdot, x)$ for the field of shape $m$ ($u_0 := f$). From
 $s(1 + xs)^{-m} = x^{-1}\bigl[(1 + xs)^{-(m-1)} - (1 + xs)^{-m}\bigr]$,
@@ -104,18 +113,9 @@ and hence, iterating at fixed $x$,
 The column $\{u_m(\cdot, x)\}_{m=0}^{\gamma}$ is realized by $\gamma$ identical leaky
 integrators in series with time constant $x$, $u_m = (1 + x\,\partial_t)^{-1} u_{m-1}$ --- the
 gamma memory of \sscite{devries1992gamma} --- so the scale-normalized jet at scale $x$ is a
-binomial-weighted \emph{subtraction of coexisting filter states}
-(Figure~\ref{fig:jet-taps}), with no temporal differencing anywhere in the architecture,
-$\gamma$ states per scale, and jets available up to order $\gamma$. The column is the
-pure-pole cascade from scale zero, fed by the signal --- an architecture parallel to the
-knot ladder of \S\ref{sec:implementation}, not a reading of its states: the ladder's taps
-carry only the top shape $u_\gamma$ at each knot, so jets at $M$ scales cost one column of
-$\gamma$ states per scale, the same total count as the ladder, fed from $f$ rather than from
-the previous knot. The identity is exact for all $n \le \gamma$, extending beyond the strip
-condition of Theorem~\ref{thm:embodied-jet} (the transforms are rational and continue
-meromorphically) --- consistently with $z_* = \gamma$ marking the strip reading and with
-the relaxation of hypothesis (H) by meromorphic continuation left open in
-\S\ref{sec:conclusions}.
+binomial-weighted \emph{subtraction of coexisting filter states}, with no temporal
+differencing anywhere in the architecture, $\gamma$ states per scale, and jets available up
+to order $\gamma$.
 \end{proposition}
 
 \begin{proof}
@@ -124,12 +124,24 @@ $n$ at fixed $x$; the realization is Proposition~\ref{prop:gamma-cascade} at $x_
 where the section degenerates to the pure pole $(1 + x_{k+1}s)^{-1}$.
 \end{proof}
 
+The column is the pure-pole cascade from scale zero, fed by the signal
+(Figure~\ref{fig:jet-taps}) --- an architecture parallel to the knot ladder of
+\S\ref{sec:implementation}, not a reading of its states: the ladder's taps carry only the
+top shape $u_\gamma$ at each knot, so jets at $M$ scales cost one column of $\gamma$ states
+per scale, the same total count as the ladder, fed from $f$ rather than from the previous
+knot. And the identity is exact for all $n \le \gamma$, extending beyond the strip
+condition of Theorem~\ref{thm:embodied-jet} (the transforms are rational and continue
+meromorphically) --- consistently with $z_* = \gamma$ marking the strip reading and with
+the relaxation of hypothesis (H) by meromorphic continuation left open in
+\S\ref{sec:conclusions}.
+
 The subtraction rule is the single-atom case. For a Thorin bank
 (Proposition~\ref{prop:thorin-subclass}) the field is a convolution of per-node Gamma
 fields and no per-column subtraction reads its jet; there the jet is read through
 Theorem~\ref{thm:embodied-jet}(2), whose symbol $B^{(n)}$ is again rational for rational
 $B$. We do not develop that readout here.
 
+% Verbatim from the blueprint's rem:laguerre (promoted 2026-09-01), refs prefix-adapted.
 \begin{remark}[receptive fields; Laguerre structure]\label{rem:laguerre}
 By Rodrigues' formula the jet kernels are associated Laguerre: with $\phi^{(m)}_x$ the
 Gamma density of shape $m$ at scale $x$ and $\phi_x = \phi^{(\gamma)}_x$,
@@ -152,6 +164,8 @@ read off the embodied state by subtraction --- with the difference that the grad
 by the shape index rather than by differentiation order alone.
 \end{remark}
 
+% Verbatim from the blueprint's rem:local-jet (promoted 2026-09-01), refs prefix-adapted;
+% this copy cites Example~\ref{ex:bessel-quadratic} through the paper's numbering.
 \begin{remark}[the local corner: derivatives as curvatures of the memory trace]\label{rem:local-jet}
 For the Bessel family, $z_* = \infty$ (Lemma~\ref{lem:moment-recursion}(2)), so every order
 is available; and in the parabolic gauge $\xi$ of Remark~\ref{rem:gauge-freedom},

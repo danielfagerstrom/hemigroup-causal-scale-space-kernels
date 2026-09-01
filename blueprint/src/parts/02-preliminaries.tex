@@ -318,6 +318,30 @@ $\hat{\mu_0}(s) = \hat\mu(s_0 + s) = \hat\rho(s_0 + s) = \hat{\rho_0}(s)$, so $\
 by the density $e^{s_0 t}$ recovers $\mu = \rho$.
 \end{proof}
 
+% additive: not in the draft. Promoted from the paper 2026-09-01 (added there in review
+% response R6): the uniqueness propositions are positive-measure statements, while four
+% proofs -- prop:scale-evolution, lem:generator-properties(5), thm:scale-cauchy(3),
+% cor:signaling-wellposed -- apply uniqueness to differences of causal functions. This
+% corollary records the signed case by Jordan decomposition; the mirrored proofs in this
+% blueprint keep their positive-measure shorthand, and this node is what discharges it.
+\begin{corollary}[uniqueness for signed densities]\label{cor:laplace-uniqueness-signed}
+\uses{prop:laplace-uniqueness-sigma-finite}
+Let $V$ be a measurable real function on $\RR$ vanishing a.e.\ on $(-\infty, 0)$, and let
+$s_0 \in \RR$ be such that $\int_0^\infty e^{-s_0 t}\,|V(t)|\,dt < \infty$. If
+$\int_0^\infty e^{-st}\,V(t)\,dt = 0$ for every $s \ge s_0$, then $V = 0$ a.e.
+\statusT\quad\emph{(The Jordan-decomposition reduction to
+\ref{prop:laplace-uniqueness-sigma-finite}, and nothing more; recorded so that the signed
+applications named in the header comment rest on a stated node rather than on shorthand.)}
+\end{corollary}
+
+\begin{proof}
+Write $V = V_+ - V_-$. The measures $V_+(t)\,dt$ and $V_-(t)\,dt$ are carried by
+$[0,\infty)$, their transforms are finite at $s_0$ --- each is bounded by
+$\int e^{-s_0 t}|V|\,dt$ --- and the hypothesis makes them equal for every $s \ge s_0$. By
+\ref{prop:laplace-uniqueness-sigma-finite} the two measures coincide, so
+$V_+ = V_-$ a.e., i.e.\ $V = 0$ a.e.
+\end{proof}
+
 \begin{lemma}[convergence forces local finiteness]\label{lem:laplace-local-finiteness}
 \uses{prop:laplace-uniqueness-sigma-finite}
 \lean{Hemigroup.measure_Icc_ne_top_of_laplaceL_ne_top}\leanok

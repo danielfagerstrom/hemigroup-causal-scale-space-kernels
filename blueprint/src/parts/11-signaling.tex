@@ -1681,3 +1681,31 @@ exponentials, whose Mellin data does not decay, and this family's inversion is i
 \ref{thm:locality}'s territory --- a polynomial (here, first-order) symbol, local by construction,
 not reached by \ref{cor:signaling-classical}'s route at all.
 \end{remark}
+
+% additive: not in the draft. Promoted from the paper 2026-09-01 (added there in review
+% response R4, decision D1): the stability that costs nothing, closing the solution-theory
+% arc. The paper's copy reads the second contraction through its appendix pointer; this
+% copy points at thm:scale-cauchy directly.
+\begin{remark}[stability for free; what is not claimed]\label{rem:signaling-stability}
+\uses{cor:signaling-wellposed,thm:main-characterization,thm:scale-cauchy}
+Of Hadamard's three demands on the signaling problem --- existence, uniqueness,
+continuous dependence on the data --- \ref{cor:signaling-wellposed} supplies
+the first two, in the profile-dominated Mellin class. Part of the third comes free, from
+the representation rather than from the equation: the solution operator at each scale is
+convolution with a probability measure (\ref{thm:main-characterization}), so for
+signals $f, g \in \core$ the fields $u(\cdot,x) := \Phi_{0,x}f$ and
+$v(\cdot,x) := \Phi_{0,x}g$ satisfy
+\[
+  \|u(\cdot,x) - v(\cdot,x)\|_1 \;=\; \|\mu_{0,x} * (f - g)\|_1 \;\le\; \|f - g\|_1,
+  \qquad x > 0 :
+\]
+dependence on the signal is nonexpansive in $X$, uniformly over all scales. The same
+contractivity reads along the evolution itself ---
+$\|u(\cdot,y) - v(\cdot,y)\|_1 \le \|u(\cdot,x) - v(\cdot,x)\|_1$ for $x < y$, since
+$\mu_{x,y}$ is again a probability measure --- so in the scale-Cauchy reading of
+\ref{thm:scale-cauchy}, a perturbation of the record at one scale does not
+grow at any coarser one. What is \emph{not} claimed is a stability estimate in a topology
+adapted to $A$ itself --- continuity of the solution in the Mellin-class data, or
+dependence on perturbations of the operator; whether the signaling problem is well posed
+in the full Hadamard sense in such a topology is a question left open.
+\end{remark}

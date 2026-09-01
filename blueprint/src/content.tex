@@ -23,8 +23,12 @@
 % mathematics and is not transcribed. Renumbering to close the gap would cost the
 % draft-alignment above, which is worth far more.
 %
-% Scope is \S\S2-12, the mathematics. \S1 (introduction), \S13 (implementation), \S14
-% (the temporal N-jet) and \S15 (concluding remarks) stay in the draft.
+% Scope is \S\S2-14, the mathematics. \S1 (introduction) and \S15 (concluding remarks)
+% stay in the draft. REVISED 2026-09-01 (author's instruction): \S13 (implementation) and
+% \S14 (the temporal N-jet) were originally excluded to keep the blueprint's size under
+% control; the author now wants the blueprint complete with respect to the mathematical
+% material, with formalisation a separate decision -- so chapters 13-14 carry statement
+% nodes without \lean tags, and none is scheduled in a Lean phase.
 
 % The .tex extensions below are explicit for the reader's sake; all three consumers
 % accept either form (pdflatex natively, `linkage` by appending .tex when absent,
@@ -74,3 +78,9 @@
 
 \chapter{The locality theorem: Theorem 5$'$}
 \input{parts/12-locality.tex}
+
+\chapter{Implementation}
+\input{parts/13-implementation.tex}
+
+\chapter{The temporal N-jet: the memory embodies its derivatives}
+\input{parts/14-jet.tex}
