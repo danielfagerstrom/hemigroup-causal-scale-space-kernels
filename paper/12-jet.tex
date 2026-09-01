@@ -228,7 +228,13 @@ $O(\Delta x)$ that the exponential-integrator update of
 Proposition~\ref{prop:gamma-cascade} avoids.
 \item \emph{Non-creation from the signal} (Proposition~\ref{prop:gamma-regularity}). The
 extremum count satisfies $N\bigl(u(\cdot, x)\bigr) \le N(f)$ at every one of the $64$
-scales ($146$ at the input, at most $94$ across the ladder). Scale-to-scale monotonicity
+scales ($146$ at the input, at most $94$ across the ladder). The counting convention,
+identical for signal and field and implemented in \texttt{count\_extrema}: signs of
+successive differences, with a deadband --- differences of magnitude below $10^{-7}$ set
+to zero --- and the zero signs then dropped, which compresses flat runs so that a plateau
+counts as one extremum, not two; the count is the number of sign alternations that
+remain, taken over the sampled window with no padding, so only interior extrema are
+counted. Scale-to-scale monotonicity
 is not merely unasserted but impossible in the class
 (Proposition~\ref{prop:vd-impossibility}) --- the increments carry an atom and transform
 zeros and are not variation-diminishing (Remark~\ref{rem:pf-hemigroup}) --- and the run

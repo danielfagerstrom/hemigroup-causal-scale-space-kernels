@@ -281,7 +281,21 @@ explicitly left open per D1. §13 had no well-posed occurrence (verified by grep
   dictionary already fixes random-delay as primary and delegates the optical reading to
   rem:optical-depth, so no passage was found where a trim is clearly Claude's call.
 
-### R10 — presentation batch                                             [status: open]
+### R10 — presentation batch                                             [status: DONE 2026-09-01]
+
+Final slice:
+- hyperref -> [hidelinks]: no link boxes in the built PDF.
+- tab:corners evidentiary labels completed: dagger on "recursive states per knot" with a
+  tablenote tying "approx. only" to the graded statuses of prop:thorin-subclass (exactly
+  rational at integer weights, fitting heuristic otherwise); the medium row's star note
+  (from the layout slice) extended with "every other row is proved at the reference it
+  cites". The plan's alternative (splitting the table) not needed.
+- ex:numerical-experiment C2: the counting convention stated in the text, matching
+  count_extrema in make-fig-experiment.py — successive-difference signs, deadband 1e-7,
+  zero signs dropped (flat runs compressed, a plateau is one extremum), sign alternations
+  counted, sampled window with no padding (interior extrema only).
+- Figure 14: done with R3 (D5's "in this run" caption).
+- Script-name typo (R0.4): re-verified absent — only make-figures.py is referenced.
 
 Landed early (2026-09-01, author-reported layout issues after R9's merge): tab:notation
 split into two floats (symbols; coordinates) at [!tp]/footnotesize so nothing drifts to
