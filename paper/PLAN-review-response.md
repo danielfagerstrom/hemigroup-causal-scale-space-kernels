@@ -283,6 +283,17 @@ explicitly left open per D1. §13 had no well-posed occurrence (verified by grep
 
 ### R10 — presentation batch                                             [status: open]
 
+Landed early (2026-09-01, author-reported layout issues after R9's merge): tab:notation
+split into two floats (symbols; coordinates) at [!tp]/footnotesize so nothing drifts to
+the document end or jams the float queue; tab:corners overflow fixed (first column and
+content columns to wrapped p-widths totalling ~15cm, the R6 context note moved to a
+tablenote under the rule); fig-delay-catalogue relayout (titles raised clear of the
+y-axis labels, y-labels moved left of the axis via anchor=south east, the Gamma label
+moved above the curves with a pointer arrow to the plateau, the Dickman label moved right
+of the cutoff with a pointer to the step corner, the dilation arrow lowered clear of the
+Gamma label). Coordinates checked against the plotted curve values; no local render
+available (tectonic bundle fetch blocked), Docs CI is the render gate.
+
 - hyperref: hidelinks (or colored text, no boxes).
 - Table 1: split or per-row evidentiary labels (proved / heuristic / context), consistent
   with R3/R6 renames.
