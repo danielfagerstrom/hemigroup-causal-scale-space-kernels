@@ -29,19 +29,34 @@ executes on the author's go.
   needs only classical complex analysis available in Mathlib). Recorded under
   post-publication, not gated on.
 
-## Decision points — for the author, needed at the marked batches
+## Decision points — RESOLVED (author, 2026-09-01)
 
-- **DP1 — License(s)** (needed by P6): text and code may want different licenses
-  (e.g. CC-BY for the paper/blueprint prose, MIT or Apache-2.0 for the Lean and scripts).
-- **DP2 — Which process documents stay public** (needed by P6): the PLAN/REVIEW/NOTES
-  files are genuine provenance for an AI-assisted monograph; recommendation is to keep
-  them, possibly gathered under a `notes/` directory. The author decides the keep-list.
-- **DP3 — Publication channels** (needed by P7): the preview site is decided; arXiv
-  (citability) and/or Zenodo (DOI, archival of the tagged release) are open. Also whether
-  the announcement includes the repository or only the PDF at first.
-- **DP4 — A second external review round** (optional, after P3): whether to re-run the
-  agent reviewers on the polished text before P5's final review, or fold their role into
-  P5.
+- **DP1 — Licenses:** CC BY 4.0 for the paper/blueprint prose (figures included), MIT
+  for the Lean development and the scripts (fine atop Mathlib's Apache-2.0).
+  **Flagged consequence:** `scale-space-lean` must go public and be MIT-licensed before
+  or with P7 — `lake build` fetches `ScaleSpaceCore` at tag v0.1.0 from GitHub, so
+  §1.1's one-command verification holds for an outside reader only when that repo is
+  reachable. `article-kit` stays private for now: the public README advertises only the
+  two `lake` commands as reproducible, not `linkage check`.
+- **DP2 — Process documents:** keep whatever is helpful or adds provenance; gather the
+  process files under `notes/` so they do not clutter the load-bearing parts. Documents
+  referring to non-public material get a one-line header note rather than removal where
+  they are needed for continued development (CLAUDE.md foremost); removal only where
+  they would genuinely confuse. The repo stays in a state where development can
+  continue. Git history is rewritten only for secrets or the genuinely embarrassing —
+  by default it stays, because the commit-level provenance (session trailers) is what
+  the ai-archive analysis rests on. Candidate addition: the two external review
+  documents under `notes/reviews/` with model attribution, so the review-response plan
+  is readable next to what it answers.
+- **DP3 — Channels:** Zenodo first, arXiv later when access is arranged; the
+  announcement carries both the repository and the PDF. Mechanics: enable the
+  GitHub–Zenodo integration BEFORE minting the release tag (or reserve the DOI) so the
+  DOI can be printed in the PDF and cited in the README; cite the concept DOI, which
+  survives revisions; add the arXiv ID to README and Zenodo metadata when it lands.
+- **DP4 — Second review round:** yes, light, folded into P5's opening: fresh agent
+  reviewers on the polished full PDF, scoped to residual overclaims, coherence of the
+  reworked claim layer and R8 front matter to fresh eyes, and language — explicitly not
+  a re-litigation of the mathematics, which has been through R0–R10.
 
 ## Batches
 
