@@ -168,6 +168,11 @@ demands named; L1-contraction of mu_{0,x}* gives nonexpansive dependence on the 
 every scale, and mu_{x,y}* the same along the evolution (the scale-Cauchy reading); what
 is NOT claimed (stability in a topology adapted to A) stated, the full-Hadamard question
 explicitly left open per D1. §13 had no well-posed occurrence (verified by grep).
+[2026-09-01, publication plan P1: partially unwound, deliberately — cor:signaling-hadamard
+now proves Hadamard's three demands plus exponent stability, so "well posed" is restored
+where R4 removed it; the remark's what-is-not-claimed clause survives as the recast
+rem:signaling-stability. R4 renamed because the claim outran the proofs; P1 made the
+proofs reach the claim.]
 
 ### R5 — Thorin substrate separation                                     [status: DONE 2026-09-01]
 

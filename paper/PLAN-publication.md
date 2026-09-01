@@ -60,7 +60,18 @@ executes on the author's go.
 
 ## Batches
 
-### P1 — the stability corollary                                        [status: open]
+### P1 — the stability corollary                                        [status: DONE 2026-09-01]
+
+Landed as `cor:signaling-hadamard` ("the signaling problem is well posed"), a shared
+statement node after rem:classical-families in §9 / chapter 11 (`\statusT`, no lean tag;
+node count 105 → 106, ledger untouched). Clauses: existence and uniqueness restated from
+cor:signaling-wellposed; the data contraction (sup over scales, and along the evolution);
+exponent stability — F_n → F pointwise gives weak kernel convergence by
+prop:laplace-continuity, upgraded to L¹ field convergence at every scale by an inline
+Scheffé argument (the one estimate that is not a restatement). rem:signaling-stability
+recast as the boundary-of-claim remark (label kept): what is not claimed is a topology
+adapted to A — with the honest example F + s/n, whose strips do not converge. "Well posed"
+restored in the §9 arc, §1, §1.1 ("well-posedness arc" returns), and the abstract.
 
 First, because it touches claim language that P3 would otherwise polish twice.
 - New corollary after rem:signaling-stability (or absorbing it): Hadamard's three demands
