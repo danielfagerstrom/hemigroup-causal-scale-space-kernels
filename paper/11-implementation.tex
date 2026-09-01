@@ -232,7 +232,11 @@ As a design heuristic: the Bessel Thorin
 density is asymptotically a power law, hence scale-invariant over the covered band, so
 logarithmically spaced nodes --- a fixed number per decade of bandwidth --- are the natural
 quadrature; we state this as a heuristic, with no error bound claimed, which is the honest
-form of the state-count claim of Remark~\ref{rem:local-implementation}(iii). In practice the
+form of the state-count claim of Remark~\ref{rem:local-implementation}(iii). The lognormal
+--- the delay law of the scale-time aperture, a Thorin member by
+\sscite{thorin1977lognormal}; Remark~\ref{rem:strata} --- is the idealized instance: its
+$(\log s)^2$ exponent growth corresponds to an asymptotically log-uniform Thorin measure,
+a constant number of sections per decade. In practice the
 node data $(\tau_i, w_i)$ come either from quadrature of $U$ or from direct rational fitting
 of the increment transfer functions; the Thorin structure guarantees that a fit with
 \emph{positive} weights exists.
