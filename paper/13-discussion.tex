@@ -145,6 +145,27 @@ stratum's structure theorem.
 \item \emph{(A8) in full: the Sato class of the present paper.}
 \end{enumerate}
 
+The scale-time of \sscite{koenderink1988scale} also finds its place, though at the kernel
+level rather than as a stratum. Pulled back from the logarithmically remapped past to the
+time axis, its aperture is exactly the \emph{lognormal} density in the delay --- the
+Jacobian $du = d\xi/\xi$ of the remap completing the Gaussian into the lognormal --- and
+by Thorin's theorem (\sscite{thorin1977lognormal}) the lognormal is a generalized gamma
+convolution: the containment is deep rather than decorative, resting on the theorem the
+class of Proposition~\ref{prop:thorin-subclass} was created to deliver, and no elementary
+property of the log-remap produces it. The lognormal delay law therefore generates an
+admissible similarity family in the Thorin subclass, and a well-behaved one: every moment,
+positive and negative, is finite --- $\Ex[T^{-z}] = e^{-z\mu + z^2\sigma^2/2}$ for all $z$,
+so $z_* = \infty$ and (H) holds with room to spare --- while the exponent grows like
+$(\log s)^2$ by the Laplace method, barely superlogarithmic, just above the Gamma rays in
+the admissible cone. What does \emph{not} carry over is the construction's own scale
+parameter: varying the log-domain Gaussian width changes the lognormal's \emph{shape}, and
+those blurrings compose in the log-delay domain --- multiplicative convolution --- not in
+time, which is the precise form of the non-recursivity conceded in
+\S\ref{sec:introduction}; the admissible family runs the other axis, dilating the delay at
+fixed shape. In retrospect the 1988 kernel choice is vindicated by 1977 mathematics: the
+log-remapped Gaussian lands inside the admissible cone, in its Thorin corner, and the
+axioms decline only the composition structure it arrived with.
+
 For the limit kernel the extension question has a clean answer, and the argument is short
 enough to record here: among all $q^{\ZZ}$-covariant families with its $q$-step increments
 $g_{x,qx}(s) = \log(1 + c x s)$, \emph{exactly one} extends to full continuous covariance
@@ -155,8 +176,9 @@ limit-kernel family itself. Whether the limit kernel is distinguished \emph{with
 by an extremality principle that does not invoke the continuum extension is the selection
 question taken up in the companion note. The comparison with the previous literature is
 thereby one of containment rather than difference: the Poisson scale space lies strictly in
-the first stratum, the limit kernel in the third, and the strict middle stratum is populated
-by their common refinement (Figure~\ref{fig:strata}).
+the first stratum, the limit kernel in the third, scale-time's kernel in the third's
+Thorin corner with its composition structure left behind, and the strict middle stratum is
+populated by their common refinement (Figure~\ref{fig:strata}).
 \end{remark}
 
 \input{fig-strata}
