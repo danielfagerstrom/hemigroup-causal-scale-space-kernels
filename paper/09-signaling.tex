@@ -34,8 +34,8 @@ whatever of it influences the present must be carried in the observer's own stat
 section shows that the demand is met, in the strongest sense: the field can be evolved
 out of its present state alone, with the signal entering only where it physically
 enters, at the fine-scale end. In the language of classical PDE this is a
-\emph{signaling} problem rather than a Cauchy problem --- the data live on the spatial
-boundary for all time, not on an initial time-slice --- the model being a rod driven at
+\emph{signaling} problem rather than a Cauchy problem: the data live on the spatial
+boundary for all time, not on an initial time-slice. The model is a rod driven at
 its end:
 \[
   \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t), \qquad u(0, x) = 0,
@@ -73,10 +73,10 @@ harmonic analysis, so $A$ lives in the \textbf{Mellin calculus} --- the
 multiplicative-group counterpart of the Wendel step of \S\ref{sec:representation}, now
 run in reverse: there an operator was given and its kernel extracted; here the spectral
 data are prescribed and the operator must be synthesized. Covariance fixes its shape
-outright --- under $(t,x) \mapsto (\sigma t, \sigma x)$ an inversion must scale like
+outright: under $(t,x) \mapsto (\sigma t, \sigma x)$ an inversion must scale like
 $\partial_t$, and in the canonical gauge $x$ carries the dimension of time while the
-Euler operator $\theta = x\partial_x$ is dimensionless, so $A = x^{-1}B(\theta)$ ---
-and the eigenvalue demand then determines the symbol with no freedom left: on
+Euler operator $\theta = x\partial_x$ is dimensionless, so $A = x^{-1}B(\theta)$.
+The eigenvalue demand then determines the symbol with no freedom left: on
 transforms the weight $x$ shifts the Mellin argument by one, forcing $B(-z) =
 \tilde H(z+1)/\tilde H(z)$, the recursion of the profile's Mellin data. The theorem of
 this section (Theorem~\ref{thm:signaling-form}) makes all of this precise: \emph{the
@@ -107,7 +107,7 @@ Both clauses are conditions at the zero-delay end of the kernels, and
 Lemmas~\ref{lem:standing-kernel-readings} and~\ref{lem:standing-levy-reading} below make the
 readings precise: the first clause says exactly that the kernels put no atom at zero delay, is
 equivalent to $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$, and is automatic for every
-admissible $F \not\equiv 0$ --- so all of (H)'s bite is in the second clause --- while the
+admissible $F \not\equiv 0$, so all of (H)'s bite is in the second clause. The
 second implies $\int_0^\infty e^{-F(s)}\,ds = \Ex[T_1^{-1}] < \infty$, the converse failing
 only at the endpoint $z_* = 1$, an endpoint genuinely reached: the Gamma family at
 $\gamma = 1$ has $z_* = 1$ with $\Ex[T_1^{-1}] = \infty$. The second clause holds with
@@ -249,7 +249,7 @@ one argument.
 Figure~\ref{fig:admissible-cone} locates the cut in the cone of \S\ref{sec:characterization},
 and the location says what the hypothesis costs. Nothing from the preceding sections is given
 up: an admissible family failing (H) is still a causal scale space --- the representation, the
-cascade, and the cone geometry all stand --- and what is withheld is only this section's
+cascade, and the cone geometry all stand. What is withheld is only this section's
 reading of it: the covariant inversion needs a Mellin strip of width greater than one, and the
 excluded members --- the slowest media, those whose exponents grow at most logarithmically
 (Lemma~\ref{lem:zstar-log-growth}(1)) --- do not open one. The shape of the excluded set
@@ -651,7 +651,7 @@ equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in
 \end{remark}
 
 Theorem~\ref{thm:signaling-form}(2) closes with an informal gloss --- ``that is,
-$\partial_t u = A\,u$ read through the Mellin transform in $x$'' --- and clause~(3) proves
+$\partial_t u = A\,u$ read through the Mellin transform in $x$''. Clause~(3) proves
 uniqueness of the \emph{operator} $A$ within the covariant Mellin class, not uniqueness of the
 \emph{solution} $u$: two different claims the single word ``unique'' can hide. The gap is not
 merely presentational. The eigenvalue recursion $s\,\tilde g(z) = B(1-z)\,\tilde g(z-1)$ that
@@ -660,21 +660,20 @@ solution is $\tilde g(z) = s^{-z}\tilde H(z)\,p(z)$ for an \emph{arbitrary} $1$-
 the same obstruction Bohr--Mollerup closes for $\Gamma$, one level down. What follows closes it
 here. Definition~\ref{def:mellin-solution} names what a solution of the signaling problem
 \emph{is}, mirroring Theorem~\ref{thm:signaling-form}(2)'s own clauses rather than restating
-them; Lemma~\ref{lem:mode-rigidity} kills the periodic ambiguity, under a normalisation the
-field satisfies for free --- its own modes are dominated by the profile, uniformly over one
-period, the theory's counterpart of the log-convexity hypothesis Bohr--Mollerup imposes; and
+them. Lemma~\ref{lem:mode-rigidity} kills the periodic ambiguity, under a normalisation the
+field satisfies for free: its own modes are dominated by the profile, uniformly over one
+period, the theory's counterpart of the log-convexity hypothesis Bohr--Mollerup imposes. And
 Corollary~\ref{cor:signaling-wellposed} assembles existence with \emph{solution}-uniqueness
 under that normalisation --- existence and uniqueness in the profile-dominated Mellin
-class, which Theorem~\ref{thm:signaling-form} alone does not deliver; of Hadamard's three
+class, which Theorem~\ref{thm:signaling-form} alone does not deliver. Of Hadamard's three
 demands this supplies the first two, and Corollary~\ref{cor:signaling-hadamard} completes
-the third from the representation --- with stability under perturbation of the exponent
-besides --- so that the problem is well posed in the stated class,
-Remark~\ref{rem:signaling-stability} marking the boundary of the claim. A
-classical-solution clause, under an extra
+the third from the representation, with stability under perturbation of the exponent
+besides. The problem is therefore well posed in the stated class;
+Remark~\ref{rem:signaling-stability} marks the boundary of the claim.
+Corollary~\ref{cor:signaling-classical} adds a classical-solution clause, under an extra
 decay hypothesis on the negative-moment function $m$ that the Gamma, stable and Bessel-K
 families satisfy and the pure delay fails --- correctly, that family belonging instead to
-Theorem~\ref{thm:locality}'s territory --- is
-Corollary~\ref{cor:signaling-classical}.
+Theorem~\ref{thm:locality}'s territory.
 
 % shared with blueprint def:mellin-solution
 \begin{definition}[a Mellin solution of the signaling problem]\label{def:mellin-solution}
@@ -1030,9 +1029,9 @@ only on the class the signaling problem is posed on. In the scale-Cauchy reading
 Appendix~\ref{sec:appendix-memory}, the second contraction of clause~(3) says that a perturbation of
 the record at one scale does not grow at any coarser one. What is \emph{not} claimed is a
 stability estimate in a topology adapted to $A$ itself --- continuity of the solution in
-the Mellin-class data, or convergence of the operators behind clause~(4): the conclusion
+the Mellin-class data, or convergence of the operators behind clause~(4). The conclusion
 there is convergence of the solution fields, never of the symbols, and the distinction is
-real --- $F(s) + s/n \to F(s)$ pointwise with every perturbed exponent carrying drift, so
+real: $F(s) + s/n \to F(s)$ pointwise with every perturbed exponent carrying drift, so
 $z_* = \infty$ along the whole sequence (Lemma~\ref{lem:zstar-log-growth}(2)) while the limit's
 $z_*$ may be finite, and the strips the symbols live on do not converge to the limit's.
 Whether the signaling problem is well posed in a topology adapted to $A$ is a question
@@ -1107,7 +1106,7 @@ Within the class of Theorem~\ref{thm:signaling-form}, the operators $A$ that add
 satisfy the positive maximum principle (Definition~\ref{def:locality-pmp}) --- i.e.\ generate a
 sub-Markov process on the memory half-line, so that the medium is a physical transport medium
 --- are, after the logarithmic substitution $x = e^\xi$, exactly those whose symbol $B$ is
-the Laplace exponent of a Lévy process; we record this without proof here. By the
+the Laplace exponent of a Lévy process. We record this without proof here. By the
 Lamperti correspondence (\sscite{lamperti1972semi}) these media are positive
 self-similar Markov processes absorbed at the boundary, and the kernels are the
 boundary-arrival times $T_x \stackrel{d}{=}$ absorption time from depth $x$.
@@ -1125,9 +1124,9 @@ $\sigma \sim \mathrm{Beta}(\gamma-1, 1)$, reaching the boundary by accumulation 
 first-jump computation confirms $\Ex_x[e^{-s\tau_0}] = (1+sx)^{-\gamma}$.
 
 A necessary condition in all cases --- again recorded without proof --- is quadratic symbol
-growth, $B(\theta) = O(\theta^2)$; by Example~\ref{ex:stable-signaling} the homogeneous members
+growth, $B(\theta) = O(\theta^2)$. By Example~\ref{ex:stable-signaling} the homogeneous members
 with $\alpha < \tfrac12$, of symbol order $1/\alpha > 2$, admit \emph{no} Markov medium, although
-Theorem~\ref{thm:signaling-form} always supplies the analytic signaling form --- the operator
+Theorem~\ref{thm:signaling-form} always supplies the analytic signaling form: the operator
 exists, the process does not. The locality theorem settles the local sub-case --- a polynomial
 symbol of degree at most two --- but the general classification of which admissible $F$ are
 Markov-realizable is the memory-line inverse problem, and it is left open; it is listed with the
