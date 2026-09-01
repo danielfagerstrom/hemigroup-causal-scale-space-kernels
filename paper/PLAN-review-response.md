@@ -148,12 +148,26 @@ form impossible (prop:vd-impossibility), the endpoint form classified and attain
   untouched (a genuine conditional pointwise statement, already contrasted in §8's remark).
 Final grep: no "non-creation in time"/"non-creation subclass" remains in the .tex sources.
 
-### R4 — well-posedness language (per D1)                                [status: open]
+### R4 — well-posedness language (per D1)                                [status: DONE 2026-09-01]
 
-Rename across abstract, §1, §9 (arc prose + corollary name if D1 says rename), §13.
-Add the L1-contraction stability remark for the scale-Cauchy reading (one paragraph,
-trivial from contractivity) regardless of D1, so the honest statement is "existence,
-uniqueness in the stated class, and stability in the evolution reading".
+Renamed per D1 ("existence and uniqueness in the profile-dominated Mellin class"):
+- cor:signaling-wellposed retitled "the signaling problem: existence and uniqueness in
+  the profile-dominated Mellin class" — a SHARED statement, changed in the paper and the
+  blueprint together; the label is an identifier and stays;
+- §9 arc prose: "genuinely well posed" -> "genuinely solved"; the "earns the phrase
+  well posed" sentence replaced by the named claim + a pointer to the stability remark
+  (paper) / by the named claim alone (blueprint, where the remark does not exist);
+- abstract: "well-posed signaling problem" -> "signaling problem, solved with existence
+  and uniqueness in an explicit class";
+- §1: "the problem is well posed" -> "solved with existence and uniqueness", with the
+  nonexpansive-dependence clause added; §1.1 "well-posedness arc" -> "solution-theory arc";
+- appendix Theorem-3' intro: "a well-posed Cauchy problem" -> "a Cauchy problem with a
+  uniqueness clause"; the Prüss citation's "well-posedness" kept (an attributed result).
+NEW rem:signaling-stability (paper-only, after rem:classical-families): Hadamard's three
+demands named; L1-contraction of mu_{0,x}* gives nonexpansive dependence on the signal at
+every scale, and mu_{x,y}* the same along the evolution (the scale-Cauchy reading); what
+is NOT claimed (stability in a topology adapted to A) stated, the full-Hadamard question
+explicitly left open per D1. §13 had no well-posed occurrence (verified by grep).
 
 ### R5 — Thorin substrate separation                                     [status: open]
 

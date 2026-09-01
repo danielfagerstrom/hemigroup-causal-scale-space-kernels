@@ -551,7 +551,7 @@ the field's Laplace profiles as eigenfunctions (1); the scale-space field solves
 problem, the equation holding mode-by-mode in the Laplace variable and as an identity
 of Mellin transforms in the scale variable (2); and the inversion is unique (3) ---
 the \emph{operator}, that is, not yet the solution. What ``solves'' means, and the
-sense in which the problem is genuinely \emph{well posed}, is settled after the
+sense in which the problem is genuinely \emph{solved}, is settled after the
 theorem: Definition~\ref{def:mellin-solution} names the notion of solution that
 clause~(2) informally reads off, and Corollary~\ref{cor:signaling-wellposed} adds
 \emph{solution}-uniqueness.
@@ -662,8 +662,10 @@ them; Lemma~\ref{lem:mode-rigidity} kills the periodic ambiguity, under a normal
 field satisfies for free --- its own modes are dominated by the profile, uniformly over one
 period, the theory's counterpart of the log-convexity hypothesis Bohr--Mollerup imposes; and
 Corollary~\ref{cor:signaling-wellposed} assembles existence with \emph{solution}-uniqueness
-under that normalisation --- the corollary that earns the phrase ``well posed'', which
-Theorem~\ref{thm:signaling-form} alone does not. A classical-solution clause, under an extra
+under that normalisation --- existence and uniqueness in the profile-dominated Mellin
+class, which Theorem~\ref{thm:signaling-form} alone does not deliver; of Hadamard's three
+demands this supplies the first two, and Remark~\ref{rem:signaling-stability} records the
+stability that comes free. A classical-solution clause, under an extra
 decay hypothesis on the negative-moment function $m$ that the Gamma, stable and Bessel-K
 families satisfy and the pure delay fails --- correctly, that family belonging instead to
 Theorem~\ref{thm:locality}'s territory --- closes the arc as
@@ -762,7 +764,7 @@ $z \in (0,z_*)$.
 \end{proof}
 
 % shared with blueprint cor:signaling-wellposed
-\begin{corollary}[the signaling problem, well posed]\label{cor:signaling-wellposed}
+\begin{corollary}[the signaling problem: existence and uniqueness in the profile-dominated Mellin class]\label{cor:signaling-wellposed}
 Assume (H), let $f \in \core$, and let $A$ be the inversion operator of
 Definition~\ref{def:inversion-operator}. Then:
 \begin{enumerate}
@@ -911,6 +913,34 @@ The hypothesis fails, correctly. The transport operator's eigenfunctions are the
 exponentials, whose Mellin data does not decay, and this family's inversion is instead
 Theorem~\ref{thm:locality}'s territory --- a polynomial (here, first-order) symbol, local by
 construction, not reached by Corollary~\ref{cor:signaling-classical}'s route at all.
+\end{remark}
+
+% Paper-only (2026-09-01, review response R4, decision D1): the stability that is free.
+% The review asked what "well posed" claims; the honest answer is existence and
+% uniqueness in the profile-dominated Mellin class (the corollary's name now says so)
+% plus the contraction below, which costs nothing beyond the representation. A stability
+% theorem in a topology natural to A is deliberately left open.
+\begin{remark}[stability for free; what is not claimed]\label{rem:signaling-stability}
+Of Hadamard's three demands on the signaling problem --- existence, uniqueness,
+continuous dependence on the data --- Corollary~\ref{cor:signaling-wellposed} supplies
+the first two, in the profile-dominated Mellin class. Part of the third comes free, from
+the representation rather than from the equation: the solution operator at each scale is
+convolution with a probability measure (Theorem~\ref{thm:main-characterization}), so for
+signals $f, g \in \core$ the fields $u(\cdot,x) := \Phi_{0,x}f$ and
+$v(\cdot,x) := \Phi_{0,x}g$ satisfy
+\[
+  \|u(\cdot,x) - v(\cdot,x)\|_1 \;=\; \|\mu_{0,x} * (f - g)\|_1 \;\le\; \|f - g\|_1,
+  \qquad x > 0 :
+\]
+dependence on the signal is nonexpansive in $X$, uniformly over all scales. The same
+contractivity reads along the evolution itself ---
+$\|u(\cdot,y) - v(\cdot,y)\|_1 \le \|u(\cdot,x) - v(\cdot,x)\|_1$ for $x < y$, since
+$\mu_{x,y}$ is again a probability measure --- so in the scale-Cauchy reading of
+Appendix~\ref{sec:appendix-memory}, a perturbation of the record at one scale does not
+grow at any coarser one. What is \emph{not} claimed is a stability estimate in a topology
+adapted to $A$ itself --- continuity of the solution in the Mellin-class data, or
+dependence on perturbations of the operator; whether the signaling problem is well posed
+in the full Hadamard sense in such a topology is a question this article leaves open.
 \end{remark}
 
 Three worked cases calibrate the construction, ordered by the growth of the symbol ---
