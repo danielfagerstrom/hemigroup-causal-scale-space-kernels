@@ -67,32 +67,25 @@ Characterization of the Kernels}
 
 \begin{abstract}
 We characterize the time-causal scale spaces: the families of smoothing operators through
-which an uncommitted observer can measure a temporal signal at all scales at once. The
-axioms are those of causal, covariant measurement, with the cascade property stated as a
-two-parameter hemigroup, $\Phi_{y,z}\Phi_{x,y} = \Phi_{x,z}$, in place of the classical
-one-parameter semigroup --- retaining composition of measurements while dropping the tacit
-assumption that measurement stages are interchangeable. The admissible kernel families are
-exactly the Laplace exponents of the self-decomposable laws, equivalently the marginals of
-self-similar additive (Sato) subordinators; the semigroup case is recovered as the
-homogeneous sub-class --- the extremal stable densities together with a pure delay ---
-whose heavy tails are thereby exposed
-as the price of stage-interchangeability rather than of causality and covariance. The
-enlarged class contains members with all moments finite, the Gamma family foremost,
-implemented exactly by cascades of first-order filter sections that approximate the entire
-completely-monotone subclass from inside the class. Non-creation of temporal structure is
-settled in both directions: no nondegenerate member admits scale-monotone non-creation ---
-variation-diminishing increments force the pure delay --- while the endpoint form, no
-scale showing more sign changes than the signal, is attained exactly by the classified
-variation-diminishing members, drift plus integer Thorin atoms. Over the memory half-line, under a mild standing
-hypothesis, the theory takes the form of a signaling problem, solved with existence and
-uniqueness in an explicit class: a covariant Mellin operator inverts the
-scale evolution into an evolution in present time. The memory line stores the analytic
-family of Riemann--Liouville integrals of the past signal, and the temporal $N$-jet is an
-instantaneous linear readout of that state. Locality together with the positive maximum
-principle classifies the admissible memory-line media, unfolding the isolated heat case of
-the semigroup theory into a one-parameter Bessel family. The characterization and the
-signaling form are machine-checked in the Lean~4 proof assistant, resting on two cited
-analytic facts.
+which an uncommitted observer can measure a temporal signal at all scales at once. One
+classical axiom is weakened: the cascade property is stated as a two-parameter hemigroup,
+$\Phi_{y,z}\Phi_{x,y} = \Phi_{x,z}$, retaining composition of measurements while dropping
+the tacit assumption that measurement stages are interchangeable. The admissible kernel
+families are then exactly the Laplace exponents of the self-decomposable laws, the
+marginals of self-similar additive (Sato) subordinators; reimposing interchangeability
+recovers the extremal stable densities together with a pure delay, exposing their heavy
+tails as the price of that assumption rather than of causality or covariance. The enlarged
+class contains members with all moments finite --- foremost the Gamma family, implemented
+exactly by cascades of first-order filter sections. Over the memory half-line, under a
+mild standing hypothesis, the scale evolution inverts into an evolution in present time,
+solved with existence and uniqueness in an explicit class: the memory line stores the
+Riemann--Liouville integrals of the past signal, the temporal $N$-jet reads that state
+instantaneously, and locality with the positive maximum principle singles out a
+one-parameter Bessel family of media. Non-creation of temporal structure is settled in
+both directions: no nondegenerate member admits the scale-monotone form, while the
+endpoint form --- no scale showing more sign changes than the signal --- is attained
+exactly by the classified variation-diminishing members. The characterization and the
+signaling form are machine-checked in Lean~4, resting on two cited analytic facts.
 \end{abstract}
 
 \input{01-introduction}
