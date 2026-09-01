@@ -23,7 +23,7 @@
   \draw[->] (-0.5,0) -- (-0.5,2.2) node[anchor=south east] {$\tilde k(\theta)$};
   % stable: exactly scale-free, exp(-alpha*theta) -- never cuts off (heavy tails)
   \draw[thick] plot[domain=-0.5:5.3, samples=80] (\x, {1.9*exp(-0.55*(\x+0.5))});
-  \node[anchor=west] at (2.7,0.62) {stable $c\,e^{-\alpha\theta}$: scale-free, heavy tails};
+  \node[anchor=west] at (2.7,0.66) {stable $c\,e^{-\alpha\theta}$: scale-free, heavy tails};
   % Gamma: k(t) = e^{-t} -- plateau then cliff (finite moments)
   \draw[thick, densely dashdotted] plot[domain=-0.5:3.4, samples=80]
     (\x, {1.45*exp(-exp(1.4*(\x-1.9)))});
@@ -31,11 +31,14 @@
   \draw[->] (0.7,1.92) -- (0.42,1.36);
   % Dickman ray: unit step to cutoff log tau
   \draw[thick, densely dotted] (-0.5,0.85) -- (2.2,0.85) -- (2.2,0.02);
-  \node[anchor=west] (dicklbl) at (2.35,1.05) {Dickman ray $\mathbf{1}_{\theta < \log\tau}$};
+  \node[anchor=west] (dicklbl) at (2.35,1.22) {Dickman ray $\mathbf{1}_{\theta < \log\tau}$};
   \draw[->] (dicklbl.west) -- (2.23,0.88);
   \draw (2.2,0.07) -- (2.2,-0.07); \node[anchor=north] at (2.2,-0.1) {$\log\tau$};
-  % dilation = translation
-  \draw[->] (3.6,2.35) -- node[above] {$\dil_\sigma$: shift by $\log\sigma$} (5.0,2.35);
+  % dilation = translation: arrow and caption side by side on the Gamma label's line,
+  % keeping the band under the panel title empty (title and caption collided as
+  % stacked lines -- 2026-09-01)
+  \draw[->] (3.75,2.02) -- (4.55,2.02);
+  \node[anchor=west] at (4.6,2.02) {$\dil_\sigma$: shift by $\log\sigma$};
 \end{scope}
 
 % ---------- panel (b): the Dickman superposition ----------
