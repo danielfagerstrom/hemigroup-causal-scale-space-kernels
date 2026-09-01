@@ -113,7 +113,7 @@ under mixtures $s \mapsto \int g_u(s)\,m(du)$ with $m \ge 0$, whenever the integ
 \emph{Which vocabulary does the work.} Proposition~\ref{prop:bernstein-toolbox} is used as a
 bridge and not as a toolkit. The object the arguments below manipulate is the
 \emph{representation}, part~(3) --- a drift and a Lévy measure --- and almost every proof in
-\S\S\ref{sec:representation}--\ref{sec:signaling} works with it directly: the increments of
+\S\S\ref{sec:representation}--\ref{sec:signaling} works with it directly. The increments of
 Theorem~\ref{thm:increments-bernstein} are produced as representations, not as pointwise
 limits of Bernstein functions; the potential kernel of the appendix is constructed as a
 subordinator's potential measure, not represented from complete monotonicity; the Mellin
@@ -161,7 +161,7 @@ The classes just named are one circle of ideas, and the reader who sees the circ
 does not need to memorize the toolbox. Start with complete monotonicity. The prototype
 completely monotone function is a single decaying exponential $e^{-st}$, whose
 derivatives alternate for the trivial reason that each differentiation pulls down a
-factor $-t \le 0$; the sign conditions are linear in $f$ and survive pointwise limits,
+factor $-t \le 0$. The sign conditions are linear in $f$ and survive pointwise limits,
 so every positive mixture $\int e^{-st}\,F(dt)$ --- every Laplace transform of a
 positive measure --- is completely monotone for free. The Bernstein--Widder theorem,
 Proposition~\ref{prop:bernstein-toolbox}(1), is the remarkable converse: \emph{every}
@@ -211,8 +211,8 @@ $\tau g(s)$, its increments are independent but not stationary, and the classes
 $\SDclass \supset \GGC$ below are the strata of that relaxation under covariance.
 
 The physical reading of the triple --- drift as latency, $\nu$ as a catalogue of
-delays, the missing Gaussian term --- is Remark~\ref{rem:delay-dictionary} below; and
-the extreme-ray pattern returns twice more, with the atoms reshaped by each added
+delays, the missing Gaussian term --- is Remark~\ref{rem:delay-dictionary} below. The
+extreme-ray pattern returns twice more, with the atoms reshaped by each added
 constraint: the Dickman exponents as the extreme rays of the self-decomposable cone
 (Proposition~\ref{prop:extreme-rays}), and the Gamma exponents as the atoms of its
 Thorin subcone (Proposition~\ref{prop:thorin-subclass}).
@@ -298,8 +298,8 @@ continuous because translation is continuous in $L^1$. The operator core used th
   f(0) = 0 \,\bigr\}.
 \]
 It is cut so that its members are exactly the primitives of their derivatives,
-$f = \int_0^{\cdot} f'$ with $f' \in \Xz$ --- hence bounded, which is what widens the Mellin
-strips of \S\ref{sec:signaling} --- and lie in $\Xz$ themselves, which the other two
+$f = \int_0^{\cdot} f'$ with $f' \in \Xz$, hence bounded, which is what widens the Mellin
+strips of \S\ref{sec:signaling}. They also lie in $\Xz$ themselves, which the other two
 conditions do not imply, a primitive of an $L^1$ function being integrable only when
 $\int_0^\infty f' = 0$.
 
@@ -381,7 +381,7 @@ $\tfrac12\sigma^2 s^2$; on the half-line it cannot appear, because a diffusing
 quantity oscillates and an accumulated delay only grows. The term that generates
 spatial scale space is thus structurally deleted from the time-causal axis ---
 causality does not merely disfavor the Gaussian aperture, it removes its slot in
-the generator --- and classifying time-causal scale spaces becomes classifying
+the generator. Classifying time-causal scale spaces thereby becomes classifying
 delay catalogues. (Diffusion will reappear, but on the observer's memory line
 rather than the signal axis: the locality theorem of \S\ref{sec:locality} closes
 that ladder at the Bessel operator, an honest second-order generator over the
@@ -401,7 +401,7 @@ acts on catalogues by translation in $\theta$}. The classification results of
 nonincreasing --- zooming out may only add delay intensity, which is
 self-decomposability; the semigroup subclass is the exactly scale-free profile
 $\tilde k(\theta) = c\,e^{-\alpha\theta}$, whose refusal to decay faster
-\emph{is} the heavy tail; the extreme rays are unit steps --- log-uniform bands
+\emph{is} the heavy tail. The extreme rays are unit steps --- log-uniform bands
 of delays, the Dickman exponents --- and every admissible catalogue is a unique
 stack of such steps; the completely monotone profiles form the Thorin subclass
 $\GGC$ above, whose finite moments correspond to a cliff-like cutoff of long
