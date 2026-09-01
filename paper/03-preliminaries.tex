@@ -409,3 +409,52 @@ delays.
 \end{remark}
 
 \input{fig-delay-catalogue}
+
+% Paper-only (2026-09-01, review response R9): the notation and gauge table, one place
+% where the recurring symbols, their formulas, and their delay readings stand together
+% (it absorbs the reviews' request for a "Rosetta" table). The B(s)-vs-B(theta)
+% collision is disambiguated here on purpose. Formulas checked against the defining
+% statements cited in each row.
+Table~\ref{tab:notation} collects, for reference, the symbols that recur across sections,
+each with its defining formula and its reading in the delay vocabulary above, followed by
+the four scale coordinates the paper distinguishes. Everything in it is defined where the
+middle column says; nothing is new here.
+
+\begin{table}[t]
+\centering
+\caption{The recurring symbols (top) and the scale coordinates (bottom).}
+\label{tab:notation}
+\small
+\setlength{\tabcolsep}{4pt}
+\begin{tabular}{@{}lp{6.6cm}p{5.4cm}@{}}
+\toprule
+symbol & definition & delay reading \\
+\midrule
+$\Phi_{x,y}$, $\mu_{x,y}$ & increment operator and its kernel, $\Phi_{x,y}f = \mu_{x,y}*f$ (\S\ref{sec:representation}) & the stage delays the record by $T_{x,y} \sim \mu_{x,y}$ \\
+$g_{x,y}(s)$ & increment exponent, $-\log\hat\mu_{x,y}(s)$ (\S\ref{sec:representation}) & attenuation of the probe $e^{-st}$; additive along the cascade \\
+$G(x,s)$ & accumulated exponent, $g_{0,x}(s)$ (\S\ref{sec:cascade}) & optical depth from the boundary to scale $x$ \\
+$F(s)$ & the family's exponent, (7.1); canonical gauge $G(x,s) = F(xs)$ (\S\ref{sec:characterization}) & Laplace exponent of the unit delay $T_1$; one function per family \\
+$k(t)$ & memory kernel: L\'evy density $k(t)/t$, $k$ nonincreasing, (7.1) & size-weighted delay catalogue: $k(t) = t \times$ rate of size-$t$ lag events \\
+$\phi_x(t)$ & kernel density, $\hat\phi_x(s) = e^{-F(xs)}$; exists for $k \not\equiv 0$ (\S\ref{sec:examples}, Prop.~\ref{prop:volterra-density}) & density of the total delay $x\,T_1$ \\
+$H(s)$ & the profile, $H := e^{-F}$, so $\hat\mu_{0,x}(s) = H(sx)$ (\S\ref{sec:signaling}) & surviving fraction of the probe, in the dimensionless variable $sx$ \\
+$\tilde H(z)$, $m(z)$ & Mellin data of the profile: $\tilde H(z) = \Gamma(z)\,m(z)$ with $m(z) := \Ex[T_1^{-z}]$, finite for $0 < \operatorname{Re} z < z_*$ (\S\ref{sec:signaling}) & negative moments of the unit delay; (H) asks $z_* > 1$ \\
+$B(\theta)$ & Mellin symbol of the inversion, $B(-z) = \tilde H(z{+}1)/\tilde H(z)$, $A = x^{-1}B(\theta)$ (\S\ref{sec:signaling}) & the re-indexing that turns the memory record into evolution in present time \\
+$B(s) = sF'(s)$ & Bernstein function of Lemma~\ref{lem:selfdecomposable-exponents} (\S\ref{sec:characterization}) --- a \emph{different} $B$ from the Mellin symbol above; its dilate $\varphi_x(s) := sF'(xs)$ is the per-scale symbol of Appendix~\ref{sec:appendix-memory} & transform of the memory measure below, up to the factor $s$ \\
+$\kappa^{(x)}$ & memory measure, $b_0\,\delta_0(dt) + \tfrac1x k(\tfrac tx)\,dt$, $\widehat{\kappa^{(x)}}(s) = F'(xs)$ (\S\ref{sec:characterization}, App.~\ref{sec:appendix-memory}) & drift plus the catalogue dilated to scale $x$: what the medium remembers \\
+$\ell^{(x)}$ & potential kernel, $\widehat{\ell^{(x)}}(s) = 1/(sF'(xs))$ (App.~\ref{sec:appendix-memory}) & renewal measure of the delay stream; the memory operator's exact right inverse \\
+\bottomrule
+\end{tabular}
+
+\medskip
+
+\begin{tabular}{@{}lp{6.6cm}p{5.4cm}@{}}
+\toprule
+coordinate & defined by & where used \\
+\midrule
+original $x$ & any increasing relabelling of $[0,\infty)$; only $G(x,s) = g_{0,x}(s)$ is meaningful & \S\S\ref{sec:representation}--\ref{sec:covariance}, until the gauge is fixed \\
+canonical $\tilde x = \chi(x)$ & dilations act by multiplication, $G = F(\tilde x\,s)$; scale carries the dimension of time (Prop.~\ref{prop:canonical-gauge}) & the working gauge from \S\ref{sec:characterization} on, written plainly $x$ \\
+semigroup $\tau$ & the homogeneous member's own additive parameter, $F$-exponent $\tau s^\alpha$: dilations act by $\tau \mapsto \sigma^\alpha \tau$, and $\chi(\tau) = \tau^{1/\alpha}$; coincides with the canonical gauge only at $\alpha = 1$ (\S\ref{sec:covariance}) & the comparison with the semigroup theory \\
+parabolic $\xi$ & $\tilde x = \xi^2$ (Remark~\ref{rem:gauge-freedom}) & the Bessel family: its medium becomes $\tfrac12\partial_\xi^2 + \tfrac{\beta}{\xi}\partial_\xi$ (\S\S\ref{sec:signaling}--\ref{sec:locality}) \\
+\bottomrule
+\end{tabular}
+\end{table}

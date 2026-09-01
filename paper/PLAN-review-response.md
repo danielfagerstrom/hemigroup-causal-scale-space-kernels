@@ -264,14 +264,22 @@ explicitly left open per D1. §13 had no well-posed occurrence (verified by grep
   NOTE for the author: mint a git tag at publication so the pinning extends to the
   paper's own revision.
 
-### R9 — notation and navigation apparatus                               [status: open]
+### R9 — notation and navigation apparatus                               [status: DONE 2026-09-01]
 
-- Notation/gauge table in §3: g_{x,y}, G, F, H, B, m, phi_x, k, kappa^(x), ell^(x); the
-  original, canonical, semigroup (tau = x^alpha), and parabolic coordinates; one column of
-  delay-catalogue readings (absorbs the second review's Rosetta table).
-- Optional: compact theorem-dependency map (§1 or endpaper).
-- Metaphor audit: keep random-delay/subordinator primary; trim where two metaphors compete
-  in one passage (light touch, author taste governs).
+- NEW Table tab:notation at the end of §3 (paper-only), after the delay dictionary, in
+  two parts. Top: twelve symbol rows — Phi/mu_{x,y}, g_{x,y}, G, F, k, phi_x, H,
+  (H-tilde, m), B(theta) Mellin, B(s) = sF' Laplace (the collision disambiguated in
+  place, with varphi_x = sF'(x s) noted), kappa^(x), ell^(x) — each with defining
+  formula + where defined + a delay-catalogue reading column (absorbing the second
+  review's Rosetta table). Bottom: the four scale coordinates (original, canonical,
+  semigroup tau with chi(tau) = tau^{1/alpha} and the alpha = 1 coincidence per R0.1,
+  parabolic xi with x = xi^2). Formulas checked against the defining statements row by
+  row.
+- Theorem-dependency map: SKIPPED (was optional; the blueprint's dependency graph, linked
+  from §1.1, already serves this).
+- Metaphor audit: left to the author by design ("author taste governs") — the delay
+  dictionary already fixes random-delay as primary and delegates the optical reading to
+  rem:optical-depth, so no passage was found where a trim is clearly Claude's call.
 
 ### R10 — presentation batch                                             [status: open]
 
