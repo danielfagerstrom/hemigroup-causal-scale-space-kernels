@@ -139,6 +139,18 @@ the standard representation of `s^α`, and Frullani for `log(1+s)`.
 blueprint-only, and that is an acceptable outcome — say so in the annotation rather than
 leaving it untagged and ambiguous.
 
+**Added 2026-09-01, on external review (author's instruction):** chapter 8 gained
+`prop:gamma-regularity` (the Pólya frequency members and non-creation from the signal),
+`prop:vd-impossibility` (scale-monotone variation diminution forces the pure delay), and
+the remark `rem:ladder-vd` — promoted from the paper's review-response batches R1/R2.
+Both propositions are `[A]`-status on the new ledger entries A19/A20 (Karlin's
+VD ⟺ TP correspondence and Schoenberg's one-sided representation, anchors
+image-verified). **Deliberately without `\lean` tags and outside every Lean phase**: the
+variation-diminishing/total-positivity vocabulary is excluded from the development by the
+same design decision that excludes CM (`DESIGN-formalization-strategy.md`), so these are
+permanent prose-`[T]`-over-`[A]` nodes, not formalization targets. The paper's companion
+remark `rem:pf-hemigroup` stays paper-only (glosses tied to the paper's structure).
+
 ---
 
 ## Phase 5 — Chapter 9, the Sonine core

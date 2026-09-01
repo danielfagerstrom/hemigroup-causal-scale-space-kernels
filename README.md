@@ -23,9 +23,9 @@ positioning and literature work live in the wiki hub's outline page.
 **Written through §12; formalised through §9, chapter 11 entire, and chapter 12's classification
 step, plus all three halves of the main theorem.**
 
-The blueprint carries all of §§2–12 — 95 statement nodes (the count `linkage check` reports;
+The blueprint carries all of §§2–12 — 97 statement nodes (the count `linkage check` reports;
 definitions, lemmas, propositions, theorems and corollaries, remarks and examples not counted)
-— and `AXIOMS.md` has 18 ledger
+— and `AXIOMS.md` has 20 ledger
 entries, each with a page anchor. The Lean development is ~8,500 lines, `sorry`-free, and rests
 on Lean core plus **two** axioms, which do not mix:
 

@@ -956,6 +956,71 @@ already trusts. @dym1976gaussian is the book-length companion.
   beyond the printed text — the A2 bridge and the uniqueness inference — are recorded above and
   neither is needed by the Lean statement.
 
+## A19 — Variation diminution and total positivity coincide for translation kernels
+**Blueprint:** `prop:gamma-regularity` (also consumed by `prop:vd-impossibility`) · **Lean:** *(none — the VD/TP vocabulary is outside the development by design)*
+**Cite:** @karlin1968total — Ch. 5, Theorem 3.1(i), p. 233, and Theorem 4.2, pp. 242–243
+
+- **Statement as used.** Convolution with a density kernel is variation-diminishing —
+  `S^-(k * g) <= S^-(g)`, sign changes counted in the essential sense — **iff** the
+  translation kernel `k(u - v)` is totally positive; for a kernel supported on `[0,inf)`
+  that is the one-sided Pólya frequency property. Both directions are consumed:
+  sufficiency by `prop:gamma-regularity`(1) (a PF kernel diminishes the counts of the
+  field), necessity by `prop:vd-impossibility` Step 1 (a variation-diminishing increment
+  has a PF density after smoothing).
+- **Primary — Theorem 3.1(i), p. 233 (sufficiency).** If `K(x,y)` is `SR_r` (`r >= 2`) and
+  `f` has `n <= r - 1` relevant sign changes with respect to `mu`, then
+  `S^-[g] <= S_mu[f]` for the transform `g(x) = INT K(x,y) f(y) dmu(y)` — display (3.5).
+  Printed hypotheses: `f` bounded Borel-measurable (the section's standing convention,
+  stated at the top of p. 233), the integral finite. A `TP_inf` translation kernel gives
+  the bound for every `n`. The extension from bounded to integrable arguments used by the
+  node is the standard truncation and is **taken with the citation**, recorded in the
+  node's Assignment.
+- **Primary — Theorem 4.2, pp. 242–243 (necessity).** Let `k(u)` be a density on
+  `(-inf,inf)`. If the transformation (4.4) enjoys property (4.6) — `S^-(g) <= S_mu(f)`
+  for all bounded Borel `f` with `S_mu(f) <= r - 1`, `mu` Lebesgue measure — then
+  `k(u - v)` is `TP_r` a.e. Built on Theorem 4.1 (p. 242), which delivers `SR_r`, and the
+  sign-pinning argument on p. 243.
+- **Counting convention.** Karlin's *relevant sign changes with respect to `mu`* with `mu`
+  Lebesgue measure is exactly the blueprint's essential (almost-everywhere) counting; the
+  nodes state their counts in that sense, so hypotheses and conclusion match the printed
+  form with no translation beyond vocabulary.
+- **Provenance.** Added 2026-09-01, promoting the external-review results (the repaired
+  Pólya-frequency proposition and the impossibility theorem) from the paper on the
+  author's instruction. All three page anchors read from the held scan in the same pass.
+- **Confidence.** OK. The anchors are image-verified; the one step beyond the printed text
+  — bounded to integrable arguments in the sufficiency leg — is named here and in the
+  consuming node's Assignment, not silently absorbed.
+
+## A20 — Schoenberg's representation of one-sided Pólya frequency densities
+**Blueprint:** `prop:vd-impossibility` (also consumed by `prop:gamma-regularity`) · **Lean:** *(none — the VD/TP vocabulary is outside the development by design)*
+**Cite:** @karlin1968total — Ch. 7, Theorem 3.2(b), p. 345, and Remark 3.1, p. 346
+
+- **Statement as used.** A density supported on `[0,inf)` is a one-sided Pólya frequency
+  density **iff** the reciprocal of its Laplace transform is an entire function of the
+  form `C e^{delta s} PROD_i (1 + lambda_i s)` with `C > 0`, `delta >= 0`,
+  `lambda_i >= 0`, `SUM_i lambda_i < inf`. Necessity is what `prop:vd-impossibility`
+  spends (the product form of `e^g (1 + eps s)^2`); sufficiency is what
+  `prop:gamma-regularity` spends (reading `(1 + xs)^gamma` and the Thorin-atom form
+  against it), together with the branch-point exclusion for non-integer `gamma`.
+- **Primary — Theorem 3.2(b), p. 345.** "A necessary and sufficient condition that a
+  density function `f(u)`, for which `f(u) = 0` (`u < 0`), be PF is that the reciprocal of
+  its Laplace transform be an entire function of class `E_1^*` with `SUM lambda_i > 0`."
+  Assembled on the page from Theorems 2.1, 2.2, 3.1 and Remark 2.1.
+- **Primary — Remark 3.1, p. 346.** Drops integrability and displays the one-sided form
+  explicitly: `f` PF with `f(u) = 0` for `u < 0` iff the transform exists and equals
+  `e^{-delta s} (s^r PROD_i (1 + lambda_i s))^{-1}`, `delta >= 0`, `lambda_i >= 0`,
+  `0 < SUM lambda_i < inf`, `r` a nonnegative integer; a *density* is the case `r = 0`,
+  with the reciprocal `C e^{delta s} PROD (1 + lambda_i s)` — the form as used above. The
+  degenerate case `SUM lambda_i = 0` (a pure shift) is excluded by the printed
+  `SUM lambda_i > 0`; the nodes' pure-delay member enters as the *kernel* `delta_{b_0 x}`,
+  not as a PF density, and no claim about it rides on this entry.
+- **Provenance.** Added 2026-09-01 together with A19, same pass, both page anchors read
+  from the held scan.
+- **Confidence.** OK. Both anchors image-verified; the statement as used is the printed
+  one specialised to densities (`r = 0`), with the sign convention reconciled — Karlin's
+  one-sided display on p. 346 is in the `(1 + lambda_i s)` form, matching the nodes
+  verbatim.
+
 ## Notes on the sources
 
 - **@feller2009introduction** — the citekey year is wrong (the item is the 2nd edition, 1971)
