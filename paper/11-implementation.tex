@@ -16,7 +16,8 @@ direction can be sampled \emph{exactly}, for any family
 (Proposition~\ref{prop:knot-exactness}); for the Gamma family the time direction then needs
 only $\gamma$ first-order states per increment (Proposition~\ref{prop:gamma-cascade}); and
 the whole Thorin subclass --- every admissible family with completely monotone memory
-kernel, the Bessel and stable corners included --- reduces to banks of such sections
+kernel, the Bessel and stable corners included --- is approximated from inside the axiom
+class by banks of such sections, exactly rational when the Thorin weights are integers
 (Proposition~\ref{prop:thorin-subclass}), leaving only the genuinely non-Thorin members to
 direct convolution. The structural fact that organizes everything is the first step:
 the \emph{scale direction never needs to be discretized approximately}:
@@ -117,8 +118,9 @@ $\partial_t u = \tfrac12 u_{\xi\xi} + \tfrac{\beta}{\xi}u_\xi$ in time (implicit
 care at the degenerate boundary), which reintroduces scale-direction discretization error; or
 (iii)
 rational approximation of the irrational symbol, in the manner standard for
-fractional-order elements in filter and control design (\sscite{oustaloup2000frequency}), with state count growing logarithmically in the required bandwidth ---
-made systematic within the axioms in Proposition~\ref{prop:thorin-subclass} below. All three
+fractional-order elements in filter and control design (\sscite{oustaloup2000frequency});
+Proposition~\ref{prop:thorin-subclass} below keeps that route inside the axiom class, and
+its state-count economy is discussed after the proposition, as a heuristic. All three
 are workable; none matches the cascade of Proposition~\ref{prop:gamma-cascade} in simplicity
 or exactness. This is the practical face of Theorem~\ref{thm:locality}: locality of the
 medium is bought at the price of heavy-tailed, non-rational kernels.
@@ -172,8 +174,8 @@ Theorem~\ref{thm:main-characterization}, and the kernel families converge weakly
 scale; positivity and unit mass hold \emph{exactly at every truncation level}, the
 approximation staying inside the axiom class rather than merely near it. For integer weights
 the increments over any knot ladder are rational of order $\sum_i w_i$ up to the pure delay
-$e^{-b_0(x_{k+1}-x_k)s}$ contributed by the drift --- itself exactly implementable as a
-sample delay --- realized by the cascade of Proposition~\ref{prop:gamma-cascade} applied per
+$e^{-b_0(x_{k+1}-x_k)s}$ contributed by the drift --- itself a pure time shift --- realized
+by the cascade of Proposition~\ref{prop:gamma-cascade} applied per
 Thorin node, with time constants $x/\tau_i$.
 \end{proposition}
 % (environment closes here; the discussion paragraph after the proof is body text)
@@ -216,9 +218,21 @@ Bessel operator and density expressible through the Bessel functions of the firs
 kind, $u(\tau) \propto \bigl[\tau\,\bigl(J_a^2 + Y_a^2\bigr)\bigl(\sqrt{2\tau}\bigr)\bigr]^{-1}$
 (\sscite{ismail1979special}), decaying like $\tau^{-1/2}$ at infinity in accordance with
 $F(s) \sim \sqrt{2s}$. And the gamma-product ladder of Proposition~\ref{prop:local-ladder} is
-GGC since $\HCM \subset \GGC$ (\sscite{bondesson1992generalized}). The conclusion deserves stating plainly: \textbf{the Gamma family is the implementation
-substrate for the entire Thorin subclass} --- all four working families --- even when
-Bessel semantics are wanted, the machine one builds is a bank of first-order Gamma sections.
+GGC since $\HCM \subset \GGC$ (\sscite{bondesson1992generalized}). The conclusion deserves
+stating plainly, and with its three statuses separated: \textbf{the Gamma family is the
+implementation substrate for the entire Thorin subclass} --- all four working families ---
+in the following graded sense. \emph{Proved, any positive weights:} atomic truncations of
+the Thorin measure are themselves admissible families converging weakly at every scale, so
+the subclass is approximated from \emph{inside} the axiom class
+(Proposition~\ref{prop:thorin-subclass}). \emph{Proved, integer weights:} the truncated
+member is realized \emph{exactly}, finitely many first-order sections per increment, the
+cascade of Proposition~\ref{prop:gamma-cascade} run per Thorin node. \emph{Heuristic, real
+weights:} realizing a non-integer-weight truncation by first-order sections is the
+rational-fitting practice of Remark~\ref{rem:local-implementation}(iii)
+(\sscite{oustaloup2000frequency}); no error theorem is claimed for it here, and a
+constructive integer-weight approximation with error bounds is left open. Even when Bessel
+semantics are wanted, then, the machine one builds is a bank of first-order Gamma sections
+--- exactly so when the weights are integers, by fitting otherwise.
 And by Proposition~\ref{prop:gamma-regularity}, the substrate is essentially the regularity
 class of \S\ref{sec:examples}: both select drift plus integer Thorin atoms of finite mean,
 the variation-diminishing property admitting countably many atoms where rationality keeps
@@ -239,7 +253,11 @@ $(\log s)^2$ exponent growth corresponds to an asymptotically log-uniform Thorin
 a constant number of sections per decade. In practice the
 node data $(\tau_i, w_i)$ come either from quadrature of $U$ or from direct rational fitting
 of the increment transfer functions; the Thorin structure guarantees that a fit with
-\emph{positive} weights exists.
+\emph{positive} weights exists. One caveat on the drift: the pure delay
+$e^{-b_0 \Delta x\, s}$ is a time shift by $b_0 \Delta x$, which a sampled implementation
+realizes exactly only when that shift is an integer number of samples --- otherwise it is a
+fractional delay, approximated by the standard interpolation and allpass designs, again with
+no error claim made here.
 
 \paragraph{Comparison of the three corners.}
 Table~\ref{tab:corners} collects the comparison.

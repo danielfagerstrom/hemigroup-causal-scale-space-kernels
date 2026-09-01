@@ -169,19 +169,27 @@ every scale, and mu_{x,y}* the same along the evolution (the scale-Cauchy readin
 is NOT claimed (stability in a topology adapted to A) stated, the full-Hadamard question
 explicitly left open per D1. §13 had no well-posed occurrence (verified by grep).
 
-### R5 — Thorin substrate separation                                     [status: open]
+### R5 — Thorin substrate separation                                     [status: DONE 2026-09-01]
 
-- §11 prop:thorin-subclass discussion: split the bold claim into (i) admissible atomic
-  approximation, any positive weights (proved); (ii) exact finite first-order realization,
-  integer weights (proved); (iii) rational fitting for real weights (heuristic, cite
-  oustaloup2000frequency where it already is; no error theorem claimed).
-- Add the fractional-sample-delay caveat for the drift (one sentence).
-- Do not advertise "sections per decade" earlier than the heuristic paragraph; check §1 and
-  abstract phrasing ("approximate the entire completely-monotone subclass" stays, since
-  prop:thorin-subclass's weak-convergence clause does hold for real weights — the
-  overclaim is only the *rational/first-order* rider).
-- Constructive integer-weight approximation theorem with error bounds: recorded as an open
-  problem / companion-note candidate, not attempted here.
+- §11 bold-claim paragraph split into the three statuses, labelled in place: (i) *proved,
+  any positive weights* — admissible atomic truncations, weak convergence, in-class
+  approximation (prop:thorin-subclass); (ii) *proved, integer weights* — exact finite
+  first-order realization per increment (prop:gamma-cascade per node); (iii) *heuristic,
+  real weights* — rational fitting per rem:local-implementation(iii)/oustaloup2000frequency,
+  no error theorem claimed, and the constructive integer-weight approximation with bounds
+  recorded as open in the text itself. Section intro's "reduces to banks" likewise graded
+  ("approximated from inside the axiom class ..., exactly rational when the weights are
+  integers").
+- rem:local-implementation(iii): the log-state-count advertisement removed from the early
+  remark; it now defers to the post-proposition heuristic paragraph (which already carried
+  the honest "no error bound claimed" form). No "sections per decade" before that
+  paragraph; §1 and abstract checked — their "first-order" claims attach to the Gamma
+  family (exact) and to the weak-convergence clause, both proved, so unchanged per plan.
+- Drift caveat added (practice paragraph): the pure delay is a time shift, exact on a
+  sampled grid only at integer sample counts, otherwise a fractional delay approximated by
+  standard interpolation/allpass designs, no error claim. The proposition's "exactly
+  implementable as a sample delay" softened to "itself a pure time shift"; fig-filterbank
+  caption "the drift's exact sample delay" -> "the drift's pure time shift".
 
 ### R6 — scoping batch (Issue 6 + appendix corrections)                  [status: open; after R0]
 
