@@ -17,8 +17,9 @@
 % (H), and zstar-log-growth, the Lévy-data reading of (H)'s second clause (2026-08-30);
 % delayed-average-mellin, signaling-mellin-form and
 % fractional-integral-derivative stay folded into the proofs that contain them.
-% The well-posedness arc (2026-08-30) — def:mellin-solution, lem:mode-rigidity,
-% cor:signaling-wellposed, cor:signaling-classical, rem:classical-families — sits after
+% The well-posedness arc (2026-08-30; completed 2026-09-01, publication plan P1) —
+% def:mellin-solution, lem:mode-rigidity, cor:signaling-wellposed, cor:signaling-classical,
+% rem:classical-families, cor:signaling-hadamard, rem:signaling-stability — sits after
 % rem:poles, before the examples, matching the blueprint's arc paragraph placement (the
 % blueprint appends the nodes at chapter end).
 % Adapted references, flagged inline: "§10"/"Chapter 12" → the appendix / §10;
@@ -553,8 +554,9 @@ of Mellin transforms in the scale variable (2); and the inversion is unique (3) 
 the \emph{operator}, that is, not yet the solution. What ``solves'' means, and the
 sense in which the problem is genuinely \emph{solved}, is settled after the
 theorem: Definition~\ref{def:mellin-solution} names the notion of solution that
-clause~(2) informally reads off, and Corollary~\ref{cor:signaling-wellposed} adds
-\emph{solution}-uniqueness.
+clause~(2) informally reads off, Corollary~\ref{cor:signaling-wellposed} adds
+\emph{solution}-uniqueness, and Corollary~\ref{cor:signaling-hadamard} completes
+Hadamard's demands.
 
 % shared with blueprint thm:signaling-form
 \begin{theorem}[Theorem 4$'$: the signaling form]\label{thm:signaling-form}
@@ -664,11 +666,14 @@ period, the theory's counterpart of the log-convexity hypothesis Bohr--Mollerup 
 Corollary~\ref{cor:signaling-wellposed} assembles existence with \emph{solution}-uniqueness
 under that normalisation --- existence and uniqueness in the profile-dominated Mellin
 class, which Theorem~\ref{thm:signaling-form} alone does not deliver; of Hadamard's three
-demands this supplies the first two, and Remark~\ref{rem:signaling-stability} records the
-stability that comes free. A classical-solution clause, under an extra
+demands this supplies the first two, and Corollary~\ref{cor:signaling-hadamard} completes
+the third from the representation --- with stability under perturbation of the exponent
+besides --- so that the problem is well posed in the stated class,
+Remark~\ref{rem:signaling-stability} marking the boundary of the claim. A
+classical-solution clause, under an extra
 decay hypothesis on the negative-moment function $m$ that the Gamma, stable and Bessel-K
 families satisfy and the pure delay fails --- correctly, that family belonging instead to
-Theorem~\ref{thm:locality}'s territory --- closes the arc as
+Theorem~\ref{thm:locality}'s territory --- is
 Corollary~\ref{cor:signaling-classical}.
 
 % shared with blueprint def:mellin-solution
@@ -916,31 +921,122 @@ Theorem~\ref{thm:locality}'s territory --- a polynomial (here, first-order) symb
 construction, not reached by Corollary~\ref{cor:signaling-classical}'s route at all.
 \end{remark}
 
-% Verbatim from the blueprint's rem:signaling-stability (added in review response R4,
-% decision D1; promoted 2026-09-01), with one divergence: this copy reads the second
-% contraction through Appendix~\ref{sec:appendix-memory}, the blueprint copy through
-% \ref{thm:scale-cauchy} directly.
-\begin{remark}[stability for free; what is not claimed]\label{rem:signaling-stability}
-Of Hadamard's three demands on the signaling problem --- existence, uniqueness,
-continuous dependence on the data --- Corollary~\ref{cor:signaling-wellposed} supplies
-the first two, in the profile-dominated Mellin class. Part of the third comes free, from
-the representation rather than from the equation: the solution operator at each scale is
-convolution with a probability measure (Theorem~\ref{thm:main-characterization}), so for
-signals $f, g \in \core$ the fields $u(\cdot,x) := \Phi_{0,x}f$ and
-$v(\cdot,x) := \Phi_{0,x}g$ satisfy
+What remains of Hadamard's demands is continuous dependence, and it costs nothing: the
+representation supplies it, together with a stability under perturbation of the exponent
+itself that the equation alone would not suggest. The assembly earns the classical phrase.
+
+% shared with blueprint cor:signaling-hadamard — added 2026-09-01 (publication plan P1),
+% absorbing the contraction content of the former rem:signaling-stability (review response
+% R4, decision D1), which is recast below as the boundary-of-claim remark.
+\begin{corollary}[the signaling problem is well posed]\label{cor:signaling-hadamard}
+Assume (H), work in the canonical gauge, and let $f \in \core$, with
+$u(t,x) := (\Phi_{0,x}f)(t)$ the scale-space field. Then the signaling problem for $f$
+satisfies all three of Hadamard's demands --- existence, uniqueness, continuous dependence
+on the data --- and is stable under perturbation of the exponent besides:
+\begin{enumerate}
+\item \emph{(Existence.)} $u$ is a Mellin solution of the signaling problem for $f$
+(Definition~\ref{def:mellin-solution}), with profile-dominated modes (Corollary~\ref{cor:signaling-wellposed}(1)).
+\item \emph{(Uniqueness.)} It is the unique Mellin solution for $f$ with profile-dominated
+modes (Corollary~\ref{cor:signaling-wellposed}(2)).
+\item \emph{(Continuous dependence on the data.)} For $g \in \core$ with field
+$v(t,x) := (\Phi_{0,x}g)(t)$,
 \[
-  \|u(\cdot,x) - v(\cdot,x)\|_1 \;=\; \|\mu_{0,x} * (f - g)\|_1 \;\le\; \|f - g\|_1,
-  \qquad x > 0 :
+  \sup_{x>0}\,\|u(\cdot,x) - v(\cdot,x)\|_1 \;\le\; \|f - g\|_1,
+  \qquad
+  \|u(\cdot,y) - v(\cdot,y)\|_1 \;\le\; \|u(\cdot,x) - v(\cdot,x)\|_1 \quad (0 < x < y).
 \]
-dependence on the signal is nonexpansive in $X$, uniformly over all scales. The same
-contractivity reads along the evolution itself ---
-$\|u(\cdot,y) - v(\cdot,y)\|_1 \le \|u(\cdot,x) - v(\cdot,x)\|_1$ for $x < y$, since
-$\mu_{x,y}$ is again a probability measure --- so in the scale-Cauchy reading of
-Appendix~\ref{sec:appendix-memory}, a perturbation of the record at one scale does not
-grow at any coarser one. What is \emph{not} claimed is a stability estimate in a topology
-adapted to $A$ itself --- continuity of the solution in the Mellin-class data, or
-dependence on perturbations of the operator; whether the signaling problem is well posed
-in the full Hadamard sense in such a topology is a question this article leaves open.
+\item \emph{(Stability under perturbation of the exponent.)} Let $F_n$ be admissible
+exponents with $F_n(s) \to F(s)$ for every $s > 0$, and let
+$u_n(t,x) := (\mu^{(n)}_{0,x} * f)(t)$ be the corresponding fields, $\mu^{(n)}_{0,x}$ the
+canonical-gauge kernel of $F_n$ --- the law of $x\,T^{(n)}_1$ with
+$\Ex[e^{-sT^{(n)}_1}] = e^{-F_n(s)}$. Then for every $x > 0$,
+\[
+  u_n(\cdot, x) \;\to\; u(\cdot, x) \quad\text{in } \Xz .
+\]
+When every $F_n$ satisfies (H), the left side is, by (1)--(2) applied to $F_n$, the unique
+profile-dominated Mellin solution of the perturbed problem: the solutions of the perturbed
+problems converge, at every scale, to the solution of the limit problem.
+\end{enumerate}
+\end{corollary}
+
+\begin{proof}
+(1) and (2) are Corollary~\ref{cor:signaling-wellposed}, restated clause for clause.
+
+(3) By Theorem~\ref{thm:main-characterization} the solution operator at scale $x$ is convolution
+with the probability measure $\mu_{0,x}$, so $u(\cdot,x) - v(\cdot,x) = \mu_{0,x}*(f-g)$;
+and convolution with a probability measure $\mu$ carried by $[0,\infty)$ is nonexpansive on
+$X$: by Tonelli,
+$\int |(\mu * h)(t)|\,dt \le \int\!\!\int |h(t-y)|\,d\mu(y)\,dt = \mu([0,\infty))\,\|h\|_1
+= \|h\|_1$. That gives the first display, uniformly in $x$. For $0 < x < y$ the hemigroup
+factorizes $\Phi_{0,y} = \Phi_{x,y}\Phi_{0,x}$, so
+$u(\cdot,y) - v(\cdot,y) = \mu_{x,y} * \bigl(u(\cdot,x) - v(\cdot,x)\bigr)$ with $\mu_{x,y}$
+again a probability measure, and the same bound applies.
+
+(4) Two steps: the kernels converge weakly, and weak convergence convolves into
+$\Xz$-convergence.
+
+\emph{The kernels.} Fix $x > 0$. The Laplace transform of $\mu^{(n)}_{0,x}$ at $s$ is
+$e^{-F_n(xs)}$, which converges to $e^{-F(xs)}$, the transform of $\mu_{0,x}$, for every
+$s > 0$; so $\mu^{(n)}_{0,x} \to \mu_{0,x}$ weakly by Proposition~\ref{prop:laplace-continuity}. (The
+same argument runs on any increment: the transform of $\mu^{(n)}_{x,y}$ is
+$e^{-(F_n(ys) - F_n(xs))}$, so every $\mu^{(n)}_{x,y} \to \mu_{x,y}$ weakly as well.)
+
+\emph{The fields.} We show that $\mu_n \to \mu$ weakly, for probability measures on
+$[0,\infty)$, forces $\mu_n * h \to \mu * h$ in $X$ for every $h \in X$, and apply this at
+$\mu_n = \mu^{(n)}_{0,x}$, $h = f$. First let $g$ be continuous with compact support and
+$g \ge 0$. Then $(\mu_n * g)(t) = \int g(t-y)\,d\mu_n(y) \to (\mu * g)(t)$ at every $t$,
+the integrand being bounded and continuous in $y$; and the integrals are all equal: by
+Tonelli, $\int (\mu_n * g) = \mu_n([0,\infty))\int g = \int g$, and likewise for $\mu$.
+Pointwise convergence of nonnegative integrable functions whose integrals converge to the
+limit's integral upgrades to $L^1$ convergence --- Scheffé's lemma, and here it is one
+line: writing $a_+ := \max(a, 0)$,
+\[
+  \int\bigl|\mu_n * g - \mu * g\bigr|
+  \;=\; \int(\mu_n * g - \mu * g) \;+\; 2\int\bigl(\mu * g - \mu_n * g\bigr)_+ ,
+\]
+the first term zero as just computed, and the second tending to zero by dominated
+convergence, since $0 \le (\mu * g - \mu_n * g)_+ \le \mu * g \in L^1$ and the integrand
+tends to zero pointwise. A general continuous compactly supported $g$ splits as
+$g_+ - g_-$, both again continuous with compact support. Finally, for $h \in X$ and
+$\varepsilon > 0$ pick such a $g$ with $\|h - g\|_1 < \varepsilon$ --- continuous functions
+of compact support are dense in $L^1$ --- and the contraction of (3) closes the estimate:
+\[
+  \|\mu_n * h - \mu * h\|_1
+  \;\le\; \|\mu_n * (h - g)\|_1 + \|\mu_n * g - \mu * g\|_1 + \|\mu * (g - h)\|_1
+  \;\le\; 2\varepsilon + \|\mu_n * g - \mu * g\|_1 ,
+\]
+whose limit superior over $n$ is at most $2\varepsilon$, for every $\varepsilon > 0$.
+Applied at $\mu_n = \mu^{(n)}_{0,x}$ and $h = f$ this gives $u_n(\cdot,x) \to u(\cdot,x)$
+in $X$; every field here is causal, $f$ and the kernels being carried by $[0,\infty)$, so
+the convergence is in $\Xz$. The closing sentence of (4) is (1)--(2) applied to $F_n$,
+whose hypotheses --- (H) for the exponent, $f \in \core$ for the data --- are exactly what
+is assumed.
+\end{proof}
+
+% Verbatim from the blueprint's rem:signaling-stability (added in review response R4,
+% decision D1; recast 2026-09-01, publication plan P1, when cor:signaling-hadamard absorbed
+% its contraction content — the "what is not claimed" clause survives as the boundary of
+% the corollary, and the label stays), with one divergence: this copy reads the
+% scale-Cauchy clause through Appendix~\ref{sec:appendix-memory}, the blueprint copy
+% through \ref{thm:scale-cauchy} directly.
+\begin{remark}[what the stability rests on; what is not claimed]\label{rem:signaling-stability}
+The stability clauses of Corollary~\ref{cor:signaling-hadamard} come from the representation rather
+than from the equation: the solution operator at each scale is convolution with a
+probability measure (Theorem~\ref{thm:main-characterization}), and the exponent stability is the
+continuity theorem for Laplace transforms (Proposition~\ref{prop:laplace-continuity}) read on the
+kernels. Neither uses (H), which enters only through the solution concept of clauses
+(1)--(2); both therefore hold for every admissible family and every signal in $X$, not
+only on the class the signaling problem is posed on. In the scale-Cauchy reading of
+Appendix~\ref{sec:appendix-memory}, the second contraction of clause~(3) says that a perturbation of
+the record at one scale does not grow at any coarser one. What is \emph{not} claimed is a
+stability estimate in a topology adapted to $A$ itself --- continuity of the solution in
+the Mellin-class data, or convergence of the operators behind clause~(4): the conclusion
+there is convergence of the solution fields, never of the symbols, and the distinction is
+real --- $F(s) + s/n \to F(s)$ pointwise with every perturbed exponent carrying drift, so
+$z_* = \infty$ along the whole sequence (Lemma~\ref{lem:zstar-log-growth}(2)) while the limit's
+$z_*$ may be finite, and the strips the symbols live on do not converge to the limit's.
+Whether the signaling problem is well posed in a topology adapted to $A$ is a question
+this article leaves open.
 \end{remark}
 
 Three worked cases calibrate the construction, ordered by the growth of the symbol ---
