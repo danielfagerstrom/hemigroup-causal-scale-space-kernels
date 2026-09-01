@@ -15,7 +15,7 @@
 
 The main line reads the representation (7.1) through its transforms; this appendix reads it
 through the memory kernel. Lemma~\ref{lem:memory-kernel} identified $F'$ as, up to the drift,
-the Laplace transform of the nonincreasing function $k$; here that identity becomes the
+the Laplace transform of the nonincreasing function $k$. Here that identity becomes the
 evolution of the scale space across scale --- a general fractional relaxation equation whose
 kernel is $k$ itself, dilated to the current scale --- together with the Sonine conservation
 identity that gives each scale's memory operator an explicit right inverse, a Volterra equation from
@@ -30,16 +30,16 @@ $F \not\equiv 0$ (equivalently (ND); Corollary~\ref{cor:strict-monotonicity}).
 Three readings of one function organize this subsection. The function $k$ enters the paper
 in \S\ref{sec:characterization} as the family's catalogue of delays --- the size-weighted
 density of the subordinator's jumps. The results below prove that the same $k$, dilated to
-the current scale, is also the \emph{physical memory kernel} of the scale space: the
+the current scale, is also the \emph{physical memory kernel} of the scale space. The
 evolution along the memory line is a conservation law in the $(t,x)$-plane whose flux is a
 $k$-weighted running average of the record --- integrating over $t$ kills the right-hand
 side, so mass is transported across scale, never created, which is axiom (A5) in
-differential form (Proposition~\ref{prop:scale-evolution}); this memory operation destroys
+differential form (Proposition~\ref{prop:scale-evolution}). The memory operation destroys
 no information, the algebraic reciprocal of its symbol being again the transform of a
 causal positive measure, so the memory operator at each scale has an explicit right inverse
 --- what is inverted is the memory operator $D^{(x)}$, in the one composition order stated,
 not the cascade step $\Phi_{x,y}$ (Theorem~\ref{thm:sonine-conservation},
-Corollary~\ref{cor:exact-inversion}); and the temporal kernels themselves are recovered
+Corollary~\ref{cor:exact-inversion}). And the temporal kernels themselves are recovered
 from $k$ by forward integration, with no Laplace inversion
 (Propositions~\ref{prop:volterra}--\ref{prop:volterra-density}). One function, three proven
 roles: delay catalogue, scale generator, and Volterra generator of the kernels. The
@@ -231,7 +231,7 @@ Proposition~\ref{prop:laplace-uniqueness-sigma-finite} concludes.
 Note the scaling structure, on the absolutely continuous parts: the density of
 $\kappa^{(x)}$ dilates with $L^1$ normalization, $\tfrac1x k(\tfrac tx)$, and $\ell^{(x)}$
 with sup normalization, $\ell^{(x)} = x\,(\ell^{(1)} \circ (x\,\cdot)^{-1})$
-(Lemma~\ref{lem:potential-kernel-scaling}); in the convolution the two normalizations cancel
+(Lemma~\ref{lem:potential-kernel-scaling}). In the convolution the two normalizations cancel
 --- substituting $t \mapsto xt$ carries $\kappa^{(x)} * \ell^{(x)}$ onto
 $\kappa^{(1)} * \ell^{(1)}$ scaled back to Lebesgue measure, the $\tfrac1x$ against the $x$
 --- so the identity holds at every scale because it holds at one: the pair
@@ -345,8 +345,8 @@ Proposition~\ref{prop:laplace-uniqueness-sigma-finite}.
 \end{proof}
 
 The measure $\theta_x$ is the drift atom together with the jump measure of $\mu_x$
-weighted by jump size --- its density $k(t/x)$ is $t$ times the Lévy density $k(t/x)/t$ ---
-so (V.1) has a probabilistic reading: \emph{size-biasing the total delay adjoins one
+weighted by jump size: its density $k(t/x)$ is $t$ times the Lévy density $k(t/x)/t$.
+So (V.1) has a probabilistic reading: \emph{size-biasing the total delay adjoins one
 independent extra jump, drawn from the length-weighted catalogue}. This is the classical
 half-line characterization of infinite divisibility (\sscite{steutel2004infinite}) with
 the catalogue's role made explicit, and it is what makes the equation constructive: the
@@ -396,7 +396,7 @@ determination is proved (Proposition~\ref{prop:volterra-uniqueness}); for the de
 equation we record here, as a heuristic and without a formal statement, why it
 determines $\phi_x$ rather than proving it: on $(b_0x, \infty)$, where $\phi_x$ is supported,
 (V.2) is linear and homogeneous, and a \emph{regular} equation of that form --- continuous
-coefficient, bounded away from zero --- has the trivial solution only; it is the vanishing of
+coefficient, bounded away from zero --- has the trivial solution only. It is the vanishing of
 the coefficient $t - b_0x$ exactly at the left endpoint of that interval that admits a
 nontrivial family instead, from which the unit-area axiom (A5) selects $\phi_x$. (At that
 endpoint the \emph{density} need not vanish: for the Gamma family it is positive at
@@ -641,7 +641,7 @@ Corollary~\ref{cor:laplace-uniqueness-signed} applied to their difference.
 
 Two things about the proof deserve saying. The uniqueness class is the natural one --- norm
 $C^1$ solutions through the core --- and what it excludes are solutions that leave the core
-or lose the boundary value; within it, uniqueness is a \emph{scalar} linear ODE per Laplace
+or lose the boundary value. Within it, uniqueness is a \emph{scalar} linear ODE per Laplace
 frequency, and no semigroup generation theory is invoked anywhere in the theorem --- the
 preference of the methodological remark in \S\ref{sec:conclusions} exercised once more, an
 argument about the object where a theory about a class of operators would also have served,
@@ -738,7 +738,7 @@ value by catalogue-delayed past values; at a maximum that dominates its past, on
 values can arrive, which is the sign. The proviso is sharp in both directions. A
 \emph{secondary} maximum in the shadow of a larger earlier peak has brackets of both signs
 --- the echo of the peak drains forward and can enhance it --- which is the genuine physics
-of a delay line, not a defect of the formulation; the unconditional statement is the
+of a delay line, not a defect of the formulation. The unconditional statement is the
 counting form of Proposition~\ref{prop:gamma-regularity}, and the two are complementary:
 counting non-creation from the signal, unconditional but restricted to the P\'olya
 frequency members;
