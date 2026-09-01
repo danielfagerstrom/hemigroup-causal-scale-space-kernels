@@ -118,7 +118,22 @@ convention note. Labels and \uses edges untouched (the graph is label-based).
   \ref works forward; plasTeX does not care) — one careful CI run is the gate.
 - Estimate: half a day.
 
-### P3 — language polish: the tic pass                                  [status: open]
+### P3 — language polish: the tic pass                                  [status: DONE 2026-09-01]
+
+Executed restrained, per the author's instruction ("don't overdo it; don't imitate my
+style"): a survey of the named target list found the paper largely clean already — earlier
+batches had removed most instances — so the pass is eight surgical edits, not a rewrite.
+Removed: the two literal named-tic survivors ("deserves stating plainly" in §11, the
+"exactly as far as it can be" flourish in §1); the worst em-dash pileup ("--- are --- we
+record this without proof here ---" in rem:markov-media, a verbatim-shared remark changed
+identically in both copies); two of the eight "What X is Y" frontings (§1.1's "What
+survives is exactly", and P1's own connective in §9, which had also reintroduced an "earns
+the phrase" flourish R4 removed — both rewritten); two rhetorical "exactly"s in §1; "Three
+glosses." given a verb. Kept deliberately: the load-bearing "exactly"s (characterization
+claims), the price metaphor (thematic), "Two things follow."/"Four problems remain." (one
+each), the §9 "What survives is dilation structure" pivot, and all shared statement
+bodies. The author's own long-sentence pass preceded this. Further polish, if any, falls
+to P5's read-through.
 
 - Target list, named so the pass is surgical (each fine once, but they repeat):
   "deserves stating plainly"; "worth being exact about"; the "honest form / honest
