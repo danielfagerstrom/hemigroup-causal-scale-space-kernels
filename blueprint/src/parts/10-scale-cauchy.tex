@@ -2,7 +2,10 @@
 % Draft \S10 --- The scale-Cauchy problem: Theorem 3'
 %
 % Source: draft/hemigroup-causal-scale-space-kernels.md, lines 386-463.
-% Chapter 10 of the blueprint; the shared counter puts every number here on the draft's own.
+% Draft §10; renders as the second half of Appendix A since the 2026-09-01 reorder to the article's order
+% (content.tex has the rationale). Historical comments below that cite chapter or node
+% numbers ("Numbered 10.M") use the retired draft-aligned numbering; the `% draft:`
+% provenance comments are unaffected, and labels and \uses edges never carried numbers.
 %
 % Theorem 3'. This chapter upgrades \ref{prop:scale-evolution} from a distributional identity
 % to a classical Cauchy problem on an explicit operator core, and it is the first of the three
@@ -20,7 +23,7 @@
 % D(B) contains D(A) rather than that D(A) is a core. The two citations in A11 are genuinely
 % complementary, not redundant, and the node says so.
 
-This chapter upgrades \ref{prop:scale-evolution} from a distributional identity to a classical
+The second half of the appendix upgrades \ref{prop:scale-evolution} from a distributional identity to a classical
 Cauchy problem in the scale variable, on an explicit operator core. Throughout we work in the
 canonical gauge and write
 \[
@@ -48,7 +51,7 @@ $f \in \core$,
 \statusT\quad\emph{(The setting this lemma is about --- $\Xz$, the delay semigroup and $\core$
 --- is defined in \texttt{Hemigroup/DelayCore.lean}. $\Xz$ is modelled as a predicate on
 $X = L^1(\RR)$ rather than as a subtype, on the same grounds as the measure side's causality
-predicate; $\core$ is modelled as a predicate on genuine functions, because Chapters 11--12
+predicate; $\core$ is modelled as a predicate on genuine functions, because Chapters 9--10
 quantify over its consequences \emph{pointwise} and an $L^1$ class has no pointwise values; and
 $\core$ is defined by the primitive $f = \int_0^{\cdot} f'$ rather than by absolute continuity,
 since the passage from the latter to the former is the Lebesgue fundamental theorem, which
@@ -101,11 +104,11 @@ $\nu_x\bigl((r,\infty)\bigr) = k(r/x)/x$. For $f \in \core$ define
 \statusT\quad\emph{(\textbf{Defined in Lean} (2026-08-14), in
 \texttt{Hemigroup/PhillipsGenerator.lean}, and \textbf{not blocked by generation theory} --- the
 re-check that found so is recorded at \ref{lem:generator-properties}. Everything this definition
-names already existed: $\core$ and $(\shift_r)$ are \ref{lem:delay-core}'s, and $\nu_1$ is chapter~9's
+names already existed: $\core$ and $(\shift_r)$ are \ref{lem:delay-core}'s, and $\nu_1$ is this appendix's
 \texttt{exists\_tailMeasure} --- the quantile construction made for \ref{lem:potential-kernel}
 precisely because \texttt{StieltjesFunction} does not apply to a L\'evy tail.
 \textbf{The $\Xz$-valued Bochner integral needed no new theory}, against a plan that had recorded
-it as the expensive part of the chapter: $X = L^1(\RR)$ is a complete normed real space, $\shift_r$ is
+it as the expensive part of the scale-Cauchy development: $X = L^1(\RR)$ is a complete normed real space, $\shift_r$ is
 a continuous linear map on it, and $r \mapsto \shift_rf$ is continuous, so the integrand is strongly
 measurable and the definition is \emph{total} --- clause (1) below is what says it means something
 on $\core$, not what makes it well formed. Note the contrast with \ref{lem:delay-core}, where the
@@ -115,9 +118,9 @@ statement rather than in a proof, so it has to be built, and building it costs n
 nonincreasing has no right-continuous representative nameable here, and
 \texttt{exists\_tailMeasure} accordingly delivers $\nu_1\bigl((r,\infty)\bigr) = k(r)$ for
 \emph{almost every} $r$ rather than every $r$. That is exactly enough, because every use of the
-tail below sits under an integral in $r$ --- the same accounting chapter~9 already made for the
+tail below sits under an integral in $r$ --- the same accounting already made above for the
 potential kernel. Accordingly $\nu_1$ enters the Lean statements as a \emph{parameter} meeting
-that specification rather than as a construction, so that the chapter does not wait on an
+that specification rather than as a construction, so that the development here does not wait on an
 existence half; \texttt{exists\_hasLevyTail} closes the gap, and the two displayed forms above are
 one change of variables apart (\texttt{phillipsGenerator\_eq\_smul\_integral}).)}
 \end{definition}
@@ -142,7 +145,7 @@ $\bigl(\kappa^{(x)} * f\bigr)' = \varphi_x(\partial_t) f$ a.e.; that is, the Phi
 coincides on $\core$ with the memory-kernel operator of \ref{lem:memory-kernel-transform}.
 \end{enumerate}
 \statusT\quad\emph{(\textbf{Proved in Lean} (2026-08-15), all five clauses, and \textbf{Lean
-core} --- the whole of this lemma is interface-free, and the chapter-level ``blocked on
+core} --- the whole of this lemma is interface-free, and the sweeping ``blocked on
 C$_0$-semigroup theory'' under which it sat was wrong: no clause mentions a generator's domain, a
 resolvent, or a generation theorem, and the ``strong continuity of $\shift$'' that (4) invokes is
 chapter~4's continuity of translation. \texttt{Hemigroup/PhillipsGenerator.lean}; the statements

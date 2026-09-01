@@ -2,7 +2,10 @@
 % Draft \S11 --- The signaling form: Theorem 4'
 %
 % Source: draft/hemigroup-causal-scale-space-kernels.md, lines 465-565.
-% Chapter 11 of the blueprint; the shared counter puts every number here on the draft's own.
+% Draft §11; renders as Chapter 9 since the 2026-09-01 reorder to the article's order
+% (content.tex has the rationale). Historical comments below that cite chapter or node
+% numbers ("Numbered 11.M") use the retired draft-aligned numbering; the `% draft:`
+% provenance comments are unaffected, and labels and \uses edges never carried numbers.
 %
 % Theorem 4'. The chapter leaves the Laplace world for the Mellin calculus on the
 % multiplicative group -- and, as \ref{rem:wendel} anticipated, there is no Wendel theorem to
@@ -96,7 +99,7 @@ for the stable and Bessel-K families --- the paragraph below says so, and
 \ref{lem:moment-recursion}(2) \emph{proves} it for every local operator --- while Lean's
 \texttt{Real.sSup} of an unbounded set is the junk value $0$. With a real-valued $z_*$ the
 hypothesis $1 < z_*$ was therefore \textbf{false} exactly for the kernels \ref{thm:locality}
-classifies, so every theorem of chapters 11 and 12 was vacuous there, while remaining true and
+classifies, so every theorem of chapters 9 and 10 was vacuous there, while remaining true and
 non-vacuous for the Gamma family, where $z_* = \gamma$ is finite. Nothing was unsound and no proof
 was wrong; the statements simply said nothing about the article's own examples. In $[0,\infty]$
 the supremum is $\infty$, \texttt{zStar\_eq\_top\_of\_forall\_negMoment\_ne\_top} says so, and (H)
@@ -197,7 +200,7 @@ $\mu_{0,1}$ the construction already produces, so no new object enters and the d
 is \emph{not} needed --- which matters, because $\phi_1$ would drag in \ledger{A9} for a node
 that does not otherwise need it. The profile is the Laplace transform rather than the density, so
 Mathlib's \texttt{mellin} applies to it directly. And the negative moments are carried in
-$[0,\infty]$: divergence is the whole point of $z_*$, and Chapter~9 is the cautionary tale about
+$[0,\infty]$: divergence is the whole point of $z_*$, and the appendix is the cautionary tale about
 departing from that convention.)}
 \end{lemma}
 
@@ -592,7 +595,7 @@ functions --- and is worth keeping in view: a cancellation performed on symbols 
 justified at each point where the identity is used.
 
 When the symbol $B$ is a \emph{polynomial}, $A$ is a local differential operator and the
-equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in Chapter~12,
+equation is a classical PDE. That is precisely the situation of Theorem~5$'$ in Chapter~10,
 and of \ref{ex:bessel-quadratic} below.
 \end{remark}
 
@@ -743,7 +746,7 @@ $|\Gamma(c+i\tau)| \sim \sqrt{2\pi}\,|\tau|^{c-1/2}e^{-\pi|\tau|/2}$ does need S
 complex plane; \emph{integrability needs only quadratic decay}, and quadratic decay is the
 functional equation twice. That is the proof below, and it is elementary.}
 
-\emph{\textbf{So chapter 11 is no longer blocked upstream.} What \ref{def:inversion-operator}
+\emph{\textbf{So this chapter is no longer blocked upstream.} What \ref{def:inversion-operator}
 still needs from Mathlib's inversion theorem is the \emph{operator} formulation --- exhibiting
 the function whose Mellin transform is $B(-z)\tilde g(z)$ --- and a continuity hypothesis. Both
 are questions about this article, which is where \ledger{A12}'s correction said the cost would
@@ -940,7 +943,7 @@ apart, and their ratio is $B$ by \ref{lem:inversion-symbol}. Since this dilate i
 shape in which $A$ is ever applied --- \ref{thm:signaling-form}(2)'s Laplace form is this clause
 applied to $\hat u(s,\cdot) = \hat f(s)H(s\,\cdot)$ --- the article's use of \ledger{A12} is empty. The
 entry keeps its \textbf{[A]} tag on \ref{def:inversion-operator} because that is the \emph{paper's}
-stance, as \ledger{A5} and \ledger{A6} do in Chapter~2; what is machine-checked is recorded here.}
+stance, as \ledger{A5} and \ledger{A6} do in Chapter~3; what is machine-checked is recorded here.}
 
 \emph{\textbf{One line of the draft's proof does not survive transcription, and it is instructive.}
 It reads ``no pole of $B$ intervenes, the product containing no division''. That is true of the
@@ -994,7 +997,7 @@ give ``for a.e.\ $t$, for every $x$'', so the second display, which is an integr
 fixed $t$, cannot be taken of $(\Phi_{0,x}f)(t)$ as it stands. Some representative must be named
 whichever way the identification is read. What the choice made here buys is that it is
 \emph{local}: one function, $\Ex[f(t-xT_1)]$, defined outright, with the first display as its
-bridge --- rather than a pointwise model of $\Phi$ built under all of Chapters 10--12.}
+bridge --- rather than a pointwise model of $\Phi$ built under all of Chapters~9--10 and the scale-Cauchy appendix.}
 
 \emph{\textbf{$I^z$ is defined in the development, not cited.} Mathlib carries no fractional
 integral of any order, so the Riemann--Liouville integral is given its definition here. That adds
@@ -1201,7 +1204,7 @@ $\int_0^{t_0} t^{-1}dt = \infty$, a divergence fact the library does not current
 form. Priced against the target types rather than the paper proof --- the paper's own route, via
 complete monotonicity, is not available here at all, the development having no \texttt{CM}
 predicate --- this is genuinely more expensive than \ref{lem:standing-kernel-readings}, and
-nothing downstream needs it: every proof through chapter~12 consumes (H)'s two clauses as the
+nothing downstream needs it: every proof through chapter~10 consumes (H)'s two clauses as the
 Lean has always stated them, never this reading of them.)}
 \end{lemma}
 
@@ -1269,7 +1272,7 @@ already written to avoid.
 \textbf{Shares machinery with \ref{lem:standing-levy-reading}}: both run a monotone-convergence
 argument on \texttt{levyJump} as $s \to \infty$ (there for $\int k(t)t^{-1}dt$, here for
 $k(u/s)$ itself), so the two nodes should be formalised together if either is attempted.
-\textbf{Nothing downstream needs this reading.} Every proof through chapter~12 consumes $z_*$ as
+\textbf{Nothing downstream needs this reading.} Every proof through chapter~10 consumes $z_*$ as
 the abscissa \ref{def:standing-hypothesis} states it, never its log-growth rate; this node is a
 detector, not a dependency, and it has already caught one live error --- \S8's Bessel-K proof once
 asserted $k(t) \sim a$ as $t \to 0$, a finite limit that, with $b_0 = 0$, would force

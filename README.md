@@ -23,11 +23,18 @@ positioning and literature work live in the wiki hub's outline page.
 **Written through §12; formalised through §9, chapter 11 entire, and chapter 12's classification
 step, plus all three halves of the main theorem.**
 
-The blueprint carries all of §§2–14 — 106 statement nodes (the count `linkage check` reports;
+The blueprint carries all of the draft's §§2–14 — 106 statement nodes (the count
+`linkage check` reports;
 definitions, lemmas, propositions, theorems and corollaries, remarks and examples not counted)
 — and `AXIOMS.md` has 21 ledger
-entries, each with a page anchor. Chapters 13–14 (implementation, the temporal N-jet) were
-added 2026-09-01 for blueprint completeness and are deliberately outside the Lean plan. The Lean development is ~8,500 lines, `sorry`-free, and rests
+entries, each with a page anchor. The implementation and N-jet chapters (draft §§13–14) were
+added 2026-09-01 for blueprint completeness and are deliberately outside the Lean plan.
+Since 2026-09-01 the blueprint's chapters render in the *article's* order — signaling as
+Chapter 9, locality as 10, implementation as 11, the N-jet as 12, with the memory-kernel and
+scale-Cauchy material as Appendix A — so blueprint and paper read side by side. Chapter
+numbers in this README, in the parts' filenames (`11-signaling.tex` renders as Chapter 9),
+and in the Lean tree's file names and comments are the draft's section numbers, kept as
+provenance; every node's `% draft:` comment is the bridge. The Lean development is ~8,500 lines, `sorry`-free, and rests
 on Lean core plus **two** axioms, which do not mix:
 
 * **A17**, the existence half of the subordinator correspondence — what the *constructive*
