@@ -246,6 +246,17 @@ Executed:
 - **Remaining for P7 (author)**: make scale-space-lean public + Apache 2.0 (DP1's flagged
   consequence); make this repo public; the external reviews under notes/reviews/ if
   desired.
+- **CI incident (2026-09-01, root cause from the article-kit session)**: the lean job
+  died twice on the license-flip commit (562f7b7) with no logs, then passed unchanged on
+  a third attempt. Cause: the Lean job ran out of disk because lean-action's GitHub
+  cache stored all of Mathlib's compiled oleans (2.3 GB compressed, ~8 GB unpacked)
+  that `lake exe cache get` re-downloads on the next step anyway — so the cache save
+  failed with "No space left on device" as a warning on every green run since Aug 23,
+  leaving each run to rebuild the drift off that stale snapshot until a runner died
+  mid-build. Fixed in article-kit's reusable lean.yml (disk reclaim, workflow-owned
+  lake-v2 cache excluding Mathlib's build tree, hard free-space gate before the save);
+  first run after it lands is a cold build, and the stale Aug-23 cache entry should be
+  deleted from this repo's Actions caches page.
 
 - Keep-list first, then delete (the cleanup needs both): draft/ STAYS (author decision);
   PLAN/REVIEW/NOTES per DP2 (recommend keep, possibly under notes/); figures' sources and
