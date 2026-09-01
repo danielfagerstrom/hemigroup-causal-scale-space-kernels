@@ -50,7 +50,7 @@ Mellin transform --- where an elementary argument about the \emph{object} suffic
 longer. The formal development, which has no notion of complete monotonicity at all, could
 not take the classical route and so found the elementary one; having found it, there was no
 reason to keep the classical route on paper. The net effect is that the machine-checked results rest on
-two cited facts where the classical route would have spent six or seven, and that the one
+two cited facts where the classical route would have spent six or seven. And the one
 irreducible appeal to the derivative-sign definition ---
 Lemma~\ref{lem:selfdecomposable-exponents}, where $sF'(s)$ is the object of study --- is now
 visible as the single place where that vocabulary is doing work rather than providing
@@ -62,9 +62,9 @@ The limits of what is done here should be stated as plainly as the results. The 
 purely temporal; composition with a spatial scale space is untouched. The local corner is
 bought at a price the implementation section makes exact: the Bessel family admits no
 finite-dimensional time-recursive realization
-(Remark~\ref{rem:local-implementation}), and --- recorded without proof in
-Remark~\ref{rem:markov-media} --- the homogeneous members with $\alpha < \tfrac12$ admit no
-Markov medium at all. The memory-line theory holds under the standing hypothesis (H), which
+(Remark~\ref{rem:local-implementation}), and the homogeneous members with
+$\alpha < \tfrac12$ admit no Markov medium at all (recorded without proof in
+Remark~\ref{rem:markov-media}). The memory-line theory holds under the standing hypothesis (H), which
 the extreme rays with $b_0 = 0$ sit on the boundary of and the Gamma family with
 $\gamma \le 1$ fails. And the paper's numerical component
 (Example~\ref{ex:numerical-experiment}) exercises the implementation on synthetic signals
@@ -75,10 +75,10 @@ Four problems remain. One is genuinely open here: the relaxation of hypothesis (
 meromorphic continuation, which would admit the slowly growing exponents --- for instance
 the Gamma family with $\gamma \le 1$ --- into
 \S\S\ref{sec:signaling}--\ref{sec:locality} and \S\ref{sec:jet}. The others are open in
-this paper and taken up elsewhere. The memory-line inverse problem --- which admissible
-exponents $F$ are realized by genuine Markov media, i.e.\ a correspondence of Krein type
-(\sscite{kotani1982krein}; \sscite{dym1976gaussian}) admitting jumps, together with the
-question of what surface data determine the medium --- is settled here only in its local,
+this paper and taken up elsewhere. The memory-line inverse problem asks which admissible
+exponents $F$ are realized by genuine Markov media --- a correspondence of Krein type
+(\sscite{kotani1982krein}; \sscite{dym1976gaussian}) admitting jumps --- together with the
+question of what surface data determine the medium. It is settled here only in its local,
 positivity-respecting corner (Theorem~\ref{thm:locality}, discharging the promise of
 Remark~\ref{rem:markov-media}) and is otherwise the subject of a separate article. The
 complex-root cases of Proposition~\ref{prop:local-ladder}
@@ -163,32 +163,32 @@ stratum's structure theorem.
 
 The scale-time of \sscite{koenderink1988scale} also finds its place, though at the kernel
 level rather than as a stratum. Pulled back from the logarithmically remapped past to the
-time axis, its aperture is exactly the \emph{lognormal} density in the delay --- the
-Jacobian $du = d\xi/\xi$ of the remap completing the Gaussian into the lognormal --- and
+time axis, its aperture is exactly the \emph{lognormal} density in the delay, the
+Jacobian $du = d\xi/\xi$ of the remap completing the Gaussian into the lognormal. And
 by Thorin's theorem (\sscite{thorin1977lognormal}) the lognormal is a generalized gamma
-convolution: the containment is deep rather than decorative, resting on the theorem the
+convolution. The containment is deep rather than decorative, resting on the theorem the
 class of Proposition~\ref{prop:thorin-subclass} was created to deliver, and no elementary
 property of the log-remap produces it. The lognormal delay law therefore generates an
 admissible similarity family in the Thorin subclass, and a well-behaved one: every moment,
-positive and negative, is finite --- $\Ex[T^{-z}] = e^{-z\mu + z^2\sigma^2/2}$ for all $z$,
-so $z_* = \infty$ and (H) holds with room to spare --- while the exponent grows like
+positive and negative, is finite, with $\Ex[T^{-z}] = e^{-z\mu + z^2\sigma^2/2}$ for all $z$,
+so $z_* = \infty$ and (H) holds with room to spare. The exponent grows like
 $(\log s)^2$ by the Laplace method, barely superlogarithmic, just above the Gamma rays in
 the admissible cone. What does \emph{not} carry over is the construction's own scale
 parameter: varying the log-domain Gaussian width changes the lognormal's \emph{shape}, and
 those blurrings compose in the log-delay domain --- multiplicative convolution --- not in
 time, which is the precise form of the non-recursivity conceded in
-\S\ref{sec:introduction}; the admissible family runs the other axis, dilating the delay at
+\S\ref{sec:introduction}. The admissible family runs the other axis, dilating the delay at
 fixed shape. In retrospect the 1988 kernel choice is vindicated by 1977 mathematics: the
 log-remapped Gaussian lands inside the admissible cone, in its Thorin corner, and the
 axioms decline only the composition structure it arrived with.
 
 For the limit kernel the extension question has a clean answer, and the argument is short
 enough to record here: among all $q^{\ZZ}$-covariant families with its $q$-step increments
-$g_{x,qx}(s) = \log(1 + c x s)$, \emph{exactly one} extends to full continuous covariance
---- full covariance forces the similarity form $\Psi_x = F(x\,\cdot)$, the $q$-difference
-equation $F(qs) - F(s) = \log(1+cs)$ determines $F$ up to a log-periodic summand, and a
-continuous log-periodic function with limit $0$ at the origin vanishes --- namely the
-limit-kernel family itself. Whether the limit kernel is distinguished \emph{within} its modulation orbit
+$g_{x,qx}(s) = \log(1 + c x s)$, \emph{exactly one} extends to full continuous covariance,
+namely the limit-kernel family itself. Full covariance forces the similarity form
+$\Psi_x = F(x\,\cdot)$; the $q$-difference equation $F(qs) - F(s) = \log(1+cs)$ determines
+$F$ up to a log-periodic summand; and a continuous log-periodic function with limit $0$ at
+the origin vanishes. Whether the limit kernel is distinguished \emph{within} its modulation orbit
 by an extremality principle that does not invoke the continuum extension is the selection
 question taken up in the companion note. The comparison with the previous literature is
 thereby one of containment rather than difference: the Poisson scale space lies strictly in
