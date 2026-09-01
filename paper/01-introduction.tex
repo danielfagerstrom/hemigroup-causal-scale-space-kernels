@@ -73,15 +73,15 @@ builds on, is the Gamma family
 whose mean delay is finite, $\gamma x$; whose tails are exponential; whose scale covariance
 is exact and continuous; and which is computed, for integer $\gamma$, by a cascade of
 first-order recursive filters. The price is stated before the consequences are: what the
-Gamma family gives up is locality of its memory-line medium --- its signaling operator is
-an integral operator, not a differential one --- and the trade-off between finite moments
+Gamma family gives up is locality of its memory-line medium. Its signaling operator is
+an integral operator, not a differential one. The trade-off between finite moments
 and a local medium is not an accident of the example; it is classified by the locality
 theorem (\S\ref{sec:locality}).
 
 The classical constructions are recovered inside this class, and their limitations are
 located by it. The Gaussian scale space that answers the corresponding spatial question
-\sscite{iijima1962basic,lindeberg2011generalized} is unavailable in time --- the Gaussian
-aperture is non-causal, and its causal truncations destroy the cascade structure --- and the
+\sscite{iijima1962basic,lindeberg2011generalized} is unavailable in time: the Gaussian
+aperture is non-causal, and its causal truncations destroy the cascade structure. The
 known time-causal constructions each concede one desideratum. The scale-time of
 \sscite{koenderink1988scale} applies Gaussian smoothing to a logarithmically remapped past,
 achieving causality but not time-recursivity. The Poisson scale space of
@@ -95,25 +95,25 @@ $0 < \alpha < 1$; but every member has infinite mean delay. The time-causal limi
 finite moments through a recursive cascade of first-order integrators, with covariance
 established there under the discrete subgroup of rescalings $\sigma \in q^{\ZZ}$.
 
-The second half of the paper develops the theory over the memory line, and the embodiment
+The second half of the paper develops the theory over the memory line. The embodiment
 principle of the semigroup theory (\S5 of that paper; \S\ref{sec:measurement} motivates it)
 --- the observer must carry its usable past in its own state --- appears as theorem
-content. Under a mild standing hypothesis
-on the exponent --- (H), Definition~\ref{def:standing-hypothesis} in \S\ref{sec:signaling}, satisfied by every family of
-\S\ref{sec:examples} except the Gamma family at small shape --- the signaling form,
+content. Under a mild standing hypothesis on the exponent, the signaling form,
 Theorem~$4'$ (Theorem~\ref{thm:signaling-form}), inverts the evolution across scale into an
 evolution in present time over the memory half-line,
 \[
   \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t),
 \]
-with the signal entering as boundary data at zero scale. The operator $A$ is constructed in
+with the signal entering as boundary data at zero scale. That hypothesis is (H),
+Definition~\ref{def:standing-hypothesis} in \S\ref{sec:signaling}; every family of
+\S\ref{sec:examples} satisfies it except the Gamma family at small shape. The operator $A$ is constructed in
 \S\ref{sec:signaling} by harmonic analysis in the scale variable, and the problem is
-well posed: $A$ is the unique inversion in its covariance class
-(Theorem~\ref{thm:signaling-form}(3)); the solution exists and is unique in an explicit
-class --- the classical period-one ambiguity closed by a Bohr--Mollerup-style rigidity
-(Corollary~\ref{cor:signaling-wellposed}) --- and it depends continuously on the data,
+well posed. $A$ is the unique inversion in its covariance class
+(Theorem~\ref{thm:signaling-form}(3)). The solution exists and is unique in an explicit
+class, with the classical period-one ambiguity closed by a Bohr--Mollerup-style rigidity
+(Corollary~\ref{cor:signaling-wellposed}). And it depends continuously on the data,
 nonexpansively and uniformly over scales, and on the exponent itself
-(Corollary~\ref{cor:signaling-hadamard}); the construction comes with an exact account of what the memory holds.
+(Corollary~\ref{cor:signaling-hadamard}). The construction comes with an exact account of what the memory holds.
 At each instant, the memory line stores the analytic family of Riemann--Liouville integrals
 of the past signal: the observer's embodiment of its past is fractional integration.
 
@@ -122,8 +122,8 @@ derivative-of-Gaussian receptive fields, is an instantaneous readout of that sam
 \[
   \partial_t^n u \;=\; A^n u :
 \]
-differentiation is a re-indexing of the embodied record --- for the Gamma family, a binomial
-subtraction of coexisting filter states --- and no second memory is needed to differentiate,
+differentiation is a re-indexing of the embodied record, for the Gamma family a binomial
+subtraction of coexisting filter states. No second memory is needed to differentiate,
 up to an order bound set by the same hypothesis (H). And the locality theorem, Theorem~$5'$
 (Theorem~\ref{thm:locality}), classifies the memory-line media: locality of the operator
 alone admits a ladder of every differential order, and the positive maximum principle closes
@@ -143,9 +143,9 @@ family whose increments are all variation-diminishing is the pure delay
 (Proposition~\ref{prop:vd-impossibility}). What can exist is the endpoint form --- no
 scale shows more sign changes than the signal itself --- and it is classified and
 attained: the members with variation-diminishing kernels are exactly drift plus integer
-Thorin atoms of finite mean, the Gamma family foremost, so the classical obstruction,
+Thorin atoms of finite mean, the Gamma family foremost. The classical obstruction,
 that no causal convolution \emph{semigroup} can be variation-diminishing at all, is
-dissolved exactly as far as it can be. Discrete covariance retains more: along a
+thereby dissolved exactly as far as it can be. Discrete covariance retains more: along a
 geometric ladder the limit kernel's rung increments are variation-diminishing, and there
 the counts are monotone from scale to scale (Remark~\ref{rem:ladder-vd}). And along a
 feature's own delay path the field is
@@ -154,16 +154,16 @@ failure mode (Corollary~\ref{cor:past-dominating}).
 
 On the implementation side
 (\S\ref{sec:implementation}) the hemigroup itself is the algorithm: the discrete cascade
-over any set of scale knots reproduces the continuum family exactly at the knots --- each
-increment, for the Gamma family, a pole--zero filter section whose zero moves with the finer
-scale, the zeros being exactly what the hemigroup adds --- and finite Gamma cascades
+over any set of scale knots reproduces the continuum family exactly at the knots. For the
+Gamma family each increment is a pole--zero filter section whose zero moves with the finer
+scale, and the zeros are exactly what the hemigroup adds. Finite Gamma cascades
 approximate the entire completely-monotone-kernel subclass from inside the axiom class, with
-rational cascade realizations at integer weights; the whole architecture --- cascade, jets,
+rational cascade realizations at integer weights. The whole architecture --- cascade, jets,
 and the qualitative predictions --- is exercised end to end in a numerical experiment
 (Example~\ref{ex:numerical-experiment}).
 Appendix~\ref{sec:appendix-memory} carries Theorem~$3'$, the scale-Cauchy
-problem (Theorem~\ref{thm:scale-cauchy}) --- a fractional relaxation equation across scale
-whose memory kernel is the function $k$ of the representation itself --- together with the
+problem (Theorem~\ref{thm:scale-cauchy}): a fractional relaxation equation across scale
+whose memory kernel is the function $k$ of the representation itself. It also carries the
 Sonine conservation identity, by which the memory operator applied at each scale has an
 explicit inverse, the potential kernel; a Volterra equation that derives the kernels from
 $k$ by forward integration, with no Laplace inversion; and the pointwise non-enhancement
@@ -352,7 +352,7 @@ verification status, are available at the repository accompanying this paper,
 \url{https://github.com/danielfagerstrom/hemigroup-causal-scale-space-kernels}. The
 toolchain is pinned in-tree --- Lean~4 \texttt{v4.31.0}, Mathlib \texttt{v4.31.0}, and the
 shared library \texttt{ScaleSpaceCore} at its tag \texttt{v0.1.0} --- so the verification
-is reproducible with one command, \texttt{lake build} in \texttt{Formalization/}; a second,
+is reproducible with one command, \texttt{lake build} in \texttt{Formalization/}. A second,
 \texttt{lake env lean CIAxiomGuard.lean}, prints the axiom usage of every named declaration
 and exits nonzero on any drift from the two-interface trust boundary above. The ledger
 records twenty-one interfaces the paper cites; the two above are the only ones the verified
