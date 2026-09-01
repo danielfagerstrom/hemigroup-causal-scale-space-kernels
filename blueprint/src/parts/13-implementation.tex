@@ -141,10 +141,10 @@ not recommended: the explicit step is constrained by the finest cell, to steps $
 of order $\xi_{\min}^2\,\Delta\eta^2$, while the coarse-scale dynamics live on
 horizons $\sim \xi_{\max}^2$, so the cost of covering the ladder grows like
 $(\xi_{\max}/\xi_{\min})^2$ (an implicit march trades this for per-sample band solves plus
-additional discretization error);
-the finite-moment regime $a > 1$, i.e.\ $\beta < -\tfrac12$ --- the very reason to prefer the
+additional discretization error). The
+finite-moment regime $a > 1$, i.e.\ $\beta < -\tfrac12$ --- the very reason to prefer the
 Bessel family --- is advection-dominated near the singular boundary and numerically the least
-pleasant; and, decisively, any marching of the signaling equation approximates the scale
+pleasant. And, decisively, any marching of the signaling equation approximates the scale
 direction, which \ref{prop:knot-exactness} shows can be sampled exactly. The principled
 numerics for the local corner is instead the following.
 \end{remark}
