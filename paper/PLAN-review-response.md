@@ -124,28 +124,50 @@ sum of reciprocals diverges, contradicting finite mean; so k = 0.
   obstruction dissolved) in R3, and record the statement as a conjecture/open problem.
 - Candidate for blueprint promotion + Lean later; paper-only in this revision.
 
-### R3 — non-creation claims sweep                                       [status: open; after R2]
+### R3 — non-creation claims sweep                                       [status: DONE 2026-09-01]
 
-Language depends on R2's outcome (impossibility proved: "scale-monotone non-creation is
-impossible in the class; the endpoint form is optimal and achieved"; otherwise: "endpoint
-variation diminution relative to the input; the scale-monotone form is not recovered").
-Sweep every headline occurrence:
-- abstract (non-creation sentence), §1 (non-creation paragraph + contributions bullet),
-- §8: proposition name ("non-creation in time" -> endpoint form), rem:pf-hemigroup recast,
-- §11: Table 1 row rename ("endpoint VD relative to input") + the substrate paragraph's
-  regularity tie-in,
-- §12: experiment C2 item (already honest post-correction; align vocabulary), fig-fingerprint
-  caption gains "in this run",
-- §13: summary sentence, strata "non-creation subclass" phrasing (limit kernel, scale-time),
-- appendix: cor:past-dominating framing untouched (it is a genuine conditional
-  scale-monotone statement — say so explicitly as the contrast).
+Executed in the strong form (R2 closed): "settled in both directions --- the scale-monotone
+form impossible (prop:vd-impossibility), the endpoint form classified and attained
+(prop:gamma-regularity)". Every headline occurrence swept:
+- abstract: non-creation sentence rewritten to the both-directions form;
+- §1: non-creation paragraph rewritten (impossibility first, endpoint form as what exists,
+  ladder sentence via rem:ladder-vd + cor:past-dominating), "non-creation subclass" ->
+  "variation-diminishing subclass", contributions bullet -> both-directions form;
+- §8: prop:gamma-regularity retitled "non-creation from the signal; ...";
+  rem:pf-hemigroup retitled "causal non-creation: what survives, and what cannot", its
+  claims scoped to the endpoint form ("carries its endpoint form", "dissolves the
+  obstruction for the endpoint form");
+- §11: Table 1 row -> "non-creation from the signal"; substrate paragraph already in
+  variation-diminishing vocabulary, unchanged;
+- §12: C2 item -> "Non-creation from the signal", "not asserted" strengthened to "not
+  merely unasserted but impossible in the class (prop:vd-impossibility)"; fig-fingerprint
+  caption -> "holds in this run" (D5);
+- §13: summary sentence -> both-directions form; stratum-2 limit-kernel passage gains the
+  rem:ladder-vd rung-monotonicity clause and "variation-diminishing subclass";
+- appendix: "counting non-creation from the signal" precision; cor:past-dominating framing
+  untouched (a genuine conditional pointwise statement, already contrasted in §8's remark).
+Final grep: no "non-creation in time"/"non-creation subclass" remains in the .tex sources.
 
-### R4 — well-posedness language (per D1)                                [status: open]
+### R4 — well-posedness language (per D1)                                [status: DONE 2026-09-01]
 
-Rename across abstract, §1, §9 (arc prose + corollary name if D1 says rename), §13.
-Add the L1-contraction stability remark for the scale-Cauchy reading (one paragraph,
-trivial from contractivity) regardless of D1, so the honest statement is "existence,
-uniqueness in the stated class, and stability in the evolution reading".
+Renamed per D1 ("existence and uniqueness in the profile-dominated Mellin class"):
+- cor:signaling-wellposed retitled "the signaling problem: existence and uniqueness in
+  the profile-dominated Mellin class" — a SHARED statement, changed in the paper and the
+  blueprint together; the label is an identifier and stays;
+- §9 arc prose: "genuinely well posed" -> "genuinely solved"; the "earns the phrase
+  well posed" sentence replaced by the named claim + a pointer to the stability remark
+  (paper) / by the named claim alone (blueprint, where the remark does not exist);
+- abstract: "well-posed signaling problem" -> "signaling problem, solved with existence
+  and uniqueness in an explicit class";
+- §1: "the problem is well posed" -> "solved with existence and uniqueness", with the
+  nonexpansive-dependence clause added; §1.1 "well-posedness arc" -> "solution-theory arc";
+- appendix Theorem-3' intro: "a well-posed Cauchy problem" -> "a Cauchy problem with a
+  uniqueness clause"; the Prüss citation's "well-posedness" kept (an attributed result).
+NEW rem:signaling-stability (paper-only, after rem:classical-families): Hadamard's three
+demands named; L1-contraction of mu_{0,x}* gives nonexpansive dependence on the signal at
+every scale, and mu_{x,y}* the same along the evolution (the scale-Cauchy reading); what
+is NOT claimed (stability in a topology adapted to A) stated, the full-Hadamard question
+explicitly left open per D1. §13 had no well-posed occurrence (verified by grep).
 
 ### R5 — Thorin substrate separation                                     [status: open]
 

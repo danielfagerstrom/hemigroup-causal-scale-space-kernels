@@ -91,11 +91,12 @@ evolution in present time over the memory half-line,
   \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t),
 \]
 with the signal entering as boundary data at zero scale. The operator $A$ is constructed in
-\S\ref{sec:signaling} by harmonic analysis in the scale variable, and the problem is well
-posed: $A$ is the unique inversion in its covariance class
-(Theorem~\ref{thm:signaling-form}(3)), and the solution too is unique in a natural class,
+\S\ref{sec:signaling} by harmonic analysis in the scale variable, and the problem is
+solved with existence and uniqueness: $A$ is the unique inversion in its covariance class
+(Theorem~\ref{thm:signaling-form}(3)), the solution is unique in an explicit class ---
 the classical period-one ambiguity closed by a Bohr--Mollerup-style rigidity
-(Corollary~\ref{cor:signaling-wellposed}); the construction comes with an exact account of what the memory holds.
+(Corollary~\ref{cor:signaling-wellposed}) --- and dependence on the signal is nonexpansive
+for free (Remark~\ref{rem:signaling-stability}); the construction comes with an exact account of what the memory holds.
 At each instant, the memory line stores the analytic family of Riemann--Liouville integrals
 of the past signal: the observer's embodiment of its past is fractional integration.
 
@@ -117,13 +118,19 @@ one-parameter Bessel family
 unfolding the isolated heat case of the semigroup theory's Theorem~5, with the drift weight
 $\beta$ buying any prescribed finite number of kernel moments.
 
-A third result belongs to the oldest axiom of the subject. Non-creation of temporal
-structure is recovered inside the class rather than assumed (\S\ref{sec:examples}): the
-members whose kernels are variation-diminishing --- convolution creating no new extrema at
-any scale --- are classified as drift plus integer Thorin atoms of finite mean, the Gamma
-family foremost; the classical obstruction, that no causal convolution \emph{semigroup}
-can be variation-diminishing, dissolves in the hemigroup, whose endpoint maps carry the
-property while its increments do not; and along a feature's own delay path the field is
+A third result belongs to the oldest axiom of the subject, and it is settled in both
+directions (\S\ref{sec:examples}). Scale-monotone non-creation --- every coarser record
+showing no more sign changes than every finer one --- is \emph{impossible}: an admissible
+family whose increments are all variation-diminishing is the pure delay
+(Proposition~\ref{prop:vd-impossibility}). What can exist is the endpoint form --- no
+scale shows more sign changes than the signal itself --- and it is classified and
+attained: the members with variation-diminishing kernels are exactly drift plus integer
+Thorin atoms of finite mean, the Gamma family foremost, so the classical obstruction,
+that no causal convolution \emph{semigroup} can be variation-diminishing at all, is
+dissolved exactly as far as it can be. Discrete covariance retains more: along a
+geometric ladder the limit kernel's rung increments are variation-diminishing, and there
+the counts are monotone from scale to scale (Remark~\ref{rem:ladder-vd}). And along a
+feature's own delay path the field is
 non-enhancing at past-dominating extrema, with the echo of a preceding event as the sharp
 failure mode (Corollary~\ref{cor:past-dominating}).
 
@@ -151,7 +158,8 @@ complete time-causal, time-recursive construction already exists in the literatu
 which contain the Poisson scale space; covariance under the discrete subgroup $q^{\ZZ}$
 gives the semi-selfdecomposable stratum; and full covariance gives the present class. The
 time-causal limit kernel itself has a completely monotone memory kernel, so it is a fully
-covariant member of the class characterized here, and of its non-creation subclass --- in
+covariant member of the class characterized here, and of its variation-diminishing
+subclass --- in
 retrospect, the first-discovered
 member: a construction that preceded the classification explaining it. Even the scale-time
 aperture is contained at the kernel level: pulled back to the time axis it is the lognormal
@@ -172,8 +180,9 @@ The contributions, each with the section that carries it:
 \item the classification of the local, positivity-respecting memory-line media --- the
   Bessel family, closing the ladder at order two (Theorem~\ref{thm:locality},
   \S\ref{sec:locality});
-\item non-creation recovered inside the class: the variation-diminishing members
-  classified, the semigroup obstruction dissolved, and non-enhancement along the feature's
+\item non-creation settled in both directions: the scale-monotone form impossible for
+  every nondegenerate member, the endpoint form classified and attained by the
+  variation-diminishing members, and non-enhancement along the feature's
   delay path (\S\ref{sec:examples}, Appendix~\ref{sec:appendix-memory});
 \item the temporal $N$-jet as an instantaneous readout of the embodied state
   (\S\ref{sec:jet});
@@ -223,7 +232,7 @@ uniqueness and scaling of the potential kernel, the Volterra equation (V.1) with
 uniqueness clause, the delay-derivative lemma, and the Phillips form of the generator with
 all five clauses of Lemma~\ref{lem:generator-properties} --- the last interface-free ---
 are verified. Of \S\ref{sec:signaling}, every
-numbered result through the signaling theorem is; the well-posedness arc that follows it
+numbered result through the signaling theorem is; the solution-theory arc that follows it
 --- Definition~\ref{def:mellin-solution} through
 Corollary~\ref{cor:signaling-classical} --- and the boundary-growth
 Lemma~\ref{lem:zstar-log-growth} are paper-only. Of \S\ref{sec:locality}, the classification step

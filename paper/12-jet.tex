@@ -194,7 +194,7 @@ noise burst in the second-order map, see the example's closing paragraph.}
 \includegraphics[width=\textwidth]{fig-fingerprint.png}
 \caption{The fingerprints of the same run: zero-crossings of $\partial_t u$ (the extrema
 of $u$, left) and of $\partial_t^2 u$ (right) across scale. The classical picture ---
-arches closing from below, never re-opening --- holds, sheared rightward along the delay
+arches closing from below, never re-opening --- holds in this run, sheared rightward along the delay
 direction: the causal counterpart of the Gaussian fingerprint diagrams. The noise burst's
 dense column annihilates pair by pair; the wake companion's arch closes at
 $x \approx 50$.}
@@ -226,10 +226,11 @@ identical. A forward-Euler march of the scale evolution, run for contrast, errs 
 $1.3 \times 10^{-2}$, halving to $6.0 \times 10^{-3}$ at doubled scale resolution: the
 $O(\Delta x)$ that the exponential-integrator update of
 Proposition~\ref{prop:gamma-cascade} avoids.
-\item \emph{Non-creation in time} (Proposition~\ref{prop:gamma-regularity}). The
+\item \emph{Non-creation from the signal} (Proposition~\ref{prop:gamma-regularity}). The
 extremum count satisfies $N\bigl(u(\cdot, x)\bigr) \le N(f)$ at every one of the $64$
 scales ($146$ at the input, at most $94$ across the ladder). Scale-to-scale monotonicity
-is \emph{not} asserted by the theory --- the increments carry an atom and transform
+is not merely unasserted but impossible in the class
+(Proposition~\ref{prop:vd-impossibility}) --- the increments carry an atom and transform
 zeros and are not variation-diminishing (Remark~\ref{rem:pf-hemigroup}) --- and the run
 shows the count rising at $7$ of the $64$ steps. Inspected individually, the created
 pairs are micro-events, of prominence $6 \times 10^{-3}$ and below, in the remnant of
