@@ -46,6 +46,7 @@ beta
 big
 bigl
 bigr
+binom
 cap
 cdot
 cdots
@@ -56,6 +57,7 @@ cosh
 cup
 deg
 delta
+dot
 dots
 downarrow
 ell

@@ -23,10 +23,11 @@ positioning and literature work live in the wiki hub's outline page.
 **Written through §12; formalised through §9, chapter 11 entire, and chapter 12's classification
 step, plus all three halves of the main theorem.**
 
-The blueprint carries all of §§2–12 — 95 statement nodes (the count `linkage check` reports;
+The blueprint carries all of §§2–14 — 105 statement nodes (the count `linkage check` reports;
 definitions, lemmas, propositions, theorems and corollaries, remarks and examples not counted)
-— and `AXIOMS.md` has 18 ledger
-entries, each with a page anchor. The Lean development is ~8,500 lines, `sorry`-free, and rests
+— and `AXIOMS.md` has 21 ledger
+entries, each with a page anchor. Chapters 13–14 (implementation, the temporal N-jet) were
+added 2026-09-01 for blueprint completeness and are deliberately outside the Lean plan. The Lean development is ~8,500 lines, `sorry`-free, and rests
 on Lean core plus **two** axioms, which do not mix:
 
 * **A17**, the existence half of the subordinator correspondence — what the *constructive*

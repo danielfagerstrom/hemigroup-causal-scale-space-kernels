@@ -22,6 +22,8 @@ class by banks of such sections, exactly rational when the Thorin weights are in
 direct convolution. The structural fact that organizes everything is the first step:
 the \emph{scale direction never needs to be discretized approximately}:
 
+% shared with blueprint prop:knot-exactness — promoted 2026-09-01 with chapter 13,
+% reversing the original scope decision (blueprint content.tex header).
 \begin{proposition}[exactness at the knots]\label{prop:knot-exactness}
 Let $0 = x_0 < x_1 < \cdots < x_M$ be any finite set of scale knots and define the discrete
 cascade
@@ -49,10 +51,11 @@ time-recursively, with no stored history. The Gamma family has it
 
 \input{fig-filterbank}
 
+% shared with blueprint prop:gamma-cascade — promoted 2026-09-01.
 \begin{proposition}[the Gamma cascade]\label{prop:gamma-cascade}
 For the Gamma family with integer $\gamma$, the increment filter is rational:
 \[
-  \widehat{\mu}_{x_k, x_{k+1}}(s) \;=\; \left(\frac{1 + x_k\, s}{1 + x_{k+1}\, s}\right)^{\gamma},
+  \widehat{\mu}_{x_k, x_{k+1}}(s) \;=\; \Bigl(\frac{1 + x_k\, s}{1 + x_{k+1}\, s}\Bigr)^{\gamma},
 \]
 a cascade of $\gamma$ \emph{identical} first-order pole--zero sections (pole at $-1/x_{k+1}$,
 zero at $-1/x_k$). Each section admits the one-state realization, free of input differentiation,
@@ -89,6 +92,7 @@ preserve is the end-to-end kernel and covariance under dilations not commensurat
 $\Delta$. A full scale space over knots $x_1 < \cdots < x_M$ costs $\gamma M$ first-order
 states and $O(\gamma M)$ multiply-adds per sample.
 
+% Verbatim from the blueprint's rem:covariance-practice (promoted 2026-09-01).
 \begin{remark}[covariance in practice]\label{rem:covariance-practice}
 With geometric knots $x_k = q^k x_0$ the \emph{continuum} cascade is carried to itself by
 every rescaling $\sigma \in q^{\ZZ}$, as a shift of the ladder; in the sampled system the
@@ -106,6 +110,8 @@ covariance of the ladder itself survives. The zeros are what the hemigroup incre
 Sato--Gamma process add, and they are exactly what buys the continuum.
 \end{remark}
 
+% Verbatim from the blueprint's rem:local-implementation (promoted 2026-09-01),
+% refs prefix-adapted.
 \begin{remark}[implementing the local corner]\label{rem:local-implementation}
 The Bessel/inverse-gamma increments have transcendental transforms (ratios of Bessel-K
 profiles), hence \emph{no} finite-dimensional time-recursive realization; the same holds for
@@ -126,6 +132,9 @@ or exactness. This is the practical face of Theorem~\ref{thm:locality}: locality
 medium is bought at the price of heavy-tailed, non-rational kernels.
 \end{remark}
 
+% Verbatim from the blueprint's rem:finite-differences (promoted 2026-09-01),
+% refs prefix-adapted; the blueprint copy states the step constraint in prose
+% ("of order") where this copy uses \lesssim.
 \begin{remark}[finite differences on the memory line]\label{rem:finite-differences}
 The explicit finite-difference scheme of \sscite{fagerstrom2005temporal}, \S\S6--7, for the
 heat signaling equation extends verbatim to the Bessel family. Working in the parabolic gauge
@@ -153,6 +162,8 @@ direction, which Proposition~\ref{prop:knot-exactness} shows can be sampled exac
 principled numerics for the local corner is instead the following.
 \end{remark}
 
+% shared with blueprint prop:thorin-subclass — promoted 2026-09-01, on ledger A21
+% (Thorin's characterization; anchors image-verified) plus A1's general-measure form.
 \begin{proposition}[the Thorin subclass; gamma cascades approximate the local corner]\label{prop:thorin-subclass}
 For an admissible $F$ (Theorem~\ref{thm:main-characterization}) the following are equivalent:
 \begin{enumerate}
@@ -309,6 +320,11 @@ influence-curve discussion. (a) linear scale; (b) log--log, with the exact power
 asymptotes.}
 \label{fig:kernels-mode}
 \end{figure}
+% Verbatim from the blueprint's ex:tail-contrast (examples are not statement nodes;
+% promoted 2026-09-01), with deliberate divergences: this copy carries the figures, the
+% window tables as booktabs tables, the \vartheta parameter details, and the closing
+% pointer to ex:numerical-experiment (paper-only); the blueprint copy is condensed to
+% the quantitative content, tables as itemized pairs/triples.
 \begin{example}[numerical illustration]\label{ex:tail-contrast}
 Figure~\ref{fig:kernels} compares the kernels of the three corners at matched delay: Gamma
 kernels with $\gamma \in \{1, 2, 4\}$ and scale $x = 1/\gamma$ (mean delay $1$); the

@@ -224,16 +224,11 @@ particular $\Ex\,T_x = \gamma x$ and $\Ex\,T_x^{2} = \gamma(\gamma+1)x^2$, so
 $\operatorname{Var} T_x = \gamma(\gamma+1)x^2 - \gamma^2x^2 = \gamma x^2$.
 \end{proof}
 
-% Paper-only (2026-08-31): the regularity face of the recommended family, added on
-% review. Anchors verified against the library's stored copy of karlin1968total:
-% Thm 3.2 (Ch. 7, p. 345) is the Schoenberg representation, its clause (b) the
-% one-sided case, with the one-sided form C e^{delta s} prod(1 + lambda_i s),
-% delta >= 0, lambda_i >= 0, sum lambda_i < infty, in Remark 3.1 (p. 346); the
-% variation-diminishing <=> totally positive equivalence for convolution kernels is
-% Ch. 5, Thm 4.2 (pp. 242-243); the semigroup rigidity of the remark is Ch. 7,
-% Thm 5.2 (p. 354). Candidate for blueprint promotion (an [A]-status node on the
-% Karlin anchors); kept paper-only pending that decision, like the propositions
-% of the implementation section.
+% shared with blueprint prop:gamma-regularity — promoted 2026-09-01 on the author's
+% instruction. The Karlin anchors are ledgered as A19 (VD <=> TP: Ch. 5, Thm 3.1(i)
+% p. 233 + Thm 4.2 pp. 242-243) and A20 (Schoenberg: Ch. 7, Thm 3.2(b) p. 345 +
+% Rem. 3.1 p. 346), all image-verified in the promotion pass; the blueprint node
+% carries the Assignment.
 \begin{proposition}[non-creation from the signal; the P\'olya frequency members]\label{prop:gamma-regularity}
 Write $S^-(g)$ for the number of sign changes of a function $g$ on $\RR$.
 \begin{enumerate}
@@ -304,6 +299,10 @@ $F(1) \le b_0 + \sum_i \tau_i^{-1} < \infty$, so Theorem~\ref{thm:main-character
 applies.
 \end{proof}
 
+% Paper-only by decision (2026-09-01, recorded with the promotion of the two
+% propositions): the glosses are tied to the paper's structure (§11's zeros, the
+% appendix corollary, the Witkin framing). Its Karlin citation — Ch. 7, Thm 5.2,
+% p. 354, PF semigroups are Gaussian — was image-verified in the promotion pass.
 \begin{remark}[causal non-creation: what survives, and what cannot]\label{rem:pf-hemigroup}
 Non-creation is the oldest axiom of the subject: Witkin's founding observation was that
 Gaussian convolution creates no new extrema in one dimension, and non-creation of local
@@ -337,12 +336,9 @@ Appendix~\ref{sec:appendix-memory}: at extrema dominating their past, the tracke
 nonincreasing in scale, for every admissible family.
 \end{remark}
 
-% Paper-only (2026-09-01, review response R2): the impossibility theorem answering the
-% external review's non-creation critique -- scale-monotone variation diminution is not
-% merely unachieved by the class, it is unattainable in it. Everything the proof uses is
-% already in the paper's trust surface: the Karlin anchors of prop:gamma-regularity
-% (VD iff TP; Schoenberg necessity for one-sided PF densities), Laplace uniqueness, and
-% the representation's uniqueness. Candidate for blueprint promotion.
+% shared with blueprint prop:vd-impossibility — promoted 2026-09-01 (review response
+% R2's theorem). Rests on ledger A19/A20 (the Karlin anchors of prop:gamma-regularity)
+% plus Laplace uniqueness; the blueprint node carries the Assignment.
 \begin{proposition}[scale-monotone variation diminution is impossible]\label{prop:vd-impossibility}
 Let $(\Phi_{x,y})$ be an admissible family (Theorem~\ref{thm:main-characterization}), in
 the canonical gauge, and suppose that \emph{every} interior increment operator
@@ -426,8 +422,11 @@ $\delta_{b_0(y-x)}$, which are variation-diminishing, so the degenerate case doe
 and the statement is sharp.
 \end{proof}
 
-% Paper-only (2026-09-01, R2): the discrete-covariance counterpoint -- one ratio's worth
-% of increments CAN be variation-diminishing, and the limit kernel realizes it.
+% Verbatim from the blueprint's rem:ladder-vd (remarks are not statement nodes;
+% promoted 2026-09-01), with two deliberate divergences: this copy reads the limit
+% kernel through Remark~\ref{rem:strata} and carries a closing clause pointing there
+% (both paper-only); the blueprint copy cites lindeberg2016time directly and ends at
+% "construction has it."
 \begin{remark}[ladder monotonicity survives discrete covariance]\label{rem:ladder-vd}
 The impossibility is a continuous-covariance phenomenon, and it is sharp in the ratio:
 increments of a \emph{single} ratio can all be variation-diminishing. For an integer-atom

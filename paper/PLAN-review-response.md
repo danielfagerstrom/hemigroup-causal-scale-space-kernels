@@ -338,4 +338,14 @@ the only genuinely open-ended item is R2, which has an explicit fallback.
 - Natural-signal experiment if D4 chooses narrowing (revisit for the SSVM paper, where one
   real signal would earn its place).
 - Blueprint/Lean promotion of R1's repaired proof and R2's theorem (after the paper text
-  settles).
+  settles). DONE for the blueprint side 2026-09-01 (author's instruction):
+  prop:gamma-regularity, prop:vd-impossibility and rem:ladder-vd are blueprint nodes,
+  [A]-status on new ledger entries A19/A20 with image-verified Karlin anchors;
+  rem:pf-hemigroup stays paper-only by decision. Lean promotion is deliberately not
+  planned — the VD/TP vocabulary is outside the development by design. EXTENDED
+  2026-09-01 (completeness pass, author's instruction): the blueprint now carries
+  chapters 13–14 wholesale (ledger A21 for prop:thorin-subclass), plus
+  cor:laplace-uniqueness-signed, cor:past-dominating and rem:signaling-stability — the
+  blueprint is complete w.r.t. the paper's mathematical material; still paper-only, by
+  category: the expository remarks, ex:numerical-experiment (a run), and rem:strata
+  (companion-note territory).

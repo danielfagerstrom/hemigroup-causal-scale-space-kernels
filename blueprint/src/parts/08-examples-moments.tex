@@ -466,6 +466,225 @@ $\Ex\,T_x = \gamma x$ and $\Ex\,T_x^{2} = \gamma(\gamma+1)x^{2}$, so
 $\operatorname{Var} T_x = \gamma(\gamma+1)x^2 - \gamma^2x^2 = \gamma x^2$.
 \end{proof}
 
+% additive: not in the draft. The regularity face of the Gamma family and the impossibility
+% theorem, written on external review (paper 2026-08-31 and 2026-09-01, promoted here
+% 2026-09-01 on the author's instruction). The variation-diminishing/total-positivity
+% vocabulary lives entirely outside the Lean development -- no CM, no TP, no sign-change
+% functional -- so, by the same policy that keeps CM out (DESIGN-formalization-strategy),
+% none of the three nodes below carries a \lean tag; the analytic inputs are ledgered as
+% A19/A20, all four page anchors image-verified against the held scan (2026-09-01).
+% The paper's contextual remark rem:pf-hemigroup (the semigroup obstruction, the closure of
+% the class, the pointwise failure) stays paper-only by the same decision: its glosses are
+% tied to the paper's structure, and its one further citation (Karlin Ch. 7, Thm 5.2,
+% p. 354, PF semigroups are Gaussian) was re-verified in the same pass.
+\begin{proposition}[non-creation from the signal; the P\'olya frequency members]\label{prop:gamma-regularity}
+\uses{prop:gamma-kernels,thm:main-characterization}
+Write $S^-(g)$ for the number of sign changes of a function $g$ on $\RR$.
+\begin{enumerate}
+\item For integer $\gamma$ the Gamma kernels are one-sided P\'olya frequency densities, and
+convolution with them is variation-diminishing: $S^-(\mu_{0,x} * g) \le S^-(g)$ for every
+$x > 0$ and every integrable or bounded $g$, sign changes counted in the essential
+(almost-everywhere) sense. In particular, for the field $u(\cdot, x) := \mu_{0,x} * f$,
+\[
+  S^-\bigl(u(\cdot, x) - c\bigr) \;\le\; S^-\bigl(f - c\bigr)
+  \qquad \text{for every level } c \in \RR,
+\]
+so the field has, at every scale, no more zero-crossings than the signal; and if $f$ is
+the primitive of a function $f' \in \Xz$ --- that is, $f \in \core$ --- then, counting
+local extrema as essential sign changes of the derivative,
+\[
+  S^-\bigl(\partial_t u(\cdot, x)\bigr) \;\le\; S^-\bigl(f'\bigr):
+\]
+no more local extrema either. For non-integer $\gamma$ the kernels are not P\'olya frequency
+densities.
+\item An admissible family (\ref{thm:main-characterization}) has P\'olya frequency
+kernels if and only if
+\[
+  F(s) \;=\; b_0\,s \;+\; \sum_{i} \log\Bigl(1 + \frac{s}{\tau_i}\Bigr),
+  \qquad \tau_i > 0, \quad \sum_i \frac{1}{\tau_i} < \infty
+\]
+--- drift together with integer-weighted Thorin atoms, the summability condition being
+finiteness of the mean delay, $\Ex\,T_1 = b_0 + \sum_i \tau_i^{-1}$.
+\end{enumerate}
+\statusA\quad\ledger{A19}\quad\ledger{A20}\quad\emph{(total positivity, cited whole;
+\sscite{karlin1968total}. Cited, not reproven.
+\textbf{Assignment.} \ledger{A19} carries the correspondence between variation diminution
+and total positivity for translation kernels --- sufficiency for sign-regular kernels
+(Ch.~5, Thm~3.1(i), p.~233, stated for bounded Borel arguments; the extension to
+integrable ones is the standard truncation and is taken with the citation) and necessity
+for density kernels (Ch.~5, Thm~4.2, pp.~242--243). \ledger{A20} carries Schoenberg's
+representation: a one-sided density is P\'olya frequency iff the reciprocal of its Laplace
+transform is entire of the form $Ce^{\delta s}\prod_i(1+\lambda_i s)$ with $C > 0$,
+$\delta \ge 0$, $\lambda_i \ge 0$, $\sum_i \lambda_i < \infty$ (Ch.~7, Thm~3.2(b), p.~345;
+the non-integrable one-sided form, Rem.~3.1, p.~346). Everything else is \textbf{[T]} in
+prose: reading $(1+xs)^{\gamma}$ against the form, the level reduction, the derivative
+route $\partial_t(\mu * f) = \mu * f'$ on $\core$, clause (2)'s matching of linear factors
+to atoms, and the admissibility of the matched exponents through
+\ref{thm:main-characterization}.)}
+\end{proposition}
+
+\begin{proof}
+Two classical facts carry the proof. A density supported on $[0,\infty)$ is a P\'olya
+frequency density if and only if the reciprocal of its Laplace transform is an entire
+function of the form $C e^{\delta s}\prod_i (1 + \lambda_i s)$ with $C > 0$, $\delta \ge 0$,
+$\lambda_i \ge 0$ and $\sum_i \lambda_i < \infty$ --- Schoenberg's representation theorem
+(\ledger{A20}; \sscite{karlin1968total}, Ch.~7, Thm~3.2(b), p.~345; the one-sided form,
+Remark~3.1, p.~346). And convolution with a kernel is variation-diminishing if and only if
+the kernel is totally positive (\ledger{A19}; \sscite{karlin1968total}, Ch.~5, Thm~3.1(i),
+p.~233, and Thm~4.2, pp.~242--243), which for a translation kernel is the P\'olya frequency
+property.
+
+(1) For the Gamma kernel, $1/\widehat{\mu}_{0,x}(s) = (1 + xs)^{\gamma}$: for integer
+$\gamma$ this is a polynomial with the single real negative root $-1/x$, of the displayed
+form with $\delta = 0$ and $\gamma$ equal factors, so the kernels are P\'olya frequency
+densities and convolution with them diminishes essential sign changes of integrable and of
+bounded functions. The level form follows applied to $g = f - c$, since
+$\mu_{0,x} * (f - c) = u(\cdot,x) - c$ by unit mass, and the zero-crossing clause is the
+level $c = 0$. For the extremum clause, $f \in \core$ gives
+$f = \mathbf{1}_{[0,\infty)} * f'$, hence
+$u(\cdot,x) = \mathbf{1}_{[0,\infty)} * (\mu_{0,x} * f')$ and
+$\partial_t u(\cdot,x) = \mu_{0,x} * f'$ a.e.; the variation-diminishing bound applied to
+$g = f'$ gives the display. (The count is read from the derivative and not from the
+levels: no single level need meet every extremum --- two oscillations can occupy disjoint
+value ranges --- so the level bounds alone do not bound the number of extrema.) For
+non-integer $\gamma$, $(1 + xs)^{\gamma}$ has
+a branch point at $s = -1/x$ and is not entire, so by the same representation theorem the
+kernel is not a P\'olya frequency density.
+
+(2) The kernels are supported on $[0,\infty)$ with transform $e^{-F(xs)}$, so the family is
+P\'olya frequency exactly when $e^{F(xs)}$ has the displayed form --- for one $x$ or,
+equivalently, for all: replacing $s$ by $xs$ rescales $\delta$ and the $\lambda_i$ by $x$
+and preserves the form. Matching at $x = 1$: $F(\zp) = 0$ forces $C = 1$; the exponential
+factor is the drift, $\delta = b_0$; and the linear factors are atoms, $\lambda_i = 1/\tau_i$,
+giving the display, the condition $\sum_i \lambda_i < \infty$ being
+$\sum_i \tau_i^{-1} < \infty$, i.e.\ $F'(\zp) = b_0 + \sum_i \tau_i^{-1} < \infty$.
+Every such $F$ is admissible: it is of the form (7.1) with the nonincreasing memory kernel
+$k(t) = \sum_i e^{-\tau_i t}$ --- a Frullani integral per atom --- and
+$F(1) \le b_0 + \sum_i \tau_i^{-1} < \infty$, so \ref{thm:main-characterization}
+applies.
+\end{proof}
+
+% additive: the impossibility theorem, answering the external review's non-creation
+% critique in the strong form -- scale-monotone variation diminution is not merely
+% unachieved by the class, it is unattainable in it.
+\begin{proposition}[scale-monotone variation diminution is impossible]\label{prop:vd-impossibility}
+\uses{thm:main-characterization,prop:gamma-regularity,prop:laplace-uniqueness-sigma-finite}
+Let $(\Phi_{x,y})$ be an admissible family (\ref{thm:main-characterization}), in
+the canonical gauge, and suppose that \emph{every} interior increment operator
+$\Phi_{x,y}$, $0 < x < y$, is variation-diminishing. Then $F(s) = b_0 s$: the family is
+the pure delay. In particular no nondegenerate admissible family has the scale-monotone
+form of non-creation, in which every coarser record has no more sign changes than every
+finer one; the endpoint form of \ref{prop:gamma-regularity} is the strongest
+variation-diminishing property an admissible family can carry, and the integer-atom
+members of its clause~(2) attain it.
+\statusA\quad\ledger{A19}\quad\ledger{A20}\quad\emph{(the same two interfaces as
+\ref{prop:gamma-regularity}, in the same roles.
+\textbf{Assignment.} \ledger{A19} converts the hypothesis --- every increment operator
+variation-diminishing --- into the P\'olya frequency property of the smoothed increment
+densities (the necessity leg, Thm~4.2), and \ledger{A20} converts that into the entire
+product form of $e^{g}(1+\varepsilon s)^{2}$. Everything downstream is \textbf{[T]} in
+prose and elementary: the L\'evy-tail comparison through
+\ref{prop:laplace-uniqueness-sigma-finite}, the integer-atomic representing measures, the
+dilation-orbit replication of an atom, and the contradiction with local finiteness. No
+property of the smoothing beyond \ref{prop:gamma-regularity}(1)'s P\'olya frequency clause
+is used.)}
+\end{proposition}
+
+\begin{proof}
+\emph{Step 1: the increments' L\'evy tails are integer sums of exponentials.} Fix
+$0 < x < y$ and write $g(s) := F(ys) - F(xs)$, the increment exponent, a Bernstein
+function with drift $b_0(y - x)$ and L\'evy tail
+$h(t) := k(t/y) - k(t/x) \ge 0$, by substitution in (7.1). For $\varepsilon > 0$ let
+$G_\varepsilon$ be the Gamma density of shape $2$ at scale $\varepsilon$, with transform
+$(1 + \varepsilon s)^{-2}$ --- a one-sided P\'olya frequency density, by the argument of
+\ref{prop:gamma-regularity}(1). The measure
+$\nu_\varepsilon := \mu_{x,y} * G_\varepsilon$ is absolutely continuous, and its
+convolution operator, the composition of two variation-diminishing operators, is
+variation-diminishing; so its density is a one-sided P\'olya frequency density
+(\ledger{A19}; \sscite{karlin1968total}, Ch.~5, Thm~4.2, pp.~242--243, as in
+\ref{prop:gamma-regularity}), and the Schoenberg representation
+(\ledger{A20}; \sscite{karlin1968total}, Ch.~7, Thm~3.2(b), p.~345; Rem.~3.1, p.~346) gives
+\[
+  1/\widehat{\nu_\varepsilon}(s) \;=\; e^{g(s)}\,(1 + \varepsilon s)^{2}
+  \;=\; e^{\delta_\varepsilon s} \prod_i \bigl(1 + \lambda^{(\varepsilon)}_i s\bigr),
+  \qquad \lambda^{(\varepsilon)}_i \ge 0, \quad
+  \textstyle\sum_i \lambda^{(\varepsilon)}_i < \infty,
+\]
+the constant being $1$ at $s = 0$. Both sides are exponentials of Bernstein functions;
+taking logarithms on $s > 0$ and matching the representations --- drifts from the
+$s \to \infty$ limit, then L\'evy tails through their transforms and
+\ref{prop:laplace-uniqueness-sigma-finite} --- gives, for a.e.\ $t > 0$,
+\[
+  h(t) + 2\,e^{-t/\varepsilon} \;=\; \sum_i e^{-t/\lambda^{(\varepsilon)}_i}
+  \;=\; \int_{(0,\infty)} e^{-\tau t}\, M^{(\varepsilon)}(d\tau),
+\]
+where $M^{(\varepsilon)} := \sum_i \delta_{1/\lambda^{(\varepsilon)}_i}$ is a positive
+integer-atomic measure, locally finite on $(0,\infty)$ because
+$\sum_i \lambda^{(\varepsilon)}_i < \infty$. Comparing two values
+$\varepsilon \ne \varepsilon'$ through
+\ref{prop:laplace-uniqueness-sigma-finite} once more shows that
+$M := M^{(\varepsilon)} - 2\,\delta_{1/\varepsilon}$ does not depend on $\varepsilon$;
+evaluating any single point with a third value of $\varepsilon$ whose exceptional atom
+lies elsewhere shows $M \ge 0$ and integer-atomic. Hence
+\[
+  k(t/y) - k(t/x) \;=\; \int_{(0,\infty)} e^{-\tau t}\, M_{x,y}(d\tau)
+  \qquad \text{for a.e.\ } t > 0,
+\]
+with $M_{x,y}$ positive, locally finite, and integer-atomic.
+
+\emph{Step 2: scaling and additivity.} The tails satisfy
+$h_{\sigma x,\, \sigma y}(t) = h_{x,y}(t/\sigma)$ and $h_{x,z} = h_{x,y} + h_{y,z}$ for
+$x < y < z$, so by \ref{prop:laplace-uniqueness-sigma-finite},
+\[
+  M_{\sigma x,\, \sigma y} \;=\; \text{the pushforward of } M_{x,y}
+  \text{ under } \tau \mapsto \tau/\sigma,
+  \qquad
+  M_{x,z} \;=\; M_{x,y} + M_{y,z}.
+\]
+
+\emph{Step 3: an atom replicates into a continuum.} Suppose some $M_{x,y} \ne 0$; by the
+scaling relation we may take $M_{1,y_0} \ne 0$, with an atom at $\tau_0$ of mass
+$m_0 \ge 1$. For $\sigma \ge 1$, Step 2 gives $M_{\sigma,\, \sigma y_0}$ an atom at
+$\tau_0/\sigma$ of mass $m_0$; and for $Y \ge \sigma y_0$, additivity and positivity give
+$M_{1,Y} \ge M_{\sigma,\, \sigma y_0}$. Hence $M_{1,Y}$ carries an atom of mass at least
+$1$ at \emph{every} point $\tau_0/\sigma$ with $1 \le \sigma \le Y/y_0$ --- uncountably
+many atoms of mass $\ge 1$ in the interval $[\tau_0 y_0/Y,\ \tau_0]$ --- while
+\[
+  e^{-\tau_0 t}\, M_{1,Y}\bigl([\tau_0 y_0/Y,\ \tau_0]\bigr)
+  \;\le\; h_{1,Y}(t) \;\le\; k(t/Y) \;<\; \infty
+\]
+for any fixed $t > 0$: a contradiction. So $M_{x,y} = 0$ for every pair, i.e.\
+$k(t/y) = k(t/x)$ for all $0 < x < y$ and a.e.\ $t$; a nonincreasing function that is
+a.e.\ dilation-invariant is constant on $(0,\infty)$, and
+$\int_1^\infty k(t)\,t^{-1}dt < \infty$ forces the constant to be $0$. Hence
+$F(s) = b_0 s$. Conversely the pure delay's increments are the shifts
+$\delta_{b_0(y-x)}$, which are variation-diminishing, so the degenerate case does occur
+and the statement is sharp.
+\end{proof}
+
+% additive: the sharpness companion. The paper's copy reads the limit kernel through its
+% concluding strata remark (rem:strata, paper-only) and carries a closing clause pointing
+% there; this copy cites the construction directly and ends at "construction has it."
+\begin{remark}[ladder monotonicity survives discrete covariance]\label{rem:ladder-vd}
+\uses{prop:vd-impossibility,prop:gamma-regularity}
+The impossibility is a continuous-covariance phenomenon, and it is sharp in the ratio:
+increments of a \emph{single} ratio can all be variation-diminishing. For an integer-atom
+family (\ref{prop:gamma-regularity}(2)) and a fixed $q > 1$, the increments
+$\Phi_{x,qx}$, $x > 0$, are variation-diminishing precisely when the atom multiset
+satisfies $\operatorname{mult}(q\tau) \ge \operatorname{mult}(\tau)$ for every $\tau$:
+then each pole of $e^{g_{x,qx}}$ at $-\tau/x$ cancels against a zero, the leftover
+product is of Schoenberg form, and the representation theorem runs backwards to
+sufficiency (necessity is Step~1 of the proof above, applied at ratio $q$). The
+time-causal limit kernel of \sscite{lindeberg2016time} is the fundamental example: its
+Thorin measure is the geometric train $\sum_{i \ge 1}\delta_{q^i/c}$, the condition
+holds, and every $q$-step increment exponent is
+$F(qxs) - F(xs) = \log(1 + cxs)$ --- each rung one exponential (Gamma shape-$1$) kernel,
+a P\'olya frequency density. Along any geometric ladder of ratio $q$ the sign-change
+count of the record is therefore monotone from rung to rung: scale-monotone
+non-creation, impossible under full covariance, is available in the discrete-covariance
+stratum, and the published limit-kernel construction has it.
+\end{remark}
+
 % additive: not in the draft. The clauses split out of Example 8.1 on 2026-08-11, when the
 % exponent was proved and these were not. Numbered 8.10, a number the draft does not use.
 \begin{proposition}[the extremal stable family: every moment is infinite]\label{prop:stable-moments}
