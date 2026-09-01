@@ -14,17 +14,42 @@ A visual or auditory front end measures its input before anything is known about
 signal will contain, so it must hold records at every scale simultaneously; and in time it
 must do so causally --- the future is unavailable --- and out of its own state --- the past
 cannot be revisited. The spatial form of this programme is Gaussian scale space; this paper
-settles the temporal form. The axioms are those of causal, covariant measurement, with one
-change against the classical axiomatics --- the cascade property is stated in its weakest
-defensible form, as a two-parameter \emph{hemigroup}
+settles the temporal form. Four questions organize everything that follows: which
+classical assumption has to give; what replaces the stable kernels once it does; what the
+enlarged class contains, and at what price; and which classical properties survive the
+enlargement, in what form.
+
+\emph{The assumption.} The axioms are those of causal, covariant measurement, with one
+change against the classical axiomatics. The semigroup form of the cascade property,
+$\Phi_\tau \Phi_{\tau'} = \Phi_{\tau+\tau'}$, formalizes ``a measurement of a measurement
+is a measurement'' together with a second, tacit assumption: that the composite depends
+only on the total \emph{amount} of scale crossed --- that measurement stages are
+interchangeable (\S\ref{sec:measurement-cascade}). This paper keeps the first assumption
+and drops the second, stating the cascade in its weakest defensible form, as a
+two-parameter \emph{hemigroup},
 \[
-  \Phi_{y,z}\,\Phi_{x,y} \;=\; \Phi_{x,z}, \qquad 0 \le x \le y \le z,
+  \Phi_{y,z}\,\Phi_{x,y} \;=\; \Phi_{x,z}, \qquad 0 \le x \le y \le z
 \]
-rather than a one-parameter semigroup $\Phi_\tau \Phi_{\tau'} = \Phi_{\tau+\tau'}$: the
-composite of two measurements is a measurement, but it need not depend on the amount of
-scale crossed alone (Figure~\ref{fig:cascade}). Under these axioms the admissible kernel
-families are completely characterized (Theorem~\ref{thm:main-characterization}): in the
-canonical scale parametrization fixed in \S\ref{sec:covariance}, they are exactly
+(Figure~\ref{fig:cascade}). Every other axiom --- causality, linearity, positivity, unit
+area, continuity, translation covariance, and \emph{full continuous} scale covariance ---
+is retained, restated only as the two-parameter setting requires: scale covariance with
+the relabelling of the scale axis left free (\S\ref{sec:measurement-covariance}), and the
+extended point as the diagonal condition $\Phi_{x,x} = \Id$. One further difference is
+disclosed where it matters (Remarks~\ref{rem:axiom-provenance}
+and~\ref{rem:drift-boundary}): the kernels are no longer required to be continuous
+functions, which admits a degenerate pure-delay member. The derivation of
+\sscite{fagerstrom2005temporal} --- hereafter \emph{the semigroup
+theory} --- is then rerun in the same order with the same tools: Laplace transforms, two
+functional equations, and the Bernstein-function calculus. A numbering convention, used
+throughout and self-contained: a theorem numbered with a prime --- $3'$ (the scale-Cauchy
+problem), $4'$ (the signaling form), $5'$ (locality) --- is the hemigroup analogue of the
+correspondingly numbered theorem of the semigroup theory, and the text restates each
+recovered classical statement at the point where it recovers it, so the correspondence
+can be read without the 2005 paper at hand.
+
+\emph{What replaces the stable family.} Under these axioms the admissible kernel families
+are completely characterized (Theorem~\ref{thm:main-characterization}): in the canonical
+scale parametrization fixed in \S\ref{sec:covariance}, they are exactly
 \[
   \phi_x(t) \;=\; \Lap^{-1}\bigl[\,e^{-F(xs)}\,\bigr](t), \qquad
   F(s) = b_0\,s + \int_0^\infty\bigl(1 - e^{-st}\bigr)\,\frac{k(t)}{t}\,dt,
@@ -33,15 +58,25 @@ canonical scale parametrization fixed in \S\ref{sec:covariance}, they are exactl
 the Laplace exponents of the \emph{self-decomposable} laws --- the delays $T$ that shrink
 into themselves, $T \stackrel{d}{=} cT + R_c$ with $R_c$ independent, for every
 $c \in (0,1)$ --- equivalently, the kernels are the marginal laws of self-similar additive
-(Sato) subordinators. The class contains members with all moments finite. The simplest of
-these, and the one the implementation half of the paper builds on, is the Gamma family
+(Sato) subordinators. When stage-interchangeability is reimposed, the recovered sub-case
+is the extremal stable family together with the pure delay at its boundary
+(Corollary~\ref{cor:semigroup-case}), and the heavy tails of the stable kernels are
+thereby exposed as the price of that tacit assumption, not of causality and covariance
+(Remark~\ref{rem:heavy-tails}).
+
+\emph{What the class contains, and at what price.} The class contains members with all
+moments finite. The simplest of these, and the one the implementation half of the paper
+builds on, is the Gamma family
 \[
   \phi_x(t) \;=\; \frac{t^{\gamma-1}\,e^{-t/x}}{\Gamma(\gamma)\,x^{\gamma}},
 \]
 whose mean delay is finite, $\gamma x$; whose tails are exponential; whose scale covariance
 is exact and continuous; and which is computed, for integer $\gamma$, by a cascade of
-first-order recursive filters. (What the family gives up is locality of its memory-line
-medium --- the trade-off classified in \S\ref{sec:locality}.)
+first-order recursive filters. The price is stated before the consequences are: what the
+Gamma family gives up is locality of its memory-line medium --- its signaling operator is
+an integral operator, not a differential one --- and the trade-off between finite moments
+and a local medium is not an accident of the example; it is classified by the locality
+theorem (\S\ref{sec:locality}).
 
 The classical constructions are recovered inside this class, and their limitations are
 located by it. The Gaussian scale space that answers the corresponding spatial question
@@ -51,33 +86,14 @@ known time-causal constructions each concede one desideratum. The scale-time of
 \sscite{koenderink1988scale} applies Gaussian smoothing to a logarithmically remapped past,
 achieving causality but not time-recursivity. The Poisson scale space of
 \sscite{lindeberg1996scalespace} is causal and time-recursive but carries no dilation covariance
-of any span: its fixed elementary delay is a preferred time unit. The axiomatization of
-\sscite{fagerstrom2005temporal} --- hereafter \emph{the semigroup theory} --- imposes full
+of any span: its fixed elementary delay is a preferred time unit. The semigroup theory
+imposes full
 continuous covariance together with the semigroup cascade and obtains a complete answer,
 the kernels being exactly the extremal stable densities $\Lap^{-1}[e^{-\tau s^\alpha}]$,
 $0 < \alpha < 1$; but every member has infinite mean delay. The time-causal limit kernel of
 \sscite{lindeberg2016time} restores
 finite moments through a recursive cascade of first-order integrators, with covariance
 established there under the discrete subgroup of rescalings $\sigma \in q^{\ZZ}$.
-
-The single change of axiom is where all of this resolves. The semigroup form of the cascade
-formalizes ``a measurement of a measurement is a measurement'' together with a second, tacit
-assumption: that the composite depends only on the total \emph{amount} of scale --- that
-measurement stages are interchangeable (\S\ref{sec:measurement-cascade}). The hemigroup form
-keeps the first assumption and drops the second; every other axiom --- causality, linearity,
-positivity, unit area, continuity, translation covariance, and \emph{full continuous} scale
-covariance --- is retained, restated only as the two-parameter setting requires: scale
-covariance with the relabelling of the scale axis left free
-(\S\ref{sec:measurement-covariance}), and the extended point as the diagonal condition
-$\Phi_{x,x} = \Id$. One further difference is disclosed where it matters
-(Remarks~\ref{rem:axiom-provenance} and~\ref{rem:drift-boundary}): the kernels are no longer
-required to be continuous functions, which admits a degenerate pure-delay member. The
-derivation of the semigroup theory is then rerun in the same order with the same tools: Laplace transforms, two functional equations, and the
-Bernstein-function calculus. The analogues of its Theorems~3--5 are numbered $3'$--$5'$
-below. When stage-interchangeability is reimposed, the recovered sub-case is the extremal stable
-family together with the pure delay at its boundary (Corollary~\ref{cor:semigroup-case}),
-and the heavy tails are thereby exposed as the price of that tacit assumption, not of
-causality and covariance (Remark~\ref{rem:heavy-tails}).
 
 The second half of the paper develops the theory over the memory line, and the embodiment
 principle of the semigroup theory (\S5 of that paper; \S\ref{sec:measurement} motivates it)
@@ -118,7 +134,8 @@ one-parameter Bessel family
 unfolding the isolated heat case of the semigroup theory's Theorem~5, with the drift weight
 $\beta$ buying any prescribed finite number of kernel moments.
 
-A third result belongs to the oldest axiom of the subject, and it is settled in both
+The fourth question --- which classical properties survive, and in what form --- has its
+sharpest instance in the oldest axiom of the subject, and there it is settled in both
 directions (\S\ref{sec:examples}). Scale-monotone non-creation --- every coarser record
 showing no more sign changes than every finer one --- is \emph{impossible}: an admissible
 family whose increments are all variation-diminishing is the pure delay
@@ -208,6 +225,16 @@ Mellin signaling form; \S\ref{sec:locality} the locality theorem;
 \S\ref{sec:conclusions} concludes, with four open problems.
 Appendix~\ref{sec:appendix-memory} develops the memory-kernel and Sonine structure and the
 scale-Cauchy problem.
+
+Two fast tracks, for two readers. The practitioner can take \S\ref{sec:measurement} for
+the axioms and the statement of Theorem~\ref{thm:main-characterization}, then go directly
+to \S\S\ref{sec:implementation}--\ref{sec:jet} --- the exact cascade, the Thorin banks,
+the jets, and the numerical experiment --- accepting the intermediate theory on faith. The
+reader here for the mathematics can take
+\S\S\ref{sec:representation}--\ref{sec:characterization} for the characterization,
+\S\ref{sec:signaling} for the Mellin solution theory, and \S\ref{sec:locality} with
+Appendix~\ref{sec:appendix-memory} for the media and the scale-Cauchy problem, skipping
+the implementation sections entirely. \S\ref{sec:examples} serves both.
 
 \subsection{What is machine-checked}\label{sec:machine-checked}
 
@@ -320,6 +347,12 @@ identifications, which need $K_\nu$. So the gap is four citations and one specia
 
 \paragraph{Where to look.} The development, its axiom ledger with page-verified citations
 for every cited interface, and a dependency graph in which each statement is coloured by its
-verification status, are available at the repository accompanying this paper. The ledger
+verification status, are available at the repository accompanying this paper,
+\url{https://github.com/danielfagerstrom/hemigroup-causal-scale-space-kernels}. The
+toolchain is pinned in-tree --- Lean~4 \texttt{v4.31.0}, Mathlib \texttt{v4.31.0}, and the
+shared library \texttt{ScaleSpaceCore} at its tag \texttt{v0.1.0} --- so the verification
+is reproducible with one command, \texttt{lake build} in \texttt{Formalization/}; a second,
+\texttt{lake env lean CIAxiomGuard.lean}, prints the axiom usage of every named declaration
+and exits nonzero on any drift from the two-interface trust boundary above. The ledger
 records eighteen interfaces the paper cites; the two above are the only ones the verified
 results actually consume.

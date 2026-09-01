@@ -234,19 +234,35 @@ explicitly left open per D1. §13 had no well-posed occurrence (verified by grep
   short paragraph after the summary, same content in concluding register). Abstract left
   for R8's rebuild per plan.
 
-### R8 — front-matter rebuild on the four-question spine                 [status: open; after R3–R5]
+### R8 — front-matter rebuild on the four-question spine                 [status: DONE 2026-09-01]
 
-- Abstract rebuilt at ~200 words: the axiom move, the characterization, one Gamma
-  consequence, one memory-line consequence, one honest what-is-and-is-not-preserved
-  sentence (uses R3 language), machine-checking.
-- §1 first two pages reordered around the four questions (which assumption; what replaces
-  stable; what new members; what is/isn't preserved); the trade-off stated before the
-  headline consequences.
-- Fast-track reader guide at the end of §1 (practitioners vs theorists), one short
-  paragraph.
-- §1.1 per D3; add repository URL, immutable tag/commit, Lean/Mathlib versions, and the
-  one-command verification instruction.
-- Numbering convention sentence per D2.
+- Abstract rebuilt (~215 words): axiom move, characterization + stable sub-case, Gamma
+  consequence, memory-line consequence (existence-uniqueness language from R4), the R3
+  both-directions non-creation sentence, machine-checking. The CM-subclass approximation
+  clause dropped from the abstract (it lives in §1 and §11).
+- §1 opening rebuilt on the four questions, named explicitly at the end of the first
+  paragraph, then answered by four labelled paragraphs: *The assumption* (semigroup =
+  composition + tacit interchangeability, hemigroup keeps the first drops the second, all
+  retained axioms listed, pure-delay disclosure, rerun sentence — absorbing the old
+  "single change of axiom" paragraph); *What replaces the stable family* (representation
+  display, SD reading, stable+delay recovered, heavy tails as the price); *What the class
+  contains, and at what price* (Gamma display; the trade-off — nonlocal medium — stated
+  in full BEFORE the headline consequences, replacing the old parenthesis); the fourth
+  question named at the non-creation paragraph ("has its sharpest instance in the oldest
+  axiom"). Prior-work paragraph kept, moved after the answers; "the semigroup theory"
+  now defined at first mention in the assumption paragraph.
+- Numbering convention per D2: self-contained sentence in the assumption paragraph — a
+  primed theorem is the hemigroup analogue of the correspondingly numbered 2005 theorem,
+  each recovered statement restated in-paper where recovered, readable without the 2005
+  paper at hand.
+- Fast-track guide added after the roadmap: practitioner track (§2 + Thm 2' statement ->
+  §11-§12), mathematics track (§4-§7, §9, §10 + appendix), §8 serves both.
+- §1.1: "Where to look" now carries the repository URL, the in-tree toolchain pins
+  (Lean 4 v4.31.0, Mathlib v4.31.0, ScaleSpaceCore v0.1.0), and the two commands
+  (lake build; lake env lean CIAxiomGuard.lean with its nonzero-exit guarantee). D3's
+  light compression judged already satisfied by the existing text; body left intact.
+  NOTE for the author: mint a git tag at publication so the pinning extends to the
+  paper's own revision.
 
 ### R9 — notation and navigation apparatus                               [status: open]
 
