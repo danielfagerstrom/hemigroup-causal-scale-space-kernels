@@ -20,39 +20,62 @@ references ("p. 33") are to the reviewed PDF build.
 - The review's storytelling advice is adopted where it serves the monograph's multi-audience
   genre, declined where it reviews the monograph as a journal submission.
 
-## Decision points for the author (D1–D5)
+## Decision points — RESOLVED (author, 2026-09-01)
 
-- **D1 — "well posed":** rename to "existence and uniqueness in the profile-dominated
-  Mellin class" (recommended; cheap), or additionally prove a stability estimate. A trivial
-  L1-contraction stability remark for the scale-Cauchy reading is available either way.
-- **D2 — theorem numbering:** keep the 3'/4'/5' lineage labels (monograph identity,
-  recommended) or move to plain numbering per the review. If kept, add one sentence in §1
-  explaining the convention.
-- **D3 — §1.1 compression:** light compression + keep in main text (recommended), or
-  half-page table + ledger to an appendix per the review.
-- **D4 — natural-signal experiment:** narrow the application rhetoric now (recommended) and
-  defer a natural-signal example, or add an audio/video-row example in this revision.
-- **D5 — Figure 14 (fingerprint) rendering:** keep with caption fix only, or re-render the
-  noise block with prominence coding / an inset per the review.
+- **D1 — "well posed":** rename now ("existence and uniqueness in the profile-dominated
+  Mellin class"); the stability-theorem question is deliberately left open for a later
+  revisit. The free L1-contraction stability remark for the scale-Cauchy reading goes in
+  with R4.
+- **D2 — theorem numbering:** keep the 3'/4'/5' lineage labels, with the constraint that
+  the explanation must be self-contained --- the reader must NOT need the 2005 article:
+  the convention sentence in §1 states in-paper what each primed theorem is the analogue
+  of (the paper already restates each recovered original where it recovers it).
+- **D3 — §1.1:** light compression, kept in the main text.
+- **D4 — signal model:** narrow the application rhetoric now; natural-signal example
+  deferred (revisit for the SSVM paper).
+- **D5 — Figure 14:** caption fix only ("in this run"); no re-render.
 
 ## Batches
 
-### R0 — verification pass (no paper changes; findings feed R1–R6)      [status: open]
+### R0 — verification pass                                    [status: DONE 2026-09-01]
 
-Verify the review claims not yet checked against the sources:
-1. §6, after the semigroup-case discussion (review p. 24 finding): does the text claim the
-   gauge is the identity in the *original* semigroup parameter? Reconcile against
-   prop 8.7-equivalent and rem:recovering-thm3 (`tau = x^alpha`).
-2. Exact statements of the Laplace-uniqueness propositions (§3): are they positive-measure
-   only? List every signed application (V(t) constructions in §9, appendix).
-3. The Kent first-passage sentence (§8, p. 36): librarian pulls the hypotheses of the cited
-   theorem (interval, regularity, killing, accessibility).
-4. `make-figureps.py` vs `make-figures.py` (p. 62): typo check.
-5. Locate all headline occurrences for the R3–R5 sweeps (grep list: "non-creation",
-   "well posed", "substrate", "conservation of information", "exactly invertible",
-   "dilation-closed").
+Findings (fixes for 1 and 3 landed inline with this batch, being small and verified):
+1. **Gauge slip confirmed and FIXED** (§6, post-canonical-gauge prose). The text claimed
+   S_sigma x = sigma x and chi = identity in the semigroup case; in the semigroup's own
+   additive parameter tau the action is S_sigma tau = sigma^alpha tau and
+   chi(tau) = tau^{1/alpha}. Rewritten with both coordinates named and
+   rem:recovering-thm3 cross-referenced; coincidence only at alpha = 1.
+2. **Laplace-uniqueness propositions are positive-measure only** (prop:laplace-uniqueness,
+   prop:laplace-uniqueness-sigma-finite). Signed applications to inventory in R6:
+   the V(t) = 0 arguments in prop:scale-evolution, lem:generator-properties(5), and the
+   §9 corollary proofs. Fix (R6): a paper-only signed corollary after the sigma-finite
+   proposition, by decomposition into positive and negative parts.
+3. **Kent claim was wrong beyond the review's finding, and FIXED.** Verified against the
+   source (library page images, printed pp. 207-208): Kent's setting is a *nonsingular
+   diffusion on an interval*, interior first passage r0 < a < b < r1, conclusion the
+   *Bondesson class* on [0, infinity] (possibly defective). The paper's sentence concluded
+   "every diffusion hitting time lies in the Thorin subclass" --- wrong twice: Bondesson
+   strictly contains Thorin, and Bondesson members need not even be self-decomposable
+   (CM Levy density ell does not make t*ell(t) nonincreasing), hence need not be
+   admissible. Sentence rewritten with Kent's hypotheses, the Bondesson conclusion, and
+   the honest scoping; "every law just named" downstream adjusted to "every admissible
+   law just named". The R6 Kent item is thereby done.
+4. `make-figureps.py`: not present at the current head (only the correct
+   `make-figures.py` in §11). Either fixed earlier or a reviewer misread. No action.
+5. Headline inventory for R3-R5 sweeps: 48 occurrences across 10 files (grep terms:
+   non-creation, well[- ]posed, substrate, conservation of information, exactly
+   invertible, dilation-closed); per-file counts recorded in the session log, re-grep at
+   sweep time.
 
-### R1 — page-33 proof repair (prop:gamma-regularity extrema clause)     [status: open]
+### R1 — page-33 proof repair (prop:gamma-regularity extrema clause)  [status: DONE 2026-09-01]
+
+Done as specified below: statement clause (1) restated with the VD bound for integrable
+and bounded g (essential sign changes), the level form and zero-crossing clause derived
+from it, and the extremum clause hypotheses f in core with extrema counted as essential
+sign changes of the derivative; proof rewritten via the derivative route
+(d/dt u = mu * f' from the primitive structure), with a parenthetical recording why the
+level route cannot bound the extremum count (disjoint value ranges). Paper-only
+(no blueprint node). Original spec:
 
 The inference "n local extrema admit a level with n+1 sign changes" is false (disjoint
 value ranges); verified by counterexample. Repair by the derivative route:
@@ -124,7 +147,7 @@ uniqueness in the stated class, and stability in the evolution reading".
 
 - rem:markov-media: mark as context with precise citations or explicit forward pointer to
   the separate article; Table 1 medium row gets an evidentiary label.
-- Kent sentence: state the hypotheses found in R0.3.
+- Kent sentence: DONE with R0.3 (see above).
 - §13 strata: "finite truncations ... not dilation-closed" disambiguated — the
   fixed-time-constant cascade of the published construction, not the truncated exponent's
   similarity family (which IS covariant by prop:thorin-subclass).

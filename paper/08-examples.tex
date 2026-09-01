@@ -238,13 +238,20 @@ $\operatorname{Var} T_x = \gamma(\gamma+1)x^2 - \gamma^2x^2 = \gamma x^2$.
 Write $S^-(g)$ for the number of sign changes of a function $g$ on $\RR$.
 \begin{enumerate}
 \item For integer $\gamma$ the Gamma kernels are one-sided P\'olya frequency densities, and
-convolution with them is variation-diminishing: for every level $c \in \RR$ and every
-$x > 0$, the field $u(\cdot, x) := \mu_{0,x} * f$ satisfies
+convolution with them is variation-diminishing: $S^-(\mu_{0,x} * g) \le S^-(g)$ for every
+$x > 0$ and every integrable or bounded $g$, sign changes counted in the essential
+(almost-everywhere) sense. In particular, for the field $u(\cdot, x) := \mu_{0,x} * f$,
 \[
-  S^-\bigl(u(\cdot, x) - c\bigr) \;\le\; S^-\bigl(f - c\bigr) .
+  S^-\bigl(u(\cdot, x) - c\bigr) \;\le\; S^-\bigl(f - c\bigr)
+  \qquad \text{for every level } c \in \RR,
 \]
-In particular the field has, at every scale, no more zero-crossings and no more local
-extrema than the signal. For non-integer $\gamma$ the kernels are not P\'olya frequency
+so the field has, at every scale, no more zero-crossings than the signal; and if $f$ is
+the primitive of a function $f' \in \Xz$ --- that is, $f \in \core$ --- then, counting
+local extrema as essential sign changes of the derivative,
+\[
+  S^-\bigl(\partial_t u(\cdot, x)\bigr) \;\le\; S^-\bigl(f'\bigr):
+\]
+no more local extrema either. For non-integer $\gamma$ the kernels are not P\'olya frequency
 densities.
 \item An admissible family (Theorem~\ref{thm:main-characterization}) has P\'olya frequency
 kernels if and only if
@@ -270,11 +277,17 @@ is the P\'olya frequency property.
 (1) For the Gamma kernel, $1/\widehat{\mu}_{0,x}(s) = (1 + xs)^{\gamma}$: for integer
 $\gamma$ this is a polynomial with the single real negative root $-1/x$, of the displayed
 form with $\delta = 0$ and $\gamma$ equal factors, so the kernels are P\'olya frequency
-densities, and the sign-change bound follows applied to $f - c$, since
-$\mu_{0,x} * (f - c) = u(\cdot,x) - c$ by unit mass. The extremum count reduces to sign
-changes: a function with $n$ local extrema admits a level $c$ with $n + 1$ sign changes of
-the difference (take $c$ strictly between consecutive extreme values), so the bound at
-every level bounds the number of extrema. For non-integer $\gamma$, $(1 + xs)^{\gamma}$ has
+densities and convolution with them diminishes essential sign changes of integrable and of
+bounded functions. The level form follows applied to $g = f - c$, since
+$\mu_{0,x} * (f - c) = u(\cdot,x) - c$ by unit mass, and the zero-crossing clause is the
+level $c = 0$. For the extremum clause, $f \in \core$ gives
+$f = \mathbf{1}_{[0,\infty)} * f'$, hence
+$u(\cdot,x) = \mathbf{1}_{[0,\infty)} * (\mu_{0,x} * f')$ and
+$\partial_t u(\cdot,x) = \mu_{0,x} * f'$ a.e.; the variation-diminishing bound applied to
+$g = f'$ gives the display. (The count is read from the derivative and not from the
+levels: no single level need meet every extremum --- two oscillations can occupy disjoint
+value ranges --- so the level bounds alone do not bound the number of extrema.) For
+non-integer $\gamma$, $(1 + xs)^{\gamma}$ has
 a branch point at $s = -1/x$ and is not entire, so by the same representation theorem the
 kernel is not a P\'olya frequency density.
 
@@ -514,14 +527,19 @@ $|q| \ge 1$, of a Gamma variable (Ex.~4.3.4, p.~60), and $\HCM$ laws are $\GGC$
 (Thm.~4.3.1, p.~57), with closure under independent products and ratios
 (Thm.~5.1.1, p.~69; Thm.~6.2.1, p.~92) --- so compound latencies assembled
 multiplicatively from Gamma factors stay admissible. And the phenomenon behind the
-Bessel family is general: the first-passage time of \emph{every} one-dimensional
-diffusion is a generalized convolution of mixtures of exponentials
-(\sscite{kent1982spectral}, p.~207, the completely monotone L\'evy density being
-Definition~2.1 there, p.~208) --- every diffusion hitting time lies in the Thorin
-subclass, and the memory-line reading of \S\ref{sec:signaling} applies to each. Two boundaries frame the catalogue. Outward: nothing with tail lighter
+Bessel family is general, in a precisely weaker sense: for a nonsingular
+one-dimensional diffusion on an interval, every interior first-passage time
+$\tau_{ab}$, $r_0 < a < b < r_1$, lies in the \emph{Bondesson class} of infinitely
+divisible laws on $[0,\infty]$ --- possibly defective, with completely monotone
+L\'evy density (\sscite{kent1982spectral}, p.~207; the class is Definition~2.1
+there, p.~208). The Bondesson class strictly contains the Thorin subclass, and its
+members need not be self-decomposable --- a completely monotone L\'evy density
+$\ell$ does not make $t\,\ell(t)$ nonincreasing --- so a general diffusion hitting
+time need not be admissible at all; the Bessel family is the corner where the
+hitting-time structure meets the axioms. Two boundaries frame the catalogue. Outward: nothing with tail lighter
 than $e^{-c\,t\log t}$ is admissible at all (Remark~\ref{rem:tail-dichotomy}), so
 no windowed or truncated Gaussian appears however the data $(b_0,k)$ are chosen.
-Inward: every law just named lies in the Thorin subclass --- the classical
+Inward: every admissible law just named lies in the Thorin subclass --- the classical
 catalogue is classical largely because completely monotone structure is where the
 classical proofs live --- while the admissible class is strictly larger. Its
 non-Thorin territory, with plateaus, kinks and cutoffs in $k$, is new ground as a
