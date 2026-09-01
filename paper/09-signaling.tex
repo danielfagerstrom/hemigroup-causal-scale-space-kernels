@@ -817,7 +817,8 @@ $T_1$) gives $\kappa_s = \hat f(s)$. So $\hat v(s,x) = \hat f(s)H(sx) = \hat u(s
 $x>0$ and every $s>0$: $t \mapsto v(t,x)$ and $t \mapsto u(t,x)$, both in $\Xz$
 (Definition~\ref{def:mellin-solution}(1) for $v$, Lemma~\ref{lem:delay-core} for
 $u = \Phi_{0,x}f \in \core \subset \Xz$), have the same Laplace transform for every $s>0$, so by
-Proposition~\ref{prop:laplace-uniqueness} % blueprint: prop:laplace-uniqueness-causal
+Corollary~\ref{cor:laplace-uniqueness-signed} % blueprint cites prop:laplace-uniqueness-causal; the signed reduction is paper-only
+applied to their difference
 they agree: $v(\cdot,x) = u(\cdot,x)$ in $\Xz$, for every $x>0$.
 \end{proof}
 
@@ -1037,3 +1038,12 @@ symbol of degree at most two --- but the general classification of which admissi
 Markov-realizable is the memory-line inverse problem, and it is left open; it is listed with the
 open problems in \S\ref{sec:conclusions}.
 \end{remark}
+
+% Paper-only (2026-09-01, review response R6): evidentiary status of the remark above.
+The remark is context, not part of this paper's proved record: the two claims it records
+without proof --- the L\'evy--Lamperti form of the PMP media after the logarithmic
+substitution, and the necessity of quadratic symbol growth --- belong to the separate
+article on the memory-line inverse problem announced in \S\ref{sec:conclusions}, and
+nothing proved in this paper depends on them. What \emph{is} proved here about media is
+Theorem~\ref{thm:locality}'s classification of the local case, and, for the Gamma medium,
+the first-jump computation quoted in the remark.

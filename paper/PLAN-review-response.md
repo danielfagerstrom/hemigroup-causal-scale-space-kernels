@@ -191,22 +191,33 @@ explicitly left open per D1. §13 had no well-posed occurrence (verified by grep
   implementable as a sample delay" softened to "itself a pure time shift"; fig-filterbank
   caption "the drift's exact sample delay" -> "the drift's pure time shift".
 
-### R6 — scoping batch (Issue 6 + appendix corrections)                  [status: open; after R0]
+### R6 — scoping batch (Issue 6 + appendix corrections)                  [status: DONE 2026-09-01]
 
-- rem:markov-media: mark as context with precise citations or explicit forward pointer to
-  the separate article; Table 1 medium row gets an evidentiary label.
-- Kent sentence: DONE with R0.3 (see above).
-- §13 strata: "finite truncations ... not dilation-closed" disambiguated — the
-  fixed-time-constant cascade of the published construction, not the truncated exponent's
-  similarity family (which IS covariant by prop:thorin-subclass).
-- Signed Laplace uniqueness: add the signed/L1 corollary (Jordan decomposition reduction)
-  as a paper-only remark in §3, referenced where used.
+- rem:markov-media: paper-only body paragraph added after the (verbatim-shared) remark
+  naming its evidentiary status — context, its two without-proof claims belonging to the
+  separate memory-line-inverse-problem article, with what IS proved (thm:locality's local
+  case; the Gamma first-jump computation) stated; Table 1 medium row labelled
+  "(context, stated without proof)".
+- Kent sentence: DONE with R0.3.
+- §13 strata: the dilation-closure sentence now separates the two truncations — the
+  published construction's fixed-time-constant cascade (hypoexponential, discrete
+  covariance only) from the truncated exponent's similarity family (admissible and fully
+  covariant by prop:thorin-subclass, approximating the limit kernel from inside the class).
+- Signed Laplace uniqueness: NEW paper-only cor:laplace-uniqueness-signed in §3 after the
+  sigma-finite proposition (Jordan decomposition reduction, with proof). Cited at the four
+  signed use-sites found by audit: prop:scale-evolution proof, lem:generator-properties(5),
+  thm:scale-cauchy(3), cor:signaling-wellposed proof. All other uniqueness applications
+  audited positive-measure-only (incl. R2's proof). Blueprint prose at the mirrored proofs
+  keeps its shorthand — its record of correctness is the Lean proof; promotion of the
+  signed corollary rides with the R1/R2 blueprint-promotion decision.
 - Appendix: "identifies with the locality corner" -> "contains the local families
-  classified in §10"; the V.2 endpoint sentence corrected (the *coefficient* t - b0 x
-  vanishes; the density need not — gamma = 1 positive, gamma < 1 divergent); the
-  post-V.2 uniqueness/Picard paragraph explicitly labelled heuristic; the Sonine
-  motivation's "each infinitesimal smoothing step is exactly invertible" reworded to the
-  one-sided D-has-right-inverse form (keeping the body text's D-vs-Phi distinction).
+  classified in §10"; the V.2 endpoint sentence corrected in BOTH paper and blueprint
+  (shared statement): the *coefficient* t - b0 x vanishes, phi_x vanishes below the
+  endpoint but need not vanish at it; the post-V.2 paragraph explicitly labelled heuristic
+  twice, with the gamma = 1 positive / gamma < 1 divergent illustration added and "the
+  proved uniqueness lives at (V.1)" stated; the intro's two "exactly invertible" phrases
+  reworded to the one-sided right-inverse form (D^(x) inverted, one composition order, not
+  the cascade step Phi), matching the honest post-corollary body text.
 
 ### R7 — signal-model scope (Issue 5, per D4)                            [status: open]
 
