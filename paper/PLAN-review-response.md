@@ -124,21 +124,29 @@ sum of reciprocals diverges, contradicting finite mean; so k = 0.
   obstruction dissolved) in R3, and record the statement as a conjecture/open problem.
 - Candidate for blueprint promotion + Lean later; paper-only in this revision.
 
-### R3 — non-creation claims sweep                                       [status: open; after R2]
+### R3 — non-creation claims sweep                                       [status: DONE 2026-09-01]
 
-Language depends on R2's outcome (impossibility proved: "scale-monotone non-creation is
-impossible in the class; the endpoint form is optimal and achieved"; otherwise: "endpoint
-variation diminution relative to the input; the scale-monotone form is not recovered").
-Sweep every headline occurrence:
-- abstract (non-creation sentence), §1 (non-creation paragraph + contributions bullet),
-- §8: proposition name ("non-creation in time" -> endpoint form), rem:pf-hemigroup recast,
-- §11: Table 1 row rename ("endpoint VD relative to input") + the substrate paragraph's
-  regularity tie-in,
-- §12: experiment C2 item (already honest post-correction; align vocabulary), fig-fingerprint
-  caption gains "in this run",
-- §13: summary sentence, strata "non-creation subclass" phrasing (limit kernel, scale-time),
-- appendix: cor:past-dominating framing untouched (it is a genuine conditional
-  scale-monotone statement — say so explicitly as the contrast).
+Executed in the strong form (R2 closed): "settled in both directions --- the scale-monotone
+form impossible (prop:vd-impossibility), the endpoint form classified and attained
+(prop:gamma-regularity)". Every headline occurrence swept:
+- abstract: non-creation sentence rewritten to the both-directions form;
+- §1: non-creation paragraph rewritten (impossibility first, endpoint form as what exists,
+  ladder sentence via rem:ladder-vd + cor:past-dominating), "non-creation subclass" ->
+  "variation-diminishing subclass", contributions bullet -> both-directions form;
+- §8: prop:gamma-regularity retitled "non-creation from the signal; ...";
+  rem:pf-hemigroup retitled "causal non-creation: what survives, and what cannot", its
+  claims scoped to the endpoint form ("carries its endpoint form", "dissolves the
+  obstruction for the endpoint form");
+- §11: Table 1 row -> "non-creation from the signal"; substrate paragraph already in
+  variation-diminishing vocabulary, unchanged;
+- §12: C2 item -> "Non-creation from the signal", "not asserted" strengthened to "not
+  merely unasserted but impossible in the class (prop:vd-impossibility)"; fig-fingerprint
+  caption -> "holds in this run" (D5);
+- §13: summary sentence -> both-directions form; stratum-2 limit-kernel passage gains the
+  rem:ladder-vd rung-monotonicity clause and "variation-diminishing subclass";
+- appendix: "counting non-creation from the signal" precision; cor:past-dominating framing
+  untouched (a genuine conditional pointwise statement, already contrasted in §8's remark).
+Final grep: no "non-creation in time"/"non-creation subclass" remains in the .tex sources.
 
 ### R4 — well-posedness language (per D1)                                [status: open]
 
