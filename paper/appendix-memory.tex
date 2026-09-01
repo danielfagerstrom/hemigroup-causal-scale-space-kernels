@@ -18,7 +18,7 @@ through the memory kernel. Lemma~\ref{lem:memory-kernel} identified $F'$ as, up 
 the Laplace transform of the nonincreasing function $k$; here that identity becomes the
 evolution of the scale space across scale --- a general fractional relaxation equation whose
 kernel is $k$ itself, dilated to the current scale --- together with the Sonine conservation
-identity that makes each infinitesimal smoothing exactly invertible, a Volterra equation from
+identity that gives each scale's memory operator an explicit right inverse, a Volterra equation from
 which the kernels can be computed without Laplace inversion, and finally the classical
 scale-Cauchy problem (Theorem~3$'$). Throughout we work in the canonical gauge --- so that
 $\mu_{0,x}$ is the law of $x\,T_1$ --- with the causal vocabulary of \S\ref{sec:preliminaries}.
@@ -35,8 +35,10 @@ evolution along the memory line is a conservation law in the $(t,x)$-plane whose
 $k$-weighted running average of the record --- integrating over $t$ kills the right-hand
 side, so mass is transported across scale, never created, which is axiom (A5) in
 differential form (Proposition~\ref{prop:scale-evolution}); this memory operation destroys
-no information, its algebraic inverse being again a causal positive measure, so each
-infinitesimal smoothing step is exactly invertible (Theorem~\ref{thm:sonine-conservation},
+no information, the algebraic reciprocal of its symbol being again the transform of a
+causal positive measure, so the memory operator at each scale has an explicit right inverse
+--- what is inverted is the memory operator $D^{(x)}$, in the one composition order stated,
+not the cascade step $\Phi_{x,y}$ (Theorem~\ref{thm:sonine-conservation},
 Corollary~\ref{cor:exact-inversion}); and the temporal kernels themselves are recovered
 from $k$ by forward integration, with no Laplace inversion
 (Propositions~\ref{prop:volterra}--\ref{prop:volterra-density}). One function, three proven
@@ -131,7 +133,8 @@ with $W \in L^1_{\mathrm{loc}}$ and causal.
 \emph{Inversion.} The causal, locally integrable function
 $V(t) := \int_0^t \bigl(u(r, b) - u(r, a)\bigr)\,dr + W(t)$ has Laplace transform
 $\bigl(\hat u(s,b) - \hat u(s,a)\bigr)/s + \widehat W(s) = 0$ for every $s > 0$, so $V = 0$
-a.e.\ by Proposition~\ref{prop:laplace-uniqueness-sigma-finite}. That is the displayed identity. The final
+a.e.\ by Corollary~\ref{cor:laplace-uniqueness-signed}, the transform of $|V|$ being finite
+by the two bounds above. That is the displayed identity. The final
 statement holds because $u(\cdot, x)$ vanishes on $(-\infty, 0)$, so no boundary term arises
 when moving $\partial_t$ through the convolution.
 \end{proof}
@@ -319,8 +322,8 @@ monotone, being a product of completely monotone functions, hence $F \in \CBF$
 
 Part (2) delineates exactly where the classical Sonine calculus with completely monotone
 kernel pairs --- the standing hypothesis of most of the general-fractional-calculus
-literature --- applies: on the complete-Bernstein subfamily, which \S\ref{sec:locality}
-identifies with the locality corner of the memory-line realization. For general admissible
+literature --- applies: on the complete-Bernstein subfamily, which contains the local
+families classified in \S\ref{sec:locality}. For general admissible
 $F$ the pair, and Theorem~\ref{thm:sonine-conservation}, live at the level of measures.
 
 % shared with blueprint prop:volterra
@@ -372,9 +375,10 @@ equation
   \;=\; \int_0^t k\bigl(\tfrac{u}{x}\bigr)\,\phi_x(t - u)\,du
   \qquad \text{for a.e.\ } t > 0. \tag{V.2}
 \]
-Away from its left endpoint $t = b_0 x$ --- where $\phi_x$ itself vanishes, the drift shifting
-every kernel by $b_0 x$ (Remark~\ref{rem:drift-boundary}) --- this is a Volterra equation of
-the second kind.
+Away from its left endpoint $t = b_0 x$ --- where the \emph{coefficient} $t - b_0 x$
+vanishes; $\phi_x$ vanishes below it, the drift shifting every kernel by $b_0 x$
+(Remark~\ref{rem:drift-boundary}), but need not vanish at it --- this is a Volterra equation
+of the second kind.
 \end{proposition}
 
 \begin{proof}
@@ -389,14 +393,17 @@ the inverse Laplace transform in
 Theorem~\ref{thm:main-characterization}: the kernels are \emph{derived} from the memory
 kernel $k$ by Volterra integration. At the level of the measure equation (V.1) the
 determination is proved (Proposition~\ref{prop:volterra-uniqueness}); for the density
-equation we record here, without a formal statement, why it
+equation we record here, as a heuristic and without a formal statement, why it
 determines $\phi_x$ rather than proving it: on $(b_0x, \infty)$, where $\phi_x$ is supported,
 (V.2) is linear and homogeneous, and a \emph{regular} equation of that form --- continuous
 coefficient, bounded away from zero --- has the trivial solution only; it is the vanishing of
 the coefficient $t - b_0x$ exactly at the left endpoint of that interval that admits a
-nontrivial family instead, from which the unit-area axiom (A5) selects $\phi_x$. Positivity
+nontrivial family instead, from which the unit-area axiom (A5) selects $\phi_x$. (At that
+endpoint the \emph{density} need not vanish: for the Gamma family it is positive at
+$\gamma = 1$ and divergent for $\gamma < 1$.) Positivity
 of that choice is the property Picard iteration of (V.2) preserves term by term, starting
-from a nonnegative seed, on the interior where the equation is regular.
+from a nonnegative seed, on the interior where the equation is regular --- again a
+heuristic; the proved uniqueness lives at the measure equation (V.1).
 
 % Verbatim from the blueprint's ex:gamma-volterra.
 \begin{example}[verification: the Gamma family]\label{ex:gamma-volterra}
@@ -565,7 +572,7 @@ causal with finite Laplace transforms. By (2) and Lemma~\ref{lem:memory-kernel} 
 function
 $V(t) := \int_0^t \bigl(\varphi_x(\partial_t)f\bigr)(\rho)\,d\rho - (\kappa^{(x)} * f)(t)$
 has transform $\varphi_x(s)\hat f(s)/s - F'(xs)\hat f(s) = 0$ for all $s > 0$, so $V = 0$
-a.e.\ by Proposition~\ref{prop:laplace-uniqueness-sigma-finite}. That is the claim; the value
+a.e.\ by Corollary~\ref{cor:laplace-uniqueness-signed}. That is the claim; the value
 $(\kappa^{(x)}*f)(\zp) = 0$ follows from $\kappa^{(x)}([0,t]) \to b_0$ and
 $\sup_{[0,t]}|f| \to 0$.
 \end{proof}
@@ -628,8 +635,8 @@ $\eta(x) := \hat v(s, x)$ is continuous on $[0,\infty)$ and $C^1$ on $(0,\infty)
 by Lemma~\ref{lem:generator-properties}(2); differentiation and $\Lap$ exchange because
 $|\hat g(s)| \le \|g\|_1$. Solving this scalar linear ODE on $[\varepsilon, x]$ and letting
 $\varepsilon \downarrow 0$, using continuity at $0$, gives $\eta(x) = \hat f(s)\, e^{-F(xs)}$.
-Thus $\hat v(s, x) = \hat u(s, x)$ for all $s > 0$, and $v = u$ by
-Proposition~\ref{prop:laplace-uniqueness}.
+Thus $\hat v(s, x) = \hat u(s, x)$ for all $s > 0$, and $v = u$ in $\Xz$ by
+Corollary~\ref{cor:laplace-uniqueness-signed} applied to their difference.
 \end{proof}
 
 Two things about the proof deserve saying. The uniqueness class is the natural one --- norm

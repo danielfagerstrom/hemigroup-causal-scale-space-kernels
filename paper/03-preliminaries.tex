@@ -238,6 +238,25 @@ $s_0 \in \RR$ be such that $\hat\mu(s_0) < \infty$. If $\hat\mu(s) = \hat\rho(s)
 $s \ge s_0$, then $\mu = \rho$.
 \end{proposition}
 
+% Paper-only (2026-09-01, review response R6). The two propositions above are statements
+% about positive measures, while several proofs apply uniqueness to differences of causal
+% functions -- prop:scale-evolution, lem:generator-properties(5), thm:scale-cauchy(3),
+% cor:signaling-wellposed. This corollary records the signed case those proofs actually
+% use, by decomposition into positive and negative parts, and is cited at those points.
+\begin{corollary}[uniqueness for signed densities]\label{cor:laplace-uniqueness-signed}
+Let $V$ be a measurable real function on $\RR$ vanishing a.e.\ on $(-\infty, 0)$, and let
+$s_0 \in \RR$ be such that $\int_0^\infty e^{-s_0 t}\,|V(t)|\,dt < \infty$. If
+$\int_0^\infty e^{-st}\,V(t)\,dt = 0$ for every $s \ge s_0$, then $V = 0$ a.e.
+\end{corollary}
+
+\begin{proof}
+Write $V = V_+ - V_-$. The measures $V_+(t)\,dt$ and $V_-(t)\,dt$ are carried by
+$[0,\infty)$, their transforms are finite at $s_0$ --- each is bounded by
+$\int e^{-s_0 t}|V|\,dt$ --- and the hypothesis makes them equal for every $s \ge s_0$. By
+Proposition~\ref{prop:laplace-uniqueness-sigma-finite} the two measures coincide, so
+$V_+ = V_-$ a.e., i.e.\ $V = 0$ a.e.
+\end{proof}
+
 \emph{The causal vocabulary}, used from \S\ref{sec:signaling} on and in the appendix, is
 the setting in which the family is read as an evolution in present time: a signal that
 starts at time $0$, delayed and smoothed. A function $f \in X$ is \emph{causal} if it

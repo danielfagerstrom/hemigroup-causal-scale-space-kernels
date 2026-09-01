@@ -169,36 +169,55 @@ every scale, and mu_{x,y}* the same along the evolution (the scale-Cauchy readin
 is NOT claimed (stability in a topology adapted to A) stated, the full-Hadamard question
 explicitly left open per D1. §13 had no well-posed occurrence (verified by grep).
 
-### R5 — Thorin substrate separation                                     [status: open]
+### R5 — Thorin substrate separation                                     [status: DONE 2026-09-01]
 
-- §11 prop:thorin-subclass discussion: split the bold claim into (i) admissible atomic
-  approximation, any positive weights (proved); (ii) exact finite first-order realization,
-  integer weights (proved); (iii) rational fitting for real weights (heuristic, cite
-  oustaloup2000frequency where it already is; no error theorem claimed).
-- Add the fractional-sample-delay caveat for the drift (one sentence).
-- Do not advertise "sections per decade" earlier than the heuristic paragraph; check §1 and
-  abstract phrasing ("approximate the entire completely-monotone subclass" stays, since
-  prop:thorin-subclass's weak-convergence clause does hold for real weights — the
-  overclaim is only the *rational/first-order* rider).
-- Constructive integer-weight approximation theorem with error bounds: recorded as an open
-  problem / companion-note candidate, not attempted here.
+- §11 bold-claim paragraph split into the three statuses, labelled in place: (i) *proved,
+  any positive weights* — admissible atomic truncations, weak convergence, in-class
+  approximation (prop:thorin-subclass); (ii) *proved, integer weights* — exact finite
+  first-order realization per increment (prop:gamma-cascade per node); (iii) *heuristic,
+  real weights* — rational fitting per rem:local-implementation(iii)/oustaloup2000frequency,
+  no error theorem claimed, and the constructive integer-weight approximation with bounds
+  recorded as open in the text itself. Section intro's "reduces to banks" likewise graded
+  ("approximated from inside the axiom class ..., exactly rational when the weights are
+  integers").
+- rem:local-implementation(iii): the log-state-count advertisement removed from the early
+  remark; it now defers to the post-proposition heuristic paragraph (which already carried
+  the honest "no error bound claimed" form). No "sections per decade" before that
+  paragraph; §1 and abstract checked — their "first-order" claims attach to the Gamma
+  family (exact) and to the weak-convergence clause, both proved, so unchanged per plan.
+- Drift caveat added (practice paragraph): the pure delay is a time shift, exact on a
+  sampled grid only at integer sample counts, otherwise a fractional delay approximated by
+  standard interpolation/allpass designs, no error claim. The proposition's "exactly
+  implementable as a sample delay" softened to "itself a pure time shift"; fig-filterbank
+  caption "the drift's exact sample delay" -> "the drift's pure time shift".
 
-### R6 — scoping batch (Issue 6 + appendix corrections)                  [status: open; after R0]
+### R6 — scoping batch (Issue 6 + appendix corrections)                  [status: DONE 2026-09-01]
 
-- rem:markov-media: mark as context with precise citations or explicit forward pointer to
-  the separate article; Table 1 medium row gets an evidentiary label.
-- Kent sentence: DONE with R0.3 (see above).
-- §13 strata: "finite truncations ... not dilation-closed" disambiguated — the
-  fixed-time-constant cascade of the published construction, not the truncated exponent's
-  similarity family (which IS covariant by prop:thorin-subclass).
-- Signed Laplace uniqueness: add the signed/L1 corollary (Jordan decomposition reduction)
-  as a paper-only remark in §3, referenced where used.
+- rem:markov-media: paper-only body paragraph added after the (verbatim-shared) remark
+  naming its evidentiary status — context, its two without-proof claims belonging to the
+  separate memory-line-inverse-problem article, with what IS proved (thm:locality's local
+  case; the Gamma first-jump computation) stated; Table 1 medium row labelled
+  "(context, stated without proof)".
+- Kent sentence: DONE with R0.3.
+- §13 strata: the dilation-closure sentence now separates the two truncations — the
+  published construction's fixed-time-constant cascade (hypoexponential, discrete
+  covariance only) from the truncated exponent's similarity family (admissible and fully
+  covariant by prop:thorin-subclass, approximating the limit kernel from inside the class).
+- Signed Laplace uniqueness: NEW paper-only cor:laplace-uniqueness-signed in §3 after the
+  sigma-finite proposition (Jordan decomposition reduction, with proof). Cited at the four
+  signed use-sites found by audit: prop:scale-evolution proof, lem:generator-properties(5),
+  thm:scale-cauchy(3), cor:signaling-wellposed proof. All other uniqueness applications
+  audited positive-measure-only (incl. R2's proof). Blueprint prose at the mirrored proofs
+  keeps its shorthand — its record of correctness is the Lean proof; promotion of the
+  signed corollary rides with the R1/R2 blueprint-promotion decision.
 - Appendix: "identifies with the locality corner" -> "contains the local families
-  classified in §10"; the V.2 endpoint sentence corrected (the *coefficient* t - b0 x
-  vanishes; the density need not — gamma = 1 positive, gamma < 1 divergent); the
-  post-V.2 uniqueness/Picard paragraph explicitly labelled heuristic; the Sonine
-  motivation's "each infinitesimal smoothing step is exactly invertible" reworded to the
-  one-sided D-has-right-inverse form (keeping the body text's D-vs-Phi distinction).
+  classified in §10"; the V.2 endpoint sentence corrected in BOTH paper and blueprint
+  (shared statement): the *coefficient* t - b0 x vanishes, phi_x vanishes below the
+  endpoint but need not vanish at it; the post-V.2 paragraph explicitly labelled heuristic
+  twice, with the gamma = 1 positive / gamma < 1 divergent illustration added and "the
+  proved uniqueness lives at (V.1)" stated; the intro's two "exactly invertible" phrases
+  reworded to the one-sided right-inverse form (D^(x) inverted, one composition order, not
+  the cascade step Phi), matching the honest post-corollary body text.
 
 ### R7 — signal-model scope (Issue 5, per D4)                            [status: open]
 
