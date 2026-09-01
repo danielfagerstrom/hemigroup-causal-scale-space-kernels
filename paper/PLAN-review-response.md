@@ -88,7 +88,25 @@ value ranges); verified by counterexample. Repair by the derivative route:
 Paper-only (prop:gamma-regularity has no blueprint node). Downstream text that quotes the
 extremum form (§11 Table 1 row, §12 C2 item, §13 summary) re-checked for consistency.
 
-### R2 — the impossibility theorem (the review's Issue 1, answered)      [status: open]
+### R2 — the impossibility theorem (the review's Issue 1, answered)  [status: DONE 2026-09-01]
+
+**The theorem closed — no fallback needed.** prop:vd-impossibility in §8, after
+rem:pf-hemigroup: if every interior increment operator of an admissible family is
+variation-diminishing, the family is the pure delay; the endpoint form is the strongest
+VD property the class can carry, attained by the integer-atom members. The proof
+architecture improved on the sketch below: a smoothing trick (convolve the increment with
+a Gamma shape-2 density, itself PF) reduces everything to the *density* form of Schoenberg
+already anchored in prop:gamma-regularity — no measure-level PF theory, no endpoint-PF
+step, no Bondesson closure needed — then Lévy-tail comparison across two smoothing scales
+gives integer-atomic representing measures for the increment tails, and a dilation-orbit
+argument replicates any atom into uncountably many unit atoms inside one locally finite
+measure. Companion remark rem:ladder-vd records the sharpness: increments of a *single*
+ratio can all be VD (condition mult(q tau) >= mult(tau)), and the limit kernel realizes
+it — each q-rung is one exponential kernel, so sign-change counts are monotone rung to
+rung along geometric ladders: scale-monotone non-creation is available in the
+discrete-covariance stratum and impossible under full covariance. **R3's language branch
+is thereby resolved to the strong form** ("impossible in the class; endpoint form
+optimal and attained"). Candidate for blueprint/Lean promotion recorded. Original spec:
 
 Attempt the new result: *no admissible family other than the pure delay has all interior
 increments variation-diminishing.* Sketch (assessment session): increments VD forces each
