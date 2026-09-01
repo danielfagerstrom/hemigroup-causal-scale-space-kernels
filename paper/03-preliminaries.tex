@@ -35,6 +35,29 @@ convolution:
   \dil_\sigma(\mu * f) = (\dil_\sigma \mu) * (\dil_\sigma f).
 \]
 
+% Paper-only (2026-09-01, review response R7, decision D4): the signal model, and how far
+% it extends. The development is run in X = L^1, where the transform apparatus lives; this
+% remark records the pointwise extension that the measurement reading and the experiment's
+% step signal use, so the vocabulary is not read as constrained to integrable signals.
+\begin{remark}[the signal model; bounded signals]\label{rem:signal-model}
+The working space is $X = \Lone$: it is where the Laplace transforms that carry the
+characterization live, and every statement of this paper is proved there. The smoothing
+itself asks for less. The kernels will turn out to be \emph{probability} measures, and for
+$\mu$ a probability measure and $f$ bounded and measurable the same formula defines the
+field pointwise,
+\[
+  (\mu * f)(t) \;=\; \Ex\bigl[f(t - T)\bigr], \qquad T \sim \mu,
+\]
+with $\|\mu * f\|_\infty \le \|f\|_\infty$, and the cascade law survives by Fubini. What
+genuinely needs $X$ is the analysis --- the transforms, hence the characterization theorem
+and everything derived through it. What survives the extension unchanged is the
+measurement reading: the pointwise field, positivity and the sup bound, the sign-change
+statements of Proposition~\ref{prop:gamma-regularity} (stated there for integrable
+\emph{or bounded} arguments), and, in the experiment of \S\ref{sec:jet}, the persistent
+step --- bounded, not integrable. We record the extension without developing it
+systematically.
+\end{remark}
+
 \emph{Transforms.} For $\mu \in \Mplus$ supported on $[0,\infty)$ the Laplace transform is
 \[
   \hat\mu(s) = \int_{[0,\infty)} e^{-st}\,\mu(dt), \qquad s \ge 0 ,

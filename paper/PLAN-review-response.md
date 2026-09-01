@@ -219,14 +219,20 @@ explicitly left open per D1. §13 had no well-posed occurrence (verified by grep
   reworded to the one-sided right-inverse form (D^(x) inverted, one composition order, not
   the cascade step Phi), matching the honest post-corollary body text.
 
-### R7 — signal-model scope (Issue 5, per D4)                            [status: open]
+### R7 — signal-model scope (Issue 5, per D4)                            [status: DONE 2026-09-01]
 
-- A remark (§2 or §3): the kernels are probability measures, so convolution extends to
-  bounded measurable signals with the same pointwise definition E f(t - x T1); which
-  arguments genuinely need L1 (transforms, the characterization) and which conclusions
-  survive extension (pointwise field, PMP/sign statements, the experiment's step).
-- Scope sentence in §1 and §13: mathematical foundations + exact implementation route;
-  application rhetoric aligned with D4.
+- NEW rem:signal-model in §3 (paper-only, after the convolution paragraph): the kernels
+  are probability measures, so the smoothing extends pointwise to bounded measurable
+  signals via E f(t - T), sup-norm bound, cascade law by Fubini; what genuinely needs L1
+  named (the transforms, hence the characterization and everything through it); what
+  survives named (pointwise field, positivity/sup bound, prop:gamma-regularity's
+  integrable-or-bounded sign statements, the experiment's persistent step -- bounded, not
+  integrable); extension recorded, not systematically developed.
+- Scope sentences added: §1 (in the "purely temporal" roadmap paragraph -- foundations +
+  exact implementation route, no empirical claims about natural signals, the experiment
+  checks numbered results; signal model named with pointer to the remark) and §13 (new
+  short paragraph after the summary, same content in concluding register). Abstract left
+  for R8's rebuild per plan.
 
 ### R8 — front-matter rebuild on the four-question spine                 [status: open; after R3–R5]
 
