@@ -17,30 +17,32 @@
 
 % ---------- panel (a): the catalogue as a profile in log-delay ----------
 \begin{scope}
-  \node[anchor=west] at (-0.5,2.45) {(a) catalogues are profiles over log-delay; dilation is translation};
+  \node[anchor=west] at (-0.5,2.8) {(a) catalogues are profiles over log-delay; dilation is translation};
   % axes
   \draw[->] (-0.5,0) -- (5.6,0) node[anchor=north] {$\theta = \log t$};
-  \draw[->] (-0.5,0) -- (-0.5,2.2) node[anchor=south] {$\tilde k(\theta)$};
+  \draw[->] (-0.5,0) -- (-0.5,2.2) node[anchor=south east] {$\tilde k(\theta)$};
   % stable: exactly scale-free, exp(-alpha*theta) -- never cuts off (heavy tails)
   \draw[thick] plot[domain=-0.5:5.3, samples=80] (\x, {1.9*exp(-0.55*(\x+0.5))});
   \node[anchor=west] at (2.55,0.42) {stable $c\,e^{-\alpha\theta}$: scale-free, heavy tails};
   % Gamma: k(t) = e^{-t} -- plateau then cliff (finite moments)
   \draw[thick, densely dashdotted] plot[domain=-0.5:3.4, samples=80]
     (\x, {1.45*exp(-exp(1.4*(\x-1.9)))});
-  \node[anchor=west] at (-0.35,1.66) {Gamma: plateau, then cliff};
+  \node[anchor=west] (gammalbl) at (0.0,2.02) {Gamma: plateau, then cliff};
+  \draw[->] (0.7,1.92) -- (0.42,1.36);
   % Dickman ray: unit step to cutoff log tau
   \draw[thick, densely dotted] (-0.5,0.85) -- (2.2,0.85) -- (2.2,0.02);
-  \node[anchor=south west] at (-0.35,0.88) {Dickman ray $\mathbf{1}_{\theta < \log\tau}$};
+  \node[anchor=west] (dicklbl) at (2.35,1.05) {Dickman ray $\mathbf{1}_{\theta < \log\tau}$};
+  \draw[->] (dicklbl.west) -- (2.23,0.88);
   \draw (2.2,0.07) -- (2.2,-0.07); \node[anchor=north] at (2.2,-0.1) {$\log\tau$};
   % dilation = translation
-  \draw[->] (3.6,1.85) -- node[above] {$\dil_\sigma$: shift by $\log\sigma$} (5.0,1.85);
+  \draw[->] (3.6,1.75) -- node[above] {$\dil_\sigma$: shift by $\log\sigma$} (5.0,1.75);
 \end{scope}
 
 % ---------- panel (b): the Dickman superposition ----------
-\begin{scope}[yshift=-3.9cm]
-  \node[anchor=west] at (-0.5,2.45) {(b) every admissible profile is a unique stack of steps};
+\begin{scope}[yshift=-4.3cm]
+  \node[anchor=west] at (-0.5,2.7) {(b) every admissible profile is a unique stack of steps};
   \draw[->] (-0.5,0) -- (5.6,0) node[anchor=north] {$\theta$};
-  \draw[->] (-0.5,0) -- (-0.5,2.2) node[anchor=south] {$\tilde k(\theta)$};
+  \draw[->] (-0.5,0) -- (-0.5,2.2) node[anchor=south east] {$\tilde k(\theta)$};
   % a generic nonincreasing profile
   \draw[thick] plot[domain=-0.5:5.2, samples=80] (\x, {1.9/(1+exp(1.5*(\x-1.6)))});
   % inscribed staircase: steps released at successive cutoffs
