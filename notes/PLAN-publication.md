@@ -31,9 +31,12 @@ executes on the author's go.
 
 ## Decision points — RESOLVED (author, 2026-09-01)
 
-- **DP1 — Licenses:** CC BY 4.0 for the paper/blueprint prose (figures included), MIT
-  for the Lean development and the scripts (fine atop Mathlib's Apache-2.0).
-  **Flagged consequence:** `scale-space-lean` must go public and be MIT-licensed before
+- **DP1 — Licenses:** CC BY 4.0 for the paper/blueprint prose (figures included);
+  code under Apache 2.0. *(Revised 2026-09-01 during P6 review: the original decision
+  was MIT, but the author chose to follow the Lean-ecosystem convention — Apache 2.0,
+  matching Mathlib — rather than mix code licenses; he is an emeritus ASF member, so
+  the fit is natural.)*
+  **Flagged consequence:** `scale-space-lean` must go public and be Apache-2.0-licensed before
   or with P7 — `lake build` fetches `ScaleSpaceCore` at tag v0.1.0 from GitHub, so
   §1.1's one-command verification holds for an outside reader only when that repo is
   reachable. `article-kit` stays private for now: the public README advertises only the
@@ -233,15 +236,14 @@ Executed:
   development-tooling note per DP1), the full formalization status and per-chapter Lean
   table retained, license section, citation stub (DOI at P7).
 - **Licenses (DP1)**: LICENSE.md (the split) + LICENSES/CC-BY-4.0.txt and
-  LICENSES/MIT.txt (SPDX texts). **Discovered conflict, resolved per DP1 and flagged**:
-  all 70 Lean file headers carried Mathlib-style "Apache 2.0 ... file LICENSE"
-  boilerplate pointing at a nonexistent LICENSE; per DP1 they now read MIT /
-  LICENSES/MIT.txt. If the author prefers Apache 2.0 for the Lean tree (ecosystem
-  convention), flipping headers + LICENSE.md back is one mechanical pass.
+  LICENSES/Apache-2.0.txt (SPDX texts). The 70 Lean file headers carried Mathlib-style
+  "Apache 2.0 ... file LICENSE" boilerplate pointing at a nonexistent LICENSE; they were
+  first flipped to MIT per the original DP1, then — on the author's revision of DP1
+  during PR #42 review — back to Apache 2.0, now pointing at LICENSES/Apache-2.0.txt.
 - **Sweeps**: no secret patterns, no personal absolute paths, no stale references to
   the moved files. CI note: forks' CI will not run (private article-kit reusable
   workflows + ARTICLE_KIT_TOKEN); documented in README as not needed for verification.
-- **Remaining for P7 (author)**: make scale-space-lean public + MIT (DP1's flagged
+- **Remaining for P7 (author)**: make scale-space-lean public + Apache 2.0 (DP1's flagged
   consequence); make this repo public; the external reviews under notes/reviews/ if
   desired.
 

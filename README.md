@@ -159,7 +159,7 @@ git config core.hooksPath .githooks  # optional post-commit manifest preview
 
 Dual-licensed by content — see [`LICENSE.md`](LICENSE.md): prose, mathematics and
 figures (`paper/`, `blueprint/`, `draft/`, `figures/`, `notes/`) under
-**CC BY 4.0**; code (`Formalization/`, `scripts/`) under **MIT**.
+**CC BY 4.0**; code (`Formalization/`, `scripts/`) under **Apache 2.0**.
 
 ## Citing
 

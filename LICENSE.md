@@ -10,14 +10,13 @@ This repository is dual-licensed by content, per the author's decision of record
   summary: <https://creativecommons.org/licenses/by/4.0/>.
 
 - **Code** — the Lean 4 development under `Formalization/` and the scripts under
-  `scripts/` — is licensed under the **MIT license**.
-  Full text: [`LICENSES/MIT.txt`](LICENSES/MIT.txt).
+  `scripts/` — is licensed under the **Apache License 2.0**.
+  Full text: [`LICENSES/Apache-2.0.txt`](LICENSES/Apache-2.0.txt).
 
 The Lean development depends on [Mathlib](https://github.com/leanprover-community/mathlib4)
 and on the shared library
 [`scale-space-lean`](https://github.com/danielfagerstrom/scale-space-lean)
-(`ScaleSpaceCore`), each distributed under its own license (Apache 2.0 and MIT
-respectively); those licenses govern those dependencies, not this repository's terms
-for its own files.
+(`ScaleSpaceCore`), each distributed under its own license; those licenses govern
+those dependencies, not this repository's terms for its own files.
 
 Copyright (c) 2026 Daniel Fagerström.
