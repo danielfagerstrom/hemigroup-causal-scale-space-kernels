@@ -327,7 +327,7 @@ is forced, not an accident of the Gamma family:
 Proposition~\ref{prop:vd-impossibility} below shows that no admissible family except the
 pure delay has all its interior increments variation-diminishing. Third, the
 pointwise form of non-enhancement --- the value at a fixed-time extremum must not grow ---
-fails for \emph{every} causal family, because the kernels delay what they smooth: a peak
+fails for \emph{every} causal family, because the kernels delay what they smooth. A peak
 decays while traveling down the delay line, and at a fixed time just past it the value
 rises as the delayed mass arrives. Counting, not pointwise decay, is the causal form of
 non-creation. A pointwise form that \emph{does} survive --- along the feature's own delay
@@ -530,7 +530,7 @@ The heavy tails of the 2005 kernels are an artifact of the semigroup axiom, not 
 together with covariance. Within Theorem~\ref{thm:main-characterization} the semigroup sub-case
 (Corollary~\ref{cor:semigroup-case}) is the subset with $k$ a pure power $c\,t^{-\alpha}$,
 $0 < \alpha < 1$, or the pure delay, $k \equiv 0$ with $b_0 > 0$ --- the only data compatible
-with homogeneity --- and a pure power is never integrable at infinity, so by
+with homogeneity. A pure power is never integrable at infinity, so by
 Proposition~\ref{prop:moments} no stable member has a mean (Proposition~\ref{prop:stable-moments}). Any other nonincreasing $k$ is
 admitted, and its moments are governed by Proposition~\ref{prop:moment-criterion} alone:
 $\Ex\,T_x^n < \infty$ exactly when $\int_1^\infty t^{n-1}k(t)\,dt < \infty$. For
@@ -557,7 +557,7 @@ The moment criterion (Proposition~\ref{prop:moment-criterion}) reads the
 \emph{polynomial} weight of a kernel's tail off the tail of $k$. The
 super-exponential end is governed by a theorem that needs only infinite divisibility
 --- axioms (A1)--(A7), no covariance --- and so binds every stratum at once
-(\sscite{sato1999levy}, Thm.~26.1, p.~168): off the drift ray, a kernel's tail
+(\sscite{sato1999levy}, Thm.~26.1, p.~168). Off the drift ray, a kernel's tail
 satisfies $\mu_{0,x}\bigl((r,\infty)\bigr) \ge e^{-c\,r\log r}$ for some $c$ and all
 large $r$. The mechanism is the cascade itself: the delay is assembled from
 independent increments, and independent increments can always conspire --- $n$
@@ -574,7 +574,7 @@ attained: $-\log \mu_{0,x}\bigl((r,\infty)\bigr) \sim (r/\tau x)\log r$. If it i
 \emph{unbounded}, the tail is strictly heavier than every bounded-support rate. A
 completely monotone $k$ is strictly positive on all of $(0,\infty)$, so the entire
 Thorin subclass sits on the heavy side of the dichotomy, the Gamma family's plain
-exponential tail being typical; the bounded-support members --- the Dickman rays of
+exponential tail being typical. The bounded-support members --- the Dickman rays of
 Remark~\ref{rem:extreme-rays} and their superpositions --- attain the lightest
 tails the axioms permit and, their $k$ being compactly supported, have all moments
 finite as well: the extreme rays of the cone are its best-localized members. The
@@ -623,7 +623,7 @@ first-passage time of a drifting Brownian motion, so its kernels are hitting-tim
 delays with all moments finite. The \emph{lognormal} law is admissible: Thorin
 proved its infinite divisibility by exhibiting it as a generalized Gamma
 convolution (\sscite{thorin1977lognormal}) --- the theorem for which the Thorin
-class was created --- giving kernels whose delay is a product of many independent
+class was created. Its kernels have a delay that is a product of many independent
 small factors, multiplicative rather than additive accumulation of latency. The
 \emph{Pareto} laws are admissible by the companion result
 (\sscite{thorin1977pareto}); a Pareto kernel of index $a$ has exactly the moments
@@ -633,7 +633,7 @@ $(1 + s^{\alpha})^{-\gamma}$, $0 < \alpha < 1$ --- the delay $Y^{1/\alpha}X_\alp
 of a Gamma variable's power times an independent stable factor --- is a generalized
 Gamma convolution with explicit Thorin density
 (\sscite{bondesson1992generalized}, Ex.~3.2.4, p.~38, where the object appears
-unnamed), interpolating the Gamma and stable corners on one dial. The class is
+unnamed). It interpolates the Gamma and stable corners on one dial. The class is
 closed under a multiplicative calculus of delays: the pdf of
 a ratio of independent Gamma variables is hyperbolically completely monotone
 (\sscite{bondesson1992generalized}, Ex.~4.3.1, p.~59), as is any power $X^{q}$,
@@ -649,7 +649,7 @@ L\'evy density (\sscite{kent1982spectral}, p.~207; the class is Definition~2.1
 there, p.~208). The Bondesson class strictly contains the Thorin subclass, and its
 members need not be self-decomposable --- a completely monotone L\'evy density
 $\ell$ does not make $t\,\ell(t)$ nonincreasing --- so a general diffusion hitting
-time need not be admissible at all; the Bessel family is the corner where the
+time need not be admissible at all. The Bessel family is the corner where the
 hitting-time structure meets the axioms. Two boundaries frame the catalogue. Outward: nothing with tail lighter
 than $e^{-c\,t\log t}$ is admissible at all (Remark~\ref{rem:tail-dichotomy}), so
 no windowed or truncated Gaussian appears however the data $(b_0,k)$ are chosen.
