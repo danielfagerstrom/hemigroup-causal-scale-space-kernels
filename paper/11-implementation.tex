@@ -18,7 +18,7 @@ only $\gamma$ first-order states per increment (Proposition~\ref{prop:gamma-casc
 the whole Thorin subclass --- every admissible family with completely monotone memory
 kernel, the Bessel and stable corners included --- is approximated from inside the axiom
 class by banks of such sections, exactly rational when the Thorin weights are integers
-(Proposition~\ref{prop:thorin-subclass}), leaving only the genuinely non-Thorin members to
+(Proposition~\ref{prop:thorin-subclass}). Only the genuinely non-Thorin members are left to
 direct convolution. The structural fact that organizes everything is the first step:
 the \emph{scale direction never needs to be discretized approximately}:
 
@@ -154,10 +154,10 @@ do not recommend it: the explicit step is constrained by the finest cell,
 $\Delta t \lesssim \xi_{\min}^2\,\Delta\eta^2$, while the coarse-scale dynamics live on
 horizons $\sim \xi_{\max}^2$, so the cost of covering the ladder grows like
 $(\xi_{\max}/\xi_{\min})^2$ (an implicit march trades this for per-sample band solves plus
-additional discretization error);
-the finite-moment regime $a > 1$, i.e.\ $\beta < -\tfrac12$ --- the very reason to prefer the
+additional discretization error). The
+finite-moment regime $a > 1$, i.e.\ $\beta < -\tfrac12$ --- the very reason to prefer the
 Bessel family --- is advection-dominated near the singular boundary and numerically the least
-pleasant; and, decisively, any marching of the signaling equation approximates the scale
+pleasant. And, decisively, any marching of the signaling equation approximates the scale
 direction, which Proposition~\ref{prop:knot-exactness} shows can be sampled exactly. The
 principled numerics for the local corner is instead the following.
 \end{remark}
@@ -256,7 +256,7 @@ implementer is left with direct convolution.
 As a design heuristic: the Bessel Thorin
 density is asymptotically a power law, hence scale-invariant over the covered band, so
 logarithmically spaced nodes --- a fixed number per decade of bandwidth --- are the natural
-quadrature; we state this as a heuristic, with no error bound claimed, which is the honest
+quadrature. We state this as a heuristic, with no error bound claimed, which is the honest
 form of the state-count claim of Remark~\ref{rem:local-implementation}(iii). The lognormal
 --- the delay law of the scale-time aperture, a Thorin member by
 \sscite{thorin1977lognormal}; Remark~\ref{rem:strata} --- is the idealized instance: its
