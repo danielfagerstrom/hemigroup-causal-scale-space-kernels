@@ -3,32 +3,39 @@
 % file only orders them. See the framework's LINKAGE.md for the node conventions.
 %
 % ---------------------------------------------------------------------------------
-% NUMBERING: one chapter per draft section, chapter number == section number.
+% NUMBERING: one chapter per article section, chapter number == the article's section
+% number. REORDERED 2026-09-01 (publication plan P2, author's decision).
 % ---------------------------------------------------------------------------------
 %
-% theorems.tex masters one shared counter off `definition`, reset per chapter. The draft
-% (draft/hemigroup-causal-scale-space-kernels.md) numbers exactly the same way, one
-% shared counter per section: Definition 2.1, Definition 2.2, Proposition 2.3, Lemma 2.4;
-% Lemma 9.1 ... Remark 9.11. So starting the chapter counter at 1 and giving each draft
-% section its own chapter makes the blueprint's numbering IDENTICAL to the draft's --
-% Lemma 4.1 is Lemma 4.1, Theorem 7.3 is Theorem 7.3, Remark 9.11 is Remark 9.11.
+% theorems.tex masters one shared counter off `definition`, reset per chapter. The
+% chapters below follow the ARTICLE's order (paper/main.tex): axioms, preliminaries,
+% representation, cascade, covariance, characterization, examples, signaling, locality,
+% implementation, jet, with the memory-kernel/scale-Cauchy pair as the appendix it is in
+% the article. Starting the chapter counter at 1 makes the blueprint's chapter numbers
+% match the paper's section numbers -- the signaling chapter is Chapter 9 as the
+% signaling section is \S9 -- so the two public documents read side by side.
 %
-% That is what makes the two documents reviewable side by side, and what will let
-% paper/main.tex share statements without a renumbering table. Every node also carries a
-% `% draft: <kind> N.M` provenance comment, so the correspondence is explicit and does
-% not rest on the counter alone.
+% The original numbering was draft-aligned (one chapter per draft section, so that
+% Lemma 4.1 was the draft's Lemma 4.1). That goal is RETIRED (author, 2026-09-01): the
+% article is the deliverable, and draft alignment served the transcription, which is
+% done. draft/ stays in the repo as the starting point of record, and every node still
+% carries a `% draft: <kind> N.M` provenance comment -- that comment, not the rendered
+% counter, is now the bridge to the draft. Historical comments in the parts that cite
+% node numbers ("Numbered 11.25") or chapter numbers cite the retired draft-aligned
+% numbering; each part's header says what it renders as now. The part FILES keep their
+% draft-numbered names (11-signaling.tex renders as Chapter 9): the names are provenance,
+% and renaming them would break the draft bridge for no rendered gain.
 %
-% Consequence, deliberate: the standalone PDF starts at Chapter 2. There is no Chapter 1
-% because \S1 of the draft is the introduction, which is positioning rather than
-% mathematics and is not transcribed. Renumbering to close the gap would cost the
-% draft-alignment above, which is worth far more.
+% There is still no Chapter 1: \S1 of the article is the introduction, positioning
+% rather than mathematics, and is not transcribed. Chapter 2 is the axiom system, as \S2
+% of the article is temporal measurement (the paper's motivating prose stays there).
 %
-% Scope is \S\S2-14, the mathematics. \S1 (introduction) and \S15 (concluding remarks)
-% stay in the draft. REVISED 2026-09-01 (author's instruction): \S13 (implementation) and
-% \S14 (the temporal N-jet) were originally excluded to keep the blueprint's size under
-% control; the author now wants the blueprint complete with respect to the mathematical
-% material, with formalisation a separate decision -- so chapters 13-14 carry statement
-% nodes without \lean tags, and none is scheduled in a Lean phase.
+% Scope is the article's mathematics, \S\S2-12 plus the appendix. \S13 of the article
+% (concluding remarks) is not transcribed. Scope note of record (2026-09-01, author's
+% instruction): the implementation and jet chapters were originally excluded to keep the
+% blueprint's size under control; the author wants the blueprint complete with respect to
+% the mathematical material, with formalisation a separate decision -- so those chapters
+% carry statement nodes without \lean tags, and none is scheduled in a Lean phase.
 
 % The .tex extensions below are explicit for the reader's sake; all three consumers
 % accept either form (pdflatex natively, `linkage` by appending .tex when absent,
@@ -46,11 +53,11 @@
 
 \setcounter{chapter}{1}
 
-\chapter{Preliminaries and notation}
-\input{parts/02-preliminaries.tex}
-
 \chapter{Axioms}
 \input{parts/03-axioms.tex}
+
+\chapter{Preliminaries and notation}
+\input{parts/02-preliminaries.tex}
 
 \chapter{Convolution representation}
 \input{parts/04-representation.tex}
@@ -67,12 +74,6 @@
 \chapter{Examples and moments}
 \input{parts/08-examples-moments.tex}
 
-\chapter{Memory kernels, Sonine conservation, and a Volterra derivation}
-\input{parts/09-memory-kernels.tex}
-
-\chapter{The scale-Cauchy problem: Theorem 3$'$}
-\input{parts/10-scale-cauchy.tex}
-
 \chapter{The signaling form: Theorem 4$'$}
 \input{parts/11-signaling.tex}
 
@@ -84,3 +85,9 @@
 
 \chapter{The temporal N-jet: the memory embodies its derivatives}
 \input{parts/14-jet.tex}
+
+\appendix
+
+\chapter{Memory kernels, Sonine conservation, and the scale-Cauchy problem: Theorem 3$'$}
+\input{parts/09-memory-kernels.tex}
+\input{parts/10-scale-cauchy.tex}

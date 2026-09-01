@@ -2,7 +2,10 @@
 % Draft \S12 --- The locality theorem: Theorem 5'
 %
 % Source: draft/hemigroup-causal-scale-space-kernels.md, lines 567-637.
-% Chapter 12 of the blueprint; the shared counter puts every number here on the draft's own.
+% Draft §12; renders as Chapter 10 since the 2026-09-01 reorder to the article's order
+% (content.tex has the rationale). Historical comments below that cite chapter or node
+% numbers ("Numbered 12.M") use the retired draft-aligned numbering; the `% draft:`
+% provenance comments are unaffected, and labels and \uses edges never carried numbers.
 %
 % The article's headline classification, and the chapter where four ledger entries land at
 % once -- A13 (Widder), A14 (Courrege), A15 (Krull-Webster), A16 (Bondesson). Three of the four
@@ -35,7 +38,7 @@ media of every order, each rung an $(n-1)$-parameter family, and it is the posit
 principle --- the requirement that the medium be a physical transport medium --- that closes the
 ladder at order two, where it leaves the Bessel family together with the degenerate transport
 member of case (1). Throughout we assume (H), work in the
-canonical gauge, write $m(z) := \Ex[T_1^{-z}]$, and take $A$ and $B$ as in Chapter~11.
+canonical gauge, write $m(z) := \Ex[T_1^{-z}]$, and take $A$ and $B$ as in Chapter~9.
 
 % draft: Definition 12.1
 \begin{definition}[locality; positive maximum principle]\label{def:locality-pmp}
@@ -80,7 +83,7 @@ $H(u) = \Ex\,e^{-uT_1}$ \emph{is} Mathlib's moment generating function at a nega
 the library already carries every derivative of that on the interior of the set where the
 exponential moment converges --- which for a law on $[0,\infty)$ contains the whole negative
 axis. The dominated-convergence induction this looked like it needed was already in place. (The
-development had met the same coincidence once before, on the other transform: chapter 11
+development had met the same coincidence once before, on the other transform: chapter 9
 identifies \texttt{negMomentC} with Mathlib's \texttt{complexMGF}.) \textbf{And the
 Fubini-and-Gamma computation that remained is now done too}, as
 \texttt{mellin\_pow\_mul\_iteratedDeriv\_profile}: it cost no new analysis either, because
@@ -207,7 +210,7 @@ functions and never from a value of $B$); $B = P$ as meromorphic functions, unco
 which is \ref{lem:symbol-rigidity}'s \texttt{EventuallyEq}; and $B(z) = P(z)$ as values, exactly
 off the zeros of $\tilde H$. Nothing available rules those zeros out: $\tilde H = \Gamma\cdot m$
 is known nonzero only at the \emph{real} points of the strip (\ref{lem:inversion-symbol}), which
-is all chapter~11 needed, and excluding complex zeros would be a theorem about self-decomposable
+is all chapter~9 needed, and excluding complex zeros would be a theorem about self-decomposable
 laws that this article does not have. This is the third time the same question has been answered
 in this development --- \ref{def:inversion-operator}'s realising identity and
 \ref{lem:symbol-rigidity}'s conclusion are the other two --- and each time it was writing the
@@ -881,7 +884,7 @@ killing, $\gamma_0 = 0$, is not an extra assumption either --- it is
 $\operatorname{Re}(Ag)(x_0) \le 0$, $A$ being $\mathbb{C}$-valued, so the differential expression
 has to be pushed through $\operatorname{Re}$ and the derivatives of $x \mapsto (g(x):\mathbb{C})$
 identified with those of $g$. That identification is \texttt{iteratedDeriv\_ofReal\_comp}, proved
-for the profile in chapter 12's differentiation step and reused here on all of $\mathbb{R}$, where
+for the profile in this chapter's differentiation step and reused here on all of $\mathbb{R}$, where
 a test function is smooth. It is the one place this argument is longer than two lines.
 \textbf{R5, closed.} Under \texttt{isLocalOfOrderCoreOfSymbolEq}'s own hypotheses --- the ones
 this lemma is stated from, via \texttt{satisfiesPMP\_of\_symbol\_eq} --- plus reality of the

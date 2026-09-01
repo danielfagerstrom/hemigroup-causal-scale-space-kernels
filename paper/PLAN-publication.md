@@ -90,7 +90,18 @@ First, because it touches claim language that P3 would otherwise polish twice.
   no lean tag); ledger untouched.
 - Estimate: half a day.
 
-### P2 — blueprint reorder to the article's order                       [status: open]
+### P2 — blueprint reorder to the article's order                       [status: DONE 2026-09-01]
+
+Landed: content.tex reordered to the article's order (axioms 2, preliminaries 3, ...,
+signaling 9, locality 10, implementation 11, jet 12; memory-kernels + scale-Cauchy as one
+Appendix A via `\appendix`, matching the paper's single appendix). content.tex's
+numbering-rationale header rewritten: draft alignment retired, `% draft:` comments are the
+bridge, part filenames keep their draft numbers as provenance. Every part's header now
+records what it renders as; 28 rendered chapter-number references in prose and annotations
+updated to the new numbers ("the appendix" for the moved pair), each verified a unique
+match; historical comments ("Numbered 11.25") left as-is under the header note. Three
+blueprint-chapter references in AXIOMS.md switched to chapter names; README carries the
+convention note. Labels and \uses edges untouched (the graph is label-based).
 
 - content.tex: reorder the \input lines to the paper's order — measurement/axioms,
   preliminaries, representation, cascade, covariance, characterization, examples,

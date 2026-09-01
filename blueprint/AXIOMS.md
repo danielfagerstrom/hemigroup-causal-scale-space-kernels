@@ -534,7 +534,7 @@ articles that have not yet pinned a ledger.
   Lean because `x/0 = 0`, in the prose because a meromorphic function has no value at a pole —
   while `h̃(z)` need not. A pointwise reading of the hypothesis would therefore be satisfied by no
   `g` at all. The zeros are isolated, so they meet the line in a null set and the inversion
-  integral does not see them. This is the second time in chapter 11 that "equality on the strip"
+  integral does not see them. This is the second time in the signaling chapter that "equality on the strip"
   has had to say which equality it means; `lem:symbol-rigidity` was the first, and both times it
   was writing the statement, not reading it, that raised the question.
 
@@ -555,7 +555,7 @@ articles that have not yet pinned a ledger.
   clause (1) applied to `û(s,·) = f̂(s)H(s·)`. So the step A12 was left carrying is never invoked.
 
   **The entry stays.** Retiring it would be a claim about the *paper*, which cites Widder for the
-  inversion integral and is entitled to. This is the A5/A6 situation of Chapter 2 exactly: the `[A]`
+  inversion integral and is entitled to. This is the A5/A6 situation of the preliminaries chapter exactly: the `[A]`
   tag records the paper's stance, and the `[T]` nodes underneath record what is machine-checked.
   What changes is that the record is now complete — nothing in the formal development reaches this
   citation, and `trust-boundary.txt` still holds two names.
@@ -604,7 +604,7 @@ articles that have not yet pinned a ledger.
 - **Eighth reading, 2026-08-29 — a second, cheaper use, in `cor:signaling-wellposed` (11.26).**
   Theorem 4′ was given a solution-uniqueness ending (`def:mellin-solution`, `lem:mode-rigidity`,
   `cor:signaling-wellposed`, `cor:signaling-classical`; blueprint `blueprint/src/parts/11-signaling.tex`,
-  end of chapter 11): clause (3) of the theorem proves uniqueness of the *operator*, and the new
+  end of the signaling chapter): clause (3) of the theorem proves uniqueness of the *operator*, and the new
   corollary proves uniqueness of the *solution*, under a normalisation the field satisfies for
   free. Its proof identifies two continuous functions of `x` — a candidate solution's Laplace
   profile `x ↦ û(s,x)` and the field's own `x ↦ κ_s H(sx)` — from the fact that they share a Mellin

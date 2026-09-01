@@ -2,7 +2,10 @@
 % Draft \S9 --- Memory kernels, Sonine conservation, and a Volterra derivation
 %
 % Source: draft/hemigroup-causal-scale-space-kernels.md, lines 280-384.
-% Chapter 9 of the blueprint; the shared counter puts every number here on the draft's own.
+% Draft §9; renders as the first half of Appendix A since the 2026-09-01 reorder to the article's order
+% (content.tex has the rationale). Historical comments below that cite chapter or node
+% numbers ("Numbered 9.M") use the retired draft-aligned numbering; the `% draft:`
+% provenance comments are unaffected, and labels and \uses edges never carried numbers.
 %
 % The largest chapter, eleven numbered items. Its point is that the function k, which entered
 % abstractly as condition (3) of \ref{lem:selfdecomposable-exponents}, IS the memory kernel of
@@ -21,11 +24,11 @@
 % one.
 
 The representation (7.1) attaches to every admissible family a nonincreasing function $k$.
-This chapter shows that $k$ is the \emph{memory kernel} of the evolution across scale; that it
+This appendix shows that $k$ is the \emph{memory kernel} of the evolution across scale; that it
 forms a Sonine pair with the associated potential kernel, through the conservation identity
 $\kappa * \ell \equiv 1$; and that the kernels of \ref{thm:main-characterization} satisfy a
 linear Volterra integral equation from which they can be computed, without Laplace inversion.
-The chapter is self-contained: the scale-evolution result it needs is stated and proved as
+This half of the appendix is self-contained: the scale-evolution result it needs is stated and proved as
 \ref{prop:scale-evolution}.
 
 Throughout we work in the canonical gauge, so that $\mu_{0,x}$ is the law of $x\,T_1$.
@@ -250,7 +253,7 @@ For every $x > 0$,
 \]
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.sonine\_conservation}; \texttt{\#print axioms} reduces
-to Lean core, so the chapter's headline crosses no interface at all. The tagged declaration states
+to Lean core, so this half's headline crosses no interface at all. The tagged declaration states
 the identity restricted to $[0,\infty)$; \texttt{sonine\_conservation'} is the unrestricted
 equality of measures on $\mathbb{R}$ displayed above, the two agreeing because both factors ---
 $\kappa^{(x)} * \ell^{(x)}$ and $\mathrm{Leb}_{[0,\infty)}$ --- are causal, i.e.\ vanish on
@@ -259,7 +262,7 @@ $(-\infty, 0)$ (fidelity review R23).}
 \emph{\textbf{It does not wait on \ref{lem:potential-kernel}.} The Lean statement quantifies over
 any causal $\ell$ meeting that lemma's specification rather than naming the $\ell^{(x)}$ it
 produces, so the identity is independent of how existence is discharged --- which matters here,
-because existence is the one open question of the chapter and the one place a third
+because existence is the one open question of this half and the one place a third
 trust-boundary entry could enter. Only \ref{prop:sonine-pair-exists} needs it. Decoupling the two
 is also what exposed three hypotheses this statement had been borrowing silently: that $\ell$ is
 causal, that its transform is prescribed in $[0,\infty]$ rather than as a Bochner integral
@@ -388,7 +391,7 @@ monotone, being a product of completely monotone functions, hence $F \in \CBF$.
 
 Part (2) delineates exactly where the classical Sonine calculus with completely monotone
 kernel pairs --- the standing hypothesis of most of the general-fractional-calculus literature
---- applies: on the complete-Bernstein subfamily, which Chapter~12 identifies with the
+--- applies: on the complete-Bernstein subfamily, which Chapter~10 identifies with the
 locality corner of the memory-line realization. For general admissible $F$ the pair, and
 \ref{thm:sonine-conservation}, live at the level of measures.
 
@@ -536,7 +539,7 @@ triple exhibited. The one thing it needed on its own account was $\sigma$-finite
 $\ell^{(x)}$: \ref{thm:sonine-conservation} is stated for an \texttt{SFinite} measure because it
 convolves, while \ref{lem:potential-kernel} delivers \emph{local} finiteness. The two are the same
 thing for a causal measure --- exhaust $[0,\infty)$ by the $[0,n]$ and note everything below the
-origin is null --- which is the converse of the implication chapter 9 already needed in the
+origin is null --- which is the converse of the implication this appendix already needed in the
 other direction, that a convergent transform forces local finiteness.)}
 \end{proposition}
 
@@ -652,11 +655,11 @@ than about the constructed family.
 chosen before a scaling law can be predicated of it, and that choice is a definition the
 development has not needed elsewhere. It need not be chosen: the law is stated against \emph{any
 two} measures meeting the specification --- exactly as \ref{thm:sonine-conservation} and
-\ref{prop:sonine-pair-exists} already quantify over their $\ell$, and as chapter~10 quantifies
+\ref{prop:sonine-pair-exists} already quantify over their $\ell$, and as the scale-Cauchy half of this appendix quantifies
 over $\nu_1$. The uniqueness half of \ref{lem:potential-kernel} is what makes the hypothesis pin
 the objects down, so quantifying over them loses nothing and introduces no definition without a
 consumer. \emph{A specification is a hypothesis, and a hypothesis can be quantified over}; what
-cannot be is a construction, which is why chapter~9 built one for the tail measure and needs none
+cannot be is a construction, which is why this appendix built one for the tail measure and needs none
 here.)}
 \end{lemma}
 
