@@ -95,7 +95,8 @@ $0 < \alpha < 1$; but every member has infinite mean delay. The time-causal limi
 finite moments through a recursive cascade of first-order integrators, with covariance
 established there under the discrete subgroup of rescalings $\sigma \in q^{\ZZ}$.
 
-The second half of the paper develops the theory over the memory line. The embodiment
+\emph{The memory line.} The second half of the paper develops the theory over the
+memory line. The embodiment
 principle of the semigroup theory (\S5 of that paper; \S\ref{sec:measurement} motivates it)
 --- the observer must carry its usable past in its own state --- appears as theorem
 content. Under a mild standing hypothesis on the exponent, the signaling form,
@@ -105,15 +106,15 @@ evolution in present time over the memory half-line,
   \partial_t u \;=\; A\,u, \qquad u(t, 0) = f(t),
 \]
 with the signal entering as boundary data at zero scale. That hypothesis is (H),
-Definition~\ref{def:standing-hypothesis} in \S\ref{sec:signaling}; every family of
-\S\ref{sec:examples} satisfies it except the Gamma family at small shape. The operator $A$ is constructed in
+Definition~\ref{def:standing-hypothesis} in \S\ref{sec:signaling}; every family
+worked in \S\ref{sec:examples} satisfies it except the Gamma family at small shape. The operator $A$ is constructed in
 \S\ref{sec:signaling} by harmonic analysis in the scale variable, and the problem is
 well posed. $A$ is the unique inversion in its covariance class
 (Theorem~\ref{thm:signaling-form}(3)). The solution exists and is unique in an explicit
 class, with the classical period-one ambiguity closed by a Bohr--Mollerup-style rigidity
 (Corollary~\ref{cor:signaling-wellposed}). And it depends continuously on the data,
-nonexpansively and uniformly over scales, and on the exponent itself
-(Corollary~\ref{cor:signaling-hadamard}). The construction comes with an exact account of what the memory holds.
+nonexpansively and uniformly over scales, and, under pointwise perturbation, on the
+exponent itself (Corollary~\ref{cor:signaling-hadamard}). The construction comes with an exact account of what the memory holds.
 At each instant, the memory line stores the analytic family of Riemann--Liouville integrals
 of the past signal: the observer's embodiment of its past is fractional integration.
 
@@ -165,7 +166,7 @@ Appendix~\ref{sec:appendix-memory} carries Theorem~$3'$, the scale-Cauchy
 problem (Theorem~\ref{thm:scale-cauchy}): a fractional relaxation equation across scale
 whose memory kernel is the function $k$ of the representation itself. It also carries the
 Sonine conservation identity, by which the memory operator applied at each scale has an
-explicit inverse, the potential kernel; a Volterra equation that derives the kernels from
+explicit right inverse, the potential kernel; a Volterra equation that derives the kernels from
 $k$ by forward integration, with no Laplace inversion; and the pointwise non-enhancement
 corollary above.
 
@@ -266,10 +267,11 @@ uniqueness and scaling of the potential kernel, the Volterra equation (V.1) with
 uniqueness clause, the delay-derivative lemma, and the Phillips form of the generator with
 all five clauses of Lemma~\ref{lem:generator-properties} --- the last interface-free ---
 are verified. Of \S\ref{sec:signaling}, every
-numbered result through the signaling theorem is; the well-posedness arc that follows it
+numbered result through the signaling theorem is, except the L\'evy-data reading
+(Lemma~\ref{lem:standing-levy-reading}) and the log-growth
+Lemma~\ref{lem:zstar-log-growth}; the well-posedness arc that follows it
 --- Definition~\ref{def:mellin-solution} through
-Corollary~\ref{cor:signaling-hadamard} --- and the boundary-growth
-Lemma~\ref{lem:zstar-log-growth} are paper-only. Of \S\ref{sec:locality}, the classification step
+Corollary~\ref{cor:signaling-hadamard} --- is likewise paper-only. Of \S\ref{sec:locality}, the classification step
 (Lemma~\ref{lem:local-polynomial-symbol}, both directions), the log-convexity of the moment
 function (Lemma~\ref{lem:log-convexity}), the vanishing $B(0) = 0$
 (Lemma~\ref{lem:moment-recursion}(1)) and the uniqueness of the log-convex solution of the
@@ -347,7 +349,7 @@ identifications, which need $K_\nu$. So the gap is four citations and one specia
 --- not an absent theory.
 
 \paragraph{Where to look.} The development, its axiom ledger with page-verified citations
-for every cited interface, and a dependency graph in which each statement is coloured by its
+for every cited interface, and a dependency graph in which each statement is colored by its
 verification status, are available at the repository accompanying this paper,
 \url{https://github.com/danielfagerstrom/hemigroup-causal-scale-space-kernels}. The
 toolchain is pinned in-tree --- Lean~4 \texttt{v4.31.0}, Mathlib \texttt{v4.31.0}, and the

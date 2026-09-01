@@ -35,12 +35,19 @@
 \documentclass[11pt]{article}
 
 \usepackage[a4paper,margin=1in]{geometry}
+% P5 artifact gate (2026-09-01): let paragraphs breathe before overflowing the margin --
+% clears the sweep's paragraph-level overfull boxes without touching shared statement text.
+\setlength{\emergencystretch}{1.5em}
 \usepackage{amsmath,amssymb,amsthm}
 \usepackage{graphicx}
 \usepackage{tikz}
 \usetikzlibrary{patterns}
 \usepackage{booktabs}
 \usepackage[hidelinks]{hyperref}
+\hypersetup{
+  pdftitle={Time-Causal Scale Space from Hemigroup Axioms: Characterization of the Kernels},
+  pdfauthor={Daniel Fagerstr\"om},
+}
 
 \graphicspath{{../figures/}}
 
@@ -76,12 +83,12 @@ marginals of self-similar additive (Sato) subordinators; reimposing interchangea
 recovers the extremal stable densities together with a pure delay, exposing their heavy
 tails as the price of that assumption rather than of causality or covariance. The enlarged
 class contains members with all moments finite --- foremost the Gamma family, implemented
-exactly by cascades of first-order filter sections. Over the memory half-line, under a
+exactly, at integer shape, by cascades of first-order filter sections. Over the memory half-line, under a
 mild standing hypothesis, the scale evolution inverts into an evolution in present time,
 well posed in an explicit class: the memory line stores the
 Riemann--Liouville integrals of the past signal, the temporal $N$-jet reads that state
 instantaneously, and locality with the positive maximum principle singles out a
-one-parameter Bessel family of media. Non-creation of temporal structure is settled in
+degenerate transport member and a one-parameter Bessel family of media. Non-creation of temporal structure is settled in
 both directions: no nondegenerate member admits the scale-monotone form, while the
 endpoint form --- no scale showing more sign changes than the signal --- is attained
 exactly by the classified variation-diminishing members. The characterization and the
