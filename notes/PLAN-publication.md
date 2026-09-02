@@ -226,9 +226,10 @@ Executed:
   ROADMAP.md — with the full-path references updated (CLAUDE.md, README, two Lean
   docstrings, main.tex's header comment). blueprint/DESIGN-formalization-strategy.md
   stays in blueprint/ as load-bearing documentation; AXIOMS.md, trust-boundary.txt and
-  render-allowlist.txt are load-bearing and stay. The two external review documents are
-  not in the repo; adding them under notes/reviews/ with model attribution remains open
-  for the author.
+  render-allowlist.txt are load-bearing and stay. The two external review documents were
+  added under notes/reviews/ on 2026-09-02 (fetched from the author's Drive copies,
+  verbatim, with a README carrying the attribution and their relation to
+  PLAN-review-response.md).
 - **CLAUDE.md**: public-readers header note (internal dialect, private infrastructure,
   nothing public depends on it) — kept for continued development per DP2.
 - **README**: rewritten for a public reader — what this is, how to read it, the two
@@ -244,8 +245,8 @@ Executed:
   the moved files. CI note: forks' CI will not run (private article-kit reusable
   workflows + ARTICLE_KIT_TOKEN); documented in README as not needed for verification.
 - **Remaining for P7 (author)**: make scale-space-lean public + Apache 2.0 (DP1's flagged
-  consequence); make this repo public; the external reviews under notes/reviews/ if
-  desired.
+  consequence); make this repo public. (The external reviews landed under notes/reviews/
+  on 2026-09-02.)
 - **CI incident (2026-09-01, root cause from the article-kit session)**: the lean job
   died twice on the license-flip commit (562f7b7) with no logs, then passed unchanged on
   a third attempt. Cause: the Lean job ran out of disk because lean-action's GitHub
