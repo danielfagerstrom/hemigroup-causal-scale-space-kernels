@@ -273,13 +273,23 @@ Executed:
   workflows reference no secrets a fork would need.
 - Stale-material deletion last, against the keep-list.
 
-### P7 — publish                                                        [status: open]
+### P7 — publish                                                  [status: in progress]
 
-- Freeze the date, build the final PDF, final commit.
-- Mint the release tag (the §1.1 pinning note closes: the paper's own revision is now
-  pinned alongside the in-tree toolchain pins); make the repository public.
-- Publish per DP3: preview site; arXiv and/or Zenodo if chosen (Zenodo gives the tagged
-  release a DOI worth citing in the README).
+Executed 2026-09-02. Decisions of record: publication date 2026-09-02; release tag
+v1.0.0; Zenodo route = manual deposit with the DOI reserved before the tag (per DP3's
+ordering, so the archived PDF carries its own DOI), reserved DOI 10.5281/zenodo.22259187.
+Steps, in order:
+
+- ScaleSpaceCore pin bumped to v0.1.1 (scale-space-lean now public, Apache 2.0, with the
+  license file its headers point at; the v0.1.0→v0.1.1 diff verified header/doc/CI-only).
+- Freeze the date, cite the reserved DOI (paper §1.1 "Where to look", README bibtex),
+  final commit — this batch.
+- Mint the release tag v1.0.0 on the merge commit (the §1.1 pinning note closes: the
+  paper's own revision is now pinned alongside the in-tree toolchain pins).
+- Author: upload the tag's source archive + the artifacts-branch PDFs to the reserved
+  Zenodo record and publish it; then make the repository public. The concept DOI
+  ("cite all versions") exists only after first publish — add it to the README's citing
+  section in a post-release commit.
 - Post-publication follow-ups recorded, not gated: formalize the mode-rigidity/
   wellposed arc (first Lean target — it sits on already-verified ground and would move
   the abstract's existence-uniqueness sentence inside the machine-checked perimeter);
