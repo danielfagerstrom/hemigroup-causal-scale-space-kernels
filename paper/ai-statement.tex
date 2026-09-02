@@ -1,20 +1,97 @@
-% Author contribution and AI-use disclosure. Adapted from the hub's
-% writing-style-and-ai-use.md §2 (the publication-ready draft), instantiated for this
-% article. Placement: after the conclusions, before the bibliography.
+% Author contribution and AI-use disclosure. Placement: after the conclusions, before the
+% bibliography.
+%
+% Rewritten 2026-09-01 against the session archive. Two deliberate departures from the
+% earlier version, which was instantiated from the hub's writing-style-and-ai-use.md §2:
+%
+%   1. The machine-checked/axiom-ledger paragraph is GONE. §1.1 (sec:machine-checked) owns
+%      the trust boundary and states it better; repeating it here padded the statement and
+%      buried the disclosure proper.
+%   2. The guide's framing --- AI "assisting the author to re-present and verify his own
+%      prior results" --- understates what happened, and the author's own account of the work
+%      contradicts it. The hemigroup formulation and much of the mathematics postdate
+%      2026-08-05. Claiming less AI involvement than there was is the one failure mode a
+%      disclosure cannot afford.
+%
+% The "By the numbers" figures come from the session archive (ai-archive / chronicler), and
+% were revised upward on 2026-09-01 when the cloud session that carried the final revisions
+% was recovered by `claude --teleport` and imported: +37 h, +2 196 turns. The lower-bound
+% sentence still stands (one 2026-08-10 cloud session remains untranscribed) but no longer
+% covers a large hole. Re-derive the figures before publication if more sessions land.
+%
+% "How the work went" deliberately does NOT say that months of reading preceded any writing —
+% an earlier draft said that and it was false. There was a great deal of writing first (the
+% research wiki, and the larger project's article and Lean development); what was missing was
+% the way to weaken the axioms, and the hemigroup formulation is what unstuck it. Do not
+% compress this back into a run-up: the stuck-then-unstuck shape is the true one.
+%
+% Timeline note: git dates the draft to 2026-08-07, which is the bootstrap commit, not the
+% writing. The archive puts the draft's own prose in the 08-05 conversation --- "self-
+% decomposable" at 21:05 that evening, "a measurement of a measurement is a measurement" at
+% 07:06 the next morning. The prose here follows the archive, not the commit dates.
 
 \section*{Author contribution and use of AI}
 
-The theory presented here was conceived and originally developed by the author in a series
-of publications between 2004 and 2011. This article re-presents, extends, and formally
-verifies that work. Generative AI was used as an assistant: for drafting and restructuring
-exposition from the author's own earlier manuscripts, for assisting the Lean~4
-formalization, and for triaging related literature. The author directed all of this work,
-takes full responsibility for the mathematical content and its correctness, and has checked
-every citation.
+This article was written in close collaboration with generative AI, and that collaboration
+went well beyond editing assistance. The disclosure below is specific because a general one
+would misrepresent it.
 
-The formal results are machine-checked by the Lean~4 proof assistant and its Mathlib
-library; their validity rests on the Lean kernel and is independent of how the proof terms
-were produced. The analytic facts taken as axioms in the formalization rather than proved
-are enumerated, each with a page-verified citation, in the axiom ledger of the accompanying
-repository (\S\ref{sec:machine-checked}); these are the sole human-trust boundary of the
-verified development.
+\paragraph{What the author brought.} The research programme, the questions it asks, and the
+point of departure are the author's. The semigroup theory of \sscite{fagerstrom2005temporal}
+is his own earlier work, and the decision to ask what survives of it when the semigroup axiom
+is weakened to a hemigroup is his. Every structural choice about what this article is, what
+it claims, and what it declines to claim was made by him.
+
+\paragraph{How the work went.} This material was to have formed part of a larger project, and
+for months before this article existed the author was reading, building tools, accumulating a
+research wiki, and writing that other article and its formalization --- held up on a single
+point. The semigroup axiom plainly had to be weakened, and the right way to weaken it had not
+been found. The hemigroup formulation was that way, and it arrived on the evening of 5 August
+2026. The substance of the working draft --- the axioms, the characterization, and the shape
+of the argument that carries them --- was written in that same extended conversation, overnight
+and into the following day. The article repository was opened two days later; the Lean~4
+development was produced over the seven days after that. The remaining three weeks went on what
+the author takes to be the substance of authorship: understanding the mathematics well enough
+to stand behind it, replacing serviceable argument with motivated exposition, supplying what
+was missing, and scoping claims that had outrun their proofs.
+
+\paragraph{What the AI did.} The prose and the code were written by AI agents throughout, in
+dialogue with the author, who worked almost entirely from the conversation rather than from
+the editor. This includes the Lean~4 formalization essentially in full: the author's
+involvement there was slight, and none of the proof terms are his. It also includes
+mathematical content. A number of the results, the connections to the probabilistic
+literature, and several of the lines of argument were not in the author's plan and were
+learnt from the agents in the course of the work. They belong to the article, not merely to
+its presentation.
+
+\paragraph{AI was also the first reviewer.} Before the final revision the manuscript was read
+by AI systems other than those that had written it: one review in journal style, returning a
+verdict of major revision, and one on presentation. Their findings drove the last pass ---
+several headline claims were scoped back to what is actually proved, one proof was repaired,
+and one objection was answered with a new result. The author assessed each finding
+independently and accepted, narrowed, or declined it; no change was made because a reviewer
+asked for it alone. The author has read and revised the article throughout; beyond him, no
+human reader has yet reviewed it.
+
+\paragraph{By the numbers.} The sessions were archived as the work went on, so the division of
+labour can be stated rather than estimated. Between April and September 2026 the work ran to
+some 300 hours of recorded active session time. The author contributed about 62\,000 words of
+direction and the agents about 1.13 million words of response, a ratio of roughly eighteen to
+one. The seven days that produced the 24\,866 lines of the Lean development took 198 turns and
+9\,296 words from the author --- under four tenths of a word per line of proof.
+
+These totals are lower bounds: one short session leaves no transcript, some subagent traces
+were lost to context compaction before they could be archived, and reading on paper and
+thinking away from a keyboard leave no trace at all.
+
+\paragraph{What this article would otherwise have been.} The author would not, realistically,
+have written this article unaided --- certainly not under the constraints of research pursued
+as a spare-time activity. Written alone it would have carried substantially less mathematical
+detail, and would have leaned on results imported from the probability literature at many of
+the points where it now proves them.
+
+\paragraph{Responsibility.} The author directed the work throughout, has satisfied himself of
+the mathematical content, and has checked every citation. Responsibility for this article,
+including for its errors, is his alone. What is machine-checked, and the axioms on which the
+verified development rests, are set out in \S\ref{sec:machine-checked}; the validity of those
+results depends on the Lean kernel and not on how, or by whom, the proof terms were produced.
