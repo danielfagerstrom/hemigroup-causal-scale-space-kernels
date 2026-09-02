@@ -19,7 +19,7 @@ maxSynthPendingDepth = 3
 [[require]]
 name = "ScaleSpaceCore"
 git = "https://github.com/danielfagerstrom/scale-space-lean"
-rev = "v0.1.0"
+rev = "v0.1.1"
 
 [[require]]
 name = "mathlib"

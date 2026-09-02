@@ -51,7 +51,7 @@ bridge.
 ## Verifying the machine-checked results
 
 The toolchain is pinned in-tree — Lean 4 `v4.31.0`, Mathlib `v4.31.0`, `ScaleSpaceCore`
-at tag `v0.1.0` — so verification is reproducible with two commands:
+at tag `v0.1.1` — so verification is reproducible with two commands:
 
 ```bash
 cd Formalization
