@@ -163,14 +163,17 @@ figures (`paper/`, `blueprint/`, `draft/`, `figures/`, `notes/`) under
 
 ## Citing
 
-Until the archival release (a DOI is minted with the release tag), cite the repository:
+The v1.0.0 release (September 2, 2026) is archived on Zenodo:
 
 ```bibtex
 @misc{fagerstrom2026hemigroup,
-  author = {Fagerstr{\"o}m, Daniel},
-  title  = {Time-Causal Scale Space from Hemigroup Axioms:
-            Characterization of the Kernels},
-  year   = {2026},
-  url    = {https://github.com/danielfagerstrom/hemigroup-causal-scale-space-kernels}
+  author  = {Fagerstr{\"o}m, Daniel},
+  title   = {Time-Causal Scale Space from Hemigroup Axioms:
+             Characterization of the Kernels},
+  year    = {2026},
+  month   = {9},
+  doi     = {10.5281/zenodo.22259187},
+  version = {v1.0.0},
+  url     = {https://github.com/danielfagerstrom/hemigroup-causal-scale-space-kernels}
 }
 ```
