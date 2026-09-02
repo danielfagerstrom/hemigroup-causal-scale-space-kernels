@@ -163,7 +163,10 @@ figures (`paper/`, `blueprint/`, `draft/`, `figures/`, `notes/`) under
 
 ## Citing
 
-The v1.0.0 release (September 2, 2026) is archived on Zenodo:
+The v1.0.0 release (September 2, 2026) is archived on Zenodo. To cite the work
+independently of version, use the concept DOI
+[10.5281/zenodo.22259186](https://doi.org/10.5281/zenodo.22259186), which always
+resolves to the latest version; the citation below pins this release:
 
 ```bibtex
 @misc{fagerstrom2026hemigroup,

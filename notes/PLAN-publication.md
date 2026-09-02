@@ -273,7 +273,12 @@ Executed:
   workflows reference no secrets a fork would need.
 - Stale-material deletion last, against the keep-list.
 
-### P7 — publish                                                  [status: in progress]
+### P7 — publish                                                        [status: DONE]
+
+Completed 2026-09-02: tag v1.0.0 minted on the release commit (c3c8762); the Zenodo
+record is published (version DOI 10.5281/zenodo.22259187, concept DOI
+10.5281/zenodo.22259186 — in the README's citing section since the post-release
+commit); the repository is public. The monograph is published.
 
 Executed 2026-09-02. Decisions of record: publication date 2026-09-02; release tag
 v1.0.0; Zenodo route = manual deposit with the DOI reserved before the tag (per DP3's
