@@ -31,9 +31,12 @@ executes on the author's go.
 
 ## Decision points — RESOLVED (author, 2026-09-01)
 
-- **DP1 — Licenses:** CC BY 4.0 for the paper/blueprint prose (figures included), MIT
-  for the Lean development and the scripts (fine atop Mathlib's Apache-2.0).
-  **Flagged consequence:** `scale-space-lean` must go public and be MIT-licensed before
+- **DP1 — Licenses:** CC BY 4.0 for the paper/blueprint prose (figures included);
+  code under Apache 2.0. *(Revised 2026-09-01 during P6 review: the original decision
+  was MIT, but the author chose to follow the Lean-ecosystem convention — Apache 2.0,
+  matching Mathlib — rather than mix code licenses; he is an emeritus ASF member, so
+  the fit is natural.)*
+  **Flagged consequence:** `scale-space-lean` must go public and be Apache-2.0-licensed before
   or with P7 — `lake build` fetches `ScaleSpaceCore` at tag v0.1.0 from GitHub, so
   §1.1's one-command verification holds for an outside reader only when that repo is
   reachable. `article-kit` stays private for now: the public README advertises only the
@@ -211,7 +214,49 @@ Executed (P4 running in parallel, author-led):
 - Companion-note honesty check: every "companion note" pointer reads as in-preparation
   unless the note is public by then.
 
-### P6 — repository public-readiness                                    [status: open]
+### P6 — repository public-readiness                                    [status: DONE 2026-09-01]
+
+Executed:
+- **Keep-list first**: everything tracked was classified; nothing needed deletion.
+  draft/ stays (author decision); figures' sources and scripts stay; .claude/,
+  .githooks/, .vscode/ and linkage.toml stay (development continues; each is
+  self-describing, and none carries secrets — env-var names only).
+- **notes/ gathering (DP2)**: the nine process documents moved to notes/ — the four
+  paper/ PLAN/DECISIONS files, the four blueprint/ PLAN/REVIEW/NOTES files, and
+  ROADMAP.md — with the full-path references updated (CLAUDE.md, README, two Lean
+  docstrings, main.tex's header comment). blueprint/DESIGN-formalization-strategy.md
+  stays in blueprint/ as load-bearing documentation; AXIOMS.md, trust-boundary.txt and
+  render-allowlist.txt are load-bearing and stay. The two external review documents are
+  not in the repo; adding them under notes/reviews/ with model attribution remains open
+  for the author.
+- **CLAUDE.md**: public-readers header note (internal dialect, private infrastructure,
+  nothing public depends on it) — kept for continued development per DP2.
+- **README**: rewritten for a public reader — what this is, how to read it, the two
+  self-contained lake verification commands (linkage/article-kit demoted to a
+  development-tooling note per DP1), the full formalization status and per-chapter Lean
+  table retained, license section, citation stub (DOI at P7).
+- **Licenses (DP1)**: LICENSE.md (the split) + LICENSES/CC-BY-4.0.txt and
+  LICENSES/Apache-2.0.txt (SPDX texts). The 70 Lean file headers carried Mathlib-style
+  "Apache 2.0 ... file LICENSE" boilerplate pointing at a nonexistent LICENSE; they were
+  first flipped to MIT per the original DP1, then — on the author's revision of DP1
+  during PR #42 review — back to Apache 2.0, now pointing at LICENSES/Apache-2.0.txt.
+- **Sweeps**: no secret patterns, no personal absolute paths, no stale references to
+  the moved files. CI note: forks' CI will not run (private article-kit reusable
+  workflows + ARTICLE_KIT_TOKEN); documented in README as not needed for verification.
+- **Remaining for P7 (author)**: make scale-space-lean public + Apache 2.0 (DP1's flagged
+  consequence); make this repo public; the external reviews under notes/reviews/ if
+  desired.
+- **CI incident (2026-09-01, root cause from the article-kit session)**: the lean job
+  died twice on the license-flip commit (562f7b7) with no logs, then passed unchanged on
+  a third attempt. Cause: the Lean job ran out of disk because lean-action's GitHub
+  cache stored all of Mathlib's compiled oleans (2.3 GB compressed, ~8 GB unpacked)
+  that `lake exe cache get` re-downloads on the next step anyway — so the cache save
+  failed with "No space left on device" as a warning on every green run since Aug 23,
+  leaving each run to rebuild the drift off that stale snapshot until a runner died
+  mid-build. Fixed in article-kit's reusable lean.yml (disk reclaim, workflow-owned
+  lake-v2 cache excluding Mathlib's build tree, hard free-space gate before the save);
+  first run after it lands is a cold build, and the stale Aug-23 cache entry should be
+  deleted from this repo's Actions caches page.
 
 - Keep-list first, then delete (the cleanup needs both): draft/ STAYS (author decision);
   PLAN/REVIEW/NOTES per DP2 (recommend keep, possibly under notes/); figures' sources and

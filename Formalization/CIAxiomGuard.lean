@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 Daniel Fagerström. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under the Apache 2.0 license as described in the file LICENSES/Apache-2.0.txt.
 Authors: Daniel Fagerström
 -/
 import Hemigroup
@@ -22,6 +22,11 @@ its declaration here silently exempts it from the guard, so the two are kept in 
 Publication-gate run of record (P5, 2026-09-01): this comment exists to trigger a fresh
 `lean.yml` run — build, sorry guard, and this axiom guard, read to completion with exit codes
 checked — as the final pre-publication verification pass. No declaration below changed.
+
+Gate re-run (P6, 2026-09-01): triggers a fresh run to exercise the repaired reusable
+workflow (article-kit 57134b3 — cache save had failed silently on disk exhaustion since
+Aug 23; see notes/PLAN-publication.md, "CI incident"). Expected: a cold build under the
+new `lake-v2-` cache key, then a recorded cache save. No declaration below changed.
 
 Expected output today: Lean core (`propext`, `Classical.choice`, `Quot.sound`) everywhere, plus
 `Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent` — ledger A17 — on the

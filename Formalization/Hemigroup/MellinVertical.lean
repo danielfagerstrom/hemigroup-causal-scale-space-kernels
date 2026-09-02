@@ -1,6 +1,6 @@
 /-
 Copyright (c) 2026 Daniel Fagerstrom. All rights reserved.
-Released under Apache 2.0 license as described in the file LICENSE.
+Released under the Apache 2.0 license as described in the file LICENSES/Apache-2.0.txt.
 Authors: Daniel Fagerstrom
 -/
 import Hemigroup.InversionSymbol

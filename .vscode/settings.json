@@ -43,7 +43,8 @@
   // need for a separate outDir -- and pointing one elsewhere would break the latexmkrc.
   "latex-workshop.latex.autoClean.run": "never",
 
-  // The blueprint deliberately starts at Chapter 2 (chapter number == draft section
-  // number; see content.tex). Not an error, and not something to "fix" in the outline.
+  // The blueprint deliberately starts at Chapter 2 (chapter number == the article's
+  // section number; see content.tex). Not an error, and not something to "fix" in the
+  // outline.
   "latex-workshop.view.pdf.viewer": "tab"
 }
