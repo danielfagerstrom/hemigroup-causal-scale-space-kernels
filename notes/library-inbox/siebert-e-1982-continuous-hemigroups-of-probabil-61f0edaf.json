@@ -1,8 +1,0 @@
-{
-  "schema": 1,
-  "text": "Siebert, E. (1982). Continuous hemigroups of probability measures on a Lie group. In: Probability Measures on Groups (Proceedings, Oberwolfach 1981), ed. H. Heyer, Lecture Notes in Mathematics 928, Springer, Berlin-Heidelberg-New York.",
-  "requested_for": "fagerstrom2026hemigroup",
-  "note": "The earliest use of 'hemigroup' in the two-parameter convolution sense that could be attested from this session, and the likely origin of the term in the Tuebingen school. Wanted for the same reason as Becker-Kern: it is what makes the monograph's central word a term of art with a literature behind it rather than a coinage, and it is the natural anchor for a one-line provenance remark in Section 2. Secondary motive: the author recalls a 1970s book that opened with hemigroups before turning to semigroup theory and could not find it on the operator-semigroup shelf -- unsurprising, since operator theory calls the object an evolution family, evolution system, propagator or fundamental solution. Siebert's references should point back to whatever introduced the term. Not in the corpus ('library search --corpus Siebert': no results). Volume number, editor and year are from search-result snippets and 'acquire identify' returned no candidates; the page range is unknown. Verify all of it on acquisition.",
-  "requested_at": "2026-09-05T05:49:15+00:00",
-  "requested_by": null
-}
