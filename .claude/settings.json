@@ -1,4 +1,10 @@
 {
+  "permissions": {
+    "allow": [
+      "Bash(python bin/snapshot.py:*)",
+      "Bash(python3 bin/snapshot.py:*)"
+    ]
+  },
   "hooks": {
     "SessionStart": [
       {
