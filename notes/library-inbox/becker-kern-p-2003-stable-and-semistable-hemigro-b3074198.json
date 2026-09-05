@@ -1,0 +1,8 @@
+{
+  "schema": 1,
+  "text": "Becker-Kern, P. (2003). Stable and semistable hemigroups: domains of attraction and self-decomposability. Journal of Theoretical Probability 16(3), 573-598. DOI 10.1023/A:1025664314657",
+  "requested_for": "fagerstrom2026hemigroup",
+  "note": "Wanted as prior art on the vocabulary and possibly on the mathematics. 'Hemigroup' for a two-parameter convolution family mu_{s,t} * mu_{t,u} = mu_{s,u} -- the increment laws of an additive process -- is established usage in the Heyer/Siebert (Tuebingen) probability-on-groups school, not a coinage of this monograph, and this paper carries stability, semistability AND self-decomposability in that setting. Check before the SSVM submission (deadline 2026-12-20) whether it bears on Sections 2 and 4, and whether it should be cited so the title's key word reads as a term of art. Expected to be adjacent rather than overlapping: it is a limit-theorem paper for operator-normed independent random vectors, with no scale-space axioms and no time-causality. Not in the corpus: 'library search --corpus' for both 'hemigroup' and 'Becker-Kern' returned only fagerstrom2026hemigroup itself. Metadata above is from search-result snippets, NOT from the article: link.springer.com and ideas.repec.org are both blocked by the cloud session's egress proxy, 'library acquire identify' returned no candidates for the DOI, and the abstract has not been read. Verify volume, issue and pages on acquisition.",
+  "requested_at": "2026-09-05T05:49:15+00:00",
+  "requested_by": null
+}
