@@ -117,3 +117,26 @@ monotonicity at all — see `blueprint/DESIGN-formalization-strategy.md`. Prop. 
 is the bridge. **A node whose conclusion is stated only in `BF₀` cannot carry a `\lean` tag**, so
 when transcribing or revising a statement that concludes in `BF₀`, give the `\LE` reading
 alongside it. Do that before the Lean is written, not after.
+
+## The Lean language-server MCP (installed 2026-09-07)
+
+`.mcp.json` at the repo root starts `lean-lsp-mcp` (`uvx lean-lsp-mcp --lean-project-path Formalization`,
+v0.30 at install) for every session opened here. It exposes the Lean language server as tools:
+`lean_goal` / `lean_term_goal` (goal state at a line), `lean_diagnostic_messages`, `lean_hover_info`,
+`lean_completions`, `lean_declaration_file`, `lean_references`, `lean_file_outline`, the search tools
+`lean_local_search`, `lean_leansearch`, `lean_loogle`, `lean_leanfinder`, `lean_state_search`,
+`lean_hammer_premise`, and the experiment tools `lean_multi_attempt` (try several tactic lines at a
+goal without editing), `lean_run_code`, `lean_verify`, `lean_minimal_hypotheses`, `lean_profile_proof`,
+`lean_build`.
+
+**Measured on `Skeleton/Chapter11.lean` (2026-09-07, this machine).** A plain `lake env lean` of the
+file: 149 s (Chapter7: 37 s). Through the MCP the *first* diagnostics call on a file pays the same
+elaboration once (118 s here), and every query after that is instant: `lean_goal` at a `sorry` in 0.2 s.
+So the cycle for a proof attempt drops from one full re-elaboration per try to one per file open, with
+`lean_multi_attempt` for the tries. Use it for goal states, diagnostics and premise search; keep
+`lake build`, the axiom guard and `linkage check` as the gates before reporting a node done.
+
+**Known behaviour.** The language server's start can exceed the tool's 30 s initialize timeout on the
+first call after a cold start ("Failed to start Lean language server … initialize timed out"); the
+second call succeeds. Do not treat that first error as a project fault. The server's Mathlib search
+tools reach the network; `lean_local_search` does not.
