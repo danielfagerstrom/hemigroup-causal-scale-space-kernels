@@ -35,6 +35,15 @@ on:
       - "blueprint/**"
       - ".github/workflows/docs.yml"
   workflow_dispatch:
+    inputs:
+      source_ref:
+        description: "Ref to build from (blank = this ref). Use with `channel` to publish a past release."
+        required: false
+        default: ""
+      channel:
+        description: "Channel to write (blank = main, or the tag on a tag build). A release channel is write-once."
+        required: false
+        default: ""
 
 # `contents: write` because the called workflow's publish job force-pushes the built PDFs
 # to the orphan `artifacts` branch. A caller cannot grant LESS than a called workflow
@@ -49,6 +58,8 @@ jobs:
     with:
       slug: hemigroup-time-causal-kernels
       dry_run: ${{ github.event_name == 'pull_request' }}
+      source_ref: ${{ inputs.source_ref || '' }}
+      channel: ${{ inputs.channel || '' }}
     secrets:
       R2_ACCESS_KEY_ID: ${{ secrets.R2_ACCESS_KEY_ID }}
       R2_SECRET_ACCESS_KEY: ${{ secrets.R2_SECRET_ACCESS_KEY }}
