@@ -21,18 +21,20 @@ exactly by cascades of first-order filters), and the theory is developed through
 memory line: a well-posed signaling form, a locality theorem, non-creation settled in
 both directions, and the temporal N-jet.
 
-**Read the paper**: the published site is
-[hcs-docs.danielfagerstrom.com](https://hcs-docs.danielfagerstrom.com/) —
-[paper.pdf](https://hcs-docs.danielfagerstrom.com/paper.pdf) ·
-[blueprint.pdf](https://hcs-docs.danielfagerstrom.com/blueprint.pdf) · the
-[web blueprint](https://hcs-docs.danielfagerstrom.com/blueprint/) with its
-[dependency graph](https://hcs-docs.danielfagerstrom.com/blueprint/dep_graph_document.html),
-every node colored by verification status. The same CI-built PDFs are on the
+**Read the paper**: the published release is at
+[research.danielfagerstrom.com](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/) —
+[paper.pdf](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/paper.pdf) ·
+[blueprint.pdf](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/blueprint.pdf) · the
+[web blueprint](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/blueprint/) with its
+[dependency graph](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/blueprint/dep_graph_document.html),
+every node colored by verification status. That URL names the `v1.0.0` release and is
+permanent; `.../v1.0.0/` addresses it explicitly, and the unversioned path follows the
+latest release. The same CI-built PDFs are on the
 [`artifacts`](../../tree/artifacts) branch
 ([paper.pdf](../../raw/artifacts/paper.pdf) ·
 [blueprint.pdf](../../raw/artifacts/blueprint.pdf)), and `paper/main.pdf` builds from
-`paper/`. The site rebuilds from `main`, so it tracks the development; the frozen,
-citable version is the archived release below.
+`paper/`. Those track `main`; the public site serves the release, and the frozen, citable
+version is the archived release below.
 
 ## What is in this repository
 
