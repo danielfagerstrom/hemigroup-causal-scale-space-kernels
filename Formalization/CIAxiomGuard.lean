@@ -25,7 +25,7 @@ checked — as the final pre-publication verification pass. No declaration below
 
 Gate re-run (P6, 2026-09-01): triggers a fresh run to exercise the repaired reusable
 workflow (article-kit 57134b3 — cache save had failed silently on disk exhaustion since
-Aug 23; see notes/PLAN-publication.md, "CI incident"). Expected: a cold build under the
+Aug 23; see records/PLAN-publication.md, "CI incident"). Expected: a cold build under the
 new `lake-v2-` cache key, then a recorded cache save. No declaration below changed.
 
 Expected output today: Lean core (`propext`, `Classical.choice`, `Quot.sound`) everywhere, plus
