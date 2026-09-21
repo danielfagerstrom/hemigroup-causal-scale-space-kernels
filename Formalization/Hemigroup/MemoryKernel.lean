@@ -21,7 +21,7 @@ fail the build as surely as a real one.)
 
 ## The vocabulary decision, made concrete
 
-`notes/PLAN-chapters-8-12.md` Phase 1 asks whether chapter 9 forces the development to define
+`records/PLAN-chapters-8-12.md` Phase 1 asks whether chapter 9 forces the development to define
 `CompletelyMonotone`, reversing `DESIGN-formalization-strategy.md`. It does not, and this file is
 where that is settled rather than asserted.
 

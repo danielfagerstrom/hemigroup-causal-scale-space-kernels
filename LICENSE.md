@@ -4,7 +4,7 @@ This repository is dual-licensed by content, per the author's decision of record
 (2026-09-01):
 
 - **Prose, mathematics, and figures** — everything under `paper/`, `blueprint/`,
-  `draft/`, `figures/`, and `notes/`, together with `README.md` — are licensed under
+  `draft/`, `figures/`, `notes/`, and `records/`, together with `README.md` — are licensed under
   the **Creative Commons Attribution 4.0 International** license (CC BY 4.0).
   Full text: [`LICENSES/CC-BY-4.0.txt`](LICENSES/CC-BY-4.0.txt);
   summary: <https://creativecommons.org/licenses/by/4.0/>.

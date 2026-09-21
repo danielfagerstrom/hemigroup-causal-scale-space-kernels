@@ -11,7 +11,7 @@ import Hemigroup.Subordinator
 # The target types of chapter 9
 
 **This file carries `sorry`s and is not part of the `Hemigroup` library.** Phase 2 of
-`notes/PLAN-chapters-8-12.md`: state the chapter before proving it, so that the design
+`records/PLAN-chapters-8-12.md`: state the chapter before proving it, so that the design
 decisions are taken once, visibly, and the remaining work becomes countable rather than
 estimated.
 

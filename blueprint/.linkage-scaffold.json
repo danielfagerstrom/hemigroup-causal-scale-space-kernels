@@ -3,6 +3,11 @@
     "blueprint/src/blueprint.sty": "5a7741a78a33",
     "blueprint/src/theorems.tex": "7fdc3b9c6caf",
     "blueprint/src/linkage-macros.tex": "5b3626605c3c",
-    "blueprint/src/latexmkrc": "6144b47148bd"
+    "blueprint/src/latexmkrc": "6144b47148bd",
+    ".claude/rules/article-kit/core.md": "47f7745fb51d",
+    ".claude/rules/article-kit/writing.md": "4607f1d1c397",
+    ".claude/rules/article-kit/blueprint.md": "019c199a3a28",
+    ".claude/rules/article-kit/ledger.md": "4a42e302bc72",
+    ".claude/rules/article-kit/lean.md": "e0c8ce16a0a0"
   }
 }
