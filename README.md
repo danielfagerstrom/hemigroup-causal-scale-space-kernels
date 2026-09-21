@@ -70,19 +70,22 @@ lake env lean CIAxiomGuard.lean   # prints the axiom usage of every named declar
                                   # and exits nonzero on any drift from the trust boundary
 ```
 
-The library `Formalization/Hemigroup` is `sorry`-free and rests on Lean core plus **two**
-axioms (`blueprint/trust-boundary.txt`), which do not mix:
+The library `Formalization/Hemigroup` is `sorry`-free and rests on Lean core plus **one**
+axiom (`blueprint/trust-boundary.txt`):
 
-* **A17**, the existence half of the subordinator correspondence — what the *constructive*
-  direction needs. Phrased so it can be demoted to a lemma without touching a downstream
-  statement, the day the compound-Poisson construction is carried out.
 * **A18**, self-decomposability in the direction (1) ⇒ (3) — what the *analysis* direction
   needs, and nothing else does. A reviewed decision, anchored on Schilling–Song–Vondraček
   Prop. 5.17, p. 57, and expected to be permanent: its hard leg needs differentiability of
   Bernstein functions, which is the derivative-sign vocabulary this development excludes
   by design.
 
-CI checks both with `#print axioms` per declaration on every push — so the article's claim
+The released `v1.0.0` also rested on **A17**, the existence half of the subordinator
+correspondence, which the *constructive* direction needs. It has since been proved (the
+compound-Poisson construction with Mathlib's Prokhorov theorem,
+`Formalization/Hemigroup/CompoundPoisson.lean`) with its statement unchanged, so the
+constructive direction and the uniqueness clause now reduce to Lean core.
+
+CI checks this with `#print axioms` per declaration on every push — so the article's claim
 that the analysis direction crosses the boundary where the constructive one does not is
 machine-checked rather than asserted.
 
@@ -92,7 +95,8 @@ Published as `v1.0.0`. **Both headline theorems are machine-checked in full**: t
 characterization (Theorem 7.3: construction, analysis and uniqueness) and the signaling
 form (Theorem 9.17). The blueprint has 106 statement nodes, 67 of them `\leanok`; all 89
 statements the paper shares with it are verbatim; `AXIOMS.md` has 21 ledger entries, each
-with a page anchor; the trust base is Lean core plus A17 and A18. `linkage check` reports
+with a page anchor; the trust base is Lean core plus A18 (A17, in the trust base of `v1.0.0`,
+is proved on `main` since; no `v1.1` carries it yet). `linkage check` reports
 two advisories, both deliberate: `lem:selfdecomposable-derivative` is A18 itself, and
 `lem:selfdecomposable-exponents` is a collation over it. The fidelity review
 (`blueprint/REVIEW-fidelity.md`, verdict at its head) found that the Lean proves what the

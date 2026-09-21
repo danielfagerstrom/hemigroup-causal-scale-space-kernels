@@ -29,9 +29,15 @@ Aug 23; see records/PLAN-publication.md, "CI incident"). Expected: a cold build 
 new `lake-v2-` cache key, then a recorded cache save. No declaration below changed.
 
 Expected output today: Lean core (`propext`, `Classical.choice`, `Quot.sound`) everywhere, plus
-`Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent` — ledger A17 — on the
-constructive direction and on the uniqueness clause, which quantifies over the kernels A17
-builds and so inherits it through `kernel`.
+`Hemigroup.exists_antitone_density_of_dilation_increments` — ledger A18 — on the analysis
+direction and whatever quantifies over its conclusion, and nothing else.
+
+**A17 is retired** (2026-09-21, Q-0022): `exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent`
+is a theorem now, proved in `Hemigroup/CompoundPoisson.lean` with its statement unchanged. The
+per-declaration comments below that say a line prints "A17" (or "A17 and nothing else") record
+the trust base as it stood before the retirement; each such line now prints Lean core alone, or
+Lean core plus A18 where the comment names both. The guard enforces this, since the name is no
+longer in `trust-boundary.txt`.
 
 The blueprint's `thm:main-characterization` is a collation and carries no tag of its own; its
 halves `thm:main-construction` and `prop:main-uniqueness` do, and are listed below.

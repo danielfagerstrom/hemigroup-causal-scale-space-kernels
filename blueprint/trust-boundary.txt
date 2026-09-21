@@ -7,19 +7,10 @@
 #
 # Adding a line here widens the project's trust base and is a review decision, not a fix.
 #
-# A17 (2026-08-09), reviewed in AXIOMS.md against SSV Theorem 5.2, p. 49. The existence half of
-# the subordinator correspondence: a Levy triple is realised by a finite measure with the
-# matching Laplace transform. It is what thm:main-characterization's constructive direction
-# needs to build the kernels, and the only thing it needs that is not proved here.
-#
-# Note what is NOT on this line. The source's theorem gives sub-probability measures; the
-# upgrade to a probability measure is prose in SSV and is proved here instead. Uniqueness of the
-# measure is likewise proved, not trusted. And the axiom is stated in this development's own
-# vocabulary -- levyExponent, laplace, IsCausal, no CompletelyMonotone -- so that the day the
-# compound-Poisson construction is carried out it can be demoted to a lemma and this file
-# returned to empty, without touching a single downstream statement.
-
-Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent
+# A17 is RETIRED (2026-09-21, Q-0022): the existence half of the subordinator correspondence
+# is now a theorem, proved by the compound-Poisson construction in
+# Formalization/Hemigroup/CompoundPoisson.lean with the axiom's statement unchanged. Its name
+# has left this file; AXIOMS.md keeps the entry as the record of what was admitted.
 
 # A18 (2026-08-10), a REVIEW DECISION taken deliberately and recorded in AXIOMS.md. Self-
 # decomposability, in the direction the analysis needs: a Levy exponent whose dilation increments
@@ -28,12 +19,13 @@ Hemigroup.exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent
 # thm:main-analysis needs that is not proved here.
 #
 # Note what is NOT on this line. The converse, (3) => (1), is PROVED -- levyExponentD_increment
-# -- so thm:main-construction and prop:main-uniqueness carry A17 and not this. The article's
+# -- so thm:main-construction and prop:main-uniqueness do not carry this (they reduce to Lean
+# core now that A17 is proved). The article's
 # claim that the analysis direction crosses the boundary where the constructive one does not is
 # therefore checked by CIAxiomGuard rather than asserted in prose.
 #
 # Unlike A17 this entry is expected to be PERMANENT. A17 was phrased so it could be demoted once
-# the compound-Poisson construction is done, which Mathlib's Prokhorov puts within reach; A18's
+# the compound-Poisson construction was done, and it has been; A18's
 # (1) => (2) leg needs differentiability of Bernstein functions, which is the derivative-sign
 # vocabulary this development excludes by design. The AXIOMS.md entry says so plainly.
 #

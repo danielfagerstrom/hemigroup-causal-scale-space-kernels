@@ -57,7 +57,7 @@ Order of first use is therefore a property of this index, not of the names:
 | §10 — the scale Cauchy problem | A11 |
 | §11 — the signaling form | A12 |
 | §12 — locality | A13–A16 |
-| §7 — the main theorem, **Lean route only** | A17 |
+| §7 — the main theorem, **Lean route only** | A17 (retired: proved 2026-09-21) |
 
 A17 is the first entry whose number sits outside that order, and it is exactly the case the
 policy above was written for: it grounds no `[A]` node, because the blueprint's own proof of
@@ -773,6 +773,18 @@ articles that have not yet pinned a ledger.
 **Cite:** @schilling2012bernstein — Theorem 5.2, p. 49, converse clause (Ch. 5, "A probabilistic
 intermezzo"), 2nd ed.; the triple ⟹ `BF` leg is Theorem 3.2, p. 21, already A3's anchor
 
+- **RETIRED — proved, no longer an axiom** (2026-09-21, queue item Q-0022;
+  `REVIEW-fidelity.md` R28). The Lean declaration is now a `theorem` with the axiom's statement
+  unchanged, proved in `Formalization/Hemigroup/CompoundPoisson.lean` by the route this entry and
+  `Interfaces.lean` had named: the compound-Poisson law `e^{−‖ν‖} Σ ν^{*n}/n!` of each truncation
+  `ν|_{(1/(n+1),∞)}`, tightness from the transforms near `s = 0`, a weak cluster point by
+  Mathlib's Prokhorov theorem (`isCompact_closure_of_isTightMeasureSet`), identified by testing
+  against bounded continuous functions, then a translation by the drift. The name has left
+  `trust-boundary.txt`; every consumer that printed A17 now reduces to Lean core, or to Lean core
+  plus A18 where it printed both. The entry is kept, as identifiers are never reused, and the
+  text below is the record of the interface as it was admitted. The anchor is no longer load-bearing
+  for the Lean development; it still grounds the paper's classical route, where SSV Theorem 5.2 is
+  cited as before.
 - **Statement as used.** Given `b₀ ≥ 0` and a causal measure `ν` whose exponent
   `g(s) = b₀ s + ∫ (1 − e^{−st}) ν(dt)` is finite for `s ≥ 0`, there exists a causal **finite**
   measure `μ` on `ℝ` with `μ̂(s) = e^{−g(s)}`. This is the **existence** half of the
@@ -946,8 +958,8 @@ already trusts. @dym1976gaussian is the book-length companion.
   `(0,inf)` (p. 403) where SSV normalises **right**-continuous. Harmless — they agree a.e. — but
   do not mix the two.
 - **Retirability: worse than A17, and this should be said plainly.** A17 was phrased so it could
-  be demoted once the compound-Poisson construction is carried out, which Mathlib's Prokhorov
-  puts within reach. A18 has no comparable path. Its `(2) => (3)` leg is arguably reachable —
+  be demoted once the compound-Poisson construction is carried out, and it has been (2026-09-21,
+  see its entry). A18 has no comparable path. Its `(2) => (3)` leg is arguably reachable —
   `Hemigroup.laplace_injective` already gives the uniqueness it needs — but `(1) => (2)` requires
   differentiability of Bernstein functions, precisely the vocabulary this development excludes.
   Treat this entry as permanent.
