@@ -3,7 +3,7 @@ Copyright (c) 2026 Daniel Fagerström. All rights reserved.
 Released under the Apache 2.0 license as described in the file LICENSES/Apache-2.0.txt.
 Authors: Daniel Fagerström
 -/
-import Hemigroup.Levy
+import Hemigroup.CompoundPoisson
 import Hemigroup.SelfDecomposable
 
 /-!
@@ -32,16 +32,19 @@ theorem but a *construction* — from a triple, a measure — and it can be stat
 classical predicates.
 
 The practical consequence: an interface phrased this way can later be **demoted to a lemma
-without touching a single downstream statement**. If the compound-Poisson construction is ever
-carried out — explicit `e^{-‖ν‖} Σ ν^{*n}/n!`, truncate `ν` to `(ε,∞)`, pass to the weak limit
-with Prokhorov, which Mathlib has — A17 becomes a `theorem` and nothing above it changes. An
-interface phrased in terms of `CompletelyMonotone` could not be retired that way, because the
-predicate would be woven through everything that mentions it.
+without touching a single downstream statement**. That is what happened to A17: the
+compound-Poisson construction — explicit `e^{-‖ν‖} Σ ν^{*n}/n!`, truncate `ν` to
+`(1/(n+1),∞)`, pass to a weak cluster point with Prokhorov — is carried out in
+`CompoundPoisson.lean`, and `exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent` below is
+now a `theorem` with the statement the axiom had. Nothing above it changed. An interface phrased
+in terms of `CompletelyMonotone` could not have been retired that way, because the predicate
+would be woven through everything that mentions it.
 
-That argument holds for A17. It does **not** hold for A18, and the file should not be read as
+That argument held for A17. It does **not** hold for A18, and the file should not be read as
 claiming it does: A18's `(1) ⇒ (2)` leg needs differentiability of Bernstein functions, for which
 there is no route that does not reintroduce the excluded vocabulary. A18 is phrased
-representation-first for the *other* reason — so that it can be stated at all.
+representation-first for the *other* reason — so that it can be stated at all. It is now the only
+axiom in the development.
 -/
 
 namespace Hemigroup
@@ -49,7 +52,11 @@ namespace Hemigroup
 open MeasureTheory Set
 open scoped ENNReal
 
-/-- **The subordinator correspondence** — the existence half, ledger A17.
+/-- **The subordinator correspondence** — the existence half, ledger A17, **retired**: this was an
+axiom until the compound-Poisson construction was carried out, and is now proved from
+`CompoundPoisson.exists_laplace_eq_exp_neg_levyExponent`. The statement is the axiom's, word for
+word, so nothing downstream changed; the prose below records what the interface was and why it
+was stated this way.
 
 Given a drift `b₀ ≥ 0` and a causal Lévy measure `ν` whose exponent is finite, there is a causal
 **finite** measure whose Laplace transform is `exp (-(b₀ s + ∫ (1 - e^{-st}) ν(dt)))`.
@@ -76,10 +83,13 @@ The finiteness hypothesis is stated as finiteness of the exponent rather than as
 gives `1 - e^{-st} ≥ (1 - e^{-s}) min (1, t)` for `t ≥ 0`, so finiteness at a single `s > 0`
 already forces the integral condition. The axiom is therefore no stronger than the theorem it
 is anchored on. -/
-axiom exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent {b₀ : ℝ} (hb₀ : 0 ≤ b₀)
+theorem exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent {b₀ : ℝ} (hb₀ : 0 ≤ b₀)
     {ν : Measure ℝ} (hν : IsCausal ν) (hfin : ∀ s, 0 ≤ s → levyExponent b₀ ν s ≠ ⊤) :
     ∃ μ : Measure ℝ, IsFiniteMeasure μ ∧ IsCausal μ ∧
-      ∀ s, 0 ≤ s → laplace μ s = Real.exp (-(levyExponent b₀ ν s).toReal)
+      ∀ s, 0 ≤ s → laplace μ s = Real.exp (-(levyExponent b₀ ν s).toReal) := by
+  obtain ⟨μ, _, hcausal, htrans⟩ :=
+    CompoundPoisson.exists_laplace_eq_exp_neg_levyExponent hb₀ hν hfin
+  exact ⟨μ, inferInstance, hcausal, htrans⟩
 
 /-- The measure supplied by A17 is a **probability** measure.
 
@@ -116,8 +126,9 @@ variable. The family enters only when `thm:main-analysis` supplies the hypothesi
 **The converse is proved, not assumed.** (3) ⇒ (1) is `SelfDecomposable.levyExponentD_increment`,
 a change of variables and a sign. Only the hard direction is taken on trust, which is why
 `thm:main-construction` and `prop:main-uniqueness` stay off this axiom entirely: `#print axioms`
-on both shows A17 and nothing else. The article's claim that the analysis direction crosses the
-boundary where the constructive one does not is therefore machine-checked rather than asserted.
+on both shows Lean core and nothing else (A17, which they used to carry, is now proved). The
+article's claim that the analysis direction crosses the boundary where the constructive one does
+not is therefore machine-checked rather than asserted.
 
 **Retirability, honestly.** Unlike A17 this is not a construction with a known Mathlib route.
 The blueprint proves it from `prop:bernstein-toolbox`(4) applied to a difference quotient

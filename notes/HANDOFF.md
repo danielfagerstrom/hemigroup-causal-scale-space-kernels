@@ -7,9 +7,11 @@ lives").
 
 ## Where the work is
 
-The article is published (`v1.0.0`) and no work is planned here. Continuing research runs in the
-hub (`wiki/hemigroup-programme.md`) and in the later papers' repositories. A new version would
-start at `PROCESS.md`'s release section with a `CHANGELOG.md` entry.
+The article is published (`v1.0.0`). Formalization resumed here for one item, by the author's
+decision (hub queue Q-0025, below): **A17 is proved** (Q-0022, `Hemigroup/CompoundPoisson.lean`),
+so the trust base is Lean core plus A18. Continuing research runs in the hub
+(`wiki/hemigroup-programme.md`) and in the later papers' repositories. A new version would start
+at `PROCESS.md`'s release section with a `CHANGELOG.md` entry.
 
 ## Read first
 
@@ -30,12 +32,17 @@ start at `PROCESS.md`'s release section with a `CHANGELOG.md` entry.
 2. **The other `\notready` nodes**: `lem:standing-levy-reading` and `lem:zstar-log-growth`
    (`Skeleton/Chapter11.lean`), and `prop:pair-regularity`(2), ledger A9 by design
    (`Skeleton/Chapter9.lean`).
-3. **A17 can be demoted to a lemma** once the compound-Poisson construction is carried out
-   (Mathlib's Prokhorov puts it within reach); the axiom is phrased so that no downstream
-   statement changes.
+3. **Prose still saying "A17" after its retirement.** The blueprint annotations (chapters 7, 8,
+   9, 11), the per-declaration comments in `CIAxiomGuard.lean` and `REVIEW-fidelity.md`'s cards
+   say a declaration prints "A17 (and nothing else)"; it now prints Lean core, or Lean core plus
+   A18. The guard's header and `AXIOMS.md` say so once; rewriting each occurrence, and the paper's
+   §1.1 statement of what rests on what, belongs to whichever pass prepares a `v1.1`.
 4. **Blocked upstream**: the scale-Cauchy problem (C₀-semigroups, distributions), and the locality
    chapter's ladder (Bessel `K`).
 
 ## Waiting on the author
 
-- Whether formalization resumes here at all, and whether a `v1.1` is wanted to carry it.
+- **Decided (Q-0025, 2026-09-21): (b)** resume formalization in Paper I with Q-0022 (A17 to a
+  lemma) only; Q-0020 and Q-0021 are decided after it; no `v1.1` until something is proved.
+- Q-0022 is now done (A17 proved), so the open questions are Q-0020 and Q-0021, and whether a
+  `v1.1` is cut to carry the smaller trust base (it would also carry item 3 above).

@@ -2,6 +2,7 @@ import Hemigroup.AdmissibleCone
 import Hemigroup.Additivity
 import Hemigroup.Basic
 import Hemigroup.ClosedForms
+import Hemigroup.CompoundPoisson
 import Hemigroup.Construction
 import Hemigroup.Continuity
 import Hemigroup.Covariance
