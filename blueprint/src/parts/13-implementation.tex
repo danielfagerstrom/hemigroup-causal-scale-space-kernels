@@ -12,8 +12,16 @@
 % (content.tex's header): the implementation chapter was excluded early to keep the
 % blueprint's size under control; the author now wants the blueprint complete with
 % respect to the mathematical material, with formalisation a separate decision. So the
-% nodes below are blueprint statements first and formalisation targets not at all for
-% now: none carries a \lean tag, and none is scheduled in PLAN-chapters-8-12.md.
+% nodes below are blueprint statements first, and none carries a \lean tag or is scheduled in
+% PLAN-chapters-8-12.md.
+%
+% UNSCHEDULED, NOT EXCLUDED (hub ADR-0020, 2026-09-22): every blueprint node is a
+% formalisation target in the end. What to prove next is a cost-benefit call within the
+% programme's order: a fact Mathlib lacks is admitted as a hypothesis (a ledger entry) rather
+% than built, unless building it is decided; a node with many dependents ranks above a leaf;
+% results an implementer relies on rank up, since a subtle error in an algorithm is paid for by
+% whoever builds from the paper; the size is priced in Lean lines. This article's unscheduled nodes are
+% priced in a report before any of them is queued; the programme's order puts Paper V first.
 %
 % One ledger entry lands here: A21 (Thorin's characterization of the GGC class), the
 % analytic substance of \ref{prop:thorin-subclass}; its (1) <=> (2) leg rides on A1's
