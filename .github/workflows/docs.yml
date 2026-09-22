@@ -54,7 +54,7 @@ permissions:
 
 jobs:
   docs:
-    uses: danielfagerstrom/article-kit/.github/workflows/docs.yml@main
+    uses: danielfagerstrom/article-kit/.github/workflows/docs.yml@v0.1.0
     with:
       slug: hemigroup-time-causal-kernels
       dry_run: ${{ github.event_name == 'pull_request' }}

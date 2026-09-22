@@ -17,7 +17,7 @@ permissions:
 
 jobs:
   project:
-    uses: danielfagerstrom/article-kit/.github/workflows/manifest.yml@main
+    uses: danielfagerstrom/article-kit/.github/workflows/manifest.yml@v0.1.0
     with:
       slug: hcs
       dry_run: ${{ github.event_name == 'pull_request' }}
@@ -26,6 +26,39 @@ jobs:
       # From here a paper edit that forks from the blueprint fails the build instead of
       # passing quietly, which is the whole point of the marker.
       strict_shared: true
+      linkage_ref: v0.1.0
     secrets:
       NOTES_WIKI_TOKEN: ${{ secrets.NOTES_WIKI_TOKEN }}
       ARTICLE_KIT_TOKEN: ${{ secrets.ARTICLE_KIT_TOKEN }}
+
+  pins:
+    # `linkage pins` (article-kit docs/RELEASE.md, "Versioning the framework"): fails when
+    # a call to an article-kit workflow, or a `linkage_ref` input, is not at a release tag
+    # or a full commit sha. Needs no Lean, pandoc or Lake packages -- just this repo's own
+    # `.github/workflows/` -- so it runs as its own job beside the `project` job that runs
+    # `linkage check`, on the same install pattern as the reusable workflows above.
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+    steps:
+      - uses: actions/checkout@v7
+
+      - name: Install the linkage framework
+        env:
+          KIT_TOKEN: ${{ secrets.ARTICLE_KIT_TOKEN }}
+        run: |
+          kit="$RUNNER_TEMP/article-kit"
+          if [ -n "$KIT_TOKEN" ]; then
+            auth="https://x-access-token:${KIT_TOKEN}@github.com/danielfagerstrom/article-kit"
+          else
+            auth="https://github.com/danielfagerstrom/article-kit"
+          fi
+          if ! git clone --depth 1 --branch v0.1.0 "$auth" "$kit" 2>/dev/null; then
+            echo "::error::could not clone danielfagerstrom/article-kit@v0.1.0."
+            exit 1
+          fi
+          pipx install "$kit"
+          linkage --help > /dev/null
+
+      - name: linkage pins
+        run: linkage pins
