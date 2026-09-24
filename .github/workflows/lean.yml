@@ -13,6 +13,7 @@ on:
       - 'blueprint/trust-boundary.txt'
       - '.github/workflows/lean.yml'
   pull_request:
+    types: [opened, synchronize, reopened, ready_for_review]
     paths:
       - 'Formalization/**'
       - 'blueprint/trust-boundary.txt'
@@ -23,6 +24,12 @@ permissions:
 
 jobs:
   lean:
+    # A draft pull request is unfinished work the queue's dispatcher pushed so that it is
+    # not lost with its worktree; a check we already know is unfinished costs minutes for a
+    # red cross nobody learns from (the author, 2026-09-23). Marking the pull request ready
+    # for review runs this, which is why `ready_for_review` is in the trigger's types — it is
+    # not one of the defaults.
+    if: github.event_name != 'pull_request' || !github.event.pull_request.draft
     uses: danielfagerstrom/article-kit/.github/workflows/lean.yml@v0.1.0
     with:
       lean_dir: Formalization
