@@ -14,6 +14,10 @@
 # One command per line, no backslash. Seeded 2026-07-25 from the full blueprint
 # inventory (97 commands, all standard).
 #
+# 2026-09-25: +3 (bigcup lceil rceil), vetted for `lem:mode-rigidity`'s proof when it was
+# rewritten to the machine-checked route -- a union over the integer translates of the zero
+# set, and the ceiling that picks the translate landing in the period substrip.
+#
 # 2026-08-07: +22 commands, vetted from the draft's own inventory for the section
 # 2-12 transcription (Big Leftarrow Pi bar big cap cdots chi deg downarrow equiv eta
 # hat ldots longrightarrow not setminus sup tag varepsilon wedge zeta). `tag` is how
@@ -44,6 +48,7 @@ bar
 begin
 beta
 big
+bigcup
 bigl
 bigr
 binom
@@ -77,6 +82,7 @@ item
 kappa
 lambda
 langle
+lceil
 ldots
 le
 leftrightarrow
@@ -113,6 +119,7 @@ psi
 qquad
 quad
 rangle
+rceil
 ref
 rho
 setminus

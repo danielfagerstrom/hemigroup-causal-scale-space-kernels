@@ -30,6 +30,7 @@ import Hemigroup.LocalityOrderOne
 import Hemigroup.LocalityOrderTwo
 import Hemigroup.MemoryKernel
 import Hemigroup.MemoryKernelTransform
+import Hemigroup.ModeRigidity
 import Hemigroup.MeanDelay
 import Hemigroup.MellinData
 import Hemigroup.MellinEuler
