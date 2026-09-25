@@ -164,7 +164,7 @@ the boundary of (H) as characteristic of the theory rather than of any one argum
 % The edge to prop:moment-criterion went with the narrowing: that node (ledger A7) is the
 % criterion for POSITIVE integer moments of T_x, and the statement left here is about
 % NEGATIVE moments, which z_* governs and def:standing-hypothesis supplies. The Lean proof
-% is the check: #print axioms on mellin_profile gives A17 and nothing else, so no path
+% is the check: #print axioms on mellin_profile gives Lean core, so no path
 % through A7 is used.
 \uses{def:standing-hypothesis,thm:main-characterization}
 \lean{Hemigroup.SelfDecomposableExponent.mellin_profile}\leanok
@@ -175,8 +175,7 @@ Under (H), for $0 < \operatorname{Re} z < z_*$,
 with $|\tilde H(c + i\tau)| \le \Ex[T_1^{-c}]\,|\Gamma(c+i\tau)|$ for $0 < c < z_*$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.mellin\_profile} and
-\texttt{norm\_mellin\_profile\_le}; \texttt{\#print axioms} gives \ledger{A17} and nothing else,
-inherited through \texttt{kernel} because $T_1$ is $\mu_{0,1}$. In particular \emph{no} chapter-11
+\texttt{norm\_mellin\_profile\_le}; \texttt{\#print axioms} gives Lean core. In particular \emph{no} chapter-11
 interface enters --- \ledger{A12} grounds \ref{def:inversion-operator}, not this.}
 
 \emph{\textbf{The exchange of integrals is licensed by the strip condition and by nothing else.}
@@ -315,7 +314,7 @@ covariant Mellin class (\ref{def:covariant-mellin-class}).
 \texttt{Hemigroup.SelfDecomposableExponent.sameSymbolAction\_of\_realisesAction}, and
 \texttt{eventuallyEq\_inversionSymbol\_of\_realisesAction} composes them against the article's own
 symbol, so the statement is not vacuous and the definite article in ``\emph{the} inversion'' is
-earned. \texttt{\#print axioms} gives \ledger{A17} and nothing else --- in particular step~1 does
+earned. \texttt{\#print axioms} gives Lean core --- in particular step~1 does
 \emph{not} carry \ledger{A12}, which is what this node was recorded as waiting for.}
 
 \emph{\textbf{``Of the form $x^{-1}B(\theta)$'' is the hypothesis, and reading it that way is what
@@ -733,7 +732,7 @@ Under (H), for every $c \in (0, z_*)$ the function $\tau \mapsto \tilde H(c + i\
 absolutely integrable on $\RR$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.verticalIntegrable\_mellin\_profile};
-\texttt{\#print axioms} gives \ledger{A17} and nothing else. The Lean statement is
+\texttt{\#print axioms} gives Lean core. The Lean statement is
 \texttt{Complex.VerticalIntegrable}, which is \emph{verbatim} the hypothesis Mathlib's
 \texttt{mellinInv\_mellin\_eq} asks for, so this node is the bridge between the chapter and
 the inversion theorem it cites.}
@@ -785,7 +784,7 @@ Then $B$ is meromorphic on that strip, with poles only at the isolated zeros of 
 \texttt{eventually\_mellin\_profile\_ne\_zero} (the zeros are isolated),
 \texttt{inversionSymbol\_eq} (the closed form) and
 \texttt{analyticAt\_inversionSymbol} (poles only at those zeros);
-\texttt{\#print axioms} gives \ledger{A17} and nothing else. This is the clause every later
+\texttt{\#print axioms} gives Lean core. This is the clause every later
 node in the chapter consumes: \ref{def:inversion-operator} needs $B$ and its strip,
 \ref{lem:symbol-uniqueness} needs the isolated zeros, \ref{rem:poles} needs the poles.}
 
@@ -836,7 +835,7 @@ is a pole of neither --- they agree there too.
 \texttt{Hemigroup.SelfDecomposableExponent.SameSymbolAction.eventuallyEq}, with
 \texttt{eqOn\_of\_ne\_zero} (agreement off the zeros of $\tilde H$), \texttt{eq\_of\_continuousAt}
 and \texttt{eqOn} (the pointwise readings) alongside it; \texttt{\#print axioms} gives
-\ledger{A17} and nothing else. Split from \ref{lem:symbol-uniqueness}, which keeps the reduction
+Lean core. Split from \ref{lem:symbol-uniqueness}, which keeps the reduction
 of the operator relation to the one above --- that step is \ref{def:inversion-operator}'s
 transform-level identity and carries \ledger{A12}. This is the half that does the mathematical
 work: the cancellation is what makes the eigenfunction relation \emph{pin} the symbol rather than
@@ -886,7 +885,7 @@ In particular $\widetilde{A g}(z) = B(1-z)\,\tilde g(z-1)$ wherever the first di
 \texttt{Hemigroup.SelfDecomposableExponent.inversionOperator\_eq} with
 \texttt{mellin\_inversionOperator} (the shift) and \texttt{mellin\_inversionOperator\_eq} (the display),
 the hypothesis on $h$ being the structure \texttt{RealisesSymbolAction};
-\texttt{\#print axioms} gives \ledger{A17} and nothing else --- in particular \emph{not} \ledger{A12},
+\texttt{\#print axioms} gives Lean core --- in particular \emph{not} \ledger{A12},
 which is the point of the split. This is everything in \ref{def:inversion-operator} that follows
 once $B(\theta)g$ has a referent; producing that referent is what \ledger{A12} is left carrying.}
 
@@ -930,7 +929,7 @@ Assume (H), let $c \in (0, z_*-1)$ and $s > 0$. Then the dilate $H(s\,\cdot)$ li
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.inversionOperator\_profile}, with
 \texttt{realisesSymbolAction\_profile} carrying the domain clause;
-\texttt{\#print axioms} gives \ledger{A17} and nothing else. Clause~(1) of
+\texttt{\#print axioms} gives Lean core. Clause~(1) of
 \ref{thm:signaling-form}, split off when proved, on the pattern of \ref{lem:symbol-rigidity}
 and \ref{lem:symbol-uniqueness}: 11.6 keeps its full statement, and the Lean tag sits on the
 clause that carries it.}
@@ -987,7 +986,7 @@ both sides absolutely convergent.
 \texttt{coeFn\_Phi\_zero} (the first display), \texttt{kernel\_zero\_eq\_map\_lawT}$_1$ (the
 canonical gauge at the level of measures), \texttt{integrable\_delayed} (the Fubini side
 condition) and \texttt{mul\_riemannLiouville} (the reflection);
-\texttt{\#print axioms} gives \ledger{A17} and nothing else. This is the first clause of
+\texttt{\#print axioms} gives Lean core. This is the first clause of
 \ref{lem:memory-fractional-integrals}; what is left there is its derivative clause.}
 
 \emph{\textbf{The quantifiers do not commute, and that is the honest reason a representative has to
@@ -1039,7 +1038,7 @@ $1 < \operatorname{Re} z < z_*$, and suppose $\tilde H(z-1) \ne 0$. Then
 \]
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.inversionSymbol\_mul\_mellin\_delayedField};
-\texttt{\#print axioms} gives \ledger{A17} and nothing else. This is the displayed computation in
+\texttt{\#print axioms} gives Lean core. This is the displayed computation in
 the proof of \ref{thm:signaling-form}(2), entire; what stands between it and that node's
 conclusion is the identification of the right-hand side with
 $\widetilde{\partial_t u(t,\cdot)}(z)$, which is the derivative clause of
@@ -1080,7 +1079,7 @@ $f(r) := \int_0^r g$ --- that is, $f$ absolutely continuous with $f(0) = 0$ and 
 \statusT\quad\emph{(\textbf{Machine-checked}, as \texttt{Hemigroup.riemannLiouville\_integral},
 with \texttt{integral\_cpow\_sub\_left} for the inner integral; \texttt{\#print axioms} reduces to
 Lean core alone --- this statement is about the Riemann--Liouville family and mentions no
-hemigroup object, so not even \ledger{A17} enters.}
+hemigroup object.}
 
 \emph{\textbf{The semigroup property is not needed, and not needing it is cheaper.} The draft
 derives this as $I^zf' = I^{z-1}I^1f' = I^{z-1}f$, i.e.\ from $I^{z-1}I^1 = I^z$ --- a Beta-integral
@@ -1126,12 +1125,9 @@ parts, each with its own declaration: \texttt{tendsto\_toRealExponent\_atTop\_if
 \texttt{lintegral\_profile\_eq\_negMoment\_one} (clause~2's identity), and
 \texttt{negMoment\_one\_ne\_top\_of\_one\_lt\_zStar} /
 \texttt{one\_le\_zStar\_of\_negMoment\_one\_ne\_top} (clause~2's two consequences).
-\texttt{\#print axioms} gives \ledger{A17} throughout, on every part including the two
+\texttt{\#print axioms} gives Lean core throughout, on every part including the two
 consequences: they are the general downward-closure and abscissa lemmas
-\ref{lem:mellin-data} already uses, restated at $\zeta = 1$ for \emph{this} $F$, and a statement
-about \emph{this} $F$'s $z_*$ or negative moments quantifies over the family \ledger{A17}
-constructs however elementary its own argument is --- the same point \ref{def:standing-hypothesis}
-records about $z_*$ itself. One general fact underneath clause~1's converse,
+\ref{lem:mellin-data} already uses, restated at $\zeta = 1$ for \emph{this} $F$. One general fact underneath clause~1's converse,
 \texttt{Hemigroup.tendsto\_laplaceL\_atTop} (any finite causal measure's transform tends to its
 mass at the origin as $s \to \infty$), reduces to Lean core alone, carrying no hemigroup object.
 \textbf{The two consequences are proved without the hypothesis "$F(\infty)=\infty$" the statement
@@ -1256,7 +1252,7 @@ implication is ledger \ledger{A18}. \textbf{Writing the target type found a chea
 explicit formula of \ref{lem:memory-kernel}, already machine-checked, gives $B$'s monotonicity
 directly}, with no appeal to the general Bernstein-closure fact --- see the proof below, which
 takes it. So this node, unlike \ref{lem:selfdecomposable-exponents} itself, has no route through
-\ledger{A18} at all; its four target types are priced against \ledger{A17} and Lean core only,
+\ledger{A18} at all; its four target types are priced against Lean core only,
 the way \ref{lem:mellin-data} already reduces off \ledger{A7}. That is exactly the caution
 \texttt{CLAUDE.md} names about writing the cost estimate from the target type rather than from
 the paper proof --- here the paper proof itself is the one that reaches for the expensive tool,
@@ -1415,7 +1411,7 @@ $\kappa \in \CC$ with
 \]
 \statusT\quad\emph{(\textbf{Machine-checked}, \texttt{Hemigroup.mode\_rigidity} in
 \texttt{Formalization/Hemigroup/ModeRigidity.lean}. \texttt{\#print axioms} gives Lean core and
-nothing else --- not even \ledger{A17}, which was retired before this node was attempted.
+nothing else.
 \textbf{The proof below is the checked route, and it is not the route this node was first priced
 against.} The pricing --- a session's work, for a patching construction Mathlib does not carry ---
 was right about Mathlib and about the \emph{order} of the steps it assumed, and wrong about the
@@ -1532,7 +1528,7 @@ carries, used here without the operator's functional-calculus reading (no symbol
 function) and hence, if ever formalised, through Mathlib's \texttt{mellinInv\_mellin\_eq} applied
 directly rather than through \texttt{RealisesAction} --- the same pattern
 \ref{lem:profile-eigenfunction} found for clause~(1) of \ref{thm:signaling-form}: a use of $A12$'s
-citation that costs nothing beyond \ledger{A17} once written down, because the referent it needs is
+citation that costs nothing once written down, because the referent it needs is
 exhibited rather than inferred. \texttt{blueprint/AXIOMS.md} records this as a new reading under
 the existing entry; no new ledger name is created.
 \textbf{Why solution-uniqueness needs the normalisation and operator-uniqueness (Theorem 4$'$(3))

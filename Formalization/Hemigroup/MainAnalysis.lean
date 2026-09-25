@@ -44,7 +44,7 @@ on the trust boundary.
 
 The split is deliberate, and is what makes the article's own claim checkable. `similarity_form`
 reduces to Lean core; `main_analysis` picks up A18 and nothing else; `thm:main-construction` and
-`prop:main-uniqueness` pick up A17 and nothing else. So "the analysis direction crosses the
+`prop:main-uniqueness` are Lean core. So "the analysis direction crosses the
 boundary where the constructive one does not" is a fact `#print axioms` reports, not a claim the
 prose makes.
 
@@ -56,9 +56,8 @@ normalised gauge (`χ 0 = 0`, `χ 1 = 1`, strictly increasing and onto `[0,∞)`
 identification `Fam.repr x y = F.kernel (χ x) (χ y)`. That is the article's sentence — "there
 exist `χ` and `F` of the form (7.1), `F ≢ 0`, with `Φ_{x,y} f = μ_{x,y} ∗ f` and
 `μ̂_{x,y}(s) = e^{-(F(χ(y)s) - F(χ(x)s))}`" — and it is what `main_characterization` now states
-for (⇒). Because `kernel` is what A17 constructs, `main_analysis'` prints **A17 and A18**, where
-`main_analysis` prints A18 alone; the pair of lines in `CIAxiomGuard.lean` keeps both facts
-visible.
+for (⇒). `main_analysis'` and `main_analysis` both print A18 alone; the pair of lines in
+`CIAxiomGuard.lean` keeps both facts visible.
 -/
 
 namespace Hemigroup

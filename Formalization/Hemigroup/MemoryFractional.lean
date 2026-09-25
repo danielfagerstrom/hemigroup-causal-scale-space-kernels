@@ -551,9 +551,7 @@ theorem tendsto_toRealExponent_atTop_iff :
 
 /-- **`lem:standing-kernel-readings`**, assembled: both clauses of `def:standing-hypothesis`
 that used to be asserted in passing, now proved. `#print axioms` on this bundle is the
-load-bearing check for the node: the two moment-side conjuncts are unconditional (Lean core plus
-nothing), and the atom-side conjuncts and the identity rest on `A17`, through the constructed
-family, exactly as `lem:mellin-data` does. -/
+load-bearing check for the node: every conjunct is Lean core, as in `lem:mellin-data`. -/
 theorem standing_kernel_readings :
     (Tendsto F.toRealExponent atTop atTop ↔ ∀ x : ℝ, 0 < x → F.kernel 0 x {(0 : ℝ)} = 0) ∧
     (F.lawT₁ {(0 : ℝ)} = 0 → ∫⁻ s in Ioi (0 : ℝ), ENNReal.ofReal (F.profile s) = F.negMoment 1) ∧

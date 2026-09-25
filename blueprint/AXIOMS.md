@@ -18,6 +18,13 @@ A `[A]` node must also declare, in its status annotation, what the citation carr
 it does not (`\textbf{Assignment.}`, fatal check 7). Widening this file widens the trust
 base; it is a review decision, not a fix.
 
+**The trust base today** is Lean core, plus A18 on the analysis direction and on whatever
+quantifies over its conclusion. **A17 was retired** (2026-09-21, Q-0022): its statement is a theorem
+in `Hemigroup/CompoundPoisson.lean`, the name has left `trust-boundary.txt`, and no declaration
+prints it. This is the one place the retirement is stated (with the same sentence in the header of
+`Formalization/CIAxiomGuard.lean`); an annotation elsewhere that says a declaration prints Lean
+core needs no reference to it. A17's own entry below is kept as the record.
+
 **Every anchor below was read out of a held scan** (librarian passes, 2026-08-07 and
 2026-08-08), not quoted from memory. Where the verification changed what the entry says — Feller's
 §XIII.1 splits four ways, Widder's attribution is not the one the draft's name suggests, Halgreen
@@ -474,7 +481,7 @@ articles that have not yet pinned a ledger.
     `|Γ(c+iτ)|τ² ≤ Γ(c+2)`.
 
   Adding them gives `|Γ(c+iτ)|(1+τ²) ≤ Γ(c) + Γ(c+2)`, and `(1+τ²)⁻¹` is integrable.
-  `Hemigroup/MellinVertical.lean`; `lem:mellin-vertical` carries the tag and reduces to A17.
+  `Hemigroup/MellinVertical.lean`; `lem:mellin-vertical` carries the tag and reduces to Lean core.
 
   **What remains of A12 is the operator formulation.** `mellinInv_mellin_eq` recovers a *function*
   from its own transform; `def:inversion-operator` needs the integral against `B(−z)g̃(z)` to agree
@@ -516,7 +523,7 @@ articles that have not yet pinned a ledger.
   transform is `B(-z)g̃(z)` on the line, with the two convergence clauses) and proves everything
   downstream of it — `A g = x^{-1}h` at points of continuity, and `Ãg(z) = h̃(z-1)` at every `z`,
   with no strip condition, the weight `x^{-1}` being a Mellin shift. `#print axioms` on all four
-  gives A17 and nothing else. That content is now the blueprint node `lem:inversion-operator-action`
+  gives Lean core. That content is now the blueprint node `lem:inversion-operator-action`
   (11.16), `[T]` and `\leanok`; `def:inversion-operator` keeps its number and this entry.
 
   **What A12 is left carrying is one step: that absolute integrability of `B(-z)g̃(z)` on the line
@@ -545,8 +552,8 @@ articles that have not yet pinned a ledger.
   `lem:profile-eigenfunction` (11.17), Lean
   `Hemigroup.SelfDecomposableExponent.inversionOperator_profile`: for the profile dilate
   `g = H(s·)` the realising function is `h(x) = s x H(sx)`, written down rather than inferred, and
-  the instance `realisesSymbolAction_profile` is proved outright. `#print axioms` gives A17 and
-  nothing else. The exhibition is free — `h̃(w) = s^{-w}H̃(w+1)` and `g̃(w) = s^{-w}H̃(w)` are one
+  the instance `realisesSymbolAction_profile` is proved outright. `#print axioms` gives Lean
+  core. The exhibition is free — `h̃(w) = s^{-w}H̃(w+1)` and `g̃(w) = s^{-w}H̃(w)` are one
   Mellin shift apart and their ratio is `B` by construction — and the conclusion `A g = x⁻¹h` reads
   `A[H(s·)](x) = s H(sx)`, which *is* `thm:signaling-form`(1). The instance and the eigenfunction
   relation are the same statement.
@@ -572,7 +579,7 @@ articles that have not yet pinned a ledger.
 - **Seventh reading, 2026-08-12 — `lem:symbol-uniqueness` was never waiting on this either.**
   Both halves of the node are now machine-checked
   (`sameSymbolAction_of_realisesAction`, `eventuallyEq_inversionSymbol_of_realisesAction`), and
-  `#print axioms` gives A17 alone. The blueprint had recorded step 1 as carrying A12, on the
+  `#print axioms` gives Lean core. The blueprint had recorded step 1 as carrying A12, on the
   reading that turning the operator relation into a transform relation requires
   `def:inversion-operator`'s identity and hence the *production* of `B(θ)g`.
 

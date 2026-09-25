@@ -20,8 +20,8 @@ the article makes about its own trust base.
 Route B **constructs** the measure instead, and never mentions complete monotonicity -- not even
 as a consequence. `ell^(x)` is the subordinator's potential measure `U = int_0^infty mu_t dt`,
 where `mu_t` is the law ledger A17 already supplies; its transform is
-`int_0^infty e^(-t phi_x(s)) dt = 1/phi_x(s)` by Tonelli. **The trust boundary stays at two
-entries**, and `#print axioms` on everything here gives A17 and nothing else.
+`int_0^infty e^(-t phi_x(s)) dt = 1/phi_x(s)` by Tonelli. **No entry is added to the trust
+boundary**, and `#print axioms` on everything here gives Lean core.
 
 ## What the route cost, against what the work order said
 

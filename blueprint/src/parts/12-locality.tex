@@ -124,8 +124,8 @@ necessarily depends on everything both halves do, so the per-half lines of
 --- the coefficient form $c_j(x) = \gamma_j x^{j-1}$ displayed above cannot be stated in an
 equivalence of this shape, and lives in \texttt{exists\_symbol\_eq\_of\_isLocalOfOrder}.
 \textbf{($\Leftarrow$) is machine-checked}, as
-\texttt{Hemigroup.SelfDecomposableExponent.isLocalOfOrderCore\_of\_symbol\_eq}, on A17 and nothing
-else. \textbf{Its symbol hypothesis is asked for off the zeros of $\tilde H$, and that is what
+\texttt{Hemigroup.SelfDecomposableExponent.isLocalOfOrderCore\_of\_symbol\_eq}, on Lean core.
+\textbf{Its symbol hypothesis is asked for off the zeros of $\tilde H$, and that is what
 made it take (H).} The two are one decision. $B = \tilde H(z{+}1)/\tilde H(z)$ is a quotient, so
 at a zero of the denominator no identity with a polynomial holds --- in Lean the value there is
 the junk $0$ --- and a hypothesis asserting one at \emph{every} point of the strip is one that
@@ -339,8 +339,7 @@ $z \mapsto m(z)$ is log-convex on $(0, \infty)$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.convexOn\_log\_negMoment}, together with the
 $[0,\infty]$-valued form \texttt{negMoment\_le\_rpow\_mul\_rpow} from which it is read off.
-\texttt{\#print axioms} shows A17 and nothing else --- A17 only because $T_1$ is a kernel of the
-construction, so every statement about it inherits the entry. None of this chapter's own cited
+\texttt{\#print axioms} shows Lean core. None of this chapter's own cited
 interfaces is touched.
 \textbf{Two readings, and the difference matters.} The $[0,\infty]$ form is
 \emph{unconditional}: no standing hypothesis, no finiteness, no strip, since divergence is a
@@ -425,7 +424,7 @@ $T_1 \stackrel{d}{=} 1/(q_1\gamma_a)$ (the Lean declaration names this witness \
 \textbf{Both citations enter as hypotheses rather than as
 axioms}, phrased so either can be demoted the day it is proved: clause~(2) of
 \ref{lem:moment-recursion} is the named hypothesis \texttt{AllNegMomentsFinite}, and the order
-bound is simply the order $2$. \texttt{\#print axioms} accordingly shows A17 and \emph{neither}
+bound is simply the order $2$. \texttt{\#print axioms} accordingly shows Lean core, with \emph{neither}
 \ledger{A13} nor \ledger{A14} --- the interfaces sit in the statement, where a reader sees them,
 and not in the trust base.
 \textbf{Where that step's work actually is}: not in the Gamma form, which is one application of
@@ -681,8 +680,8 @@ Consequently $B(0) = 0$ for any $B$ continuous at the origin --- in particular w
 polynomial, which is \ref{lem:moment-recursion}(1).
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.tendsto\_inversionSymbol\_nhdsGT\_zero}, with the
-first limit as \texttt{tendsto\_negMoment\_nhdsGT\_zero}. \texttt{\#print axioms} shows A17 and
-nothing else; \ledger{A13} is not touched.
+first limit as \texttt{tendsto\_negMoment\_nhdsGT\_zero}. \texttt{\#print axioms} shows Lean core;
+\ledger{A13} is not touched.
 \textbf{Why this is separate from \ref{lem:moment-recursion}.} That lemma states clause~(1) under
 the hypothesis that $B$ is a polynomial of degree $n$, and gets $B(0) = 0$ from this limit by
 continuity. \textbf{The polynomial hypothesis is inert in the argument}: what the proof uses is
@@ -728,7 +727,7 @@ Then
 \]
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.eq\_gamma\_form\_of\_logConvex\_of\_recursion}. \texttt{\#print axioms} gives
-\textbf{Lean core alone} --- not even A17, since the statement names no kernel. That is the check
+\textbf{Lean core alone}, the statement naming no kernel. That is the check
 that the ledger entry is discharged rather than relocated.
 \textbf{What this replaces.} \ref{thm:locality}'s order-2 case applied \ledger{A15}, the
 Krull--Webster uniqueness theorem, to exactly this recursion. With $Q$ linear the recursion has a
@@ -791,7 +790,7 @@ $Q(z)$ is a positive real satisfying
   m(z+1) \;=\; Q(z)\,m(z).
 \]
 \statusT\quad\emph{(\textbf{Machine-checked}, as
-\texttt{exists\_symbolQuotient\_of\_isLocalOfOrder}, on A17 and nothing else --- in particular not
+\texttt{exists\_symbolQuotient\_of\_isLocalOfOrder}, on Lean core --- in particular not
 on \ledger{A13}, which is the whole reason for the split.
 \textbf{The factorisation is exact and contains no analysis.} $E_{j+1}(z) = -z\,E_j(z+1)$ is the
 Euler factors' own recursion, so removing the factor $z$ shifts the argument by one and drops the
@@ -858,8 +857,7 @@ then $A$ satisfies the positive maximum principle. In particular, if the symbol 
 $\sum_{j\le n}\gamma_j E_j$ with $n \le 2$, $\gamma_0 = 0$ and $\operatorname{Re}\gamma_2 \ge 0$,
 then the PMP holds --- which covers both cases of \ref{thm:locality}, the first-order one
 vacuously in the leading hypothesis and the second-order one with $\gamma_2 = 2$.
-\statusT\quad\emph{(\textbf{Machine-checked}, as \texttt{satisfiesPMP\_of\_symbol\_eq}, on A17 ---
-through \texttt{inversionOperator}, which quantifies over the construction's kernels --- and
+\statusT\quad\emph{(\textbf{Machine-checked}, as \texttt{satisfiesPMP\_of\_symbol\_eq}, on Lean core,
 \textbf{not on \ledger{A14}}. Keeping that visible is the reason for the split.
 \textbf{\ref{thm:locality} uses the maximum principle twice, in opposite directions and at
 opposite costs}, and the ledger entry sits on one of them alone. The ($\Rightarrow$) use is the
@@ -894,8 +892,7 @@ shows $(Ag)(x_0)$ has zero imaginary part on a real test function, and
 \texttt{eq\_ofReal\_re\_inversionOperator\_of\_symbol\_eq} packages that as $(Ag)(x_0) = ((Ag)(x_0)$'s
 real part, cast back$)$ --- so under that extra hypothesis the article's real-number reading
 $(Ag)(x_0) \le 0$ and this lemma's $\operatorname{Re}(Ag)(x_0) \le 0$ are the same statement, not
-merely the second weaker than the first. Both print A17 through \texttt{inversionOperator}, plus
-nothing else. Not folded into \texttt{satisfiesPMP\_of\_symbol\_eq} itself, because that lemma's
+merely the second weaker than the first. Both print Lean core. Not folded into \texttt{satisfiesPMP\_of\_symbol\_eq} itself, because that lemma's
 own $\gamma$ is exactly \ref{thm:locality}'s two cases' coefficients (real by inspection at each
 use) and the general statement is honest that realness of $\gamma$ is not free at the level this
 lemma is stated.)}
@@ -944,9 +941,9 @@ that $A$ is local of order $n \le 2$ (\ref{thm:locality}'s order bound). Then ex
 holds, with $c' > 0$ in the first case and $q_1, a > 0$ in the second --- that is,
 $T_1 = 1/c'$ almost surely, or $T_1 \stackrel{d}{=} 1/(q_1\gamma_a)$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
-\texttt{exists\_moment\_form\_of\_isLocalOfOrder}, on A17 and \emph{neither} \ledger{A13} nor
-\ledger{A14}: both are hypotheses of the statement rather than axioms, phrased as \ledger{A17} is
-so that either demotes to a lemma without touching anything below.
+\texttt{exists\_moment\_form\_of\_isLocalOfOrder}, on Lean core, with \emph{neither} \ledger{A13} nor
+\ledger{A14}: both are hypotheses of the statement rather than axioms, phrased so that either
+demotes to a lemma without touching anything below.
 \textbf{Order $0$ is impossible, and cheaply}, which is what makes the case list a dichotomy
 rather than a trichotomy settled by inspection. \ref{def:locality-pmp} asks the leading
 coefficient not to vanish identically; \ref{lem:moment-recursion}(1) gives $\gamma_0 = 0$; and

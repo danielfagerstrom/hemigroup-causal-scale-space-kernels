@@ -25,8 +25,7 @@ clause (2)'s Mellin form.
 | `lem:inversion-operator-action` (11.16) | `inversionOperator` + 3 | `InversionOperator.lean` |
 | `lem:mode-rigidity` (11.25) | `mode_rigidity` | `ModeRigidity.lean` |
 
-All of it reduces to ledger **A17** and nothing else; `mode_rigidity`, the last of them to move,
-reduces to Lean core alone, A17 having been retired before it was proved.
+All of it reduces to Lean core.
 
 `lem:mode-rigidity` was priced here at a session's work for one reason — Mathlib carries no way to
 patch a function given on translates of one finite-width strip, related by a functional equation
@@ -149,7 +148,7 @@ a scaled limit.
 `F(e^{(\cdot)})` convex and hence its difference quotient convergent. But `B`'s monotonicity is
 also immediate from the explicit formula above (increasing `s` increases each `k(u/s)`
 pointwise), without appeal to the general Bernstein-closure fact, which is ledger A18. If that
-substitutes cleanly, clause (1) would reduce to Lean core plus A17 rather than crossing A18 — a
+substitutes cleanly, clause (1) would reduce to Lean core rather than crossing A18 — a
 question only an attempt at the proof, not this survey, can settle.
 -/
 
