@@ -93,7 +93,7 @@ machine-checked rather than asserted.
 
 Published as `v1.0.0`. **Both headline theorems are machine-checked in full**: the
 characterization (Theorem 7.3: construction, analysis and uniqueness) and the signaling
-form (Theorem 9.17). The blueprint has 106 statement nodes, 67 of them `\leanok`; all 89
+form (Theorem 9.17). The blueprint has 106 statement nodes, 68 of them `\leanok`; all 89
 statements the paper shares with it are verbatim; `AXIOMS.md` has 21 ledger entries, each
 with a page anchor; the trust base is Lean core plus A18 (A17, in the trust base of `v1.0.0`,
 is proved on `main` since; no `v1.1` carries it yet). `linkage check` reports
@@ -103,9 +103,11 @@ two advisories, both deliberate: `lem:selfdecomposable-derivative` is A18 itself
 article states.
 
 What is not formalized, and why, is inventoried in the paper's §1.1: the scale-Cauchy
-problem waits on distribution theory absent from Mathlib; four nodes of the signaling and
+problem waits on distribution theory absent from Mathlib; three nodes of the signaling and
 memory chapters are typed as `sorry`-marked targets in `Formalization/Skeleton/`, outside
-the library; the locality chapter's remaining nodes are cited analytic interfaces
+the library (the fourth, `lem:mode-rigidity`, is proved on `main` since, and §1.1's
+inventory, like its A17 sentence, is rewritten by whichever pass prepares a `v1.1`); the
+locality chapter's remaining nodes are cited analytic interfaces
 (Widder, Courrège, Krull–Webster, Bondesson) plus the Bessel-K special function; and the
 implementation and jet chapters are outside the Lean plan by decision. History:
 `CHANGELOG.md` and git.
