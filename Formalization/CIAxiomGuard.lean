@@ -493,6 +493,18 @@ function is bounded, which is what widens 11.5's strip from `Re z > 1` to `Re z 
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_delayedField_deriv
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_signaling_form
 
+/-! ### `lem:mode-rigidity` (11.25) — the period-one ambiguity killed
+
+The rigidity lemma behind `cor:signaling-wellposed`'s solution-uniqueness clause: a mode of the
+eigenvalue recursion whose periodic factor is bounded on one period substrip is pinned to the
+profile up to a constant. **Lean core alone** — not even A17, since the statement quantifies over
+a mode and a symbol but proves nothing about `T₁`'s law beyond what `analyticAt_mellin_profile`
+and `countable_zeros_mellin_profile` already carry, and both of those are Lean core since A17's
+retirement.
+-/
+
+#print axioms Hemigroup.mode_rigidity
+
 /-! ### `thm:signaling-form` — Theorem 4′, assembled
 
 The theorem the article exists for, as one declaration. Its six conjuncts are proved in the files

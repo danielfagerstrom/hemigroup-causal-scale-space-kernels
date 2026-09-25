@@ -1395,7 +1395,7 @@ forms.)}
 % 11.25, appended 2026-08-29.
 \begin{lemma}[rigidity of a profile-dominated mode]\label{lem:mode-rigidity}
 \uses{def:standing-hypothesis,lem:inversion-symbol,lem:mellin-data}
-\lean{Skeleton.mode_rigidity}\notready
+\lean{Hemigroup.mode_rigidity}\leanok
 Assume (H) and fix $s > 0$. Let $\tilde g$ be analytic on the strip $0 < \operatorname{Re} z < z_*$ and satisfy
 the pole-free eigenvalue recursion
 \[
@@ -1413,22 +1413,28 @@ $\kappa \in \CC$ with
 \[
 \tilde g(z) \;=\; \kappa\, s^{-z}\,\tilde H(z), \qquad 0 < \operatorname{Re} z < z_*.
 \]
-\statusT\quad\emph{(\textbf{Not yet proved.} A target type is written, sorry-marked, as
-\texttt{Skeleton.mode\_rigidity} in \texttt{Formalization/Skeleton/Chapter11.lean}; nothing here
-is cited by the library or listed in \texttt{CIAxiomGuard.lean}, per the article's decomposition
-discipline. \textbf{Priced against the target type, not the paper proof}, per that discipline: the
-statement is entirely classical and every individual step is either elementary or already in
-Mathlib (\texttt{Complex.differentiableOn\_update\_limUnder\_of\_bddAbove} for removability from
-boundedness, \texttt{Differentiable.exists\_eq\_const\_of\_bounded} for Liouville), but the middle
-step --- patching a function defined on translates of one finite-width strip, related by a
-functional equation on their overlaps, into a single entire periodic function on $\CC$ --- is
-scaffolding this development does not have and Mathlib's nearest relative
-(\texttt{Mathlib.Analysis.Complex.Periodic}'s \texttt{cuspFunction}, built for one-sided behaviour
-at a single end of a strip, the modular-forms use case) does not supply either. Building it is a
-real, self-contained piece of complex analysis --- consistency of consecutive translates on their
-overlap, chained through intermediate strips for non-adjacent ones, is exactly where $z_* > 1$,
-i.e.\ (H), is spent --- on the order of a session's work rather than a sitting's, and it was not
-attempted here. \textbf{What the hypothesis is, read against the mechanism.} ``$p$ bounded on one period
+\statusT\quad\emph{(\textbf{Machine-checked}, \texttt{Hemigroup.mode\_rigidity} in
+\texttt{Formalization/Hemigroup/ModeRigidity.lean}. \texttt{\#print axioms} gives Lean core and
+nothing else --- not even \ledger{A17}, which was retired before this node was attempted.
+\textbf{The proof below is the checked route, and it is not the route this node was first priced
+against.} The pricing --- a session's work, for a patching construction Mathlib does not carry ---
+was right about Mathlib and about the \emph{order} of the steps it assumed, and wrong about the
+obligation. Exchanging the middle two steps removes the construction entirely: the boundedness
+hypothesis already propagates over the whole strip $(0,z_*)$ \emph{without leaving it}, because for
+$z$ in the strip some integer translate $\operatorname{Re} z + k$ lies in $[c,c+1]$ and every
+intermediate translate lies between $\operatorname{Re} z$ and $\operatorname{Re} z + k$, hence in the
+strip, which is an interval. So the singularities can be removed first, on the strip, and what is
+left to glue is \emph{analytic} pieces, where the whole of the gluing is the well-definedness of
+$P(z) := p(z-n)$ in $n$ --- and that is where $z_* > 1$, i.e.\ (H), is spent, consecutive
+translates of the strip overlapping so the chain passes from one to the next without leaving it.
+The points the propagation does not reach directly --- those whose integer orbit inside the strip
+meets a zero of $\tilde H$ --- form a countable set, and a countable set in $\CC$ has dense
+complement, so continuity closes the gap; the same device promotes $p(z) = p(z-1)$ from ``off the
+zeros'' to an identity of analytic functions. Mathlib's two named theorems
+(\texttt{Complex.differentiableOn\_update\_limUnder\_of\_bddAbove} for removability from
+boundedness, \texttt{Differentiable.exists\_const\_forall\_eq\_of\_bounded} for Liouville) are the
+only analysis used, and nothing meromorphic appears anywhere in the formalisation.
+\textbf{What the hypothesis is, read against the mechanism.} ``$p$ bounded on one period
 substrip'' says that $\hat u(s,\cdot)$'s Mellin data is dominated by the profile's own, uniformly
 over one period --- the theory's counterpart of the log-convexity hypothesis Bohr--Mollerup
 imposes on $\Gamma$'s difference equation, and the mechanism that kills the ambiguity here ---
@@ -1448,48 +1454,54 @@ The normalisation has to compare the mode to the profile, not bound it absolutel
 \end{lemma}
 
 \begin{proof}
+\leanok
 Where $\tilde H(z) \ne 0$ and $\tilde H(z-1) \ne 0$, dividing the recursion by
 $s\,\tilde H(z)\tilde H(z-1)$ and multiplying by $s^{z}$ gives $p(z) = p(z-1)$, so the periodic
 factor satisfies the shift relation off the (isolated) zeros of $\tilde H$ on both sides.
 
-\textbf{Step 1: $p$ extends to a meromorphic, $1$-periodic function on $\CC$.} $\tilde H$'s zeros
-in $(0,z_*)$ are isolated (\ref{lem:inversion-symbol}), hence locally finite there: every compact
-subset of the open strip contains finitely many of them --- accumulation at the strip's
-\emph{boundary} is not excluded, and is not needed; so, writing
-$S := (0,z_*)$ as a set of vertical strips $S_n := S + n = \{z : n < \operatorname{Re} z < n + z_*\}$ for
-$n \in \ZZ$, and $p_n(z) := p(z-n)$, meromorphic on $S_n$ with possible poles only at the (locally
-finite) translated zeros of $\tilde H$: for $n \le k \le m$ and $z \in S_n \cap S_m$,
-$z$ lies in every intermediate $S_k$ (since $\operatorname{Re} z > m \ge k$ and $\operatorname{Re} z < n + z_* \le k + z_*$),
-so the shift relation applied at each consecutive pair $(k,k+1)$, $n \le k < m$, gives
-$p_n(z) = p_{n+1}(z) = \dots = p_m(z)$: every two translates agree wherever they overlap. Since
-$z_* > 1$ (H), consecutive strips overlap and $\{S_n\}_{n \in \ZZ}$ covers $\CC$, so there is a
-well-defined meromorphic $P : \CC \to \CC$ with $P|_{S_n} = p_n$ for every $n$; it is $1$-periodic,
-since for $z \in S_n$, $z+1 \in S_{n+1}$ and $P(z+1) = p_{n+1}(z+1) = p(z-n) = p_n(z) = P(z)$.
+Write $S := \{z : 0 < \operatorname{Re} z < z_*\}$ and $Z := \{z \in S : \tilde H(z) = 0\}$, which is
+countable, its points being isolated in $S$ (\ref{lem:inversion-symbol}). Let $M$ be the bound the
+hypothesis gives on $\{c \le \operatorname{Re} z \le c+1\} \setminus Z$.
 
-\textbf{Step 2: $P$ is bounded off its singular set, on all of $\CC$.} $P|_{S_0} = p$ is bounded on
-the given substrip $\{c \le \operatorname{Re} z \le c+1\}$, off the zeros of $\tilde H$ there, by hypothesis. By
-periodicity, $P$ is bounded by the \emph{same} constant on every unit translate
-$\{c+n \le \operatorname{Re} z \le c+1+n\}$, $n \in \ZZ$, off $P$'s singular set there; and these translates
-cover $\CC$, consecutive ones sharing an edge. So $P$ is bounded, by one constant, off its singular
-set, everywhere.
+\textbf{Step 1: $p$ is bounded by that same $M$ on all of $S \setminus Z$.} The point is that the
+hypothesis propagates over the strip \emph{without leaving it}: given $z \in S$, put
+$k := \lceil c - \operatorname{Re} z\rceil$, so that $\operatorname{Re} z + k \in [c, c+1]$; and for every
+integer $j$ between $0$ and $k$, $\operatorname{Re} z + j$ lies between $\operatorname{Re} z$ and
+$\operatorname{Re} z + k$, hence in $(0,z_*)$, that being an interval containing both. Call $z$
+\emph{good} if $\tilde H$ vanishes at no $z + n$, $n \in \ZZ$, lying in $S$. At a good $z$ the shift
+relation applies at each consecutive pair along the orbit, so $p(z) = p(z+k)$, which is at most $M$.
+The points that are not good lie in $\bigcup_{n \in \ZZ}(Z - n)$, a countable set, whose complement
+in $\CC$ is therefore dense; and $p$ is continuous at every point of $S \setminus Z$. So the bound
+passes from the good points to all of $S \setminus Z$.
 
-\textbf{Step 3: removability and Liouville.} At each point $w_0$ of $P$'s singular set --- a priori
-a pole, though this step shows it is not --- $P$ is bounded on a punctured neighbourhood of $w_0$
-(Step 2), so by Riemann's removable singularity theorem $P$ extends to be analytic at $w_0$, with
-value the limit from nearby --- hence bounded by the same constant, since nearby values are. Doing
-this at every such point is licensed because the singular set is locally finite in $\CC$: every
-point of $\CC$ has a compact neighbourhood inside some open $S_n$ --- again $z_* > 1$, the open
-intervals $(n, n+z_*)$ covering $\RR$ --- and there the possible poles are the finitely many
-translated zeros of Step 1. The result is an \emph{entire} function $\hat P$, equal to $P$ off its
-singular set and bounded on all of $\CC$ by the constant of Step 2. Liouville's theorem gives
-$\hat P \equiv \kappa$ for some $\kappa \in \CC$.
+\textbf{Step 2: removability, on the strip.} At $w_0 \in Z$ the zeros are isolated, so $p$ is
+analytic on a punctured neighbourhood of $w_0$ inside $S$ and, by Step 1, bounded there by $M$;
+Riemann's removable singularity theorem extends it across $w_0$. Doing this at every point of $Z$
+gives a function $q$, analytic on all of $S$ and equal to $p$ off $Z$ --- and bounded by $M$ on the
+whole of $S$, since $Z$ is countable, so $S \setminus Z$ is dense in $S$ and $q$ is continuous.
 
-\textbf{Closing.} On $S_0 = (0,z_*)$, $\hat P = P = p$ off the zeros of $\tilde H$, so
-$s^z\tilde g(z) = \kappa\,\tilde H(z)$ for every $z \in (0,z_*)$ off that isolated set. Both sides
-are analytic on the whole (connected, open) strip $(0,z_*)$ --- the left because $\tilde g$ is, by
-hypothesis; the right because $\tilde H$ is (\ref{lem:inversion-symbol}) --- and agree off a set
-with no accumulation point in the strip, so by the identity theorem they agree everywhere on it.
-Dividing by $s^z \ne 0$ gives $\tilde g(z) = \kappa\,s^{-z}\tilde H(z)$ for every $z \in (0,z_*)$.
+\textbf{Step 3: the shift relation for $q$, with no exceptional set.} For $z$ with $z \in S$ and
+$z - 1 \in S$, the identity $q(z) = q(z-1)$ holds wherever $\tilde H$ is nonzero at both ends, and
+the complement of that set in the open strip $\{1 < \operatorname{Re} z < z_*\}$ is again countable,
+hence with dense complement. Both sides are continuous, so the identity holds at every such $z$.
+
+\textbf{Step 4: the periodic extension, and Liouville.} Since $z_* > 1$ (H), for every $z \in \CC$
+the translate $z - (\lceil \operatorname{Re} z\rceil - 1)$ lies in $S$: its real part lies in $(0,1]$.
+Set $P(z) := q\bigl(z - (\lceil \operatorname{Re} z\rceil - 1)\bigr)$. If $z - n \in S$ and
+$z - m \in S$ for integers $n \le m$, then $z - j \in S$ for every $j$ between them, by the interval
+argument of Step 1, and Step 3 applied at each consecutive pair gives $q(z-n) = q(z-m)$. So
+$P(z) = q(z-n)$ for \emph{every} integer $n$ with $z - n \in S$ --- which is all the gluing amounts
+to, and it is here that $z_* > 1$ is spent, consecutive translates of the strip overlapping so that
+the chain can pass from one to the next without leaving it. Hence $P$ is entire: near any $z_0$ one
+$n$ serves for all nearby $z$, the strip being open. And $|P| \le M$ everywhere, by Step 2.
+Liouville's theorem gives $P \equiv \kappa$ for some $\kappa \in \CC$.
+
+\textbf{Closing.} On $S$, $q = P = \kappa$, so $s^z\tilde g(z) = \kappa\,\tilde H(z)$ at every point
+of $S$ off $Z$. Both sides are analytic on $S$ --- the left because $\tilde g$ is, by hypothesis;
+the right because $\tilde H$ is (\ref{lem:inversion-symbol}) --- and the points of $Z$ are isolated,
+so at each of them the difference vanishes on a punctured neighbourhood and hence, by continuity, at
+the point itself. Dividing by $s^z \ne 0$ gives
+$\tilde g(z) = \kappa\,s^{-z}\tilde H(z)$ for every $z \in (0,z_*)$.
 \end{proof}
 
 % additive: not in the draft. Existence and solution-uniqueness, assembled from

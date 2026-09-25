@@ -23,8 +23,20 @@ clause (2)'s Mellin form.
 | `lem:symbol-rigidity` (11.15) | `SameSymbolAction.eventuallyEq` | `SymbolUniqueness.lean` |
 | `lem:mellin-vertical` (11.13) | `verticalIntegrable_mellin_profile` | `MellinVertical.lean` |
 | `lem:inversion-operator-action` (11.16) | `inversionOperator` + 3 | `InversionOperator.lean` |
+| `lem:mode-rigidity` (11.25) | `mode_rigidity` | `ModeRigidity.lean` |
 
-All of it reduces to ledger **A17** and nothing else.
+All of it reduces to ledger **A17** and nothing else; `mode_rigidity`, the last of them to move,
+reduces to Lean core alone, A17 having been retired before it was proved.
+
+`lem:mode-rigidity` was priced here at a session's work for one reason — Mathlib carries no way to
+patch a function given on translates of one finite-width strip, related by a functional equation
+on their overlaps, into a single entire periodic function. That was right about Mathlib and about
+the blueprint's *order* of steps, and wrong about the obligation: exchange the middle two steps
+(spread the hypothesis's boundedness over the whole strip first, remove the singularities there,
+and only then glue) and the gluing is of analytic pieces, where well-definedness is the whole of
+it. See the module docstring of `Hemigroup/ModeRigidity.lean`. That is the fourth time in this
+chapter that what a proof cites, or the order it cites it in, turned out to be an upper bound on
+what the statement needs.
 
 ## Two of them are worth reading about
 
@@ -199,57 +211,6 @@ arithmetic of a scaled limit, once that declaration exists. -/
 theorem zStar_smul (F : SelfDecomposableExponent) (hF : F.lawT₁ {(0 : ℝ)} = 0) {c : ℝ}
     (hc : 0 < c) :
     (F.smul hc.le).zStar = ENNReal.ofReal c * F.zStar := by
-  sorry
-
-/-! ## `lem:mode-rigidity` (11.25) — the target type, priced and left unattempted
-
-Blueprint: `lem:mode-rigidity`, the mathematics behind giving Theorem 4′ a solution-uniqueness
-ending — the eigenvalue recursion `s·g̃(z) = B(1-z)·g̃(z-1)` has the classical period-one ambiguity
-(general solution `g̃(z) = s^{-z}·H̃(z)·p(z)`, `p` 1-periodic), and this lemma kills it under a
-normalisation the field satisfies for free. The blueprint proof is complete and machine-checkable
-in principle (Riemann removability at each isolated pole, patch translates of the base strip by
-the period-one recursion into an entire periodic function, transport the hypothesis's boundedness
-across translates, remove the (now-global) poles a second time, Liouville) — every step is
-classical and elementary, and Mathlib carries the two named theorems
-(`Complex.differentiableOn_update_limUnder_of_bddAbove`, removability from boundedness;
-`Differentiable.exists_eq_const_of_bounded`, Liouville). What Mathlib does **not** carry is the
-middle step: patching a function defined on translates of one finite-width strip, related by a
-functional equation on their overlaps, into a single entire periodic function on `ℂ`. That
-construction — `Mathlib.Analysis.Complex.Periodic` builds the nearest relative, `cuspFunction` via
-`qParam`, but only to package *one-sided* behaviour as `s → ∞` along the imaginary axis (for
-`BoundedAtFilter`/`ZeroAtFilter` at a single end, the modular-forms use case), not the two-sided
-"bounded on one period substrip, conclude bounded on all of `ℂ`" argument this lemma needs — would
-have to be built here from the two removability theorems and a well-definedness argument
-(consistency of consecutive translates on their overlap, chained through intermediate strips for
-non-adjacent ones, which is where `z_* > 1`, i.e. (H), is spent). That is a real, self-contained
-piece of complex-analytic scaffolding, on the order of the patching argument
-`SymbolUniqueness.lean` already does at one point (isolated zeros ⟹ agreement on a punctured
-neighbourhood, extended along a connected strip) but one level more involved, since the target
-here is a global periodic extension rather than a local one. Priced at a session's work, not a
-sitting's; not attempted here. The target type below is written from the blueprint statement
-itself, not from its proof sketch, per the article's own discipline (`CLAUDE.md`): `gt` is asked
-to be analytic on the whole strip (not just off `H̃`'s zeros), matching the blueprint's hypothesis
-that `g̃` itself carries no poles, and the periodic factor's boundedness is stated on the
-substrip *minus* `H̃`'s zeros there, since `inversionSymbol`-style division makes the ratio `0` at
-those zeros in Lean's convention and boundedness off them is the honest reading of "a priori
-meromorphic, bounded off the poles". -/
-
-/-- **`lem:mode-rigidity`** (11.25): a mode of the eigenvalue recursion whose periodic factor is
-bounded on one period substrip — profile-dominated, in the blueprint's phrase — is pinned to the
-profile up to a single constant. Statement only; see the note above. -/
-theorem mode_rigidity (F : SelfDecomposableExponent) (hH : F.StandingHypothesis) {s : ℝ}
-    (hs : 0 < s) {gt : ℂ → ℂ}
-    (hgt : AnalyticOnNhd ℂ gt (verticalStrip 0 F.zStar))
-    (hrec : ∀ z : ℂ, z ∈ verticalStrip 1 F.zStar →
-      (s : ℂ) * gt z * mellin (fun u => (F.profile u : ℂ)) (z - 1)
-        = mellin (fun u => (F.profile u : ℂ)) z * gt (z - 1))
-    {c : ℝ} (hc0 : 0 < c) (hc1 : ENNReal.ofReal (c + 1) < F.zStar)
-    (hbdd : BddAbove ((fun z : ℂ =>
-        ‖(s : ℂ) ^ z * gt z / mellin (fun u => (F.profile u : ℂ)) z‖) ''
-      ({z : ℂ | c ≤ z.re ∧ z.re ≤ c + 1} \
-        {z : ℂ | mellin (fun u => (F.profile u : ℂ)) z = 0}))) :
-    ∃ κ : ℂ, ∀ z : ℂ, z ∈ verticalStrip 0 F.zStar →
-      gt z = κ * (s : ℂ) ^ (-z) * mellin (fun u => (F.profile u : ℂ)) z := by
   sorry
 
 end Skeleton
