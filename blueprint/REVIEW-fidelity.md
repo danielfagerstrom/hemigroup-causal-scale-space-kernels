@@ -197,7 +197,7 @@ nonincreasing, `∫₀¹ k < ∞`, `∫₁^∞ k(t)/t dt < ∞`; Theorem 7.3 add
 levyExponentD b₀ k s ≠ ⊤`. `exponent s := levyExponentD b₀ k s`; `toRealExponent := (·).toReal`;
 `increment a b s := levyExponentD (b₀(b−a)) (u ↦ k(u/b) − k(u/a)) s`, with
 `exponent (a s) + increment a b s = exponent (b s)` (`exponent_add_increment`, `0 ≤ a ≤ b`,
-`s ≥ 0`); `kernel a b := if 0 ≤ a ∧ a ≤ b then choose (A17-derived existence) else 0`, with
+`s ≥ 0`); `kernel a b := if 0 ≤ a ∧ a ≤ b then choose (existence theorem, formerly A17) else 0`, with
 `kernel_spec`: probability, causal, `laplace (kernel a b) s = exp(−(increment a b s).toReal)`
 for `s ≥ 0`, and `kernel_unique` (any causal finite measure with that transform *is* it).
 
@@ -484,8 +484,8 @@ definition") — Lean has `hasDerivAt_toRealExponent` ✓ and `symbol` uses `der
 (ii) The potential kernel's *statement* must be the ∃! with the transform identity, and needs
 `F ≠ 0` as a hypothesis or `1/φ_x` is junk — Lean: `existsUnique_potentialKernel (hnd :
 Nondegenerate)` ✓; and it asked whether the subordinator-family construction is even
-expressible with the interface — it is (`exists_subordinatorFamily`), and reaches only A17
-(README, ch. 9 Route B). (iii) Sonine as a measure equality with the convolution as pushforward
+expressible with the interface — it is (`exists_subordinatorFamily`), and reaches Lean core only
+(ch. 9 Route B). (iii) Sonine as a measure equality with the convolution as pushforward
 of the product — Lean's `∗` ✓, restricted to `Ici 0` (the tightening noted above). (iv) Def.
 10.2's Bochner integral: clause (1) **must be an `Integrable` statement, not only the norm
 bound — "the bound is provable from junk"** — this is a check for the T2 card of
@@ -553,7 +553,7 @@ the Lean's shape: `F, F'` of the form (7.1), `F ≢ 0`, `χ` nondecreasing, posi
 | "in particular … `L⁻¹[e^{−F(xs)}]`" | the measure `kernel 0 x` with transform `e^{−F(xs)}` | same in content; the article's density notation is loose (drift/delay kernels have no density) — note-only |
 | uniqueness: `χ` increasing bijection, `χ(1) = 1`, same family | `χ` positive, monotone, `→ 0`, `χ 1 = 1`, equal *kernels* | **weaker hypotheses (stronger theorem)** on `χ`; "same family" ⇔ equal kernels by `mconvL1_injective` (`Representation.lean`) — the bridge exists |
 | uniqueness conclusion: `χ = Id`, `F' = F` | `χ u = u` on `(0,∞)`; `F'.exponent = F.exponent` on `[0,∞)` | same (as functions, which is the right reading — data `(b₀,k)` are unique only a.e.) |
-| trust boundary | (⇐), uniqueness: A17; (⇒): A18 | per-half `#print axioms` in `CIAxiomGuard.lean` |
+| trust boundary | (⇐), uniqueness: Lean core; (⇒): A18 | per-half `#print axioms` in `CIAxiomGuard.lean` |
 
 **Junk-value audit.** (a) `(levyExponentD b₀ k u).toReal` with `u = χ y · s`: could `⊤` hide
 here? If `levyExponentD b₀ k u = ⊤` for some `u > 0` then (monotone in `u`, and `SurjOn χ`) pick
@@ -586,7 +586,8 @@ from all three headline statements; `mconvL1` carries `IsFiniteMeasure` everywhe
 conclusion, new: **`χ 1 = 1` is not concluded (R13)**. Cosmetic: `MapsTo χ`, "repr is a causal
 probability measure", the `μ̂` identity and `S = σ·` are def-level facts not in the bundle.
 Strengthened hypotheses: none; uniqueness's are strictly weaker than the article's. Robustness:
-every witness of the (⇒) hypotheses is A17-dependent (R14).
+every witness of the (⇒) hypotheses passed through `kernel` when this card was written (R14); all
+are Lean core now (R28).
 
 **Verdict (at `e3249b3`).** **faithful-with-tightenings (R1, R8, R13)**: the proved statement is the
 article's; (⇒) should conclude in `SelfDecomposableExponent` and identify `repr` with `kernel`
@@ -688,7 +689,7 @@ claims *as the article's own proofs establish them*, and the article's statement
 Nothing is vacuous and nothing proved is weaker than what the article's proofs prove.
 
 **Post-P2 verdict.** **faithful.** R9, R11, R15, R16 resolved as conjuncts of `signaling_form`
-(guard: A17 only, unchanged); R2, R10 resolved in the text of record and the draft. Remaining:
+(guard: Lean core, unchanged since R28); R2, R10 resolved in the text of record and the draft. Remaining:
 the paper's mirror of the two statements (hub/paper session).
 
 
@@ -771,6 +772,10 @@ A18's `hincr`), and `∀ s > 0, G 1 s ≠ 0` (stronger in form than `F ≢ 0`, e
 
 ### T1.4 The trust boundary — ledger A17, A18 · `Interfaces.lean` (F6)
 
+*A17 was retired after this card was written (R28); T1.4a is the audit of the interface as it was
+admitted, and its statement is unchanged as a theorem. The retirement is stated in `AXIOMS.md`'s
+header.*
+
 Source pages image-verified: Thm 5.2 p. 49 and the killing sentence p. 51 fetched today by the
 librarian (`library page schilling2012bernstein --printed 49/51 --format image`, running header
 "Chapter 5 A probabilistic intermezzo"); Def. 5.14 p. 55 and Prop. 5.17 p. 57 verbatim in
@@ -831,7 +836,7 @@ chain rule is done inline where needed (`Volterra.lean:164–170`) — R22, note
 **T2.1b `lem:potential-kernel` (Lemma 9.4) · `existsUnique_potentialKernel`
 (`PotentialKernel.lean:201`).** `Nondegenerate → 0 < x → ∃! ℓ, IsCausal ℓ ∧ (∀ T, ℓ (Icc 0 T) ≠
 ⊤) ∧ ∀ s > 0, laplaceL ℓ s = ofReal (symbol x s)⁻¹` — the article's specification, existence by
-Route B inside the proof; A17 only. **No chosen potential-kernel object exists in `Hemigroup/`**:
+Route B inside the proof; Lean core. **No chosen potential-kernel object exists in `Hemigroup/`**:
 every consumer quantifies over an `ℓ` meeting the spec, so there is no `Classical.choose` to
 audit. `(symbol x s)⁻¹` guarded by `symbol_pos hnd`. The article's first sentence ("`φ_x` is a
 nonzero Bernstein function, positive on `(0,∞)`") is carried by `exists_levyTriple_symbol`
@@ -930,7 +935,7 @@ deliberate and documented (`LocalOperator.lean:107`); as a *hypothesis* (A14's u
 **T2.3g `lem:local-moment-classification` · `exists_moment_form_of_isLocalOfOrder`
 (`LocalityClassification.lean:85`).** Hypotheses `hH`, `hA13 : AllNegMomentsFinite` (A13 as an
 assignment), `0 < c`, `n ≤ 2` (A14's order bound as an assignment), `IsLocalOfOrder c n`;
-conclusion the pure-power / shifted-Gamma dichotomy on `Ioi 0`; guard prints A17 only. **faithful.**
+conclusion the pure-power / shifted-Gamma dichotomy on `Ioi 0`; guard prints Lean core. **faithful.**
 
 **T2.3h `thm:locality` (Thm 12.5).** No `\lean` tag (`[A]` on A14; A13 transitively; A15
 discharged; A16 belongs to `prop:local-ladder`). Machine-checked beneath it: the four `[T]`
@@ -1018,8 +1023,7 @@ cleaned). Def. 12.1 / Lemma 11.4 / Thm 11.6(2) re-verified after `10551df`: alig
 
 Named theorems, `#print axioms`-guarded in `CIAxiomGuard.lean` (17 lines under
 `### Witnesses (PLAN-fidelity-review P1)`), nothing importing the file. Every witness prints
-Lean core, or Lean core + A17 where it quantifies over the constructed kernels; **none reaches
-A18**. Verified 2026-08-15: `lake build` clean, guard exit code 0.
+Lean core; **none reaches A18**. Verified 2026-08-15: `lake build` clean, guard exit code 0.
 
 | target | model | hypotheses discharged | theorem |
 |---|---|---|---|
@@ -1031,7 +1035,7 @@ A18**. Verified 2026-08-15: `lake build` clean, guard exit code 0.
 | `semigroup_case` | drift `b₀ = 1` | `IsScaleCovariant`, `IsOneParameter`, `G 1 1 = 1` | `witness_semigroup_case_drift` |
 | `lem:local-polynomial-symbol` | drift (+ `AllNegMomentsFinite`); Gamma `γ > 1` | (H), `0 < c < z_* − 1` | `witness_local_polynomial_symbol_{drift,gamma}` |
 
-New supporting facts proved on the way (all Lean core or A17): `driftExponent b₀` as a
+New supporting facts proved on the way (all Lean core): `driftExponent b₀` as a
 `SelfDecomposableExponent` with `kernel a b = δ_{b₀(b−a)}`, `lawT₁ = δ_{b₀}`, all negative
 moments finite; `gammaExponent γ` has `lawT₁ = gammaMeasure γ 1` and `negMoment ζ ≠ ⊤` for
 `ζ < γ`, hence `StandingHypothesis` for `γ > 1`; `repr_cascadeFamily : repr = kernel`;

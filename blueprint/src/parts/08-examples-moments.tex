@@ -375,8 +375,7 @@ and the mean delay is $\Ex\,T_x = \gamma x$.
 reporting the maximum cost of its clauses misreports its cheap ones; split again on 2026-08-15 for
 the same reason, the density and the higher moments leaving as \ref{prop:gamma-density} and
 \ref{prop:gamma-moments}. \textbf{Proved in Lean} (2026-08-15),
-\texttt{Hemigroup/GammaKernels.lean}, on \ledger{A17} alone --- through the constructed family, as
-every statement about $T_x$ and $\mu_{a,b}$ is. All three clauses are one computation from the
+\texttt{Hemigroup/GammaKernels.lean}, on Lean core. All three clauses are one computation from the
 exponent $\gamma\log(1+s)$; the mean is \ref{prop:moments} applied to
 $\int_0^\infty \gamma e^{-t}dt = \gamma$, and that step is Lean core.
 \textbf{Note the contrast with \ref{prop:stable-moments}}, which came \emph{off} \ledger{A7} this
@@ -406,8 +405,7 @@ With $F$ as in \ref{prop:gamma-family} and $\gamma > 0$,
 \]
 the Gamma density of fixed shape $\gamma$ and scale $x$.
 \statusT\quad\emph{(\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/GammaDensity.lean}, on
-\ledger{A17} alone --- through the constructed family, as every statement about $\mu_{0,x}$ is.
-Stated there as an identity of \emph{measures}, $\mu_{0,x} = \mathrm{gammaMeasure}(\gamma, 1/x)$,
+Lean core. Stated there as an identity of \emph{measures}, $\mu_{0,x} = \mathrm{gammaMeasure}(\gamma, 1/x)$,
 rather than of densities: it is the same assertion in the vocabulary Mathlib already has, and it
 is the form that makes Mathlib's Gamma API available to \ref{prop:gamma-moments}, which is the
 cheaper of the two ways to retire that node's ledger entry.
@@ -446,7 +444,7 @@ not already say.
 With $F$ as in \ref{prop:gamma-family}, every moment of $T_x$ is finite, and
 $\operatorname{Var} T_x = \gamma x^2$.
 \statusT\quad\emph{(\textbf{Proved in Lean} (2026-08-15),
-\texttt{Hemigroup/GammaDensity.lean}, on \ledger{A17} alone --- and \textbf{off \ledger{A7}}, which
+\texttt{Hemigroup/GammaDensity.lean}, on Lean core --- and \textbf{off \ledger{A7}}, which
 the route through \ref{prop:moment-criterion} would have spent.
 \textbf{The prediction made when this node was split off held.} It said: ``the alternative route
 is through \ref{prop:gamma-density}: with the density in hand the moments are a Gamma computation
@@ -697,8 +695,7 @@ With $F$ as in \ref{prop:stable-family}, $\Ex\,T_x^{\,n} = \infty$ for every $n 
 $x > 0$, so the delay of the 2005 stable kernels cannot be measured by any moment.
 \statusT\quad\emph{(split from \ref{prop:stable-family}, whose exponent is proved; the mode clause
 that accompanied this one is now \ref{prop:stable-mode}. \textbf{Proved in Lean} (2026-08-15),
-\texttt{Hemigroup/StableMoments.lean}, on \ledger{A17} alone --- through the constructed family,
-as every statement about $T_x$ is, and unavoidably so, $T_x$ being what \ledger{A17} constructs.
+\texttt{Hemigroup/StableMoments.lean}, on Lean core.
 \textbf{What it no longer costs is \ledger{A7}.} Until this round the node was routed through
 \ref{prop:moment-criterion} for general $n$, and that entry's own assignment note already recorded
 that its $n = 1$ case is not carried by the ledger, being \ref{prop:moments}. Once

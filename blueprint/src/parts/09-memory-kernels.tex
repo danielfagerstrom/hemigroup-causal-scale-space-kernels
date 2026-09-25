@@ -182,7 +182,7 @@ on $[0,\infty)$ --- the \emph{potential kernel} --- with
 \]
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.existsUnique\_potentialKernel}; \texttt{\#print axioms}
-gives \ledger{A17} and nothing else. Route B --- construct the measure as the
+gives Lean core. Route B --- construct the measure as the
 subordinator's potential $U = \int_0^\infty \mu_t\,dt$ rather than represent it via
 Bernstein--Widder --- is what is proved: causality, the transform by Tonelli, local finiteness
 from convergence at one point, and uniqueness from Laplace injectivity for measures that are not
@@ -195,7 +195,7 @@ declarations and by \texttt{symbol\_pos} rather than by the $\exists!$ theorem's
 (fidelity review R21).}
 
 \emph{\textbf{That second clause is the finding, and the work order had omitted it.} Forming
-$\int_0^\infty \mu_t\,dt$ reads as bookkeeping and is not: \ledger{A17} supplies $\mu_t$ for each $t$
+$\int_0^\infty \mu_t\,dt$ reads as bookkeeping and is not: the existence theorem for $\mu_t$ supplies it for each $t$
 \emph{by choice, independently}, so nothing connects the choices across $t$ and the integral is
 not a measure at all. The route to it is where the \emph{subordinator} structure finally does
 work rather than being merely named: $\mu_{t+t'} = \mu_t * \mu_{t'}$ and causality make
@@ -228,8 +228,8 @@ locally finite measures whose transform converges somewhere (\ref{prop:laplace-u
 Two remarks on this route. It uses no property of $\CM$: neither
 $\CM \circ \BF \subseteq \CM$ (\ref{prop:bernstein-toolbox}(2), \ledger{A2}) nor Bernstein--Widder
 in its general form (\ref{prop:bernstein-toolbox}(1), \ledger{A1}), both of which the older
-argument spent. What it does use is the existence of the subordinator, \ledger{A17}, which the
-main theorem has already spent --- so the exchange is two interfaces for none. And the integral
+argument spent. What it does use is the existence of the subordinator, which the main theorem has
+already proved --- so the exchange is two interfaces for none. And the integral
 $\int_0^\infty \mu^{(x)}_\tau\,d\tau$ is a measure only because $\tau \mapsto \mu^{(x)}_\tau$ is
 measurable, which is not automatic and is where the subordinator's increasing paths are actually
 used: $\mu^{(x)}_{\tau+\tau'} = \mu^{(x)}_\tau * \mu^{(x)}_{\tau'}$ with causality makes
@@ -411,7 +411,7 @@ descent from this measure identity to the density equation (V.2), which is what 
 that entry's cost for results that do not incur it. The uniqueness clause, which is the scalar
 linear ODE rather than the transform computation, was split off on 2026-08-15 as
 \ref{prop:volterra-uniqueness}.
-\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/Volterra.lean}, on \ledger{A17} alone.
+\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/Volterra.lean}, on Lean core.
 \textbf{$\theta_x$ is $x$ times the memory kernel} --- the atom scales from $b_0$ to $b_0x$ and
 the density from $k(t/x)/x$ to $k(t/x)$ --- so $\widehat{\theta_x}(s) = xF'(xs)$ is
 \ref{lem:memory-kernel-transform} scaled and needs no computation of its own. The one new step is
@@ -440,7 +440,7 @@ $\mu_x$ is the \emph{unique} probability measure on $[0,\infty)$ satisfying (V.1
 \statusT\quad\emph{(a scalar linear ODE in the Laplace variable, and no citation. Separated from
 \ref{prop:volterra} because the two halves use different machinery: that one is a transform
 identity, this one solves a differential equation.
-\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/Volterra.lean}, on \ledger{A17} alone
+\textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/Volterra.lean}, on Lean core
 --- and \textbf{the estimate written when the two were separated held exactly}. It said the
 pieces were in place: $\hat\nu$ differentiable on $(0,\infty)$ is
 \texttt{hasDerivAt\_laplace}, which had been stated for an \emph{arbitrary} causal finite measure
@@ -648,8 +648,8 @@ density form, $\ell^{(x)}(t) = \ell^{(1)}(t/x)$.
 $\widehat{\ell^{(x)}}(s) = 1/(sF'(xs)) = x/\varphi_1(xs) = x\,\widehat{\ell^{(1)}}(xs)$, and
 \ref{lem:potential-kernel}'s uniqueness clause does the rest.
 \textbf{Proved in Lean} (2026-08-15), \texttt{Hemigroup/PotentialScaling.lean}, and \textbf{Lean
-core} --- it does not even reach \ledger{A17}, being about measures meeting a specification rather
-than about the constructed family.
+core} --- being about measures meeting a specification rather than about the constructed
+family.
 \textbf{The blocker this node recorded was not one.} It had said the clause presupposes a
 \emph{named} $\ell^{(x)}$, since the existence-and-uniqueness statement means the object must be
 chosen before a scaling law can be predicated of it, and that choice is a definition the

@@ -23,9 +23,7 @@ probability measure `E T ≤ 1 + E T^n`, and a divergent mean forces every highe
 
 So the route is `meanRate_ne_top_iff` (the mean is finite iff `k` is integrable at infinity) plus
 `t^{-α}` failing that for `α < 1`, and then one elementary inequality. The two supporting lemmas
-below are Lean core; the statement about `T_x` spends **A17** through `kernel`, as every statement
-about the constructed family does, and cannot avoid it — `T_x` is what A17 constructs. What it does
-avoid is A7. The `n = 1` case being cheap is exactly what `prop:moments` was split off to record,
+below and the statement about `T_x` are all Lean core. What it avoids is A7. The `n = 1` case being cheap is exactly what `prop:moments` was split off to record,
 and this is the first node to collect on it.
 
 ## The mode clause is elsewhere
@@ -98,7 +96,7 @@ theorem lintegral_pow_eq_top_of_lintegral_id_eq_top {μ : Measure ℝ} [IsProbab
 the delay is infinite, at every scale — so the delay cannot be measured by the mean, and the
 article's use of the mode is forced rather than stylistic.
 
-**A17 and nothing else**, through `kernel`: the blueprint routes this through
+**Lean core**: the blueprint routes this through
 `prop:moment-criterion` and hence ledger A7 as well, and it does not need to. -/
 theorem stableExponent_lintegral_pow_kernel (hα : 0 < α) (hα1 : α < 1) {x : ℝ} (hx : 0 < x)
     {n : ℕ} (hn : 1 ≤ n) :

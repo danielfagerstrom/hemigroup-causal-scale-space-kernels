@@ -33,11 +33,11 @@ Expected output today: Lean core (`propext`, `Classical.choice`, `Quot.sound`) e
 direction and whatever quantifies over its conclusion, and nothing else.
 
 **A17 is retired** (2026-09-21, Q-0022): `exists_isFiniteMeasure_laplace_eq_exp_neg_levyExponent`
-is a theorem now, proved in `Hemigroup/CompoundPoisson.lean` with its statement unchanged. The
-per-declaration comments below that say a line prints "A17" (or "A17 and nothing else") record
-the trust base as it stood before the retirement; each such line now prints Lean core alone, or
-Lean core plus A18 where the comment names both. The guard enforces this, since the name is no
-longer in `trust-boundary.txt`.
+is a theorem now, proved in `Hemigroup/CompoundPoisson.lean` with its statement unchanged, and is
+no longer part of the trust base. This is the one place the retirement is stated here: every
+declaration below prints Lean core except `main_analysis`, `main_analysis'` and
+`main_characterization`, which add A18. The guard enforces it, the name being absent from
+`trust-boundary.txt`.
 
 The blueprint's `thm:main-characterization` is a collation and carries no tag of its own; its
 halves `thm:main-construction` and `prop:main-uniqueness` do, and are listed below.
@@ -82,8 +82,8 @@ Likewise for `prop:laplace-continuity` (ledger A5).
 /-! ### `lem:transform-tightness`
 
 The Markov bound. It lives in `Continuity.lean`, which imports the interface file, but the
-statement does not mention `kernel`, so it does not inherit A17 — and this line is what checks
-that rather than assuming it.
+statement does not mention `kernel`, so it never carried an interface — and this line is what
+checks that rather than assuming it.
 -/
 
 #print axioms Hemigroup.measureReal_Ioi_mul_le
@@ -105,16 +105,14 @@ kernels satisfy it, which is the next entry.
 
 /-! ### `thm:main-construction`
 
-Theorem 7.3 (⇐), and the instance that checks `def:cascade-family` against a model. A17 enters
-here.
+Theorem 7.3 (⇐), and the instance that checks `def:cascade-family` against a model. Lean core.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.cascadeFamily
 
 /-! ### `prop:main-uniqueness`
 
-Theorem 7.3's uniqueness clause. A17 reaches it through `kernel`, which the statement quantifies
-over; nothing in the argument itself leaves Lean core.
+Theorem 7.3's uniqueness clause. Lean core.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.gauge_and_exponent_unique
@@ -172,10 +170,9 @@ hypothesis of the one appeal to `lem:selfdecomposable-derivative` — and reduce
 so everything up to that appeal is interface-free. `main_analysis` adds the appeal and picks up
 **A18 and nothing else**.
 
-Read together with `thm:main-construction` and `prop:main-uniqueness` above, which carry A17 and
-not A18, this is what makes the article's asymmetry checkable rather than asserted: the analysis
-direction crosses the boundary where the constructive one does not, and the two entries do not
-mix.
+Read together with `thm:main-construction` and `prop:main-uniqueness` above, which are Lean core,
+this is what makes the article's asymmetry checkable rather than asserted: the analysis direction
+crosses the boundary where the constructive one does not.
 -/
 
 #print axioms Hemigroup.CascadeCore.similarity_form
@@ -214,11 +211,8 @@ witness. Both reduce to Lean core.
 /-! ### `lem:mellin-data`, chapter 11's entry point
 
 The identity and the bound, plus the `ℝ≥0∞` hinge both come out of and the Fubini side condition
-that hinge *is*. All four carry **A17 and nothing else**, which is the expected reading and worth
-saying why: `lawT₁` is `F.kernel 0 1`, so every statement about the profile quantifies over the
-measure A17 builds and inherits it through `kernel`, exactly as `prop:main-uniqueness` does. No
-chapter-11 interface enters — in particular **not A12**, which grounds `def:inversion-operator`
-and not this node.
+that hinge *is*. All four reduce to **Lean core**. No chapter-11 interface enters — in particular
+**not A12**, which grounds `def:inversion-operator` and not this node.
 -/
 
 #print axioms Hemigroup.lintegral_ofReal_rpow_mul_exp
@@ -236,13 +230,8 @@ and not this node.
 /-! ### `lem:standing-kernel-readings` (11.21), the two glosses `def:standing-hypothesis` used
 to assert in passing
 
-`tendsto_laplaceL_atTop` is general (any finite causal measure) and reduces to Lean core alone.
-Everything below it quantifies over `F.lawT₁ = F.kernel 0 1` or `F.kernel 0 x`, hence **A17**,
-except the two moment/abscissa consequences, which are the general lemmas of `lem:mellin-data`'s
-section again and carry nothing beyond what they already did there. The bundle
-`standing_kernel_readings` is what the node's `\lean` tag names; its parts are listed separately
-because they are what shows the atom-side conjuncts and the moment-side conjuncts do not share a
-ledger entry with each other.
+Every line reduces to **Lean core**. The bundle `standing_kernel_readings` is what the node's
+`\lean` tag names; its parts are listed separately so that each conjunct is checked on its own.
 -/
 
 #print axioms Hemigroup.tendsto_laplaceL_atTop
@@ -257,7 +246,7 @@ ledger entry with each other.
 /-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
 
 Analyticity of `H̃` on the strip, its non-vanishing at real points, the isolation of its zeros,
-and the symbol `B` with its closed form and meromorphy. A17 again and nothing else: the analysis
+and the symbol `B` with its closed form and meromorphy. Lean core: the analysis
 is Mathlib's — `analyticAt_complexMGF` for `E[T₁^{-z}]`, `differentiableAt_Gamma` for the other
 factor — and the article's own interfaces do not enter. `lem:mellin-vertical` is what would carry
 A12, and it is not here.
@@ -277,7 +266,7 @@ A12, and it is not here.
 /-! ### `lem:symbol-rigidity` (11.15), the core of `lem:symbol-uniqueness`
 
 The step that makes the eigenfunction relation *pin* the symbol rather than merely constrain it.
-A17 and nothing else — and note which entry is absent: the reduction *to* the transform relation
+Lean core — and note which entry is absent: the reduction *to* the transform relation
 is `def:inversion-operator`, hence A12, and it is deliberately not in this file. What is here is
 everything downstream of that reduction.
 -/
@@ -307,8 +296,8 @@ this is the only check that they themselves are interface-free. All three reduce
 The lines that matter most in chapter 9, because they are what the route was *chosen* for. The
 blueprint's own proof of `lem:potential-kernel` goes through Bernstein–Widder for general measures
 — ledger **A1**, the entry the representation-first design exists to keep off the critical path.
-Route B constructs the measure instead, and these lines are the check that it worked: **A17 and
-nothing else**, with A1 and A2 absent. The article's claim about its own trust base is therefore
+Route B constructs the measure instead, and these lines are the check that it worked: **Lean core**,
+with A1 and A2 absent. The article's claim about its own trust base is therefore
 machine-checked rather than asserted, in the one place it was most at risk.
 -/
 
@@ -323,9 +312,7 @@ machine-checked rather than asserted, in the one place it was most at risk.
 
 The clause A12's retirement turns on. It was recorded twice as blocked on a missing Mathlib
 estimate — the vertical decay of `|Γ(c+iτ)|` — and is not: integrability needs only quadratic
-decay, which is the functional equation twice. The three `Gamma` lemmas are general and reduce to
-Lean core; the profile's vertical integrability inherits A17 through `kernel`, as everything about
-`T₁` does.
+decay, which is the functional equation twice. All four lines reduce to Lean core.
 -/
 
 #print axioms Hemigroup.norm_Gamma_le_of_re_pos
@@ -374,7 +361,7 @@ every use of `A` exhibit its `h`? — and the profile case is the one to settle 
 `def:inversion-operator`'s remaining interface is the production of the function `B(θ)g` names.
 These lines are the check that the article never calls on it: for the only shape in which `A` is
 ever applied — the profile dilate `g = H(s·)` — the referent `h(x) = s x H(sx)` is *exhibited*,
-and `#print axioms` on the instance gives A17 and nothing else.
+and `#print axioms` on the instance gives Lean core.
 
 `inversionOperator_profile` is then the eigenfunction relation `A[H(s·)] = s H(s·)`, i.e.
 `thm:signaling-form`(1). Note that the instance and the eigenfunction relation are the same
@@ -415,7 +402,7 @@ The Mellin transform in `x` of the delayed average is `H̃(z)` times the Riemann
 of the past signal. `riemannLiouville` is *defined* here rather than cited: Mathlib carries no
 fractional integral of any order, and the article's Samko–Kilbas–Marichev citation is for the
 notation and theory of `Iᶻ`, of which chapter 11 uses only the definition. So these lines add no
-interface, and `#print axioms` gives A17 alone.
+interface, and `#print axioms` gives Lean core.
 
 What they do not cover is the identification of the integrand with `Φ_{0,x}f`, which is an
 `L¹`-level statement and carries the modelling decision recorded in `PLAN-chapters-8-12.md`.
@@ -435,7 +422,7 @@ The bridge from the analytic core to the field. `kernel_zero_eq_map_lawT₁` is 
 at the level of measures — the article reads `μ_{0,x}` as the law of `x·T₁` off the notation,
 which in Lean is a lemma, both sides being causal with transform `e^{-F(xs)}` and `kernel_unique`
 being Laplace injectivity. `coeFn_Phi_zero` then identifies the chosen representative with
-`Φ_{0,x}f` at each scale, and `mellin_delayedField` is the clause itself. A17 alone throughout.
+`Φ_{0,x}f` at each scale, and `mellin_delayedField` is the clause itself. Lean core throughout.
 -/
 
 #print axioms Hemigroup.laplace_map_mul
@@ -464,8 +451,7 @@ the lemma says.
 
 The transform half of 11.5's derivative clause. Note what these lines show: the statement is about
 the Riemann–Liouville family and mentions no hemigroup object, so it reduces to **Lean core
-alone** — not even A17 enters. It is the first result in the development of which that is true and
-which is not a general-purpose lemma about `Γ`.
+alone**, as the lines around it now do too.
 
 The draft derives it from the semigroup property `I^{z-1}I¹ = Iᶻ`, a Beta-integral identity that
 would have to be proved in its own right. Fubini over the triangle avoids it entirely.
@@ -497,10 +483,7 @@ function is bounded, which is what widens 11.5's strip from `Re z > 1` to `Re z 
 
 The rigidity lemma behind `cor:signaling-wellposed`'s solution-uniqueness clause: a mode of the
 eigenvalue recursion whose periodic factor is bounded on one period substrip is pinned to the
-profile up to a constant. **Lean core alone** — not even A17, since the statement quantifies over
-a mode and a symbol but proves nothing about `T₁`'s law beyond what `analyticAt_mellin_profile`
-and `countable_zeros_mellin_profile` already carry, and both of those are Lean core since A17's
-retirement.
+profile up to a constant. **Lean core alone.**
 -/
 
 #print axioms Hemigroup.mode_rigidity
@@ -508,8 +491,7 @@ retirement.
 /-! ### `thm:signaling-form` — Theorem 4′, assembled
 
 The theorem the article exists for, as one declaration. Its six conjuncts are proved in the files
-that develop them; this line is the check that the assembly costs nothing new — A17 and nothing
-else, for a statement that runs from the construction through the Mellin calculus to uniqueness.
+that develop them; this line is the check that the assembly costs nothing new — Lean core, for a statement that runs from the construction through the Mellin calculus to uniqueness.
 
 Assembling it is also what showed the chapter was not finished when every *lemma* was `\leanok`:
 clause (2) asserts four things and only the Mellin form had been proved. A theorem node exists
@@ -526,9 +508,9 @@ precisely because it asserts more than its lemmas do.
 
 The bundle, so that the graph stops reporting the article's main theorem as unproved when all of
 it is proved. **The per-half lines above remain the load-bearing ones**: the three halves cross the
-trust boundary in different places — `(⇐)` and uniqueness on A17, `(⇒)` on A18, neither borrowing
-the other's — and a bundle cannot show that, since it necessarily depends on both. This line will
-therefore print both names, and that is correct rather than a regression.
+trust boundary in different places — `(⇐)` and uniqueness are Lean core, `(⇒)` rests on A18 — and
+a bundle cannot show that, since it necessarily depends on every ledger entry its parts do. This
+line therefore prints A18, and that is correct rather than a regression.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.main_characterization
@@ -542,9 +524,7 @@ real form is the blueprint's, on `Ioo 0 z_*` rather than the blueprint's `(0,∞
 latter presupposes `z_* = ∞`, which is the clause of `lem:moment-recursion` that ledger **A13**
 carries.
 
-All three lines print **A17 and nothing else** — A17 because `lawT₁` is a kernel of the construction
-and so every statement about `T₁` inherits it, not because anything here uses it. What matters for
-chapter 12 is what is *absent*: none of the chapter's own cited interfaces (A13 Widder, A14
+All three lines print **Lean core**. What matters for chapter 12 is what is *absent*: none of the chapter's own cited interfaces (A13 Widder, A14
 Courrège, A15 Krull--Webster) is touched by this node.
 -/
 
@@ -555,8 +535,7 @@ Courrège, A15 Krull--Webster) is touched by this node.
 /-! ### `lem:symbol-vanishes-at-origin` — clause (1) of `lem:moment-recursion`, split off
 
 `B(-z) → 0` as `z ↓ 0`, with `m(z) → 1` as its first half. The node it was split from spends
-ledger **A13** on its clause (2); these lines show that clause (1) does not, printing A17 and
-nothing else. The polynomial hypothesis under which the blueprint states clause (1) is inert in
+ledger **A13** on its clause (2); these lines show that clause (1) does not, printing Lean core. The polynomial hypothesis under which the blueprint states clause (1) is inert in
 the argument, which is why the split-off node does not carry it.
 -/
 
@@ -567,7 +546,7 @@ the argument, which is why the split-off node does not carry it.
 
 Split off for the same reason `lem:symbol-vanishes-at-origin` was: the node they come from spends
 ledger **A13** on its clause (2), and these lines are the check that they do not spend it too.
-A17 and nothing else.
+Lean core.
 
 Clause (1) is two statements and both are now here. `B(0) = 0` was already
 `tendsto_inversionSymbol_nhdsGT_zero`, which needs no polynomial hypothesis;
@@ -595,7 +574,7 @@ blueprint's `(0,∞)`: widening it is `z_* = ∞`, which is clause (2) and which
 (Courrège) on the order bound — that a local operator satisfying the PMP is a pure second-order
 diffusion — and that is cited, not proved. Its (⇐) direction has to check that the operators the
 theorem exhibits *do* satisfy the PMP, and that is elementary. These lines are what keeps the two
-apart: they print A17 through `inversionOperator` and **not A14**.
+apart: they print Lean core, **not A14**.
 
 `deriv_deriv_nonpos_of_isLocalMax` is the second-derivative half of Fermat's rule, which Mathlib
 does not carry — it has `IsLocalMax.deriv_eq_zero` and stops there — so it is written from
@@ -613,7 +592,7 @@ The step that turns the recursion into the Gamma form, and so `T₁` into the in
 Both citations of that direction enter as **hypotheses** rather than as axioms, phrased so either
 can be demoted the day it is proved: `AllNegMomentsFinite` is `lem:moment-recursion`(2), ledger
 **A13**, and the order bound is Courrège, **A14**, which here is just the order `2`. So these lines
-print A17 and neither A13 nor A14 — the interfaces are in the statement, where a reader can see
+print Lean core, neither A13 nor A14 — the interfaces are in the statement, where a reader can see
 them, and not in the trust base.
 
 `tendsto_negMoment_succ_nhdsGT_zero` is where the work is: `a₀ > 0` is `Q(0) = m(1)`, a limit, and
@@ -628,7 +607,7 @@ finally lets one say.
 /-! ### `thm:locality`(⇒), the order-one branch
 
 The degenerate member, where the kernels are deterministic delays. Same shape as order two --- A13
-and A14 as hypotheses, A17 alone in the trust base --- but it uses neither Krull--Webster nor
+and A14 as hypotheses, Lean core alone in the trust base --- but it uses neither Krull--Webster nor
 Bohr--Mollerup, and the node always said so: at order one the recursion has a constant multiplier
 and `log m` is convex with constant unit increments, hence affine.
 
@@ -657,7 +636,7 @@ The positive maximum principle does not appear in either line, and that is the p
 *only* through **A14**, whose conclusion is the order bound. A statement carrying `SatisfiesPMP`
 as an unused hypothesis would misreport where the principle is spent.
 
-A17 and neither A13 nor A14, both being hypotheses.
+Lean core, neither A13 nor A14 being an axiom: both are hypotheses.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.not_isLocalOfOrder_zero
@@ -667,7 +646,7 @@ A17 and neither A13 nor A14, both being hypotheses.
 
 Krull--Webster restricted to a linear `Q`, which is the only case `thm:locality` applies it to,
 proved from Mathlib's Bohr--Mollerup. The statement mentions nothing of this development, so this
-line should print **Lean core alone** — no A17, since no kernel appears in it. That is the check
+line should print **Lean core alone**, as no kernel appears in it. That is the check
 that the entry really is discharged rather than relocated.
 -/
 
@@ -697,8 +676,7 @@ analysis anywhere. Lean core alone.
 
 /-! ### `def:locality-pmp` and the (⇐) direction of `lem:local-polynomial-symbol`
 
-The polynomial symbol turned into a differential expression. A17 through `inversionOperator`,
-which quantifies over the construction's kernels; nothing else, and in particular none of chapter
+The polynomial symbol turned into a differential expression. Lean core, and in particular none of chapter
 12's own cited interfaces.
 
 This direction was stated without the standing hypothesis (H), and that was recorded here as a
@@ -721,8 +699,8 @@ evaluating on it.
 /-! ### Covariance of the inversion operator
 
 `A Δ_σ = σ⁻¹ Δ_σ A`, which the blueprint asserts in passing inside 12.2's proof and which is the
-load-bearing step of that lemma's (⇒) direction. A17 through `inversionOperator`; the two
-supporting identities about positive reals raised to a complex power are Lean core.
+load-bearing step of that lemma's (⇒) direction. Lean core, as is the supporting identity about
+positive reals raised to a complex power.
 -/
 
 #print axioms Hemigroup.inversionOperator_lineDilate
@@ -742,8 +720,7 @@ kernel.
 /-! ### Covariance forces the coefficients homogeneous
 
 `c_m(σ) = c_m(1) σ^{m-1}` — the first half of the (⇒) direction of `lem:local-polynomial-symbol`,
-and the step the blueprint takes by "comparing coefficients of g^(j)(x/σ)". A17 through
-`inversionOperator`.
+and the step the blueprint takes by "comparing coefficients of g^(j)(x/σ)". Lean core.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.coeff_eq_of_isLocalOfOrder
@@ -754,7 +731,7 @@ and the step the blueprint takes by "comparing coefficients of g^(j)(x/σ)". A17
 `H^(j)(u) = (-1)^j E[T_1^j e^{-u T_1}]`, which the profile clause of `def:locality-pmp` needs and
 which chapter 11 never had occasion to establish. It is free: `H` is Mathlib's `mgf` at a negative
 argument, and `ProbabilityTheory.iteratedDeriv_mgf` does the differentiation under the integral.
-A17 through `lawT₁`.
+Lean core.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.profile_eq_mgf
@@ -766,7 +743,7 @@ A17 through `lawT₁`.
 /-! ### `lem:mellin-data`, restated for a measure
 
 The three steps of chapter 11's Gamma-integral hinge, freed of `T₁`. They are what chapter 12
-spends on the weighted law `tʲ μ(dt)`, and they should print **Lean core alone** — no A17, since
+spends on the weighted law `tʲ μ(dt)`, and they should print **Lean core alone**, as
 no kernel appears in them. That is the check that the generalisation really did detach the
 computation from the construction rather than carrying it along.
 -/
@@ -780,9 +757,7 @@ computation from the construction rather than carrying it along.
 
 `M[x ↦ xʲ ∂ₓʲ H(sx)](w) = E_j(w)·M[H(s·)](w)`, with no integration by parts: the derivative is
 already an integral (`ProfileDeriv.lean`), the weight `xʲ` is a Mellin shift, the dilation is a
-factor, and what is left is `lem:mellin-data` on the weighted law. A17 through `lawT₁`; the two
-`Γ`/Euler-factor identities and `mellin_finset_sum` mention nothing of this development and print
-Lean core alone.
+factor, and what is left is `lem:mellin-data` on the weighted law. Lean core throughout.
 -/
 
 #print axioms Hemigroup.mellinEulerFactor_eq_neg_one_pow_mul_prod
@@ -794,8 +769,7 @@ Lean core alone.
 
 /-! ### `lem:local-polynomial-symbol`, the (⇒) direction — the node closed
 
-The clause the skeleton carried, and the two forms it takes. A17 through `inversionOperator` and
-`lawT₁`; none of chapter 12's own cited interfaces (A13 Widder, A14 Courrège, A15 Krull--Webster)
+The clause the skeleton carried, and the two forms it takes. Lean core; none of chapter 12's own cited interfaces (A13 Widder, A14 Courrège, A15 Krull--Webster)
 is touched, and neither is A12 — the route runs through `lem:symbol-uniqueness`, whose realising
 function is exhibited rather than produced.
 
@@ -824,7 +798,7 @@ parts) together with vertical integrability of `P·g̃`, which is the polynomial
 and `thm:signaling-form` are: it necessarily depends on everything both halves do, so the per-half
 lines remain the load-bearing ones. It also asserts *less* than the halves — the coefficient form
 `c_j(x) = γ_j x^{j-1}` cannot be stated in an equivalence of this shape, and lives in
-`exists_symbol_eq_of_isLocalOfOrder`. A17 throughout, through `inversionOperator` and `lawT₁`.
+`exists_symbol_eq_of_isLocalOfOrder`. Lean core throughout.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.eulerExpression
@@ -965,7 +939,7 @@ only nonincreasing has no right-continuous representative this development can n
 
 Absolute convergence of the Phillips integral in `X₀`, with the two-sided bound. **Lean core** —
 the clause quantifies over a `ν` meeting `HasLevyTail` rather than over the constructed family, so
-it does not touch A17, which is the point of stating it that way.
+it never depended on the construction, which is the point of stating it that way.
 
 `integrable_min_one_id` is the whole of it. The blueprint reaches `∫(1∧r)ν₁(dr) < ∞` "from
 `∫₀¹ k < ∞` and `k(1) < ∞` by integration by parts"; it is **one layer cake**,
@@ -1103,9 +1077,7 @@ does **not** propagate downward, so its higher moments genuinely need the criter
 density). Two nodes of the same shape, one cheap and one not, for a reason visible only once the
 `n = 1` case was proved and asked to carry the rest.
 
-**A17 and nothing else** on the three clauses that mention `T_x` or `μ_{a,b}`, through `kernel`, as
-every statement about the constructed family is. `gammaExponent_meanRate` is Lean core, being about
-`k` alone.
+All four lines print **Lean core**.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.gammaExponent_laplace_kernel
@@ -1116,8 +1088,7 @@ every statement about the constructed family is. `gammaExponent_meanRate` is Lea
 /-! ### `lem:potential-kernel-scaling` (9.16), proved
 
 `ℓ^{(x)}` is `x` times the dilate of `ℓ^{(1)}`. **Lean core** -- the statement quantifies over
-measures meeting the potential-kernel specification rather than over the constructed family, so it
-does not even reach A17.
+measures meeting the potential-kernel specification rather than over the constructed family.
 
 **The node's recorded blocker was not one.** Its status line said the clause "presupposes a
 *named* `ℓ^{(x)}`: the Lean statement asserts existence and uniqueness, so the object must be
@@ -1144,8 +1115,8 @@ reading.
 
 /-! ### `prop:volterra` (9.8), the identity clause
 
-`t μ_x(dt) = (θ_x ∗ μ_x)(dt)`. **A17 through `kernel`**; the three general lemmas beneath it are
-Lean core and are about an arbitrary causal finite measure.
+`t μ_x(dt) = (θ_x ∗ μ_x)(dt)`. **Lean core** throughout; the three general lemmas beneath it are
+about an arbitrary causal finite measure.
 
 Two things the chapter already had, and one that was new.
 
@@ -1194,8 +1165,8 @@ already used for the stable family's `F'`. That was the whole of the "separate p
 node's status line predicted in Phase 0, and the prediction was accurate -- worth noting, since
 this file's usual finding is that such predictions are wrong.
 
-**A17 through `kernel`**, as every statement about the constructed family is; the lemmas about
-Mathlib's Gamma law alone -- transform, moments, variance -- are Lean core.
+**Lean core** throughout, the statement about the constructed family and the lemmas about
+Mathlib's Gamma law alone -- transform, moments, variance -- alike.
 
 `prop:gamma-moments` is here too, and **off ledger A7**, which the blueprint's route spends. Its
 own annotation, written this morning when the node was split out, said "with the density in hand
@@ -1216,11 +1187,9 @@ now serving the transform, the integrability, the moments and the variance.
 
 /-! ### `prop:stable-moments` (8.10), narrowed and proved
 
-Every moment of the extremal stable delay is infinite. **A17 and nothing else** -- through
-`kernel`, as everything that quantifies over the constructed family does. The point of the entry
+Every moment of the extremal stable delay is infinite. **Lean core.** The point of the entry
 is what is *absent*: the node was routed through `prop:moment-criterion`, ledger **A7**, for
-general `n`, and no longer is. The two supporting lemmas are Lean core; only the statement about
-`T_x` picks up A17, and it could not avoid it, `T_x` being what A17 constructs.
+general `n`, and no longer is.
 
 That entry's own assignment note already recorded that its `n = 1` case is not carried by the
 ledger, being `prop:moments`. Once `prop:moments` was proved, `n = 1` became all this node needs,
@@ -1322,8 +1291,7 @@ because it does **not** depend on the mean-delay identity — the blueprint deri
 identity, where here `μ_{0,x}` is the law of `xT₁` (`kernel_zero_eq_map_lawT₁`, chapter 11), so
 every moment scales by a change of variables, finite or not.
 
-A17 through `kernel`, as everything that quantifies over the constructed family does;
-`meanRate_ne_top_iff` is about `k` alone and reduces to Lean core.
+Lean core throughout.
 
 **No differentiation and no Tauberian theorem.** The blueprint's proof differentiates the
 transform at the origin; in `[0,∞]` the difference quotient `(1-e^{-st})/s` is *monotone* in `s`
@@ -1352,12 +1320,11 @@ to exclude exactly the case the proposition's second clause exists to describe.
 
 Not blueprint nodes. `Hemigroup/Witnesses.lean` shows the hypotheses of the headline theorems are
 jointly satisfiable at concrete models (pure drift, Gamma, stable); the lines below record what
-those witnesses themselves rest on. Everything quantifying over the constructed kernels picks up
-A17 through `kernel`; the signal (`signal_hypotheses`) is Lean core. So is
+those witnesses themselves rest on. All of them print Lean core. In particular
 `witness_main_characterization_delayCore` (R14): the pure-delay core `Φ_{x,y} = τ_{y-x}` witnesses
-`main_characterization`'s (⇒) hypotheses without going through `kernel` at all, so it prints Lean
-core alone — the hypothesis class is nonempty independently of the construction that proves the
-theorem, not merely because the construction happens to populate it.
+`main_characterization`'s (⇒) hypotheses without going through `kernel` at all — the hypothesis
+class is nonempty independently of the construction that proves the theorem, not merely because
+the construction happens to populate it.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.signal_hypotheses
@@ -1396,10 +1363,9 @@ Lean core: nothing here mentions a kernel.
 /-! **R1** — the round trip. `main_analysis` now also exports `χ 1 = 1` (`gauge_one`, Lean core)
 and the finiteness `levyExponentD b₀ k s ≠ ⊤` it always had inside its proof, and stays on
 **A18 alone** (its line above is unchanged and is what checks that). `main_analysis'` packages it
-into a `SelfDecomposableExponent` and identifies `Fam.repr x y = F.kernel (χ x) (χ y)`, so it
-prints **A18 and A17** — A17 through `kernel`, exactly as `prop:main-uniqueness` does, and not
-because the analysis uses the construction. `main_characterization`'s (⇒) conjunct is now the
-round-trip form; its own line above prints both names as before.
+into a `SelfDecomposableExponent` and identifies `Fam.repr x y = F.kernel (χ x) (χ y)`, and
+prints **A18 alone** too. `main_characterization`'s (⇒) conjunct is now the round-trip form; its
+own line above prints A18 as before.
 -/
 
 #print axioms Hemigroup.CascadeCore.gauge_one
@@ -1409,8 +1375,8 @@ round-trip form; its own line above prints both names as before.
 the domain half of (1) (`realisesSymbolAction_profile`, already listed), the identification
 `u(·,x) = Φ_{0,x}f` (`coeFn_Phi_zero`, already listed), the boundary value `û(s,0+) = f̂(s)`,
 the `X₀`-reading of `∂_t u` at every `t`, and the convergence of both Mellin transforms in (2d).
-The three new lemmas below print **A17 and nothing else**, through `lawT₁`/`kernel` as everything
-about the field does; `signaling_form`'s own line above is unchanged and still prints A17 alone.
+The new lemmas below print **Lean core**; `signaling_form`'s own line above is unchanged and
+prints Lean core too.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_laplaceFun_delayedField
@@ -1422,8 +1388,7 @@ about the field does; `signaling_form`'s own line above is unchanged and still p
 family along an increasing bijection `χ` of `[0,∞)` — (A1)–(A6), (ND) verbatim, (A7) through the
 continuity of `χ` (`continuousOn_of_strictMonoOn_surjOn`, Lean core), (A8) with
 `S_σ ↦ χ⁻¹ ∘ S_σ ∘ χ` — and `cascadeFamily_reparam` is Theorem 7.3 (⇐) in the gauge `χ`.
-The two general lemmas print **Lean core**; the corollary about `F`'s kernels prints **A17**,
-through `kernel`, exactly as `cascadeFamily` does.
+All three lines print **Lean core**, the corollary about `F`'s kernels as `cascadeFamily` does.
 -/
 
 #print axioms Hemigroup.continuousOn_of_strictMonoOn_surjOn
@@ -1468,7 +1433,7 @@ symbol's witness coefficients `γ_j`, `im_inversionOperator_eq_zero_of_symbol_eq
 has zero imaginary part on a real test function, and
 `eq_ofReal_re_inversionOperator_of_symbol_eq` packages that as `(Ag)(x₀)` being equal to its own
 real part cast back — so under that extra hypothesis this lemma's inequality and the article's
-`(Ag)(x₀) ≤ 0` are the same statement. Both print A17 through `inversionOperator`, same as
+`(Ag)(x₀) ≤ 0` are the same statement. Both print Lean core, same as
 `satisfiesPMP_of_symbol_eq` above.
 -/
 
@@ -1483,8 +1448,7 @@ listed against `lem:mellin-data` above and unchanged), swaps the order
 `laplaceL_lawT₁`, which *is* `e^{-s^α}` at the stable exponent — landing on
 `∫₀^∞ s^{ζ-1}e^{-s^α}ds`, finite by Mathlib's Gamma-integral formula for every `ζ, α > 0`. No
 closed form for the stable law is needed, only for its transform, which is the exponent itself.
-A17 through `lawT₁`, as every statement about `T₁` carries; nothing else — in particular no new
-interface, and the `s`-integral itself is Lean core.
+Lean core — in particular no new interface.
 -/
 
 #print axioms Hemigroup.SelfDecomposableExponent.stableExponent_tendsto

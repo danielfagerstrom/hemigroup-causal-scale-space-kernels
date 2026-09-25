@@ -147,8 +147,8 @@ the trust boundary stays at two entries.
 Route B is complete. `existsUnique_potentialKernel` and `exists_sonine_pair` have moved into the
 library as `Hemigroup/PotentialKernel.lean`, together with the two steps they rest on
 (`exists_levyTriple_symbol`, `exists_subordinatorFamily`) and the general machinery in
-`Hemigroup/Subordinator.lean`. Their nodes are `\leanok`, and `#print axioms` gives A17 and
-nothing else -- so the trust boundary is still two entries and the article's claim that the
+`Hemigroup/Subordinator.lean`. Their nodes are `\leanok`, and `#print axioms` gives Lean
+core -- so no entry is spent and the article's claim that the
 representation-first design keeps A1 off the critical path survives contact with the proof.
 
 What the round found, all of it by writing statements before proving them:

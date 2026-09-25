@@ -20,9 +20,9 @@ to, so that the node has one declaration to carry.
 The node's own annotation argued against a statement of its own, and the argument is good and is
 not overturned by this file. The three halves are proved by different means at different cost, and
 — the point that matters — **they cross the trust boundary in different places**: `(⇐)` and the
-uniqueness clause rest on `A17`, `(⇒)` on `A18`, and neither borrows the other's. That separation
+uniqueness clause are Lean core, `(⇒)` rests on `A18`. That separation
 is real, it is what `CIAxiomGuard.lean` checks per half, and a bundle cannot show it: the bundle
-necessarily depends on both.
+necessarily depends on every entry its parts do.
 
 So the per-half `#print axioms` lines are the load-bearing ones and stay exactly as they were.
 What the bundle adds is only that the dependency graph stops reporting the article's main theorem

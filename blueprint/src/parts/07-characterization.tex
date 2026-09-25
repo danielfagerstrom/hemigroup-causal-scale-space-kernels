@@ -47,7 +47,7 @@
 % three-way equivalence whose implications cost wildly different things: (3) => (1) is a change
 % of variables and a sign, and is machine-checked; (1) => (2) => (3) is where A4 and A3 are
 % spent. One node reported the maximum of those, so the graph said the CONSTRUCTION -- which is
-% \leanok and reduces to Lean core plus A17 -- depended on a node resting on two ledger entries.
+% \leanok and reduces to Lean core -- depended on a node resting on two ledger entries.
 % That was not a presentation defect, it was false.
 %
 % So 7.11 lem:selfdecomposable-increment (the cheap half, Lean-tagged) and 7.12
@@ -155,9 +155,9 @@ reported the article's main theorem as unproved while all of it was proved, whic
 gap \ref{thm:signaling-form} had.}
 
 \emph{\textbf{The halves remain where the trust boundary is read off, and the bundle cannot
-replace them.} $(\Leftarrow)$ and the uniqueness clause rest on \ledger{A17}, $(\Rightarrow)$ on
-\ledger{A18}, and neither borrows the other's --- a separation \texttt{CIAxiomGuard.lean} checks
-per half and that a bundle necessarily destroys, since it depends on both. That is why the halves
+replace them.} $(\Leftarrow)$ and the uniqueness clause are Lean core, $(\Rightarrow)$ rests on
+\ledger{A18} --- a separation \texttt{CIAxiomGuard.lean} checks
+per half and that a bundle necessarily destroys, since it depends on every entry its parts do. That is why the halves
 are stated separately (see the note at the head of this file), and adding the collation does not
 weaken the reason; it only stops the graph from understating what is done.}
 
@@ -376,14 +376,12 @@ $\Sact_\sigma x = \sigma x$.
 \texttt{Hemigroup.SelfDecomposableExponent.cascadeFamily} --- and at the level the theorem
 states it: not ``the kernels satisfy properties we named (A1)--(A8)'' but ``the kernels
 \emph{are} a causal cascade measurement family'', the Lean structure of
-\ref{def:cascade-family} instantiated. \texttt{\#print axioms} reduces to Lean core plus
-\ledger{A17}, which is the single crossing of the trust boundary and enters at one point only:
-the existence of $\mu_{a,b}$ given its triple. That is A17 rather than the Bernstein--Widder
-route the proof below takes, because the development has the Lévy triple in hand and so needs a
-\emph{construction}, not a representation theorem --- see
-\texttt{Formalization/Hemigroup/Interfaces.lean} for why the interface is phrased so that the
-day the compound-Poisson construction is carried out it becomes a lemma and the trust boundary
-returns to empty, without touching a downstream statement.
+\ref{def:cascade-family} instantiated. \texttt{\#print axioms} reduces to Lean core: the
+existence of $\mu_{a,b}$ given its triple is constructed
+(\texttt{Formalization/Hemigroup/CompoundPoisson.lean}), not cited, because the development has
+the Lévy triple in hand and so needs a \emph{construction}, not the Bernstein--Widder
+representation theorem the proof below takes. The trust-base statement is at the head of
+\texttt{blueprint/AXIOMS.md}.
 \textbf{What the proof cost, against what was expected.} The passage from exponents to measures
 is pure transport, the transform carrying convolution to multiplication and dilation to
 reparametrisation, and being injective on causal measures --- and that injectivity is
@@ -418,8 +416,8 @@ $\Sact_\sigma \mapsto \chi^{-1} \circ \Sact_\sigma \circ \chi$. Since the fideli
 R8) that reparametrisation is machine-checked, \texttt{Hemigroup.CascadeFamily.reparam}, and
 \texttt{Hemigroup.SelfDecomposableExponent.cascadeFamily\_reparam} is this theorem in the gauge
 $\chi$: the family $\mu^F_{\chi(x),\chi(y)} * \cdot$ is a causal cascade measurement family with
-action $\Sact_\sigma x = \chi^{-1}(\sigma\,\chi(x))$. Lean core for the reparametrisation itself,
-\ledger{A17} for the corollary about $F$'s kernels, as here.)}
+action $\Sact_\sigma x = \chi^{-1}(\sigma\,\chi(x))$. Lean core, the corollary about $F$'s kernels
+included, as here.)}
 \end{theorem}
 
 \begin{proof}
@@ -486,7 +484,7 @@ final appeal is interface-free.}
 (1) $\Rightarrow$ (3). The split is what makes this node's cost legible.
 \texttt{similarity\_form} reduces to Lean core, so everything up to the final appeal is
 interface-free; \texttt{main\_analysis} carries \ledger{A18} and nothing else; and
-\ref{thm:main-construction} and \ref{prop:main-uniqueness} carry \ledger{A17} and \emph{not}
+\ref{thm:main-construction} and \ref{prop:main-uniqueness} are Lean core, with no
 \ledger{A18}. So the sentence this article has always written --- that the analysis direction
 crosses the boundary where the constructive one does not --- is now a fact
 \texttt{\#print axioms} reports rather than a claim the prose makes.}
@@ -500,10 +498,8 @@ $F(s) < \infty$ (free from \ledger{A18}'s conclusion) and the normalisation $\ch
 $F$ of the form (7.1) with $F \not\equiv 0$ --- the same Lean structure
 \ref{thm:main-construction} takes as input --- with $\mu_{x,y} = \mu^F_{\chi(x),\chi(y)}$ and
 $\Phi_{x,y} = \mu^F_{\chi(x),\chi(y)} * \cdot$, the identification being Laplace injectivity
-(\ref{prop:laplace-uniqueness-causal}). Because it names $F$'s kernels, which \ledger{A17}
-constructs, \texttt{main\_analysis'} carries \ledger{A17} \emph{and} \ledger{A18};
-\texttt{main\_analysis} itself still carries \ledger{A18} alone, and both lines are in
-\texttt{CIAxiomGuard.lean}.)}
+(\ref{prop:laplace-uniqueness-causal}). \texttt{main\_analysis'} and \texttt{main\_analysis}
+both carry \ledger{A18} alone, and both lines are in \texttt{CIAxiomGuard.lean}.)}
 \end{theorem}
 
 \begin{proof}
@@ -529,8 +525,7 @@ $0 < x \le y$. Then $\chi = \Id$ and $F' = F$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
 \texttt{Hemigroup.SelfDecomposableExponent.gauge\_and\_exponent\_unique};
 \texttt{\#print axioms} is held against \texttt{blueprint/trust-boundary.txt} by CI, with
-\ledger{A17} reaching the statement through the construction of the kernels it quantifies over
-and nothing else. The argument itself adds no analysis to
+the result Lean core. The argument itself adds no analysis to
 \ref{thm:main-construction}.
 \textbf{Why $\chi$ is a bare function here.} \ref{prop:canonical-gauge} produces $\chi$ as an
 increasing bijection with an inverse conjugating the scaling action into multiplication, and
@@ -597,7 +592,7 @@ closure theorem, no derivative, no uniqueness of a triple --- so none of
 \ref{prop:bernstein-toolbox}. Classically one would instead read $(3) \Rightarrow (2)
 \Rightarrow (1)$ off \ref{lem:selfdecomposable-derivative}, which is shorter to write and costs
 \ledger{A3} and \ledger{A4}; \ref{thm:main-construction} cites this node rather than that route,
-and that is why its trust base is Lean core plus \ledger{A17} alone.)}
+and that is why its trust base is Lean core.)}
 \end{lemma}
 
 \begin{proof}
@@ -631,13 +626,12 @@ closure of $\BF$ under pointwise limits, \ledger{A4}, applied to a difference qu
 density it produces with $k$. Neither is a statement about the hemigroup family --- they are
 facts about $\BF$ as a class of functions --- and neither can even be \emph{stated} here, since
 both quantify over $\BF$ and the development has no $\CM$. So what the trust boundary carries is
-the composite, in the direction \ref{thm:main-analysis} spends, phrased in $\LE$: exactly the
-device \ledger{A17} uses. Worth recording that the \emph{anchor} does not take the route this
+the composite, in the direction \ref{thm:main-analysis} spends, phrased in $\LE$. Worth recording that the \emph{anchor} does not take the route this
 proof does: \ledger{A18} is grounded on \sscite{schilling2012bernstein}, Prop.~5.17, whose
 hypothesis is complete monotonicity of the ratio $g(\lambda)/g(c\lambda)$ rather than membership
 of the increment in $\BFz$, and the passage from ours to his costs \ledger{A2} and not
 \ledger{A4} or \ledger{A3}. Two independent routes to the same fact, which is a reason for
-confidence rather than a discrepancy; the ledger entry records both. Unlike \ledger{A17}, expect it to be permanent --- the
+confidence rather than a discrepancy; the ledger entry records both. Unlike the retired A17, expect it to be permanent --- the
 (1)$\Rightarrow$(2) leg needs differentiability of Bernstein functions, and there is no route to
 that which does not reintroduce $\CM$.
 \textbf{The derivative is unavoidable here}, which is the other reason to keep it separate:
