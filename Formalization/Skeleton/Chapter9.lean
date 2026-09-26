@@ -230,6 +230,40 @@ idiom rather than the mathematics. The node's `[A]` status is fixed by clause (1
 proving this would widen what is machine-checked without moving the trust boundary.
 -/
 
+/-- **Step 1 of `prop:pair-regularity`(2)**: the `(⇐)` of the first equivalence. The CM class is
+dilation-stable by transporting the representing measure, `σ ↦ x⁻¹ · map (· / x) σ`, with no
+analysis; the drift atom drops out on `Ioi 0`. -/
+theorem hasCMDensity_memoryKernel_of_hasCMRep {x : ℝ} (hx : 0 < x) (h : HasCMRep F.k) :
+    HasCMDensity (F.memoryKernel x) := by
+  obtain ⟨σ, hσ, hk⟩ := h
+  refine ⟨fun t => F.k (t / x) / x,
+    ⟨ENNReal.ofReal x⁻¹ • σ.map (fun τ => τ / x), ?_, ?_⟩, ?_⟩
+  · have hpre : (fun τ : ℝ => τ / x) ⁻¹' Iio 0 = Iio 0 := by
+      ext τ
+      simp only [mem_preimage, mem_Iio]
+      exact ⟨fun h => by
+        by_contra h'
+        exact absurd h (not_lt.mpr (div_nonneg (not_lt.mp h') hx.le)),
+        fun h => div_neg_of_neg_of_pos h hx⟩
+    show (ENNReal.ofReal x⁻¹ • σ.map (fun τ => τ / x)) (Iio 0) = 0
+    rw [Measure.smul_apply, Measure.map_apply (by fun_prop : Measurable fun τ : ℝ => τ / x)
+      measurableSet_Iio,
+      hpre, hσ, smul_zero]
+  · intro t ht
+    show F.k (t / x) / x = _
+    rw [integral_smul_measure,
+      integral_map (by fun_prop : Measurable fun τ : ℝ => τ / x).aemeasurable
+        (by fun_prop : Continuous fun τ : ℝ => Real.exp (-(τ * t))).aestronglyMeasurable,
+      hk (t / x) (div_pos ht hx), ENNReal.toReal_ofReal (inv_nonneg.mpr hx.le), smul_eq_mul,
+      div_eq_inv_mul]
+    have hτ : ∀ τ : ℝ, τ / x * t = τ * (t / x) := fun τ => by ring
+    simp only [hτ]
+  · rw [SelfDecomposableExponent.memoryKernel, Measure.restrict_add, Measure.restrict_smul,
+      Measure.restrict_eq_zero.mpr (show Measure.dirac (0 : ℝ) (Ioi 0) = 0 by
+        rw [Measure.dirac_apply' _ measurableSet_Ioi]; simp), smul_zero, zero_add,
+      restrict_withDensity measurableSet_Ioi, Measure.restrict_restrict measurableSet_Ioi,
+      inter_self]
+
 /-- **`prop:pair-regularity`(2).** `κ^{(x)}` has a completely monotone density iff `k` does,
 iff `F'` is Stieltjes. -/
 theorem hasCMDensity_iff {x : ℝ} (hx : 0 < x) :
