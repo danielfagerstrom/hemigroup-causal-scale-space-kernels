@@ -26,6 +26,7 @@ clause (2)'s Mellin form.
 | `lem:mode-rigidity` (11.25) | `mode_rigidity` | `ModeRigidity.lean` |
 | `lem:standing-levy-reading` (11.22) | `standing_levy_reading` + 2 | `StandingLevyReading.lean` |
 | `lem:zstar-log-growth`(2), drift case | `…_div_log_atTop_of_b₀_pos` | `ZStarLogGrowth.lean` |
+| `lem:zstar-log-growth`(2), driftless case | `…_div_log_atTop_of_b₀_zero` | `ZStarDriftless.lean` |
 
 All of it reduces to Lean core.
 
@@ -138,12 +139,15 @@ a single point where `k` is positive bounds `k` below on all of `(0,t₀]` and t
 the origin. Self-decomposability, not Lévy structure, is what makes the admissible cone have no
 bounded nonzero member.
 
-## `lem:zstar-log-growth` (11.23) — one of the four discharged, three target types below
+## `lem:zstar-log-growth` (11.23) — clause (2) discharged, two target types below
 
-**Clause (2)'s drift case is proved** (`Hemigroup/ZStarLogGrowth.lean`, Lean core). It is the one
-of the four that is unconditional *and* needs no Tauberian argument: `F(s) ≥ b₀ s` from the
+**Clause (2) is proved in both cases**, unconditionally. The **drift** case
+(`Hemigroup/ZStarLogGrowth.lean`, Lean core) needs no Tauberian argument: `F(s) ≥ b₀ s` from the
 representation, and `s / log s → ∞`, which is `Real.isLittleO_log_id_atTop` turned the other way
-up. The three below stay `\notready`; what each of them waits on is recorded at its declaration.
+up. The **driftless** case (`Hemigroup/ZStarDriftless.lean`, Lean core) is the one with content,
+and it is the sixth time in this chapter that what a proof cites was an upper bound on what its
+statement needs — see below. Clauses (1) and (4) stay `\notready`; what each waits on is recorded
+at its declaration.
 
 The node is the Lévy-data reading of (H)'s *second* clause, which 11.22 does not supply (it
 reads only the first). `z_* = lim F(s)/log s`, and — the finding writing the type down produced —
@@ -158,35 +162,43 @@ not. `zStar_smul` is priced as the cheapest of the four — a direct corollary o
 exists, via `exponent_smul` (already proved, `Hemigroup/AdmissibleCone.lean`) and the arithmetic of
 a scaled limit.
 
-**A plausible shortcut, not yet acted on.** The blueprint proof of clause (1) invokes
+**A plausible shortcut, no longer needed for clause (2).** The blueprint proof of clause (1) invokes
 `lem:selfdecomposable-exponents`(2) — `B` is a Bernstein function, hence nondecreasing — to get
 `F(e^{(\cdot)})` convex and hence its difference quotient convergent. But `B`'s monotonicity is
 also immediate from the explicit formula above (increasing `s` increases each `k(u/s)`
 pointwise), without appeal to the general Bernstein-closure fact, which is ledger A18. If that
 substitutes cleanly, clause (1) would reduce to Lean core rather than crossing A18 — a
-question only an attempt at the proof, not this survey, can settle. Still unacted on: the drift
-case proved above does not touch `B`, so nothing was learned about the shortcut.
+question only an attempt at clause (1)'s proof, not this survey, can settle. What the driftless
+case of (2) settled is weaker and better: clause (2) needs neither `B` nor A18, because it needs no
+derivative at all.
 
-**What the three that remain wait on, and why each stays open** (established by writing the
-routes out, 2026-09-26; none of the three was attempted):
+**The obstacle recorded here belonged to one route, not to the statement.** This file, the
+blueprint node, the changelog and the handoff all said that the driftless case of (2) waits on an
+`∞/∞` L'Hôpital that Mathlib does not carry (`Mathlib/Analysis/Calculus/LHopital.lean` is the `0/0`
+form in every variant), plus a case split on `k(0⁺) = ∞`. That is a true statement about the
+blueprint's route — through `B(s) = sF'(s)` and the Cesàro step
+`F(s)/log s = (log s)⁻¹∫₁^s B(v)v⁻¹dv → lim B` — and a false one about the obligation. The proof in
+`Hemigroup/ZStarDriftless.lean` never differentiates: it splits the defining integral, bounds below
+on `(M/s,t₀]` using `k ≥ k(t₀)` there and `1 - e^{-st} ≥ 1 - e^{-M}`, bounds above by splitting at
+`1/s` and using `1 - e^{-st} ≤ st` before and `≤ 1` after, and assembles the two with
+`tendsto_order` — which takes `k(0⁺) = ∞` in its stride, there being then no level above the
+supremum to check, so the case split disappears with the derivative. Sixth instance of the
+chapter's pattern, and the first where the recorded obstacle was a *missing Mathlib theorem* rather
+than a cited node: the moral now covers the tools a proof reaches for as well as the lemmas.
 
-* **the driftless case of (2) is the one with real content**, and it is the bottleneck for the
-  other two. Its first half is available — `B(s) = s F'(s) = b₀ s + ∫₀^∞ e^{-u}k(u/s)du` from
-  `hasDerivAt_toRealExponent` (already proved), and `B(s) ↑ k(0⁺)` by monotone convergence, the
-  same argument `lem:standing-levy-reading`(1) uses. The second half is the Cesàro step
-  `F(s)/log s = (1/log s)∫₁^s B(v)dv/v → lim B`, and **Mathlib's L'Hôpital is the `0/0` form
-  only**: `Mathlib/Analysis/Calculus/LHopital.lean` has `lhopital_zero_*` in every variant and no
-  `∞/∞` companion at `atTop`. So the step has to be done by hand, with a case split on
-  `k(0⁺) = ∞` that the `ℝ≥0∞`-valued target makes unavoidable. That is the price, and it is the
-  honest one: not an interface, a missing Mathlib theorem plus a case analysis;
+**What the two that remain wait on** (routes written out 2026-09-26; neither attempted, and the
+limit they both needed now exists in both cases):
+
 * **(1) is (2) plus an Abelian comparison.** Identifying the limit *with* `z_*` goes through
   `Γ(ζ)·E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds` — which the library already has in the shape
   `lintegral_lintegral_gamma_of_ae_mem_Ioi` plus `laplaceL_lawT₁`, the route
   `stableExponent_negMoment_ne_top` takes — and then compares `e^{-F(s)}` with `s^{-z}` on both
-  sides, which needs the two-sided bound that *is* the limit of (2). So it cannot precede it;
+  sides, which needs the two-sided bound that *is* the limit of (2). That bound now exists in both
+  cases, so (1) waits on nothing but the comparison itself: the two tails of the `ζ`-integral, and
+  the drift case separately, where the limit is `∞` and `z_* = ∞` has to be read off `negMoment`;
 * **(4) is a corollary of (1)**, as priced, and inherits its wait.
 
-None of the three is blocked on the trust boundary, and none of them is consumed by anything:
+Neither of the two is blocked on the trust boundary, and neither is consumed by anything:
 `def:standing-hypothesis`'s own clauses are what every proof in chapters 11–12 uses, per 11.21's
 remark that all of (H)'s bite is in the second clause.
 -/
@@ -205,16 +217,6 @@ are blind to an atom at the origin, exactly as in `lem:mellin-data` and
 theorem tendsto_toRealExponent_div_log_atTop_zStar (F : SelfDecomposableExponent)
     (hF : F.lawT₁ {(0 : ℝ)} = 0) :
     Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop (𝓝 F.zStar) := by
-  sorry
-
-/-- **`lem:zstar-log-growth`(2), driftless case**: with `b₀ = 0` the log-growth rate is the
-catalogue height `k(0⁺) = sup_{t>0} k(t)`, valued in `[0,∞]` for the same reason `zStar` is (a
-nonincreasing `k` unbounded near `0` would junk a real-valued supremum to `0`). Also
-unconditional. -/
-theorem tendsto_toRealExponent_div_log_atTop_of_b₀_zero (F : SelfDecomposableExponent)
-    (hb : F.b₀ = 0) :
-    Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop
-      (𝓝 (⨆ t ∈ Ioi (0 : ℝ), ENNReal.ofReal (F.k t))) := by
   sorry
 
 /-- **`lem:zstar-log-growth`(4)**: `z_*` is homogeneous of degree one on the admissible cone.
