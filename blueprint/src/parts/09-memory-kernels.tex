@@ -360,7 +360,25 @@ completely monotone Lévy density (Thm.~6.2) --- while the computations joining 
 split off as \ref{prop:sonine-pair-exists}; before the split this node reported A9's cost for a
 restatement of three proved results. Note the edition hazard recorded in the ledger: SSV's
 Thm.~11.3 is Thm.~10.3 in the first edition, a chapter having been inserted at position~10 in
-the second.)}
+the second.
+\textbf{Why the Lean stays \texttt{\textbackslash notready}, and one thing that is not settled}
+(surveyed 2026-09-26, Q-0021; not acted on). The target type
+\texttt{Skeleton.hasCMDensity\_iff} in \texttt{Formalization/Skeleton/Chapter9.lean} states
+clause~(2)'s \emph{two equivalences only} --- $\kappa_c^{(x)}$ has a CM density iff $k$ does, and
+$k$ does iff $F'$ is Stieltjes --- in the representation idiom
+(\texttt{HasCMRep}, \texttt{HasStieltjesRep}, \texttt{HasCMDensity}); it does not state the
+second assertion, about $\ell^{(x)}$ and $F \in \CBF$. But the ledger's two structural inputs,
+SSV~Thm.~7.3 and Thm.~6.2, are used \emph{only} in that second assertion: the proof below derives
+the two equivalences from \ref{lem:memory-kernel}'s derivative formula (already machine-checked)
+by Tonelli one way and by Laplace uniqueness the other, and cites neither theorem. So "ledger A9
+by design'' is right for the \emph{node} and is \emph{not established} for the \emph{declaration}.
+The declaration is not therefore cheap --- the converse needs the $a = 0$ step
+($a/s$ is an additive constant in $k$, which $\int_1^\infty k(t)t^{-1}dt < \infty$ forbids) and
+then Laplace injectivity, available as \texttt{laplaceL\_injective\_of\_ne\_top}, with the usual
+a.e.-versus-everywhere care that \texttt{HasCMRep}'s pointwise form imposes --- and no attempt was
+made here. Recorded, not scheduled: whether that declaration can be discharged off the trust
+boundary is the open question, and answering it would widen what is machine-checked without
+touching the node's \textbf{[A]} status, which clause~(1) fixes regardless.)}
 \end{proposition}
 
 \begin{proof}

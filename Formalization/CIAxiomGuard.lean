@@ -243,6 +243,34 @@ Every line reduces to **Lean core**. The bundle `standing_kernel_readings` is wh
 #print axioms Hemigroup.SelfDecomposableExponent.one_le_zStar_of_negMoment_one_ne_top
 #print axioms Hemigroup.SelfDecomposableExponent.standing_kernel_readings
 
+/-! ### `lem:standing-levy-reading` (11.22), the same first clause read in the `(b₀,k)` data
+
+The companion of 11.21: 11.21 reads the first clause of (H) in the law of `T₁`, this one reads it
+in the Lévy data of (7.1). Every line is **Lean core** — the only convergence argument is
+monotone convergence for `levyJump` along the naturals, and clause (2)'s divergence at the origin
+is `∫₀^{t₀} dt/t = ∞` against a `k` bounded below there by monotonicity. The bundle
+`standing_levy_reading` is what the node's `\lean` tag names.
+-/
+
+#print axioms Hemigroup.levyJump_le_levyMass
+#print axioms Hemigroup.tendsto_levyJump_atTop_levyMass
+#print axioms Hemigroup.lintegral_inv_Ioc_eq_top
+#print axioms Hemigroup.levyMass_eq_top_of_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_atTop_iff_levy
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_atTop_of_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.standing_levy_reading
+
+/-! ### `lem:zstar-log-growth` (11.23), the drift clause only
+
+The node is **not** `\leanok`: three of its four declarations remain in `Skeleton/Chapter11.lean`
+(see that file, and `records/PLAN-chapters-8-12.md`). What is checked here is clause (2)'s drift
+case, which is unconditional and needs no Tauberian argument — `F(s) ≥ b₀ s` and `s / log s → ∞`.
+Lean core.
+-/
+
+#print axioms Hemigroup.tendsto_id_div_log_atTop
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos
+
 /-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
 
 Analyticity of `H̃` on the strip, its non-vanishing at real points, the isolation of its zeros,

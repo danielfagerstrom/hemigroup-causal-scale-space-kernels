@@ -24,6 +24,8 @@ clause (2)'s Mellin form.
 | `lem:mellin-vertical` (11.13) | `verticalIntegrable_mellin_profile` | `MellinVertical.lean` |
 | `lem:inversion-operator-action` (11.16) | `inversionOperator` + 3 | `InversionOperator.lean` |
 | `lem:mode-rigidity` (11.25) | `mode_rigidity` | `ModeRigidity.lean` |
+| `lem:standing-levy-reading` (11.22) | `standing_levy_reading` + 2 | `StandingLevyReading.lean` |
+| `lem:zstar-log-growth`(2), drift case | `…_div_log_atTop_of_b₀_pos` | `ZStarLogGrowth.lean` |
 
 All of it reduces to Lean core.
 
@@ -112,25 +114,38 @@ pattern deserves its name: **what a proof cites is an upper bound on what a stat
 Both pieces are proved, and with them `thm:signaling-form`(2)'s Mellin form
 (`mellin_signaling_form`).
 
-## `lem:standing-levy-reading` (11.22) — the two target types below
+## `lem:standing-levy-reading` (11.22) — **discharged**
 
-Added 2026-08-29, alongside `lem:standing-kernel-readings` (11.21, proved, in
-`Hemigroup/MemoryFractional.lean`), when `def:standing-hypothesis`'s embedded glosses were split
-out of the definition. This is the one of the two glosses stated in the `(b₀,k)` data of (7.1)
-rather than in `T₁`'s law, and it is genuinely more work: the first clause needs a monotone
-(or dominated) convergence argument for `levyJump` as `s → ∞`, bridging an `ℝ≥0∞`-valued limit at
-`s → ∞` to the `ℝ` atTop reading `toRealExponent` already carries, in *both* directions of an
-`iff`; the second needs a small divergence computation, `∫₀^{t₀} t⁻¹dt = ∞`, that nothing in the
-library currently states. Priced against the target types below, not against the paper proof
-(the paper proof's own route — through complete monotonicity — is not available at all, the
-development having no `CM` predicate; see `DESIGN-formalization-strategy.md`): this is
-**statable, not cheap**, and nothing downstream consumes it (the definition's own clauses are
-what every proof in chapters 11–12 actually uses, per 11.21's remark that all of (H)'s bite is in
-the second clause). So it stays here, `\notready`, rather than being attempted inline.
+Both target types are proved, in `Hemigroup/StandingLevyReading.lean`, on Lean core.
 
-## `lem:zstar-log-growth` (11.23) — the four target types below
+The pricing here — "statable, not cheap" — read the obligation off the *proof sketch* again, and
+again the sketch was an upper bound. Two things it asked for turned out not to be needed:
 
-Added 2026-08-29: the Lévy-data reading of (H)'s *second* clause, which 11.22 does not supply (it
+* **the `ℝ≥0∞`-to-`ℝ` bridge, in both directions of the `iff`.** Only the divergent direction
+  needs a limit. The convergent direction is a uniform bound, `levyJump k s ≤ levyMass k`, which
+  is `1 - e^{-st} ≤ 1` and no convergence theorem at all — and it needs no sign condition on `s`
+  either, `ENNReal.ofReal` truncating the negative case. So monotone convergence is used once,
+  along the naturals, in one direction;
+* **a statement the library lacks.** The divergence `∫₀^{t₀} t⁻¹dt = ∞` is indeed absent from
+  Mathlib in `lintegral` form, but it is present in *integrability* form
+  (`intervalIntegrable_inv_iff`), and `hasFiniteIntegral_iff_ofReal` is the passage between them —
+  six lines, not a development.
+
+What the proof did make visible is where the class is used. Clause (2) — nonzero implies
+`F(∞) = ∞` — is **false** for a general Lévy exponent: a driftless compound Poisson with finite
+Lévy mass is bounded. It holds here only because the density against `dt/t` is nonincreasing, so
+a single point where `k` is positive bounds `k` below on all of `(0,t₀]` and the mass diverges at
+the origin. Self-decomposability, not Lévy structure, is what makes the admissible cone have no
+bounded nonzero member.
+
+## `lem:zstar-log-growth` (11.23) — one of the four discharged, three target types below
+
+**Clause (2)'s drift case is proved** (`Hemigroup/ZStarLogGrowth.lean`, Lean core). It is the one
+of the four that is unconditional *and* needs no Tauberian argument: `F(s) ≥ b₀ s` from the
+representation, and `s / log s → ∞`, which is `Real.isLittleO_log_id_atTop` turned the other way
+up. The three below stay `\notready`; what each of them waits on is recorded at its declaration.
+
+The node is the Lévy-data reading of (H)'s *second* clause, which 11.22 does not supply (it
 reads only the first). `z_* = lim F(s)/log s`, and — the finding writing the type down produced —
 only the identification of that limit *with* `z_*` needs a no-atom hypothesis; the value of the
 limit itself, `∞` if `b₀ > 0` and `k(0⁺) := sup_{t>0} k(t)` if `b₀ = 0`, is an unconditional fact
@@ -149,7 +164,31 @@ a scaled limit.
 also immediate from the explicit formula above (increasing `s` increases each `k(u/s)`
 pointwise), without appeal to the general Bernstein-closure fact, which is ledger A18. If that
 substitutes cleanly, clause (1) would reduce to Lean core rather than crossing A18 — a
-question only an attempt at the proof, not this survey, can settle.
+question only an attempt at the proof, not this survey, can settle. Still unacted on: the drift
+case proved above does not touch `B`, so nothing was learned about the shortcut.
+
+**What the three that remain wait on, and why each stays open** (established by writing the
+routes out, 2026-09-26; none of the three was attempted):
+
+* **the driftless case of (2) is the one with real content**, and it is the bottleneck for the
+  other two. Its first half is available — `B(s) = s F'(s) = b₀ s + ∫₀^∞ e^{-u}k(u/s)du` from
+  `hasDerivAt_toRealExponent` (already proved), and `B(s) ↑ k(0⁺)` by monotone convergence, the
+  same argument `lem:standing-levy-reading`(1) uses. The second half is the Cesàro step
+  `F(s)/log s = (1/log s)∫₁^s B(v)dv/v → lim B`, and **Mathlib's L'Hôpital is the `0/0` form
+  only**: `Mathlib/Analysis/Calculus/LHopital.lean` has `lhopital_zero_*` in every variant and no
+  `∞/∞` companion at `atTop`. So the step has to be done by hand, with a case split on
+  `k(0⁺) = ∞` that the `ℝ≥0∞`-valued target makes unavoidable. That is the price, and it is the
+  honest one: not an interface, a missing Mathlib theorem plus a case analysis;
+* **(1) is (2) plus an Abelian comparison.** Identifying the limit *with* `z_*` goes through
+  `Γ(ζ)·E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds` — which the library already has in the shape
+  `lintegral_lintegral_gamma_of_ae_mem_Ioi` plus `laplaceL_lawT₁`, the route
+  `stableExponent_negMoment_ne_top` takes — and then compares `e^{-F(s)}` with `s^{-z}` on both
+  sides, which needs the two-sided bound that *is* the limit of (2). So it cannot precede it;
+* **(4) is a corollary of (1)**, as priced, and inherits its wait.
+
+None of the three is blocked on the trust boundary, and none of them is consumed by anything:
+`def:standing-hypothesis`'s own clauses are what every proof in chapters 11–12 uses, per 11.21's
+remark that all of (H)'s bite is in the second clause.
 -/
 
 namespace Skeleton
@@ -159,23 +198,6 @@ open scoped ENNReal Topology
 
 open Hemigroup Hemigroup.SelfDecomposableExponent
 
-/-- **`lem:standing-levy-reading`(1)**: `F(∞) = ∞` iff the exponent carries drift or infinite
-Lévy mass — the reading of the first clause of (H) in the `(b₀, k)` data of (7.1), rather than in
-the law of `T₁` that `lem:standing-kernel-readings` uses. -/
-theorem tendsto_toRealExponent_atTop_iff_levy (F : SelfDecomposableExponent) :
-    Tendsto F.toRealExponent atTop atTop ↔
-      0 < F.b₀ ∨ ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal (F.k t / t) = ⊤ := by
-  sorry
-
-/-- **`lem:standing-levy-reading`(2)**: a nonzero admissible exponent automatically satisfies the
-first clause of (H) — so, within the admissible class, (H) reduces to its second clause, `z_* >
-1`. `F ≢ 0` is phrased as `exponent_strictMono` already phrases it: some positive point where the
-exponent does not vanish. -/
-theorem tendsto_toRealExponent_atTop_of_ne_zero (F : SelfDecomposableExponent)
-    (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) :
-    Tendsto F.toRealExponent atTop atTop := by
-  sorry
-
 /-- **`lem:zstar-log-growth`(1)**: the log-growth limit `F(s)/log s` exists in `[0,∞]` and equals
 `z_*`. The no-atom hypothesis is load-bearing: `negMoment` and `zStar` integrate over `Ioi 0` and
 are blind to an atom at the origin, exactly as in `lem:mellin-data` and
@@ -183,14 +205,6 @@ are blind to an atom at the origin, exactly as in `lem:mellin-data` and
 theorem tendsto_toRealExponent_div_log_atTop_zStar (F : SelfDecomposableExponent)
     (hF : F.lawT₁ {(0 : ℝ)} = 0) :
     Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop (𝓝 F.zStar) := by
-  sorry
-
-/-- **`lem:zstar-log-growth`(2), drift case**: `b₀ > 0` forces the log-growth rate to diverge.
-Unconditional — no no-atom hypothesis, since this is a statement about the exponent alone, not
-about `T₁`'s moments. -/
-theorem tendsto_toRealExponent_div_log_atTop_of_b₀_pos (F : SelfDecomposableExponent)
-    (hb : 0 < F.b₀) :
-    Tendsto (fun s => F.toRealExponent s / Real.log s) atTop atTop := by
   sorry
 
 /-- **`lem:zstar-log-growth`(2), driftless case**: with `b₀ = 0` the log-growth rate is the

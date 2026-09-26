@@ -2912,3 +2912,42 @@ the four new nodes carry `\leanok`; `lem:mode-rigidity` carries `\lean{...}\notr
 three are untagged, on the pattern `def:covariant-mellin-class` set. The blueprint's paragraph
 after `rem:poles` narrates the arc; `thm:signaling-form` itself — statement, proof, `\lean` tag,
 `\leanok` status — is untouched, per the constraint this round was written under.
+
+# The last `\notready` nodes: 11.22 proved, 11.23 and 9.7(2) priced from the routes — 2026-09-26
+
+Q-0021, closing the survey this plan opened. The account is in `CHANGELOG.md`; what belongs here
+is the correction to this file's own pricing, since that is what the plan exists to carry.
+
+**11.22's price was wrong, and the two reasons it gave were the wrong two.** This plan priced
+`lem:standing-levy-reading` at "statable, not cheap" on (a) an `ℝ≥0∞`-to-`ℝ` bridge in both
+directions of an `iff` and (b) `∫₀^{t₀}t⁻¹dt = ∞`, which "nothing in the library currently
+states". (a) is needed in one direction only — the convergent side is the uniform bound
+`levyJump k s ≤ levyMass k`, which is `1 - e^{-st} ≤ 1`. (b) is real but six lines:
+`intervalIntegrable_inv_iff` states it as integrability and `hasFiniteIntegral_iff_ofReal` crosses
+to the `lintegral`. The whole node is one file. Both entries were written off the proof sketch,
+which is the failure mode this chapter has now shown five times.
+
+**What the node is actually about** — and this plan did not say it: clause (2) is false for a
+general Lévy exponent. A driftless compound Poisson with finite Lévy mass is bounded and nonzero.
+The clause holds only because `k` is nonincreasing. So it is the one place in chapters 8–12 where
+*self-decomposability itself*, not the representation, is the hypothesis doing the work.
+
+**11.23's pricing stands, with the obstacle now named.** The plan said "statable, cheap for
+clause (2)"; that is right for the drift case (proved, one file) and wrong for the driftless case,
+where the obstacle is not the monotone convergence this plan anticipated — that half is
+`hasDerivAt_toRealExponent` plus 11.22's own argument — but the Cesàro step after it, for which
+**Mathlib carries the `0/0` L'Hôpital only** (`Mathlib/Analysis/Calculus/LHopital.lean`, no
+`∞/∞` companion at `atTop`). Clauses (1) and (4) queue behind it. Nothing crosses the trust
+boundary, and the A18 shortcut this plan flagged for clause (1) is still untested.
+
+**9.7(2): the plan's own "A9 by design" does not cover the declaration.** Row 42 above prices
+`prop:pair-regularity`(2) as "A9 *entire*", and lines 890, 952 and 1356 repeat it. That is the
+*node*, whose `[A]` status clause (1) fixes. The target type `Skeleton.hasCMDensity_iff` states
+clause (2)'s two equivalences only; A9's cited theorems (SSV 7.3, 6.2) enter only in the second
+assertion, about `ℓ^{(x)}` and `F ∈ CBF`, which the target type does not state. The two
+equivalences are Tonelli one way and Laplace uniqueness the other. So the declaration is open for
+want of a proof, not for want of a ledger entry — and whether it can be discharged off the
+boundary is now the question. Recorded at the node and at the declaration; not attempted.
+
+**Node count: 68 → 69 `\leanok`** of 106. Four `sorry`s remain, all in `Formalization/Skeleton/`.
+

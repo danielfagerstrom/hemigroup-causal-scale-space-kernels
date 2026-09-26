@@ -171,6 +171,27 @@ therefore statable in the development's existing idiom.
 Crossing to the blueprint's derivative-sign reading of the same classes costs ledger **A1**,
 once, in the statement — never inside a proof. That is the discipline `prop:bernstein-toolbox`(3)
 already documents for `BF₀` against `LE`.
+
+**Why it stays `\notready`, and what is *not* settled** (surveyed 2026-09-26, Q-0021; not acted
+on). `prop:pair-regularity` is an `[A]` node on ledger A9, and the handoff has carried
+"`prop:pair-regularity`(2), ledger A9 by design" as the reason this declaration is not attempted.
+That is right about the *node* and does not follow for the *declaration*:
+
+* the node is `[A]` because of **clause (1)** — the characterization of the potential measures of
+  special subordinators, SSV Thm. 11.3 — which is not stated here at all;
+* within clause (2), A9's two structural inputs (SSV Thm. 7.3, `1/h ∈ CBF` for Stieltjes `h`; SSV
+  Thm. 6.2, a complete Bernstein function has a CM Lévy density) are used **only** for the second
+  assertion, about `ℓ^{(x)}` and `F ∈ CBF`. The statement below is the two equivalences alone, and
+  the blueprint proves those from `lem:memory-kernel`'s derivative formula — `hasDerivAt_toRealExponent`,
+  already in the library — by Tonelli in one direction and Laplace uniqueness in the other, citing
+  neither theorem.
+
+So the reason it stays open is not the trust boundary. It is that nobody has written the proof,
+and the converse direction is real work: the `a = 0` step (an `a/s` term is an additive constant
+in `k`, which `∫₁^∞ k(t)/t dt < ∞` forbids), then `laplaceL_injective_of_ne_top`, then the
+a.e.-versus-everywhere care `HasCMRep`'s pointwise form imposes. Whether it can be discharged off
+the trust boundary is the open question; the node's `[A]` status is fixed by clause (1) either
+way.
 -/
 
 /-- **`prop:pair-regularity`(2).** `κ^{(x)}` has a completely monotone density iff `k` does,
