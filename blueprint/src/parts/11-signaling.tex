@@ -868,7 +868,9 @@ value there and the agreement extends to it.
 
 \begin{lemma}[the operator computes the realising function]\label{lem:inversion-operator-action}
 \uses{def:inversion-operator,lem:inversion-symbol}
-\lean{Hemigroup.SelfDecomposableExponent.inversionOperator_eq}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.inversionOperator_eq_of_ae, Hemigroup.SelfDecomposableExponent.mellin_inversionOperator_of_ae, Hemigroup.SelfDecomposableExponent.mellin_inversionOperator_eq_of_ae}\leanok
+% CHANGED (Q-0141, finding R31): "if h is continuous on (0, infinity)" added to the second
+% display, which the Lean needs (Mellin inversion is pointwise at continuity points only).
 Fix $c > 0$ and $g$, and let $h$ be a function on $(0,\infty)$ such that
 \[
   \tilde h(z) = B(-z)\,\tilde g(z)
@@ -877,17 +879,29 @@ for almost every $z$ on the line $\operatorname{Re} z = c$, with both $\tilde h$
 absolutely convergent there. Then
 \[
   (A g)(x) = \frac{h(x)}{x} \quad\text{at every } x > 0 \text{ where } h \text{ is continuous},
-\qquad
+\]
+and, if $h$ is continuous on $(0,\infty)$,
+\[
   \widetilde{A g}(z) = \tilde h(z-1) \quad\text{for every } z .
 \]
 In particular $\widetilde{A g}(z) = B(1-z)\,\tilde g(z-1)$ wherever the first display holds pointwise.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
-\texttt{Hemigroup.SelfDecomposableExponent.inversionOperator\_eq} with
-\texttt{mellin\_inversionOperator} (the shift) and \texttt{mellin\_inversionOperator\_eq} (the display),
-the hypothesis on $h$ being the structure \texttt{RealisesSymbolAction};
+\texttt{Hemigroup.SelfDecomposableExponent.inversionOperator\_eq\_of\_ae} with
+\texttt{mellin\_inversionOperator\_of\_ae} (the shift) and \texttt{mellin\_inversionOperator\_eq\_of\_ae}
+(the display), whose hypotheses are the node's: the product identity almost everywhere on the
+line, \texttt{MellinConvergent} and \texttt{VerticalIntegrable};
 \texttt{\#print axioms} gives Lean core --- in particular \emph{not} \ledger{A12},
 which is the point of the split. This is everything in \ref{def:inversion-operator} that follows
-once $B(\theta)g$ has a referent; producing that referent is what \ledger{A12} is left carrying.}
+once $B(\theta)g$ has a referent; producing that referent is what \ledger{A12} is left carrying.
+\textbf{The Lean was strengthened to the node, and the node corrected in one place} (Q-0141,
+finding R31). The tag used to name \texttt{inversionOperator\_eq}, which assumes (H) and
+$c < z_*$ and asks for the product identity at every point of the line off the zeros of $\tilde H$
+(the structure \texttt{RealisesSymbolAction}); (H) and the strip are there only to make those zeros
+null. Taking the almost-everywhere identity as the hypothesis, as the node does, needs neither, nor
+even $c > 0$, and the older declarations are now instances of the new ones. The one correction is
+continuity of $h$ on $(0,\infty)$ for the second display: the inversion recovers $h$ only at its
+points of continuity, and the shift needs $Ag = x^{-1}h$ on all of $(0,\infty)$. The article's one
+application, \ref{lem:profile-eigenfunction}, has $h(x) = s\,x\,H(sx)$, which is continuous.}
 
 \emph{\textbf{The identity on the line can only be asked for almost everywhere, and this was not
 foreseen.} $B$ is a quotient with poles at the zeros of $\tilde H$. Where $\tilde H$ vanishes the
@@ -970,7 +984,7 @@ $A[H(s\cdot)](x) = h(x)/x = s\,H(sx)$.
 
 \begin{lemma}[the delayed average is the field, and its transform]\label{lem:delayed-average-mellin}
 \uses{def:standing-hypothesis,lem:mellin-data,prop:canonical-gauge,def:cascade-family}
-\lean{Hemigroup.SelfDecomposableExponent.mellin_delayedField}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.mellin_delayedField_of_integrable}\leanok
 Assume (H) and work in the canonical gauge; let $f \in L^1$ be causal and $t > 0$. Then for every
 $x > 0$,
 \[
@@ -982,12 +996,20 @@ and for $1 < \operatorname{Re} z < z_*$ the right-hand side, read as a function 
 \]
 both sides absolutely convergent.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
-\texttt{Hemigroup.SelfDecomposableExponent.mellin\_delayedField}, with
+\texttt{Hemigroup.SelfDecomposableExponent.mellin\_delayedField\_of\_integrable}, with
 \texttt{coeFn\_Phi\_zero} (the first display), \texttt{kernel\_zero\_eq\_map\_lawT}$_1$ (the
 canonical gauge at the level of measures), \texttt{integrable\_delayed} (the Fubini side
 condition) and \texttt{mul\_riemannLiouville} (the reflection);
 \texttt{\#print axioms} gives Lean core. This is the first clause of
-\ref{lem:memory-fractional-integrals}; what is left there is its derivative clause.}
+\ref{lem:memory-fractional-integrals}; what is left there is its derivative clause.
+\textbf{Tagged at the node's own hypotheses} (Q-0141, finding R34). The tag used to name
+\texttt{mellin\_delayedField}, which takes integrability of the past integrand
+$y \mapsto y^{z-1}f(t-y)$ on $(0,\infty)$ in place of ``$f \in L^1$, $\operatorname{Re} z > 1$'',
+on the wider strip $0 < \operatorname{Re} z < z_*$. \texttt{mellin\_delayedField\_of\_integrable}
+takes the node's hypotheses and discharges that one by \texttt{integrableOn\_pastIntegrand}; it
+also states the two absolute convergences, the field's Mellin integral and the past integral
+$\Gamma(z)(I^zf)(t)$. The statement is unchanged. The one reading left is the usual one for an
+$L^1$ class, a measurable representative (finding R6).}
 
 \emph{\textbf{The quantifiers do not commute, and that is the honest reason a representative has to
 be chosen.} $\Phi_{0,x}$ acts on $L^1$ classes, so the first display holds for each $x$ only up to
@@ -1237,7 +1259,7 @@ $F(\infty) = \infty$.
 % split in this chapter.
 \begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
 \uses{def:standing-hypothesis,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
-\lean{Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Hemigroup.SelfDecomposableExponent.zStar_smul}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Hemigroup.SelfDecomposableExponent.zStar_smul_of_ne_zero}\leanok
 Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \begin{enumerate}
 \item The limit $\lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$ and equals $z_*$.
@@ -1257,7 +1279,12 @@ by (7.1), and $s/\log s \to \infty$. The \emph{driftless} case, the one with con
 \texttt{\ldots.tendsto\_toRealExponent\_div\_log\_atTop\_zStar} and clause~(4) is
 \texttt{\ldots.zStar\_smul}, both in \texttt{Formalization/Hemigroup/ZStarAbelian.lean} (Q-0021,
 2026-09-26). Both carry the no-atom hypothesis $T_1 > 0$ a.s., which the statement's $F \not\equiv 0$
-supplies (see the proof). All four declarations are listed in \texttt{CIAxiomGuard.lean}.
+supplies (see the proof). \textbf{That bridge is now checked, not left to the reader} (Q-0141,
+finding R33): the tag names \texttt{\ldots\_zStar\_of\_ne\_zero} and \texttt{zStar\_smul\_of\_ne\_zero},
+which take $F \not\equiv 0$ itself and reach the no-atom hypothesis through
+\texttt{lawT}$_1$\texttt{\_singleton\_zero\_of\_ne\_zero}, that is \ref{lem:standing-levy-reading}(2)
+followed by (H)'s first-clause reading. The statement is unchanged. All six declarations are listed
+in \texttt{CIAxiomGuard.lean}.
 Clause~(3) is~(1) and~(2) read against \ref{def:standing-hypothesis}, and has no declaration of its
 own.
 \textbf{The route checked, and the obstacles it never met.} The limit's \emph{existence} comes from

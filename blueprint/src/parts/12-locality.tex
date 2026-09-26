@@ -334,13 +334,30 @@ $Q$ follows from $m > 0$.
 % draft: Lemma 12.4
 \begin{lemma}[log-convexity]\label{lem:log-convexity}
 \uses{lem:mellin-data}
-\lean{Hemigroup.SelfDecomposableExponent.convexOn_log_negMoment}\leanok
-$z \mapsto m(z)$ is log-convex on $(0, \infty)$.
-\statusT\quad\emph{(\textbf{Machine-checked}, as
-\texttt{Hemigroup.SelfDecomposableExponent.convexOn\_log\_negMoment}, together with the
-$[0,\infty]$-valued form \texttt{negMoment\_le\_rpow\_mul\_rpow} from which it is read off.
-\texttt{\#print axioms} shows Lean core. None of this chapter's own cited
+\lean{Hemigroup.SelfDecomposableExponent.negMoment_le_rpow_mul_rpow, Hemigroup.SelfDecomposableExponent.convexOn_log_negMoment}\leanok
+% CHANGED (Q-0141, finding R30): the two readings made explicit. The statement said only
+% "log-convex on (0, infinity)", which is true in the [0, infinity] reading without hypothesis,
+% while the tag named only the real-valued form, which needs no atom at 0 and the strip (0, z_*).
+$z \mapsto m(z)$, valued in $[0,\infty]$, is log-convex on $(0, \infty)$: for $z_1, z_2 > 0$ and
+$\theta \in [0,1]$,
+\[
+  m\bigl(\theta z_1 + (1-\theta) z_2\bigr) \;\le\; m(z_1)^{\theta}\,m(z_2)^{1-\theta} .
+\]
+If moreover $T_1$ has no atom at the origin (the first clause of (H)), then $\log m$ is a
+real-valued convex function on $(0, z_*)$, hence on $(0,\infty)$ when $z_* = \infty$.
+\statusT\quad\emph{(\textbf{Machine-checked}: the displayed inequality as
+\texttt{Hemigroup.SelfDecomposableExponent.negMoment\_le\_rpow\_mul\_rpow}, the real-valued
+form as \texttt{Hemigroup.SelfDecomposableExponent.convexOn\_log\_negMoment}, which is read off
+it. \texttt{\#print axioms} shows Lean core. None of this chapter's own cited
 interfaces is touched.
+\textbf{Corrected to what is proved} (Q-0141, finding R30). The statement used to be the first
+sentence alone, ``log-convex on $(0,\infty)$'', with only the real-valued declaration in the tag;
+that declaration carries the no-atom hypothesis and the domain $(0, z_*)$, which the sentence did
+not. The no-atom hypothesis was no real drift, being (H)'s first clause, which the chapter assumes
+throughout (\texttt{lawT}$_1$\texttt{\_singleton\_zero}); the domain was. Both readings are now
+stated, the hypothesis written out so that the node reads alone. Nothing is lost for the chapter: \ref{thm:locality}'s proof
+reads $\log m$ as a real convex function on $(0,\infty)$ only where \ref{lem:moment-recursion}(2)
+has already given $z_* = \infty$, under (H).
 \textbf{Two readings, and the difference matters.} The $[0,\infty]$ form is
 \emph{unconditional}: no standing hypothesis, no finiteness, no strip, since divergence is a
 value there rather than a failure. The real-valued form stated above needs $m$ finite and
@@ -850,15 +867,27 @@ positive reals, which is both the recursion and the positivity.
 \begin{lemma}[the maximum principle on a local operator of order at most two]
 \label{lem:pmp-verification}
 \uses{def:locality-pmp,lem:local-polynomial-symbol,lem:moment-recursion}
-\lean{Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_eq_sum, Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq}\leanok
 Let $A$ agree on $C_c^\infty((0,\infty))$ with $\sum_{j=0}^{n} c_j(x)\partial_x^j$, where
 $n \le 2$. If $\operatorname{Re} c_0 \le 0$ and $\operatorname{Re} c_2 \ge 0$ on $(0,\infty)$,
 then $A$ satisfies the positive maximum principle. In particular, if the symbol is the polynomial
 $\sum_{j\le n}\gamma_j E_j$ with $n \le 2$, $\gamma_0 = 0$ and $\operatorname{Re}\gamma_2 \ge 0$,
 then the PMP holds --- which covers both cases of \ref{thm:locality}, the first-order one
 vacuously in the leading hypothesis and the second-order one with $\gamma_2 = 2$.
-\statusT\quad\emph{(\textbf{Machine-checked}, as \texttt{satisfiesPMP\_of\_symbol\_eq}, on Lean core,
+\statusT\quad\emph{(\textbf{Machine-checked}: the first sentence as \texttt{satisfiesPMP\_of\_eq\_sum},
+the ``in particular'' as \texttt{satisfiesPMP\_of\_symbol\_eq}, both on Lean core,
 \textbf{not on \ledger{A14}}. Keeping that visible is the reason for the split.
+\textbf{The first sentence's Lean was strengthened to it} (Q-0141, finding R32). The tag used to
+name only the symbol form, which assumes (H) and a height $c \in (0, z_*-1)$. The general
+sentence was \texttt{satisfiesPMP\_of\_isLocalOfOrderCore}, whose hypothesis is a
+local operator in the sense of \ref{def:locality-pmp}, with continuous coefficients and
+$c_n \not\equiv 0$. The verification uses neither. \texttt{satisfiesPMP\_of\_eq\_sum} takes bare
+coefficients $c_j$ and agreement on $C_c^\infty((0,\infty))$ at any height, which is this
+sentence's hypothesis, and the older declaration is now its instance. The symbol form's extra
+hypotheses are the chapter's standing ones. (H) is assumed throughout, and the height of $A$ lies
+in $(0, z_*-1)$ by \ref{def:inversion-operator}. Its $\gamma_n \ne 0$ only names $n$ as the degree,
+since $B \not\equiv 0$ by \ref{lem:inversion-symbol}'s closed form, $m$ being positive. So the
+symbol form has no drift once the chapter's standing hypotheses are read in.
 \textbf{\ref{thm:locality} uses the maximum principle twice, in opposite directions and at
 opposite costs}, and the ledger entry sits on one of them alone. The ($\Rightarrow$) use is the
 \emph{order bound}: that a local operator satisfying the PMP is a pure second-order diffusion with

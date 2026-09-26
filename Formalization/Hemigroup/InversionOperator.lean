@@ -135,8 +135,10 @@ This is the step ledger A12 carries, and it is Mathlib's `mellinInv_mellin_eq` o
 has been recognised as `mellin h`. Recognising it is the whole of the proof, and the null set
 where the recognition fails is discarded by `integral_congr_ae` — which is available precisely
 because `mellinInv` integrates over the line rather than evaluating on it. -/
-theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar)
-    {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h) {x : ℝ}
+theorem inversionOperator_eq_of_ae {c : ℝ} {g h : ℝ → ℂ}
+    (hae : ∀ᵐ y : ℝ, mellin h ((c : ℂ) + y * Complex.I)
+      = F.inversionSymbol ((c : ℂ) + y * Complex.I) * mellin g ((c : ℂ) + y * Complex.I))
+    (hconv : MellinConvergent h c) (hvert : Complex.VerticalIntegrable (mellin h) c) {x : ℝ}
     (hx : 0 < x) (hcont : ContinuousAt h x) :
     F.inversionOperator c g x = x⁻¹ * h x := by
   have hint : mellinInv c (fun z => F.inversionSymbol z * mellin g z) x
@@ -144,24 +146,36 @@ theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) 
     rw [mellinInv, mellinInv]
     congr 1
     refine integral_congr_ae ?_
-    filter_upwards [hrep.mellin_eq_ae hH hc hc'] with y hy
+    filter_upwards [hae] with y hy
     rw [hy]
-  rw [inversionOperator, hint,
-    mellinInv_mellin_eq c h hx hrep.convergent hrep.verticalIntegrable hcont]
+  rw [inversionOperator, hint, mellinInv_mellin_eq c h hx hconv hvert hcont]
 
-/-- **`def:inversion-operator`**, the transform-level identity, against the realising function:
-`Ãg(z) = h̃(z-1)`.
+/-- `inversionOperator_eq_of_ae` for a realising function in the sense of `RealisesSymbolAction`,
+whose transform identity is asked for off the zeros of `H̃`: (H) and the strip are what make those
+zeros null on the line. -/
+theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar)
+    {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h) {x : ℝ}
+    (hx : 0 < x) (hcont : ContinuousAt h x) :
+    F.inversionOperator c g x = x⁻¹ * h x :=
+  F.inversionOperator_eq_of_ae (hrep.mellin_eq_ae hH hc hc') hrep.convergent
+    hrep.verticalIntegrable hx hcont
+
+/-- **`lem:inversion-operator-action`**, the transform-level identity against the realising
+function, `Ãg(z) = h̃(z-1)`, under the node's own hypotheses (the product identity almost
+everywhere on the line, and the two convergences) with `h` continuous on `(0,∞)`.
 
 No strip condition. Once the pointwise formula is known on `(0,∞)`, the weight `x⁻¹` is
 `mellin_cpow_smul` at exponent `-1`, which shifts the argument and is available at every `z`. -/
-theorem mellin_inversionOperator (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : ENNReal.ofReal c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
+theorem mellin_inversionOperator_of_ae {c : ℝ} {g h : ℝ → ℂ}
+    (hae : ∀ᵐ y : ℝ, mellin h ((c : ℂ) + y * Complex.I)
+      = F.inversionSymbol ((c : ℂ) + y * Complex.I) * mellin g ((c : ℂ) + y * Complex.I))
+    (hconv : MellinConvergent h c) (hvert : Complex.VerticalIntegrable (mellin h) c)
     (hcont : ContinuousOn h (Ioi 0)) (z : ℂ) :
     mellin (F.inversionOperator c g) z = mellin h (z - 1) := by
   have hpt : ∀ t ∈ Ioi (0 : ℝ),
       F.inversionOperator c g t = (t : ℂ) ^ (-1 : ℂ) • h t := by
     intro t ht
-    rw [F.inversionOperator_eq hH hc hc' hrep (mem_Ioi.mp ht)
+    rw [F.inversionOperator_eq_of_ae hae hconv hvert (mem_Ioi.mp ht)
       (hcont.continuousAt (isOpen_Ioi.mem_nhds ht)), Complex.cpow_neg_one]
     simp
   calc mellin (F.inversionOperator c g) z
@@ -170,6 +184,26 @@ theorem mellin_inversionOperator (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 <
         exact setIntegral_congr_fun measurableSet_Ioi fun t ht => by rw [hpt t ht]
     _ = mellin h (z + -1) := mellin_cpow_smul h z (-1)
     _ = mellin h (z - 1) := by rw [← sub_eq_add_neg]
+
+/-- **`lem:inversion-operator-action`**, the "in particular": `Ãg(z) = B(1-z) g̃(z-1)` at any
+point where the product identity holds pointwise, under the node's own hypotheses. -/
+theorem mellin_inversionOperator_eq_of_ae {c : ℝ} {g h : ℝ → ℂ}
+    (hae : ∀ᵐ y : ℝ, mellin h ((c : ℂ) + y * Complex.I)
+      = F.inversionSymbol ((c : ℂ) + y * Complex.I) * mellin g ((c : ℂ) + y * Complex.I))
+    (hconv : MellinConvergent h c) (hvert : Complex.VerticalIntegrable (mellin h) c)
+    (hcont : ContinuousOn h (Ioi 0)) {z : ℂ}
+    (hz : mellin h (z - 1) = F.inversionSymbol (z - 1) * mellin g (z - 1)) :
+    mellin (F.inversionOperator c g) z = F.inversionSymbol (z - 1) * mellin g (z - 1) := by
+  rw [F.mellin_inversionOperator_of_ae hae hconv hvert hcont z, hz]
+
+/-- **`def:inversion-operator`**, the transform-level identity, against the realising function:
+`Ãg(z) = h̃(z-1)`; `mellin_inversionOperator_of_ae` for a `RealisesSymbolAction`. -/
+theorem mellin_inversionOperator (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : ENNReal.ofReal c < F.zStar) {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h)
+    (hcont : ContinuousOn h (Ioi 0)) (z : ℂ) :
+    mellin (F.inversionOperator c g) z = mellin h (z - 1) :=
+  F.mellin_inversionOperator_of_ae (hrep.mellin_eq_ae hH hc hc') hrep.convergent
+    hrep.verticalIntegrable hcont z
 
 /-- **`def:inversion-operator`**, the blueprint's display `Ãg(z) = B(1-z) g̃(z-1)`, at any point
 where the product identity holds pointwise — which, by `lem:inversion-symbol`, is every point of

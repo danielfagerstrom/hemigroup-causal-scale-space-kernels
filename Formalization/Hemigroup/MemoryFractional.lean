@@ -988,6 +988,21 @@ theorem mellinConvergent_delayedField_pair (hH : F.StandingHypothesis) {z : ℂ}
     F.mellinConvergent_delayedField hH hz1 hz1' hfm
       (integrableOn_pastIntegrand_of_bounded (z := z - 1) hz1 hfm hbdd hfc ht)⟩
 
+/-- **`lem:delayed-average-mellin`, at the node's own hypotheses**: `f ∈ L¹` causal (a measurable
+representative) and `1 < Re z < z_*`, in place of `mellin_delayedField`'s `hpast`, which
+`integrableOn_pastIntegrand` discharges. Both sides absolutely convergent: the field's Mellin
+integral, and the past integral `∫₀^∞ y^{z-1} f(t-y) dy = Γ(z)(Iᶻf)(t)`. -/
+theorem mellin_delayedField_of_integrable (hH : F.StandingHypothesis) {z : ℂ} (hz : 1 < z.re)
+    (hz' : ENNReal.ofReal z.re < F.zStar) {f : ℝ → ℝ} (hfm : Measurable f) (hf : Integrable f)
+    (hcausal : ∀ r : ℝ, r < 0 → f r = 0) {t : ℝ} (ht : 0 < t) :
+    MellinConvergent (fun x : ℝ => (F.delayedField f t x : ℂ)) z ∧
+      IntegrableOn (fun y : ℝ => (y : ℂ) ^ (z - 1) * (f (t - y) : ℂ)) (Ioi 0) ∧
+      mellin (fun x : ℝ => (F.delayedField f t x : ℂ)) z
+        = mellin (fun s => (F.profile s : ℂ)) z * riemannLiouville z f t := by
+  have hpast := integrableOn_pastIntegrand (z := z) hz hf hcausal ht
+  exact ⟨F.mellinConvergent_delayedField hH (by linarith) hz' hfm hpast, hpast,
+    F.mellin_delayedField hH (by linarith) hz' hfm hcausal ht hpast⟩
+
 end SelfDecomposableExponent
 
 end Hemigroup

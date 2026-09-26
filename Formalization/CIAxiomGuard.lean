@@ -190,6 +190,8 @@ witness. Both reduce to Lean core.
 #print axioms Hemigroup.gammaExponent
 #print axioms Hemigroup.dickmanExponent
 
+-- `lem:criterion-converse` at its letter: finiteness at `s = 1` only, over a bare `(b₀, k)`.
+#print axioms Hemigroup.integrableOn_of_levyExponentD_one_ne_top
 #print axioms Hemigroup.SelfDecomposableExponent.integrableOn_of_ne_top
 
 #print axioms Hemigroup.SelfDecomposableExponent.hasDerivAt_toRealExponent
@@ -296,6 +298,10 @@ limit in `[0,∞]` so that the drift case needs nothing of its own. Clause (4) i
 #print axioms Hemigroup.SelfDecomposableExponent.zStar_eq_of_tendsto
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar
 #print axioms Hemigroup.SelfDecomposableExponent.zStar_smul
+-- (1) and (4) at the node's `F ≢ 0` (Q-0141)
+#print axioms Hemigroup.SelfDecomposableExponent.lawT₁_singleton_zero_of_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero
+#print axioms Hemigroup.SelfDecomposableExponent.zStar_smul_of_ne_zero
 
 /-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
 
@@ -428,6 +434,10 @@ every use of `A` exhibit its `h`? — and the profile case is the one to settle 
 #print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_eq
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator_eq
+-- `lem:inversion-operator-action` at the node's hypotheses: no (H), no strip (Q-0141)
+#print axioms Hemigroup.SelfDecomposableExponent.inversionOperator_eq_of_ae
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator_of_ae
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_inversionOperator_eq_of_ae
 
 /-! ### The profile instance, and what it does to **A12**
 
@@ -503,6 +513,8 @@ being Laplace injectivity. `coeFn_Phi_zero` then identifies the chosen represent
 #print axioms Hemigroup.SelfDecomposableExponent.kernel_zero_eq_map_lawT₁
 #print axioms Hemigroup.SelfDecomposableExponent.coeFn_Phi_zero
 #print axioms Hemigroup.SelfDecomposableExponent.mellin_delayedField
+-- `lem:delayed-average-mellin` at the node's `f ∈ L¹`, `1 < Re z` (Q-0141)
+#print axioms Hemigroup.SelfDecomposableExponent.mellin_delayedField_of_integrable
 
 /-! ### `thm:signaling-form`(2), the Mellin form — transform side
 
@@ -656,6 +668,7 @@ scratch. It mentions nothing of this development and prints **Lean core alone**.
 
 #print axioms Hemigroup.deriv_deriv_nonpos_of_isLocalMax
 #print axioms Hemigroup.contDiff_of_isTestFunction_ofReal
+#print axioms Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_eq_sum
 #print axioms Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_isLocalOfOrderCore
 #print axioms Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq
 

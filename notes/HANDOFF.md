@@ -49,6 +49,16 @@ the later papers' repositories. A new version would start at `PROCESS.md`'s rele
      an atom. In chapter 11 (`lem:zstar-log-growth`) existence of the limit comes from clause (2),
      not from convexity through `B = sF'`.
 
+   - **two statements corrected in the blueprint by Q-0141** that the paper still transcribes in
+     the old form. `linkage check` reports both as `[shared]` drift advisories.
+     - `lem:log-convexity` (`paper/10-locality.tex`) says only "log-convex on `(0,∞)`". That is
+       true in the `[0,∞]` reading, while the real-valued reading needs `z_* = ∞`. Theorem 5′'s
+       proof uses the real reading only after `lem:moment-recursion`(2), so nothing downstream is
+       wrong; the statement just does not say which reading it means.
+     - `lem:inversion-operator-action` (`paper/09-signaling.tex`) states `Ãg(z) = h̃(z−1)`
+       without the continuity of `h` on `(0,∞)` that it needs. Every use in the paper has a
+       continuous `h` (the profiles), so no consumer is affected.
+
    Nothing in the published paper has been touched, deliberately.
 3. **The gates.**
    - `linkage axioms --check` now exits 0.

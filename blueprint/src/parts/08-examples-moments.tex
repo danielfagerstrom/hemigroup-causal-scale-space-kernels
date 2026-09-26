@@ -324,7 +324,7 @@ second. The drift term is finite for every real $s$.
 % conditions the right ones rather than merely convenient ones. Numbered 8.8.
 \begin{lemma}[the criterion is characteristic]\label{lem:criterion-converse}
 \uses{prop:admissibility-criterion,def:levy-exponent}
-\lean{Hemigroup.SelfDecomposableExponent.integrableOn_of_ne_top}\leanok
+\lean{Hemigroup.integrableOn_of_levyExponentD_one_ne_top}\leanok
 Let $b_0 \ge 0$ and let $k : (0,\infty) \to [0,\infty)$ be nonincreasing. If the $[0,\infty]$-valued
 exponent (7.1) at $s = 1$,
 \[
@@ -332,8 +332,14 @@ exponent (7.1) at $s = 1$,
 \]
 is finite, then $\int_0^1 k(t)\,dt < \infty$ and $\int_1^\infty k(t)t^{-1}dt < \infty$.
 \statusT\quad\emph{(\textbf{Machine-checked}, as
-\texttt{Hemigroup.SelfDecomposableExponent.integrableOn\_of\_ne\_top}; \texttt{\#print axioms}
-reduces to Lean core. \textbf{Restated (2026-08-23) from the Lean hypothesis directly}, rather
+\texttt{Hemigroup.integrableOn\_of\_levyExponentD\_one\_ne\_top}; \texttt{\#print axioms}
+reduces to Lean core. \textbf{The Lean was strengthened to this statement} (Q-0141, finding R29):
+the tag previously named \texttt{SelfDecomposableExponent.integrableOn\_of\_ne\_top}, whose
+hypothesis is a whole member of the class --- finiteness at \emph{every} $s \ge 0$ and the
+normalisation $k(0) = 0$ --- so the single-point content of the node was not what was checked. The
+declaration now tagged takes a bare pair $(b_0, k)$ with $k \ge 0$ nonincreasing on $(0,\infty)$
+and finiteness at $s = 1$ alone (it needs no sign on $b_0$), and the structure's form is its
+instance. \textbf{Restated (2026-08-23) from the Lean hypothesis directly}, rather
 than through ``$F$ is of the form (7.1)'': that phrase already packages the two integrability
 conditions in as part of Lemma~\ref{lem:selfdecomposable-exponents}(3), which made the previous
 wording tautological. What has content is that finiteness of the exponent at the single point
