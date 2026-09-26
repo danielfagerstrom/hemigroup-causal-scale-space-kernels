@@ -6,6 +6,67 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+### `lem:standing-levy-reading` proved; the other two `\notready` nodes surveyed (2026-09-26, Q-0021)
+
+**`lem:standing-levy-reading` (11.22) is machine-checked**, both clauses, as
+`Hemigroup.SelfDecomposableExponent.standing_levy_reading` in
+`Formalization/Hemigroup/StandingLevyReading.lean`; the node carries `\leanok` on statement and
+proof. Statements unchanged from the August target types, so no ledger row. `#print axioms` gives
+Lean core. Node count: 68 `\leanok` → 69.
+
+**`lem:zstar-log-growth` (11.23): one of four clauses proved.** Clause (2)'s drift case is
+`Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos`
+(`Formalization/Hemigroup/ZStarLogGrowth.lean`, Lean core). The node keeps `\notready`; the other
+three target types stay in `Skeleton/Chapter11.lean`.
+
+**The pricing was wrong again, in the same direction.** 11.22 was priced "statable, not cheap" on
+two counts, and the proof undercut both:
+
+- the `[0,∞]`-to-`ℝ` bridge was wanted in *both* directions of the `iff`. Only the divergent
+  direction needs a limit at all; the convergent one is the uniform bound
+  `levyJump k s ≤ levyMass k`, which is `1 - e^{-st} ≤ 1` and no convergence theorem, and which
+  needs no sign condition on `s` either — `ENNReal.ofReal` truncates the negative case. Monotone
+  convergence is used once, along the naturals, in one direction;
+- `∫₀^{t₀} t⁻¹dt = ∞` is indeed absent from Mathlib in `lintegral` form, but present in
+  integrability form (`intervalIntegrable_inv_iff`), and `hasFiniteIntegral_iff_ofReal` crosses
+  between them in six lines.
+
+That is the fifth time in this chapter that what a proof cites was an upper bound on what its
+statement needs. The blueprint proof of 11.22 was rewritten to the checked route (decision D-D
+governs the *paper*; the blueprint is the text of record and follows the Lean).
+
+**What the proof taught.** Clause (2) — a nonzero admissible exponent satisfies (H)'s first
+clause — is **false** for a general Lévy exponent: a driftless compound Poisson with finite Lévy
+mass is bounded and nonzero. It holds here only because the density against `dt/t` is
+nonincreasing, so one point where `k` is positive bounds `k` below on all of `(0,t₀]` and the mass
+diverges at the origin. Self-decomposability, not Lévy structure, is what leaves the admissible
+cone with no bounded nonzero member.
+
+**What the three remaining clauses of 11.23 wait on** (routes written out, none attempted; the
+node's status paragraph and `Skeleton/Chapter11.lean` carry the detail). The driftless case of (2)
+is the bottleneck and the only one with real content: its first half is `B(s) = sF'(s)` from
+`hasDerivAt_toRealExponent` plus the same monotone convergence 11.22 uses, and its second is the
+Cesàro step `F(s)/log s = (log s)⁻¹∫₁^s B(v)dv/v → lim B`, for which **Mathlib's L'Hôpital is the
+`0/0` form only** — `Mathlib/Analysis/Calculus/LHopital.lean` has no `∞/∞` companion at `atTop`.
+Clause (1) is that limit plus an Abelian comparison through
+`Γ(ζ)E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds`, already in the library as the route
+`stableExponent_negMoment_ne_top` takes; clause (4) is a corollary of (1). None is blocked on the
+trust boundary. The "plausible shortcut" recorded for clause (1) — `B`'s monotonicity from the
+explicit formula rather than from ledger A18 — is still untested: the drift case does not touch
+`B`.
+
+**`prop:pair-regularity`(2): "ledger A9 by design" is right about the node and not established
+about the declaration.** The handoff has carried that phrase as the reason `Skeleton.hasCMDensity_iff`
+is not attempted. The node is `[A]` because of clause (1) (SSV Thm. 11.3, the potential measures of
+special subordinators), which the target type does not state; and within clause (2), A9's two
+structural inputs (SSV Thm. 7.3 and Thm. 6.2) are used *only* for the second assertion, about
+`ℓ^{(x)}` and `F ∈ CBF`, which the target type also does not state. What it does state — the two
+equivalences — the blueprint proves from `lem:memory-kernel`'s derivative formula by Tonelli one
+way and Laplace uniqueness the other, citing neither theorem. So the reason it stays open is that
+nobody has written the proof, and the converse is real work (the `a = 0` step, then
+`laplaceL_injective_of_ne_top`, then the a.e.-versus-everywhere care `HasCMRep`'s pointwise form
+imposes) — not the trust boundary. Recorded at the node and at the declaration; not acted on.
+
 ### `lem:mode-rigidity` proved (2026-09-25, Q-0020)
 
 `Skeleton.mode_rigidity` is now `Hemigroup.mode_rigidity`, in
