@@ -1236,7 +1236,7 @@ $F(\infty) = \infty$.
 % gamma=1). Appended 2026-08-29, a number the draft does not use, on the pattern of every earlier
 % split in this chapter.
 \begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
-\uses{def:standing-hypothesis,lem:memory-kernel,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
+\uses{def:standing-hypothesis,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
 \lean{Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Hemigroup.SelfDecomposableExponent.zStar_smul}\leanok
 Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \begin{enumerate}
@@ -1283,11 +1283,9 @@ clause~(2)'s two bounds, and not through $B$ being a Bernstein function
 (\ref{lem:selfdecomposable-exponents}(2), ledger \ledger{A18}). So this node has no route through
 \ledger{A18} at all.
 \textbf{Priced against the target types, not the paper proof.} Writing them down found that
-clauses~(2) and~(3) need \emph{no} no-atom hypothesis at all --- they are unconditional statements
-about the exponent's own growth, via the explicit formula
-$B(s) = b_0 s + \int_0^\infty e^{-u}k(u/s)\,du$ (substitute $u = st$) and monotone convergence in
-$k(u/s) \uparrow k(0^+)$ as $s \to \infty$ --- only clause~(1)'s identification of the limit with
-$z_*$ needs it, since \texttt{negMoment} and \texttt{zStar} integrate over \texttt{Ioi 0} and are
+clause~(2) needs \emph{no} no-atom hypothesis at all: it is an unconditional statement about the
+exponent's own growth. Only clause~(1)'s identification of the limit with $z_*$ needs it, and
+clause~(4) through~(1), since \texttt{negMoment} and \texttt{zStar} integrate over \texttt{Ioi 0} and are
 blind to an atom at the origin, the trap \ref{lem:standing-levy-reading}'s target types were
 already written to avoid.
 \textbf{Shares its subject with \ref{lem:standing-levy-reading}}, now proved --- both are
