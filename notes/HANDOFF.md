@@ -55,7 +55,8 @@ the later papers' repositories. A new version would start at `PROCESS.md`'s rele
    - `build-blueprint.sh --quick` passes. Its proof-level `\leanok` check made
      `prop:pair-regularity`'s proof carry `\leanok` too, and the annotation says both marks cover
      only the two equivalences.
-   - The full web step was not re-run after the scaffold's `PYTHONUTF8=1` adoption.
+   - The full `bash scripts/build-blueprint.sh`, web step included, passes on this machine since
+     the scaffold's `PYTHONUTF8=1` adoption.
 4. **A standing caution, seven instances in chapters 9–11.** What a proof reaches for is an upper
    bound on what its statement needs, and that covers the tools it reaches for as well as the nodes
    it cites. The latest two instances:
