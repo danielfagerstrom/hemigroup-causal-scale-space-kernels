@@ -347,6 +347,25 @@ machine-checked rather than asserted, in the one place it was most at risk.
 #print axioms Hemigroup.SelfDecomposableExponent.existsUnique_potentialKernel
 #print axioms Hemigroup.SelfDecomposableExponent.exists_sonine_pair
 
+/-! ### `prop:pair-regularity`(2) — the two equivalences, off the trust boundary
+
+The node is `[A]` on ledger A9 because of clause (1), which is not stated in Lean. These lines
+check that clause (2)'s two equivalences spend nothing: no A9, no A1 for the
+complete-monotonicity reading (the statement is in the representation idiom), no A17 or A18.
+The four halves are listed as well as the bundle. `Hemigroup/PairRegularity.lean`'s module
+docstring has the route. Lean core.
+-/
+
+#print axioms Hemigroup.eqOn_of_ae_of_antitoneOn
+#print axioms Hemigroup.hasCMRep_of_ae
+#print axioms Hemigroup.hasCMRep_dilate
+#print axioms Hemigroup.laplaceL_cmMeasure
+#print axioms Hemigroup.SelfDecomposableExponent.hasCMDensity_memoryKernel_of_hasCMRep
+#print axioms Hemigroup.SelfDecomposableExponent.hasCMRep_of_hasCMDensity_memoryKernel
+#print axioms Hemigroup.SelfDecomposableExponent.hasStieltjesRep_of_hasCMRep
+#print axioms Hemigroup.SelfDecomposableExponent.hasCMRep_of_hasStieltjesRep
+#print axioms Hemigroup.SelfDecomposableExponent.hasCMDensity_iff
+
 /-! ### `lem:mellin-vertical` (11.13), and the Γ estimate under it
 
 The clause A12's retirement turns on. It was recorded twice as blocked on a missing Mathlib

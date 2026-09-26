@@ -328,8 +328,8 @@ tail decay.
 
 % draft: Proposition 9.7
 \begin{proposition}[regularity of the pair]\label{prop:pair-regularity}
-\uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,thm:sonine-conservation,def:completely-monotone}
-\lean{Skeleton.hasCMDensity_iff}\notready
+\uses{lem:memory-kernel,prop:laplace-uniqueness-sigma-finite,lem:memory-kernel-transform,lem:potential-kernel,thm:sonine-conservation,def:completely-monotone}
+\lean{Hemigroup.SelfDecomposableExponent.hasCMDensity_iff}\leanok
 Write $\kappa^{(x)} = b_0\,\delta_0 + \kappa_c^{(x)}$, with
 $\kappa_c^{(x)}(dt) := \tfrac1x\,k\bigl(\tfrac tx\bigr)\,dt$ the absolutely continuous part of
 \ref{lem:memory-kernel-transform} --- an unconditional decomposition, $k$ being nonincreasing.
@@ -361,45 +361,52 @@ split off as \ref{prop:sonine-pair-exists}; before the split this node reported 
 restatement of three proved results. Note the edition hazard recorded in the ledger: SSV's
 Thm.~11.3 is Thm.~10.3 in the first edition, a chapter having been inserted at position~10 in
 the second.
-\textbf{Why the Lean stays \texttt{\textbackslash notready}, and one thing that is not settled}
-(surveyed 2026-09-26, Q-0021; not acted on). The target type
-\texttt{Skeleton.hasCMDensity\_iff} in \texttt{Formalization/Skeleton/Chapter9.lean} states
-clause~(2)'s \emph{two equivalences only} --- $\kappa_c^{(x)}$ has a CM density iff $k$ does, and
-$k$ does iff $F'$ is Stieltjes --- in the representation idiom
-(\texttt{HasCMRep}, \texttt{HasStieltjesRep}, \texttt{HasCMDensity}); it does not state the
-second assertion, about $\ell^{(x)}$ and $F \in \CBF$. But the ledger's two structural inputs,
-SSV~Thm.~7.3 and Thm.~6.2, are used \emph{only} in that second assertion: the proof below derives
-the two equivalences from \ref{lem:memory-kernel}'s derivative formula (already machine-checked)
-by Tonelli one way and by Laplace uniqueness the other, and cites neither theorem. So "ledger A9
-by design'' is right for the \emph{node} and is \emph{not established} for the \emph{declaration}.
-\textbf{And the boundary question now has an answer: off the boundary, by four steps}, worked out
-2026-09-26 and recorded in full at the declaration; the proof itself is not written. Forward through
-the second equivalence is Tonelli against \ref{lem:memory-kernel}'s already machine-checked
-derivative formula, giving $F'(s) = b_0 + \int (s+\tau)^{-1}\sigma(d\tau)$ with $a = 0$ and
-$b = b_0$; backwards is the $a = 0$ step ($a/s$ is an additive constant in $k$, which
-$\int_1^\infty k(t)t^{-1}dt < \infty$ forbids) and then Laplace injectivity, available as
-\texttt{laplaceL\_injective\_of\_ne\_top}. The first equivalence is dilation of the representing
-measure one way, and the other way the passage from the a.e.\ equality of densities that
-\texttt{withDensity} gives to the pointwise equality \texttt{HasCMRep} demands --- which is
-\emph{not} the hazard an earlier reading of this node made of it: $k$ is antitone, so squeezing it
-between $g(s_n)$ and $g(u_n)$ for sequences $s_n < t < u_n$ in the agreement set converging to $t$
-closes it in three lines. What does need care is that neither \texttt{HasCMRep} nor
-\texttt{HasStieltjesRep} constrains its representing measure beyond causality, so the Bochner
-integral may be a junk $0$ and Tonelli wants $\sigma$-finiteness; antitonicity of $k$ is again what
-disposes of the shapes that admits. So proving the declaration would widen what is machine-checked
-without touching the node's \textbf{[A]} status, which clause~(1) fixes regardless.)}
+\textbf{What the Lean checks} (Q-0021, 2026-09-26).
+\texttt{Hemigroup.SelfDecomposableExponent.hasCMDensity\_iff}
+(\texttt{Formalization/Hemigroup/PairRegularity.lean}) states clause~(2)'s \emph{two equivalences
+only}: $\kappa_c^{(x)}$ has a CM density iff $k$ does, and $k$ does iff $F'$ is Stieltjes. It
+states them in the representation idiom (\texttt{HasCMDensity}, \texttt{HasCMRep},
+\texttt{HasStieltjesRep}), and \texttt{\#print axioms} gives Lean core, so no ledger entry is
+spent, A9 included. The two \texttt{\textbackslash leanok} marks, on the statement and on the
+proof, cover those two equivalences and nothing else. Clause~(1) and the second assertion of clause~(2), about $\ell^{(x)}$ and $F \in \CBF$, are
+not stated in Lean; they are where \ledger{A9}'s anchors enter, so the node's \textbf{[A]} status
+stands. Reading the Lean predicates as complete monotonicity is Bernstein--Widder, \ledger{A1},
+spent once in the statement and never in a proof, as for \ref{prop:bernstein-toolbox}(3). The proof
+below is the checked route. What the representation idiom costs is that \texttt{withDensity} sees a
+density only up to a null set while \texttt{HasCMRep} is pointwise; $k$ being nonincreasing is what
+closes that gap, and without it the first equivalence's $(\Rightarrow)$ would be false in this
+idiom.)}
 \end{proposition}
 
 \begin{proof}
+\leanok
 (1) is the cited characterization of potential measures of special subordinators.
 
-(2) Dilation preserves complete monotonicity, so the first equivalence reduces to a statement
-about $k$. If $k$ is completely monotone then $k(t) = \int e^{-\tau t}\sigma(d\tau)$ for a
-positive measure $\sigma$, and \ref{lem:memory-kernel} gives
-$F'(s) = b_0 + \int \sigma(d\tau)/(s+\tau) \in \mathcal{S}$. Conversely, an
-$\mathcal{S}$-representation of $F'$ must have $a = 0$ --- an $a/s$ term corresponds to an
-additive constant in $k$, contradicting $\int_1^\infty k(t)t^{-1}dt < \infty$ --- and then
-$k(t) = \int e^{-\tau t}\sigma(d\tau)$ is completely monotone.
+(2) The first equivalence is dilation. If $k(t) = \int e^{-\tau t}\sigma(d\tau)$, then
+$\tfrac1x k(\tfrac tx) = \int e^{-\tau t}\,\tfrac1x\sigma^{x}(d\tau)$, where $\sigma^{x}$ is the image
+of $\sigma$ under $\tau \mapsto \tau/x$. So the class is dilation-stable, the map
+$\sigma \mapsto \tfrac1x\sigma^{x}$ is invertible, and the drift atom $b_0\delta_0$ does not meet
+$(0,\infty)$. A density is determined by $\kappa_c^{(x)}$ only almost everywhere, so the converse
+gives $\tfrac1x k(\tfrac tx) = \int e^{-\tau t}\rho(d\tau)$ only for almost every $t > 0$. The right
+side is continuous wherever it converges on all of $(0,\infty)$, and $k$ is nonincreasing, so
+squeezing $k(t)$ between agreement points on either side of $t$ gives equality at every $t$. If
+instead the integral diverges at some $t_0$, it diverges on $(0,t_0]$ too; then $k$ vanishes almost
+everywhere near the origin, hence identically, and $\sigma = 0$ serves.
+
+For the second equivalence, put
+$\rho_{a,b,\sigma} := b\,\delta_0 + \bigl(a + \int e^{-\tau t}\sigma(d\tau)\bigr)\,dt$ on
+$[0,\infty)$. By Tonelli its Laplace transform is $b + \tfrac as + \int \tfrac{\sigma(d\tau)}{s+\tau}$.
+If $k$ is completely monotone with measure $\sigma$, then $\kappa^{(1)} = \rho_{0,b_0,\sigma}$, and
+\ref{lem:memory-kernel-transform} identifies its transform with $F'$:
+$F'(s) = b_0 + \int \sigma(d\tau)/(s+\tau) \in \mathcal{S}$. Conversely, if $F' \in \mathcal{S}$ with
+data $(a,b,\sigma)$, then $\kappa^{(1)}$ and $\rho_{a,b,\sigma}$ have the same transform for
+$s \ge 1$, so they are equal (\ref{prop:laplace-uniqueness-sigma-finite}). On $(0,\infty)$ this reads
+$k(t) = a + \int e^{-\tau t}\sigma(d\tau) = \int e^{-\tau t}(a\delta_0 + \sigma)(d\tau)$ for almost
+every $t$, and the squeeze above makes it hold for every $t$, so $k$ is completely monotone. The
+$a/s$ term needs no argument of its own: it is the atom $a\delta_0$ of the representing measure.
+($a = 0$ does hold, since $k(t) \to 0$ as $t \to \infty$, but nothing uses it.) When
+$\int (1+\tau)^{-1}\sigma(d\tau) = \infty$, the integral in the $\mathcal{S}$-representation is
+read as $0$, and $\sigma = 0$ serves.
 
 For the second assertion, $1/h \in \CBF$ for $h \in \mathcal{S}\setminus\{0\}$, so
 $g := 1/F'(x\,\cdot) \in \CBF$ and $\widehat{\ell^{(x)}}(s) = g(s)/s$. Writing the

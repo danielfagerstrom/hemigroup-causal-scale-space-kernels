@@ -162,113 +162,22 @@ What the round found, all of it by writing statements before proving them:
   anticipate -- see `Hemigroup/Subordinator.lean`.
 -/
 
-/-! ## `prop:pair-regularity`(2), the Phase 1 decision made concrete
+/-! ## `prop:pair-regularity`(2) — **discharged 2026-09-26** (Q-0021)
 
-The statement that forced the vocabulary question. Note that no predicate `CompletelyMonotone`
-appears: `HasCMRep` and `HasStieltjesRep` are representations, and the equivalence below is
-therefore statable in the development's existing idiom.
+`hasCMDensity_iff` has moved into the library as
+`Hemigroup.SelfDecomposableExponent.hasCMDensity_iff` (`Hemigroup/PairRegularity.lean`), and
+`#print axioms` gives Lean core. The node stays `[A]` on ledger A9 because of clause (1), which is
+not stated in Lean; the declaration states clause (2)'s two equivalences only.
 
-Crossing to the blueprint's derivative-sign reading of the same classes costs ledger **A1**,
-once, in the statement — never inside a proof. That is the discipline `prop:bernstein-toolbox`(3)
-already documents for `BF₀` against `LE`.
-
-**Why it stays `\notready`** (surveyed 2026-09-26, Q-0021; the boundary question answered the same
-day, the proof not written). `prop:pair-regularity` is an `[A]` node on ledger A9, and the handoff
-has carried
-"`prop:pair-regularity`(2), ledger A9 by design" as the reason this declaration is not attempted.
-That is right about the *node* and does not follow for the *declaration*:
-
-* the node is `[A]` because of **clause (1)** — the characterization of the potential measures of
-  special subordinators, SSV Thm. 11.3 — which is not stated here at all;
-* within clause (2), A9's two structural inputs (SSV Thm. 7.3, `1/h ∈ CBF` for Stieltjes `h`; SSV
-  Thm. 6.2, a complete Bernstein function has a CM Lévy density) are used **only** for the second
-  assertion, about `ℓ^{(x)}` and `F ∈ CBF`. The statement below is the two equivalences alone, and
-  the blueprint proves those from `lem:memory-kernel`'s derivative formula — `hasDerivAt_toRealExponent`,
-  already in the library — by Tonelli in one direction and Laplace uniqueness in the other, citing
-  neither theorem.
-
-So the reason it stays open is not the trust boundary. It is that nobody has written the proof.
-
-**The boundary question is settled: yes, off the boundary** (2026-09-26, Q-0021 round 2 — worked
-out at the level of the four steps below, which is what settles it; still not written). Nothing in
-either equivalence needs SSV Thm. 7.3 or Thm. 6.2, and nothing needs a ledger entry. What it needs
-is four steps, and two of them are traps the statement's idiom sets rather than mathematics:
-
-1. **(⇐) of the first equivalence, and the dilation.** `HasCMRep F.k` with measure `σ` gives the
-   density `t ↦ k(t/x)/x` of `memoryKernel x` on `Ioi 0` the representation
-   `∫ e^{-(τ/x)t} d((1/x) · map (· / x) σ)`, so the CM class is dilation-stable by transporting `σ`,
-   with no analysis at all. `memoryKernel`'s atom drops out because `HasCMDensity` restricts to
-   `Ioi 0`.
-2. **(⇒) of the first equivalence is where the pointwise form of `HasCMRep` bites, and
-   antitonicity closes it.** Equality of the two `withDensity` measures gives `k(t) = x·m(xt)` only
-   *a.e.* on `Ioi 0`, while `HasCMRep F.k` demands it at every `t > 0`. That gap is not a defect in
-   the statement: `F.k_antitone` closes it. For any `t > 0` pick `sₙ ↑ t` and `uₙ ↓ t` inside the
-   agreement set (it has full measure, so it meets every interval); antitonicity gives
-   `g(sₙ) ≥ k t ≥ g(uₙ)` for `g := x·m(x·)`, and `g` is continuous at `t`, so both sides converge to
-   `g t`. Hence `k t = g t` everywhere. **So the a.e.-versus-everywhere step is three lines, not a
-   hazard** — the earlier note calling for "care" priced it as an obstacle, on the pattern this
-   chapter's docstring names.
-3. **The junk values of `HasCMRep`/`HasStieltjesRep` are what actually needs the case split.**
-   Neither predicate constrains `σ` beyond `IsCausal`, so `∫ τ, exp (-(τ * t)) ∂σ` may be a Bochner
-   integral of a non-integrable function and evaluate to `0`; and Tonelli, which the second
-   equivalence's (⇒) runs, wants `SFinite σ`. The shapes this admits are harmless but must be
-   handled. `{t > 0 : integrable}` is an up-set with some endpoint `t₀`, and `m` is `0` below `t₀`
-   (junk) and finite and continuous above it (dominated convergence, `e^{-τt} ≤ e^{-τt₁}` for
-   `t ≥ t₁ > t₀`). Either `t₀ > 0`, and then `k` vanishes a.e. near the origin, so — being antitone
-   and nonnegative — it vanishes identically on `Ioi 0` and `σ = 0` serves; or `t₀ = 0` and `m` is
-   continuous on all of `(0,∞)`, which is exactly what step 2 needs. So the case split feeds step 2
-   rather than resting on it.
-4. **(⇒) and (⇐) of the second equivalence.** Forward is Tonelli against
-   `hasDerivAt_toRealExponent` (already in the library):
-   `F'(s) = b₀ + ∫₀^∞ e^{-st}k(t)dt = b₀ + ∫ (s+τ)⁻¹ dσ`, so `a = 0` and `b = b₀`. Backwards is the
-   `a = 0` step — an `a/s` term is an additive constant in `k`, which `∫₁^∞ k(t)t⁻¹dt < ∞` forbids —
-   and then `laplaceL_injective_of_ne_top`, recovering `k` from its transform up to a null set and
-   closing with step 2 again.
-
-So the declaration is off the boundary and is not cheap: four steps, two of which are about the
-idiom rather than the mathematics. The node's `[A]` status is fixed by clause (1) either way, so
-proving this would widen what is machine-checked without moving the trust boundary.
+The statement was the one that forced the vocabulary question — no `CompletelyMonotone`
+predicate appears, `HasCMRep` and `HasStieltjesRep` being representations — and it was proved
+without spending a ledger entry. What it cost is the idiom rather than the mathematics: the
+a.e.-to-pointwise upgrade that `withDensity` against a pointwise `HasCMRep` demands, which
+`F.k_antitone` closes, and the junk values of a representing integral that neither predicate
+rules out. What it taught is that the blueprint's `a = 0` step is not needed: the `a/s` term is
+absorbed as an atom `a δ₀` of the representing measure. The new file's module docstring has the
+route.
 -/
 
-/-- **Step 1 of `prop:pair-regularity`(2)**: the `(⇐)` of the first equivalence. The CM class is
-dilation-stable by transporting the representing measure, `σ ↦ x⁻¹ · map (· / x) σ`, with no
-analysis; the drift atom drops out on `Ioi 0`. -/
-theorem hasCMDensity_memoryKernel_of_hasCMRep {x : ℝ} (hx : 0 < x) (h : HasCMRep F.k) :
-    HasCMDensity (F.memoryKernel x) := by
-  obtain ⟨σ, hσ, hk⟩ := h
-  refine ⟨fun t => F.k (t / x) / x,
-    ⟨ENNReal.ofReal x⁻¹ • σ.map (fun τ => τ / x), ?_, ?_⟩, ?_⟩
-  · have hpre : (fun τ : ℝ => τ / x) ⁻¹' Iio 0 = Iio 0 := by
-      ext τ
-      simp only [mem_preimage, mem_Iio]
-      exact ⟨fun h => by
-        by_contra h'
-        exact absurd h (not_lt.mpr (div_nonneg (not_lt.mp h') hx.le)),
-        fun h => div_neg_of_neg_of_pos h hx⟩
-    show (ENNReal.ofReal x⁻¹ • σ.map (fun τ => τ / x)) (Iio 0) = 0
-    rw [Measure.smul_apply, Measure.map_apply (by fun_prop : Measurable fun τ : ℝ => τ / x)
-      measurableSet_Iio,
-      hpre, hσ, smul_zero]
-  · intro t ht
-    show F.k (t / x) / x = _
-    rw [integral_smul_measure,
-      integral_map (by fun_prop : Measurable fun τ : ℝ => τ / x).aemeasurable
-        (by fun_prop : Continuous fun τ : ℝ => Real.exp (-(τ * t))).aestronglyMeasurable,
-      hk (t / x) (div_pos ht hx), ENNReal.toReal_ofReal (inv_nonneg.mpr hx.le), smul_eq_mul,
-      div_eq_inv_mul]
-    have hτ : ∀ τ : ℝ, τ / x * t = τ * (t / x) := fun τ => by ring
-    simp only [hτ]
-  · rw [SelfDecomposableExponent.memoryKernel, Measure.restrict_add, Measure.restrict_smul,
-      Measure.restrict_eq_zero.mpr (show Measure.dirac (0 : ℝ) (Ioi 0) = 0 by
-        rw [Measure.dirac_apply' _ measurableSet_Ioi]; simp), smul_zero, zero_add,
-      restrict_withDensity measurableSet_Ioi, Measure.restrict_restrict measurableSet_Ioi,
-      inter_self]
-
-/-- **`prop:pair-regularity`(2).** `κ^{(x)}` has a completely monotone density iff `k` does,
-iff `F'` is Stieltjes. -/
-theorem hasCMDensity_iff {x : ℝ} (hx : 0 < x) :
-    (HasCMDensity (F.memoryKernel x) ↔ HasCMRep F.k) ∧
-      (HasCMRep F.k ↔ HasStieltjesRep (deriv F.toRealExponent)) := by
-  sorry
 
 end Skeleton

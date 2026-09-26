@@ -872,8 +872,19 @@ ofReal x • ℓ₁.map (x·)` — **the scalar `x` is there** (sup-normalisatio
 `ℓ^{(x)}(t) = ℓ^{(1)}(t/x)` with no extra factor, as the draft's "Moreover" says. Quantified
 over any two measures meeting the spec (uniqueness pins them). **faithful.**
 
-`Skeleton.hasCMDensity_iff` (`Skeleton/Chapter9.lean:178`): `sorry`-marked, outside
-`Hemigroup/`, uncited, not in the guard — nothing claimed.
+**T2.1h `prop:pair-regularity`(2) · `hasCMDensity_iff` (`PairRegularity.lean`, Q-0021,
+2026-09-26; was `Skeleton.hasCMDensity_iff`, `sorry`-marked).** For `x > 0`: `HasCMDensity
+(memoryKernel x) ↔ HasCMRep k` and `HasCMRep k ↔ HasStieltjesRep (deriv toRealExponent)`. These are
+clause (2)'s two equivalences only. Clause (1) and clause (2)'s second assertion (`ℓ^{(x)}`, `F ∈
+CBF`) are not stated, and the node stays `[A]` on A9. Points checked: `HasCMDensity` restricts to
+`Ioi 0`, excluding the drift atom as `κ = b₀δ₀ + κ_c` does. `HasCMRep` is pointwise on `t > 0` with a
+causal measure, so an atom at `0` is allowed, which is Bernstein–Widder's class on `(0,∞)` (A1 in the
+reading, not in the proof). `HasStieltjesRep` takes `σ` on `[0,∞)` beside `a/s`: an atom of `σ` at
+`0` duplicates `a/s`, so the class is the same. The junk Bochner value `0` does not enlarge either
+class on the sides that matter: a divergent `(s+τ)⁻¹`-integral reads `F' = a/s + b`, itself in `S`
+with `σ = 0`, and a divergent representation of an antitone `k` forces `k ≡ 0` (`hasCMRep_of_ae`).
+`HasCMDensity`'s witness `m` is unconstrained, but the first equivalence ties it to `k`. Lean core
+(guard). **faithful.**
 
 ### T2.2 Chapter 10 — the delay core and the generator
 
