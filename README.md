@@ -103,12 +103,12 @@ two advisories, both deliberate: `lem:selfdecomposable-derivative` is A18 itself
 article states.
 
 What is not formalized, and why, is inventoried in the paper's §1.1: the scale-Cauchy
-problem waits on distribution theory absent from Mathlib; four target types are typed as
-`sorry`-marked declarations in `Formalization/Skeleton/`, outside the library — three
-clauses of `lem:zstar-log-growth` and `prop:pair-regularity`(2) (§1.1's inventory, like its
-A17 sentence, is rewritten by whichever pass prepares a `v1.1`: since `v1.0.0`,
-`lem:mode-rigidity` and `lem:standing-levy-reading` have been proved on `main` and
-`lem:zstar-log-growth`'s drift clause with them); the
+problem waits on distribution theory absent from Mathlib; three target types are typed as
+`sorry`-marked declarations in `Formalization/Skeleton/`, outside the library — clauses (1)
+and (4) of `lem:zstar-log-growth`, and `prop:pair-regularity`(2) (§1.1's
+inventory, like its A17 sentence, is rewritten by whichever pass prepares a `v1.1`: since
+`v1.0.0`, `lem:mode-rigidity`, `lem:standing-levy-reading` and both cases of
+`lem:zstar-log-growth`(2) have been proved on `main`); the
 locality chapter's remaining nodes are cited analytic interfaces
 (Widder, Courrège, Krull–Webster, Bondesson) plus the Bessel-K special function; and the
 implementation and jet chapters are outside the Lean plan by decision. History:
