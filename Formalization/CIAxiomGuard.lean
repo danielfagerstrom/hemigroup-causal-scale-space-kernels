@@ -262,8 +262,7 @@ is `∫₀^{t₀} dt/t = ∞` against a `k` bounded below there by monotonicity.
 
 /-! ### `lem:zstar-log-growth` (11.23), clause (2) in both cases
 
-The node is **not** `\leanok`: clauses (1) and (4) remain in `Skeleton/Chapter11.lean` (see that
-file, and `records/PLAN-chapters-8-12.md`). What is checked here is the whole of clause (2), the
+Clauses (1) and (4) are the next section. What is checked here is the whole of clause (2), the
 log-growth rate of the exponent, in both cases and unconditionally.
 
 The **drift** case needs no Tauberian argument at all — `F(s) ≥ b₀ s` and `s / log s → ∞`. The
@@ -281,6 +280,22 @@ split. `Hemigroup/ZStarDriftless.lean`'s module docstring has the argument. Lean
 #print axioms Hemigroup.SelfDecomposableExponent.lintegral_tail_ne_top
 #print axioms Hemigroup.SelfDecomposableExponent.levyJump_le_of_le
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero
+
+/-! ### `lem:zstar-log-growth` (11.23), clauses (1) and (4) — the node complete
+
+Clause (1) identifies the limit of (2) with `z_*` by an Abelian comparison alone: the hinge
+`Γ(ζ)·E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds` and the two tails of that integral, proved for any
+limit in `[0,∞]` so that the drift case needs nothing of its own. Clause (4) is its corollary via
+`exponent_smul`. `Hemigroup/ZStarAbelian.lean`'s module docstring has the route. Lean core.
+-/
+
+#print axioms Hemigroup.lintegral_Ioi_rpow_eq_top
+#print axioms Hemigroup.SelfDecomposableExponent.gamma_mul_negMoment
+#print axioms Hemigroup.SelfDecomposableExponent.negMoment_ne_top_of_le_exponent
+#print axioms Hemigroup.SelfDecomposableExponent.negMoment_eq_top_of_exponent_le
+#print axioms Hemigroup.SelfDecomposableExponent.zStar_eq_of_tendsto
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar
+#print axioms Hemigroup.SelfDecomposableExponent.zStar_smul
 
 /-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
 
