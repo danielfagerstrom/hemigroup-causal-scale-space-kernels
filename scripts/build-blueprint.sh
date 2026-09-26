@@ -15,6 +15,9 @@
 #   web       blueprint/web/            the same PLUS the dependency graph and [T]/[A] tags
 #   manifest  .manifest-preview.json    what the hub would transclude (pandoc-rendered)
 #
+# Owner: article-kit's scaffold/scripts/build-blueprint.sh. The copy in an article is a delivery
+# of it by `linkage init --sync`; change it there, not in the article.
+#
 # Usage:
 #   scripts/build-blueprint.sh              everything (~30s)
 #   scripts/build-blueprint.sh --quick      skip the web build (~13s) -- the inner loop
@@ -72,7 +75,11 @@ if [ "$DO_WEB" = 1 ]; then
   # plastex.cfg sets directory=../web/, so this must run from blueprint/src.
   # Two warnings are expected and harmless: "default renderer for newtheorem" (the extra
   # environments declared in theorems-extra.tex) and "default renderer for bigskip".
-  ( cd blueprint/src && plastex -c plastex.cfg web.tex >/dev/null 2>&1 ) \
+  # PYTHONUTF8=1 on this one command: plasTeX writes the \lean-tag declaration list with
+  # Python's default encoding, which is cp1252 on Windows, and dies on a non-ASCII Lean
+  # declaration name such as `b₀` (U+2080). The symptom is Windows-only; Linux CI defaults
+  # to UTF-8 and never sees it.
+  ( cd blueprint/src && PYTHONUTF8=1 plastex -c plastex.cfg web.tex >/dev/null 2>&1 ) \
     || { echo "plastex failed -- rerun without >/dev/null to see why" >&2; exit 1; }
   echo "  blueprint/web/index.html"
   echo "  blueprint/web/dep_graph_document.html"
