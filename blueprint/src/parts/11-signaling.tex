@@ -1169,7 +1169,7 @@ then $1$ is itself a member of the set whose supremum is $z_*$, so $z_* \ge 1$.
 % \notready, with the target types written and sorry-marked rather than attempted inline.
 \begin{lemma}[Lévy-data reading; the first clause is automatic]\label{lem:standing-levy-reading}
 \uses{def:standing-hypothesis,lem:selfdecomposable-exponents}
-\lean{Skeleton.tendsto_toRealExponent_atTop_iff_levy,Skeleton.tendsto_toRealExponent_atTop_of_ne_zero}\notready
+\lean{Hemigroup.SelfDecomposableExponent.standing_levy_reading}\leanok
 Let $F$ be admissible with representation (7.1). Then:
 \begin{enumerate}
 \item $F(\infty) = \infty$ if and only if $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$
@@ -1177,46 +1177,57 @@ Let $F$ be admissible with representation (7.1). Then:
 \item If $F \not\equiv 0$ then $F(\infty) = \infty$; within the admissible class the standing
 hypothesis therefore reduces to its second clause, $z_* > 1$.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Not yet proved.} Target types are written, sorry-marked, as
-\texttt{Skeleton.tendsto\_toRealExponent\_atTop\_iff\_levy} and
-\texttt{Skeleton.tendsto\_toRealExponent\_atTop\_of\_ne\_zero} in
-\texttt{Formalization/Skeleton/Chapter11.lean}; nothing here is cited by the library or listed in
-\texttt{CIAxiomGuard.lean}, per the article's decomposition discipline.
+\statusT\quad\emph{(Machine-checked as
+\texttt{Hemigroup.SelfDecomposableExponent.standing\_levy\_reading} in
+\texttt{Formalization/Hemigroup/StandingLevyReading.lean}, with its two clauses
+\texttt{tendsto\_toRealExponent\_atTop\_iff\_levy} and
+\texttt{tendsto\_toRealExponent\_atTop\_of\_ne\_zero} listed separately in
+\texttt{CIAxiomGuard.lean} so that each is checked on its own. Lean core, both of them.
 \textbf{Why this clause and not \ref{lem:standing-kernel-readings}'s.} That node's clause~1 is
 stated in $T_1$'s law and its proof is a direct dominated-convergence limit plus a
-change-of-variables that is already in the library
+change-of-variables that was already in the library
 (\texttt{kernel\_zero\_eq\_map\_lawT}$_1$). This one is stated in the $(b_0,k)$ data of (7.1) ---
 the two-vocabulary bridge \texttt{CLAUDE.md} names, that a node concluding in $\BFz$
 needs the $\LE$ reading stated alongside it before it can carry a \texttt{\textbackslash
-lean} tag with \texttt{\textbackslash leanok}. Writing the target types down (the discipline this
-article keeps, statement first) is what turned "looks like the same kind of fact" into a real
-cost estimate: clause~(1) needs a monotone-convergence argument for \texttt{levyJump} as
-$s \to \infty$ in \emph{both} directions of an iff, together with the bridge from a
-$[0,\infty]$-valued limit to the $\RR$-valued \texttt{atTop} reading \texttt{toRealExponent}
-already carries (the same bridge, \texttt{tendsto\_toRealExponent\_atTop\_of\_lawT}$_1$
-\texttt{\_singleton\_zero}, needed once, for one direction, in
-\ref{lem:standing-kernel-readings}); clause~(2) needs
-$\int_0^{t_0} t^{-1}dt = \infty$, a divergence fact the library does not currently carry in any
-form. Priced against the target types rather than the paper proof --- the paper's own route, via
-complete monotonicity, is not available here at all, the development having no \texttt{CM}
-predicate --- this is genuinely more expensive than \ref{lem:standing-kernel-readings}, and
-nothing downstream needs it: every proof through chapter~10 consumes (H)'s two clauses as the
-Lean has always stated them, never this reading of them.)}
+lean} tag with \texttt{\textbackslash leanok}.
+\textbf{What the pricing got wrong.} This node was priced at "genuinely more expensive than
+\ref{lem:standing-kernel-readings}" on two counts, and the proof undercut both. The
+$[0,\infty]$-to-$\RR$ bridge was wanted in \emph{both} directions of the iff; in fact only the
+divergent direction needs a limit at all, the convergent one being the uniform bound
+$\texttt{levyJump}\,k\,s \le \int_0^\infty k(t)t^{-1}dt$, which is $1 - e^{-st} \le 1$ and no
+convergence theorem. And $\int_0^{t_0}t^{-1}dt = \infty$ is indeed absent from Mathlib as an
+\texttt{lintegral}, but present as an integrability statement
+(\texttt{intervalIntegrable\_inv\_iff}); \texttt{hasFiniteIntegral\_iff\_ofReal} crosses between
+them in six lines. So monotone convergence is used once, along the naturals, in one direction.
+That is the fifth time in this chapter that what a proof cites turned out to be an upper bound on
+what its statement needs.
+\textbf{Where the class does the work.} Clause~(2) is \emph{false} in $\LE$: a driftless compound
+Poisson exponent with finite Lévy mass is bounded and nonzero. It holds here only because the
+density against $dt/t$ is nonincreasing --- which is why the proof below is the one that was
+checked, and why this clause, not clause~(1), is the one that uses self-decomposability.
+\textbf{Nothing downstream needs this reading}: every proof through chapter~10 consumes (H)'s two
+clauses as the Lean has always stated them.)}
 \end{lemma}
 
 \begin{proof}
-(1) ($\Leftarrow$) If $b_0 > 0$ then $F(s) \ge b_0 s \to \infty$. If $\int_0^\infty k(t)t^{-1}dt =
-\infty$, monotone convergence in (7.1) --- $1 - e^{-st}$ increases pointwise to $1$ on
-$(0,\infty)$ as $s \to \infty$ --- gives $F(s) \to b_0\cdot\infty + \int_0^\infty k(t)t^{-1}dt =
-\infty$. ($\Rightarrow$) Contrapositive: if $b_0 = 0$ and $\int_0^\infty k(t)t^{-1}dt =: M <
-\infty$, the same monotone limit gives $F(s)$ increasing to $M < \infty$, so
-$F(\infty) \ne \infty$.
+\leanok
+Write $M := \int_0^\infty k(t)\,t^{-1}dt \in [0,\infty]$ for the total Lévy mass.
 
-(2) If $k \not\equiv 0$, nonincreasing $k$ that is positive somewhere is bounded below by that
-value on the interval below it: pick $t_0$ with $k(t_0) > 0$, then $k(t) \ge k(t_0)$ for
-$t \in (0,t_0]$, so $\int_0^{t_0} k(t)t^{-1}dt \ge k(t_0)\int_0^{t_0}t^{-1}dt = \infty$, and (1)
-gives $F(\infty) = \infty$. If $k \equiv 0$ and $F \not\equiv 0$, (7.1) reduces to $F(s) = b_0 s$
-with $b_0 > 0$, and (1) again gives $F(\infty) = \infty$.
+(1) ($\Rightarrow$) Contrapositive, and without any limit: if $b_0 = 0$ and $M < \infty$ then
+$F(s) = \int_0^\infty (1 - e^{-st})k(t)t^{-1}dt \le M$ for every $s$, since
+$1 - e^{-st} \le 1$ and $k \ge 0$. A function bounded above does not tend to $\infty$.
+
+($\Leftarrow$) If $b_0 > 0$ then $F(s) \ge b_0 s \to \infty$. If $M = \infty$, monotone
+convergence along the integers --- $1 - e^{-nt}$ increases pointwise to $1$ on $(0,\infty)$ ---
+gives $\int_0^\infty (1-e^{-nt})k(t)t^{-1}dt \to M = \infty$, so for every $b$ there is an
+$n \ge 1$ with $F(n) > b$; and $F$ is nondecreasing on $(0,\infty)$, so $F(s) > b$ for all
+$s \ge n$.
+
+(2) If $b_0 > 0$, (1) applies at once. If $b_0 = 0$ then $F \not\equiv 0$ forces $k$ to be
+positive somewhere, say $k(t_0) > 0$ with $t_0 > 0$; a nonincreasing $k$ positive at $t_0$ is
+bounded below by $k(t_0)$ on the whole of $(0,t_0]$, so
+$M \ge \int_0^{t_0}k(t)t^{-1}dt \ge k(t_0)\int_0^{t_0}t^{-1}dt = \infty$, and (1) again gives
+$F(\infty) = \infty$.
 \end{proof}
 
 % additive: not in the draft. The Levy-data reading of (H)'s SECOND clause -- 11.22 reads only
@@ -1226,7 +1237,7 @@ with $b_0 > 0$, and (1) again gives $F(\infty) = \infty$.
 % split in this chapter.
 \begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
 \uses{def:standing-hypothesis,lem:memory-kernel,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
-\lean{Skeleton.tendsto_toRealExponent_div_log_atTop_zStar,Skeleton.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Skeleton.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Skeleton.zStar_smul}\notready
+\lean{Skeleton.tendsto_toRealExponent_div_log_atTop_zStar,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Skeleton.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Skeleton.zStar_smul}\notready
 Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \begin{enumerate}
 \item The limit $\lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$ and equals $z_*$.
@@ -1236,12 +1247,35 @@ Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \item $z_*$ is homogeneous of degree one on the admissible cone: $z_*(cF) = c\,z_*(F)$ for every
 $c > 0$.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Not yet proved.} Target types are written, sorry-marked, as
+\statusT\quad\emph{(\textbf{One of four clauses proved.} Clause~(2)'s drift case is machine-checked
+as
+\texttt{Hemigroup.SelfDecomposableExponent.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_pos}
+(\texttt{Formalization/Hemigroup/ZStarLogGrowth.lean}, Lean core, listed in
+\texttt{CIAxiomGuard.lean}): it is the one of the four that is unconditional \emph{and} needs no
+Tauberian step, being $F(s) \ge b_0 s$ from (7.1) together with $s/\log s \to \infty$. The other
+three target types remain written and sorry-marked, as
 \texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_zStar},
-\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_pos},
 \texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_zero} and
-\texttt{Skeleton.zStar\_smul} in \texttt{Formalization/Skeleton/Chapter11.lean}; nothing here is
-cited by the library or listed in \texttt{CIAxiomGuard.lean}.
+\texttt{Skeleton.zStar\_smul} in \texttt{Formalization/Skeleton/Chapter11.lean}, so the node keeps
+\texttt{\textbackslash notready}.
+\textbf{What the three that remain wait on} (routes written out 2026-09-26; none attempted).
+The \emph{driftless} case of~(2) is the bottleneck and the only one with real content. Its first
+half is available: $B(s) = sF'(s) = b_0 s + \int_0^\infty e^{-u}k(u/s)du$ from
+\ref{lem:memory-kernel}, already machine-checked, and $B(s) \uparrow k(0^+)$ by the same monotone
+convergence \ref{lem:standing-levy-reading}(1) runs. Its second half is the Ces\`aro step
+$F(s)/\log s = (\log s)^{-1}\int_1^s B(v)\,v^{-1}dv \to \lim B$, and \textbf{Mathlib's L'H\^opital
+is the $0/0$ form only} --- \texttt{Mathlib/Analysis/Calculus/LHopital.lean} carries
+\texttt{lhopital\_zero\_*} in every variant and no $\infty/\infty$ companion at \texttt{atTop} ---
+so that step must be done by hand, with a case split on $k(0^+) = \infty$ that the
+$[0,\infty]$-valued target makes unavoidable. Clause~(1) is that limit plus an Abelian comparison:
+identifying it \emph{with} $z_*$ goes through
+$\Gamma(\zeta)\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}ds$, which the library already
+has in the shape \texttt{lintegral\_lintegral\_gamma\_of\_ae\_mem\_Ioi} plus
+\texttt{laplaceL\_lawT}$_1$ (the route \texttt{stableExponent\_negMoment\_ne\_top} takes), and then
+compares $e^{-F(s)}$ with $s^{-z}$ on both sides --- which needs the two-sided bound that
+\emph{is} the limit of~(2), so it cannot precede it. Clause~(4) is a corollary of~(1), as priced,
+and inherits the wait. None of the three is blocked on the trust boundary; the price is a missing
+Mathlib theorem and a case analysis.
 \textbf{The gap the obvious sketch has.} A subsequence/comparison argument on the Mellin integral
 of \ref{lem:mellin-data} shows only $z_* = \liminf_{s\to\infty} F(s)/\log s$: nothing controls the
 limsup for a general Bernstein $F$, whose $F/\log s$ can oscillate. \textbf{Existence of the limit
@@ -1265,9 +1299,10 @@ $k(u/s) \uparrow k(0^+)$ as $s \to \infty$ --- only clause~(1)'s identification 
 $z_*$ needs it, since \texttt{negMoment} and \texttt{zStar} integrate over \texttt{Ioi 0} and are
 blind to an atom at the origin, the trap \ref{lem:standing-levy-reading}'s target types were
 already written to avoid.
-\textbf{Shares machinery with \ref{lem:standing-levy-reading}}: both run a monotone-convergence
-argument on \texttt{levyJump} as $s \to \infty$ (there for $\int k(t)t^{-1}dt$, here for
-$k(u/s)$ itself), so the two nodes should be formalised together if either is attempted.
+\textbf{Shares machinery with \ref{lem:standing-levy-reading}}, now proved: both run a
+monotone-convergence argument on \texttt{levyJump} as $s \to \infty$ (there for
+$\int k(t)t^{-1}dt$, here for $k(u/s)$ itself), so the driftless case of~(2) should reuse
+\texttt{tendsto\_levyJump\_atTop\_levyMass}'s shape rather than start from Mathlib.
 \textbf{Nothing downstream needs this reading.} Every proof through chapter~10 consumes $z_*$ as
 the abscissa \ref{def:standing-hypothesis} states it, never its log-growth rate; this node is a
 detector, not a dependency, and it has already caught one live error --- \S8's Bessel-K proof once
