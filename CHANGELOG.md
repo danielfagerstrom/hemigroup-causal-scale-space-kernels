@@ -6,6 +6,35 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+### Six nodes whose Lean assumed more than the node: settled (2026-09-26, Q-0141)
+
+The input was the hypothesis-drift list of `records/formalization/AUDIT-partial-lean-cover.md`
+(Q-0138). The findings are ledger rows R29–R34 in `blueprint/REVIEW-fidelity.md`. No ledger entry
+was spent or widened, and `AXIOMS.md` and `trust-boundary.txt` are untouched. Every new
+declaration is in `CIAxiomGuard.lean` and prints Lean core.
+
+- **`lem:criterion-converse`: Lean strengthened** (R29). `integrableOn_of_levyExponentD_one_ne_top`
+  works over a bare `(b₀, k)` with finiteness at `s = 1` only. Before this, the tag took a whole
+  `SelfDecomposableExponent`, which assumes finiteness at every `s`. The statement is unchanged.
+- **`lem:log-convexity`: node corrected** (R30, `% CHANGED`). It now states both readings: the
+  `[0,∞]` Hölder inequality on `(0,∞)` with no hypothesis, and real convexity of `log m` on
+  `(0, z_*)` under no atom at `0`. The no-atom half was already covered by (H), which chapter 12
+  assumes throughout. The domain half was a real drift.
+- **`lem:inversion-operator-action`: Lean strengthened, and the node corrected in one clause** (R31).
+  The `…_of_ae` declarations take the node's a.e. identity on the line and need no (H) and no bound
+  on `c`. The second display gains "if `h` is continuous on `(0,∞)`" (`% CHANGED`), because the Lean
+  needs it.
+- **`lem:pmp-verification`: Lean strengthened** (R32). `satisfiesPMP_of_eq_sum` takes bare
+  coefficients at any height. The symbol form's extra hypotheses turned out to be chapter 12's
+  standing ones.
+- **`lem:zstar-log-growth`, `lem:delayed-average-mellin`: no mismatch in substance** (R33, R34).
+  In each case the node's hypothesis implies the Lean's through proved lemmas. The Lean is now
+  stated at the node's hypotheses (`…_of_ne_zero`, `mellin_delayedField_of_integrable`), so the
+  reader no longer supplies that chain.
+
+Two paper-side findings are left for the `v1.1` pass, not edited here (D-D). They are listed in
+`notes/HANDOFF.md`.
+
 ### `prop:pair-regularity`(2) and `lem:zstar-log-growth`(1), (4) proved; `Skeleton/` is empty of `sorry` (2026-09-26, Q-0021 rounds 3–4)
 
 **`prop:pair-regularity`(2)'s two equivalences are machine-checked, on Lean core.** They are

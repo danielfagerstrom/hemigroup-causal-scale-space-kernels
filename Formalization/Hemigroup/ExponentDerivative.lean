@@ -91,6 +91,89 @@ theorem eq_of_hasDerivAt_of_tendsto_zero_pair {f g d : ℝ → ℝ}
     tendsto_nhds_unique tendsto_const_nhds (hlim.congr' heq)
   linarith
 
+/-! ## Finiteness at one point forces both integrals
+
+Stated over a bare pair `(b₀, k)` with `k ≥ 0` nonincreasing on `(0,∞)`, and finiteness of the
+exponent at the single point `s = 1`: nothing about any other `s`, no sign on `b₀`, and no
+normalisation `k 0 = 0`. This is `lem:criterion-converse` at its letter; the structure's
+`integrableOn_of_ne_top` below is the instance. -/
+
+/-- **`k` is integrable at the origin** once the jump part of the exponent is finite at `s = 1`. -/
+theorem integrableOn_k_of_levyJump_one_ne_top (hk : ∀ t ∈ Ioi (0 : ℝ), 0 ≤ k t)
+    (hanti : AntitoneOn k (Ioi (0 : ℝ))) (h1 : levyJump k 1 ≠ ⊤) :
+    IntegrableOn k (Ioc 0 1) := by
+  refine integrableOn_of_lintegral_ofReal_ne_top
+    (((aemeasurable_of_antitoneOn hanti).mono_measure
+      (Measure.restrict_mono Ioc_subset_Ioi_self le_rfl)).aestronglyMeasurable) ?_
+    ((ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall
+      (fun t ht => hk t (mem_Ioi.mpr ht.1))))
+  -- `(1 - e^{-t}) k t / t ≥ k t / 2` on `(0,1]`
+  have hle : (∫⁻ t in Ioc (0 : ℝ) 1, ENNReal.ofReal (k t))
+      ≤ 2 * ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((1 - Real.exp (-(1 * t))) * k t / t) := by
+    rw [← lintegral_const_mul' _ _ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
+    refine le_trans (lintegral_mono_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_))
+      (lintegral_mono_set Ioc_subset_Ioi_self)
+    filter_upwards with t ht
+    have htpos : (0 : ℝ) < t := ht.1
+    have hkt : 0 ≤ k t := hk t (mem_Ioi.mpr htpos)
+    have hlow : t / (1 + t) ≤ 1 - Real.exp (-(1 * t)) := by
+      rw [one_mul]; exact le_one_sub_exp_neg htpos.le
+    rw [show (2 : ℝ≥0∞) = ENNReal.ofReal 2 by simp, ← ENNReal.ofReal_mul (by norm_num)]
+    refine ENNReal.ofReal_le_ofReal ?_
+    -- on `(0,1]` the lower estimate gives `1 - e^{-t} ≥ t/(1+t) ≥ t/2`
+    have h1t : (0 : ℝ) < 1 + t := by linarith
+    have hnn : 0 ≤ 1 - Real.exp (-(1 * t)) := le_trans (div_nonneg htpos.le h1t.le) hlow
+    rw [div_le_iff₀ h1t] at hlow
+    rw [← mul_div_assoc, le_div_iff₀ htpos]
+    nlinarith [mul_nonneg hkt
+      (by nlinarith [hlow, hnn, ht.2] : (0 : ℝ) ≤ 2 * (1 - Real.exp (-(1 * t))) - t)]
+  exact ne_of_lt (lt_of_le_of_lt hle
+    (ENNReal.mul_lt_top (by norm_num) (lt_top_iff_ne_top.mpr h1)))
+
+/-- **`k t / t` is integrable at infinity** once the jump part is finite at `s = 1`. -/
+theorem integrableOn_k_div_of_levyJump_one_ne_top (hk : ∀ t ∈ Ioi (0 : ℝ), 0 ≤ k t)
+    (hanti : AntitoneOn k (Ioi (0 : ℝ))) (h1 : levyJump k 1 ≠ ⊤) :
+    IntegrableOn (fun t => k t / t) (Ioi 1) := by
+  refine integrableOn_of_lintegral_ofReal_ne_top
+    ((((aemeasurable_of_antitoneOn hanti).mono_measure
+      (Measure.restrict_mono (fun t ht => lt_trans zero_lt_one (mem_Ioi.mp ht)) le_rfl)).div
+      aemeasurable_id).aestronglyMeasurable) ?_
+    ((ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun t ht =>
+      div_nonneg (hk t (mem_Ioi.mpr (lt_trans zero_lt_one (mem_Ioi.mp ht))))
+        (le_of_lt (lt_trans zero_lt_one (mem_Ioi.mp ht))))))
+  have hle : (∫⁻ t in Ioi (1 : ℝ), ENNReal.ofReal (k t / t))
+      ≤ 2 * ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((1 - Real.exp (-(1 * t))) * k t / t) := by
+    rw [← lintegral_const_mul' _ _ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
+    refine le_trans (lintegral_mono_ae ((ae_restrict_iff' measurableSet_Ioi).mpr ?_))
+      (lintegral_mono_set (fun t ht => lt_trans zero_lt_one (mem_Ioi.mp ht)))
+    filter_upwards with t ht
+    have ht1 : (1 : ℝ) < t := mem_Ioi.mp ht
+    have htpos : (0 : ℝ) < t := lt_trans zero_lt_one ht1
+    have hkt : 0 ≤ k t := hk t (mem_Ioi.mpr htpos)
+    have hlow : t / (1 + t) ≤ 1 - Real.exp (-(1 * t)) := by
+      rw [one_mul]; exact le_one_sub_exp_neg htpos.le
+    rw [show (2 : ℝ≥0∞) = ENNReal.ofReal 2 by simp, ← ENNReal.ofReal_mul (by norm_num)]
+    refine ENNReal.ofReal_le_ofReal ?_
+    -- past `1` the same estimate gives `1 - e^{-t} ≥ t/(1+t) ≥ 1/2`
+    have h1t : (0 : ℝ) < 1 + t := by linarith
+    have hnn : 0 ≤ 1 - Real.exp (-(1 * t)) := le_trans (div_nonneg htpos.le h1t.le) hlow
+    rw [div_le_iff₀ h1t] at hlow
+    rw [← mul_div_assoc, div_le_div_iff_of_pos_right htpos]
+    nlinarith [mul_nonneg hkt
+      (by nlinarith [hlow, hnn, ht1] : (0 : ℝ) ≤ 2 * (1 - Real.exp (-(1 * t))) - 1)]
+  exact ne_of_lt (lt_of_le_of_lt hle
+    (ENNReal.mul_lt_top (by norm_num) (lt_top_iff_ne_top.mpr h1)))
+
+/-- **The criterion is characteristic** (`lem:criterion-converse`). For `k ≥ 0` nonincreasing on
+`(0,∞)` and any real `b₀`, finiteness of the exponent (7.1) at the single point `s = 1` forces
+both integrability conditions of `prop:admissibility-criterion`. -/
+theorem integrableOn_of_levyExponentD_one_ne_top {b₀ : ℝ} (hk : ∀ t ∈ Ioi (0 : ℝ), 0 ≤ k t)
+    (hanti : AntitoneOn k (Ioi (0 : ℝ))) (h1 : levyExponentD b₀ k 1 ≠ ⊤) :
+    IntegrableOn k (Ioc 0 1) ∧ IntegrableOn (fun t => k t / t) (Ioi 1) :=
+  have hj : levyJump k 1 ≠ ⊤ := (ENNReal.add_ne_top.mp h1).2
+  ⟨integrableOn_k_of_levyJump_one_ne_top hk hanti hj,
+    integrableOn_k_div_of_levyJump_one_ne_top hk hanti hj⟩
+
 /-! ## Every exponent is integrable where its own analysis needs it -/
 
 namespace SelfDecomposableExponent
@@ -105,33 +188,8 @@ lemma levyJump_one_ne_top : levyJump F.k 1 ≠ ⊤ :=
   (ENNReal.add_ne_top.mp (F.ne_top 1 zero_le_one)).2
 
 /-- **`k` is integrable at the origin**, forced by `ne_top` rather than assumed. -/
-theorem integrableOn_k : IntegrableOn F.k (Ioc 0 1) := by
-  refine integrableOn_of_lintegral_ofReal_ne_top
-    ((F.aemeasurable_k Ioc_subset_Ioi_self).aestronglyMeasurable) ?_
-    ((ae_restrict_iff' measurableSet_Ioc).mpr (Filter.Eventually.of_forall
-      (fun t ht => F.k_nonneg t (mem_Ioi.mpr ht.1))))
-  -- `(1 - e^{-t}) k t / t ≥ k t / 2` on `(0,1]`
-  have hle : (∫⁻ t in Ioc (0 : ℝ) 1, ENNReal.ofReal (F.k t))
-      ≤ 2 * ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((1 - Real.exp (-(1 * t))) * F.k t / t) := by
-    rw [← lintegral_const_mul' _ _ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
-    refine le_trans (lintegral_mono_ae ((ae_restrict_iff' measurableSet_Ioc).mpr ?_))
-      (lintegral_mono_set Ioc_subset_Ioi_self)
-    filter_upwards with t ht
-    have htpos : (0 : ℝ) < t := ht.1
-    have hkt : 0 ≤ F.k t := F.k_nonneg t (mem_Ioi.mpr htpos)
-    have hlow : t / (1 + t) ≤ 1 - Real.exp (-(1 * t)) := by
-      rw [one_mul]; exact le_one_sub_exp_neg htpos.le
-    rw [show (2 : ℝ≥0∞) = ENNReal.ofReal 2 by simp, ← ENNReal.ofReal_mul (by norm_num)]
-    refine ENNReal.ofReal_le_ofReal ?_
-    -- on `(0,1]` the lower estimate gives `1 - e^{-t} ≥ t/(1+t) ≥ t/2`
-    have h1t : (0 : ℝ) < 1 + t := by linarith
-    have hnn : 0 ≤ 1 - Real.exp (-(1 * t)) := le_trans (div_nonneg htpos.le h1t.le) hlow
-    rw [div_le_iff₀ h1t] at hlow
-    rw [← mul_div_assoc, le_div_iff₀ htpos]
-    nlinarith [mul_nonneg hkt
-      (by nlinarith [hlow, hnn, ht.2] : (0 : ℝ) ≤ 2 * (1 - Real.exp (-(1 * t))) - t)]
-  exact ne_of_lt (lt_of_le_of_lt hle
-    (ENNReal.mul_lt_top (by norm_num) (lt_top_iff_ne_top.mpr F.levyJump_one_ne_top)))
+theorem integrableOn_k : IntegrableOn F.k (Ioc 0 1) :=
+  integrableOn_k_of_levyJump_one_ne_top F.k_nonneg F.k_antitone F.levyJump_one_ne_top
 
 /-- **`∫₀¹ k < ∞` in `ℝ≥0∞`**, which is `integrableOn_k` in the form every estimate at the origin
 actually consumes.
@@ -148,42 +206,14 @@ theorem lintegral_ofReal_k_Ioc_ne_top :
   rw [Real.enorm_eq_ofReal (F.k_nonneg t (mem_Ioi.mpr ht.1))]
 
 /-- **`k t / t` is integrable at infinity**, likewise forced. -/
-theorem integrableOn_k_div : IntegrableOn (fun t => F.k t / t) (Ioi 1) := by
-  refine integrableOn_of_lintegral_ofReal_ne_top
-    (((F.aemeasurable_k (fun t ht => lt_trans zero_lt_one (mem_Ioi.mp ht))).div
-      aemeasurable_id).aestronglyMeasurable) ?_
-    ((ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall (fun t ht =>
-      div_nonneg (F.k_nonneg t (mem_Ioi.mpr (lt_trans zero_lt_one (mem_Ioi.mp ht))))
-        (le_of_lt (lt_trans zero_lt_one (mem_Ioi.mp ht))))))
-  have hle : (∫⁻ t in Ioi (1 : ℝ), ENNReal.ofReal (F.k t / t))
-      ≤ 2 * ∫⁻ t in Ioi (0 : ℝ), ENNReal.ofReal ((1 - Real.exp (-(1 * t))) * F.k t / t) := by
-    rw [← lintegral_const_mul' _ _ (by norm_num : (2 : ℝ≥0∞) ≠ ⊤)]
-    refine le_trans (lintegral_mono_ae ((ae_restrict_iff' measurableSet_Ioi).mpr ?_))
-      (lintegral_mono_set (fun t ht => lt_trans zero_lt_one (mem_Ioi.mp ht)))
-    filter_upwards with t ht
-    have ht1 : (1 : ℝ) < t := mem_Ioi.mp ht
-    have htpos : (0 : ℝ) < t := lt_trans zero_lt_one ht1
-    have hkt : 0 ≤ F.k t := F.k_nonneg t (mem_Ioi.mpr htpos)
-    have hlow : t / (1 + t) ≤ 1 - Real.exp (-(1 * t)) := by
-      rw [one_mul]; exact le_one_sub_exp_neg htpos.le
-    rw [show (2 : ℝ≥0∞) = ENNReal.ofReal 2 by simp, ← ENNReal.ofReal_mul (by norm_num)]
-    refine ENNReal.ofReal_le_ofReal ?_
-    -- past `1` the same estimate gives `1 - e^{-t} ≥ t/(1+t) ≥ 1/2`
-    have h1t : (0 : ℝ) < 1 + t := by linarith
-    have hnn : 0 ≤ 1 - Real.exp (-(1 * t)) := le_trans (div_nonneg htpos.le h1t.le) hlow
-    rw [div_le_iff₀ h1t] at hlow
-    rw [← mul_div_assoc, div_le_div_iff_of_pos_right htpos]
-    nlinarith [mul_nonneg hkt
-      (by nlinarith [hlow, hnn, ht1] : (0 : ℝ) ≤ 2 * (1 - Real.exp (-(1 * t))) - 1)]
-  exact ne_of_lt (lt_of_le_of_lt hle
-    (ENNReal.mul_lt_top (by norm_num) (lt_top_iff_ne_top.mpr F.levyJump_one_ne_top)))
+theorem integrableOn_k_div : IntegrableOn (fun t => F.k t / t) (Ioi 1) :=
+  integrableOn_k_div_of_levyJump_one_ne_top F.k_nonneg F.k_antitone F.levyJump_one_ne_top
 
-/-- **The criterion is characteristic.** Both halves of `prop:admissibility-criterion` are not
-merely sufficient for convergence but forced by it — a single instance of `ne_top`, at `s = 1`,
-implies them. Collated so that the blueprint node covering both can carry one Lean tag. -/
+/-- **The criterion is characteristic**, for a member of the class: the instance at `s = 1` of
+`integrableOn_of_levyExponentD_one_ne_top`, which is the form `lem:criterion-converse` states. -/
 theorem integrableOn_of_ne_top :
     IntegrableOn F.k (Ioc 0 1) ∧ IntegrableOn (fun t => F.k t / t) (Ioi 1) :=
-  ⟨F.integrableOn_k, F.integrableOn_k_div⟩
+  integrableOn_of_levyExponentD_one_ne_top F.k_nonneg F.k_antitone (F.ne_top 1 zero_le_one)
 
 /-- `k` is bounded past the origin, being nonincreasing. -/
 lemma k_le_of_one_le {t : ℝ} (ht : 1 ≤ t) : F.k t ≤ F.k 1 :=

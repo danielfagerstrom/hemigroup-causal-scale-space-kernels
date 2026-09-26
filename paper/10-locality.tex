@@ -203,7 +203,13 @@ next lemma; the uniqueness it buys, at the linear $Q$ the theorem needs, is the 
 
 % shared with blueprint lem:log-convexity
 \begin{lemma}[log-convexity]\label{lem:log-convexity}
-$z \mapsto m(z)$ is log-convex on $(0, \infty)$.
+$z \mapsto m(z)$, valued in $[0,\infty]$, is log-convex on $(0, \infty)$: for $z_1, z_2 > 0$ and
+$\theta \in [0,1]$,
+\[
+  m\bigl(\theta z_1 + (1-\theta) z_2\bigr) \;\le\; m(z_1)^{\theta}\,m(z_2)^{1-\theta} .
+\]
+If moreover $T_1$ has no atom at the origin (the first clause of (H)), then $\log m$ is a
+real-valued convex function on $(0, z_*)$, hence on $(0,\infty)$ when $z_* = \infty$.
 \end{lemma}
 
 \begin{proof}
