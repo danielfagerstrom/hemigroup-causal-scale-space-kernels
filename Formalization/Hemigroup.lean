@@ -30,6 +30,7 @@ import Hemigroup.LocalityOrderOne
 import Hemigroup.LocalityOrderTwo
 import Hemigroup.MemoryKernel
 import Hemigroup.MemoryKernelTransform
+import Hemigroup.PairRegularity
 import Hemigroup.ModeRigidity
 import Hemigroup.MeanDelay
 import Hemigroup.MellinData
@@ -43,6 +44,7 @@ import Hemigroup.StableMoments
 import Hemigroup.StandingLevyReading
 import Hemigroup.ZStarLogGrowth
 import Hemigroup.ZStarDriftless
+import Hemigroup.ZStarAbelian
 import Hemigroup.MellinVertical
 import Hemigroup.MainAnalysis
 import Hemigroup.MainTheorem

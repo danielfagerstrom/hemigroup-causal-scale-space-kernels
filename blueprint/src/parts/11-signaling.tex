@@ -1236,8 +1236,8 @@ $F(\infty) = \infty$.
 % gamma=1). Appended 2026-08-29, a number the draft does not use, on the pattern of every earlier
 % split in this chapter.
 \begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
-\uses{def:standing-hypothesis,lem:memory-kernel,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
-\lean{Skeleton.tendsto_toRealExponent_div_log_atTop_zStar,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Skeleton.zStar_smul}\notready
+\uses{def:standing-hypothesis,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
+\lean{Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Hemigroup.SelfDecomposableExponent.zStar_smul}\leanok
 Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \begin{enumerate}
 \item The limit $\lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$ and equals $z_*$.
@@ -1247,61 +1247,45 @@ Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \item $z_*$ is homogeneous of degree one on the admissible cone: $z_*(cF) = c\,z_*(F)$ for every
 $c > 0$.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Clause~(2) proved, in both cases.}
-The \emph{drift} case is machine-checked as
+\statusT\quad\emph{(\textbf{Machine-checked on Lean core: clauses (1), (2) and (4).}
+Clause~(2)'s \emph{drift} case is
 \texttt{Hemigroup.SelfDecomposableExponent.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_pos}
-(\texttt{Formalization/Hemigroup/ZStarLogGrowth.lean}, Lean core): it needs no
-Tauberian step, being $F(s) \ge b_0 s$ from (7.1) together with $s/\log s \to \infty$. The
-\emph{driftless} case, the one with content, is machine-checked as
+(\texttt{Formalization/Hemigroup/ZStarLogGrowth.lean}). It needs no Tauberian step: $F(s) \ge b_0 s$
+by (7.1), and $s/\log s \to \infty$. The \emph{driftless} case, the one with content, is
 \texttt{\ldots\_div\_log\_atTop\_of\_b}$_0$\texttt{\_zero}
-(\texttt{Formalization/Hemigroup/ZStarDriftless.lean}, Lean core). Both are listed in
-\texttt{CIAxiomGuard.lean}. Clauses~(1) and~(4) remain written and sorry-marked, as
-\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_zStar} and
-\texttt{Skeleton.zStar\_smul} in \texttt{Formalization/Skeleton/Chapter11.lean}, so the node keeps
-\texttt{\textbackslash notready}.
-\textbf{The recorded obstacle belonged to one route and not to the statement.} Until 2026-09-26 this
-paragraph said the driftless case waits on the Ces\`aro step
-$F(s)/\log s = (\log s)^{-1}\int_1^s B(v)\,v^{-1}dv \to \lim B$, for which \textbf{Mathlib's
-L'H\^opital is the $0/0$ form only} --- \texttt{Mathlib/Analysis/Calculus/LHopital.lean} carries
-\texttt{lhopital\_zero\_*} in every variant and no $\infty/\infty$ companion at \texttt{atTop} ---
-together with a case split on $k(0^+) = \infty$ that the $[0,\infty]$-valued target seemed to force.
-Both are true of the route through $B = sF'$ and false of the obligation: the checked proof, which
-the proof below now follows, never differentiates, and \texttt{tendsto\_order} absorbs
-$k(0^+) = \infty$ with no case split, there being then no level above the supremum to check. That is
-the sixth time in this chapter that what a proof reaches for was an upper bound on what its
-statement needs, and the first where the thing reached for was a missing Mathlib theorem rather than
-a cited node.
-\textbf{What the two that remain wait on.} Clause~(1) is the limit of~(2) plus an Abelian
-comparison: identifying it \emph{with} $z_*$ goes through
-$\Gamma(\zeta)\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}ds$, which the library already
-has in the shape \texttt{lintegral\_lintegral\_gamma\_of\_ae\_mem\_Ioi} plus
-\texttt{laplaceL\_lawT}$_1$ (the route \texttt{stableExponent\_negMoment\_ne\_top} takes), and then
-compares $e^{-F(s)}$ with $s^{-z}$ on both sides. The two-sided bound that comparison needs is
-exactly the limit of~(2), and now exists in both cases, so what is left of~(1) is the comparison
-itself: the two tails of the $\zeta$-integral, and the drift case separately, where the limit is
-$\infty$ and $z_* = \infty$ must be read off \texttt{negMoment}. Clause~(4) is a corollary of~(1),
-as priced, and inherits the wait. Neither is blocked on the trust boundary.
-\textbf{The gap the obvious sketch has.} A subsequence/comparison argument on the Mellin integral
-of \ref{lem:mellin-data} shows only $z_* = \liminf_{s\to\infty} F(s)/\log s$: nothing controls the
-limsup for a general Bernstein $F$, whose $F/\log s$ can oscillate. \textbf{Existence of the limit
-is where self-decomposability enters} --- but not by way of the derivative-sign ($\BFz$)
-machinery its usual proof reaches for. The textbook route identifies $B(s) := sF'(s)$ as a
-Bernstein function (\ref{lem:selfdecomposable-exponents}(2)), hence nondecreasing, and that
-implication is ledger \ledger{A18}. \textbf{Writing the target type found a cheaper route: the
-explicit formula of \ref{lem:memory-kernel}, already machine-checked, gives $B$'s monotonicity
-directly}, with no appeal to the general Bernstein-closure fact --- see the proof below, which
-takes it. So this node, unlike \ref{lem:selfdecomposable-exponents} itself, has no route through
-\ledger{A18} at all; its four target types are priced against Lean core only,
-the way \ref{lem:mellin-data} already reduces off \ledger{A7}. That is exactly the caution
-\texttt{CLAUDE.md} names about writing the cost estimate from the target type rather than from
-the paper proof --- here the paper proof itself is the one that reaches for the expensive tool,
-and the cheaper one was sitting one chapter earlier.
+(\texttt{Formalization/Hemigroup/ZStarDriftless.lean}). Clause~(1) is
+\texttt{\ldots.tendsto\_toRealExponent\_div\_log\_atTop\_zStar} and clause~(4) is
+\texttt{\ldots.zStar\_smul}, both in \texttt{Formalization/Hemigroup/ZStarAbelian.lean} (Q-0021,
+2026-09-26). Both carry the no-atom hypothesis $T_1 > 0$ a.s., which the statement's $F \not\equiv 0$
+supplies (see the proof). All four declarations are listed in \texttt{CIAxiomGuard.lean}.
+Clause~(3) is~(1) and~(2) read against \ref{def:standing-hypothesis}, and has no declaration of its
+own.
+\textbf{The route checked, and the obstacles it never met.} The limit's \emph{existence} comes from
+clause~(2), which computes it. So the convexity argument through $B(s) := sF'(s)$ is not needed, and
+neither is the $\infty/\infty$ L'H\^opital that route asks for, which Mathlib does not carry
+(\texttt{Mathlib/Analysis/Calculus/LHopital.lean} is the $0/0$ form in every variant). Clause~(2)'s
+proof splits the defining integral and never differentiates, and \texttt{tendsto\_order} absorbs
+$k(0^+) = \infty$ with no case split. Clause~(1) is then an Abelian comparison and nothing else.
+Tonelli gives $\Gamma(\zeta)\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}ds$, the route
+\texttt{stableExponent\_negMoment\_ne\_top} takes with $e^{-s^\alpha}$, and the two tails are
+compared with $s^{\zeta-1-c}$ for $c$ on either side of the limit. The comparison holds for any limit
+in $[0,\infty]$, so the drift case, where the limit is $\infty$, needs no separate reading off
+\texttt{negMoment}. Until 2026-09-26 this paragraph recorded the L'H\^opital gap as what the
+driftless case waited on. That was true of the route through $B$ and false of the obligation: the
+sixth time in this chapter that what a proof reaches for was an upper bound on what its statement
+needs, and the first where the thing reached for was a missing Mathlib theorem rather than a cited
+node.
+\textbf{What remains true of the route not taken.} A subsequence argument on the Mellin integral of
+\ref{lem:mellin-data} shows only $z_* = \liminf_{s\to\infty} F(s)/\log s$, since nothing controls the
+limsup for a general Bernstein $F$, whose $F/\log s$ can oscillate. Existence of the limit is where
+self-decomposability enters. In the checked proof it enters through $k$ being nonincreasing, in
+clause~(2)'s two bounds, and not through $B$ being a Bernstein function
+(\ref{lem:selfdecomposable-exponents}(2), ledger \ledger{A18}). So this node has no route through
+\ledger{A18} at all.
 \textbf{Priced against the target types, not the paper proof.} Writing them down found that
-clauses~(2)--(4) need \emph{no} no-atom hypothesis at all --- they are unconditional statements
-about the exponent's own growth, via the explicit formula
-$B(s) = b_0 s + \int_0^\infty e^{-u}k(u/s)\,du$ (substitute $u = st$) and monotone convergence in
-$k(u/s) \uparrow k(0^+)$ as $s \to \infty$ --- only clause~(1)'s identification of the limit with
-$z_*$ needs it, since \texttt{negMoment} and \texttt{zStar} integrate over \texttt{Ioi 0} and are
+clause~(2) needs \emph{no} no-atom hypothesis at all: it is an unconditional statement about the
+exponent's own growth. Only clause~(1)'s identification of the limit with $z_*$ needs it, and
+clause~(4) through~(1), since \texttt{negMoment} and \texttt{zStar} integrate over \texttt{Ioi 0} and are
 blind to an atom at the origin, the trap \ref{lem:standing-levy-reading}'s target types were
 already written to avoid.
 \textbf{Shares its subject with \ref{lem:standing-levy-reading}}, now proved --- both are
@@ -1325,6 +1309,7 @@ integrator, the Gamma family at $\gamma = 1$, agrees with the Gamma case.}
 \end{lemma}
 
 \begin{proof}
+\leanok
 Since $F \not\equiv 0$ is admissible, \ref{lem:standing-levy-reading}(2) gives
 $F(\infty) = \infty$, and \ref{lem:standing-kernel-readings}(1) turns that into $T_1 > 0$ almost
 surely, so $\Ex[T_1^{-\zeta}]$ is an honest integral over $(0,\infty)$ for every $\zeta > 0$.
@@ -1367,37 +1352,27 @@ eventually reached, which is convergence to $K$ in the order topology of $[0,\in
 $K = \infty$ the second half is vacuous, so the case distinction on $k(0^+) = \infty$ that the
 $[0,\infty]$-valued statement seems to call for never has to be made.
 
-\textbf{The exponent's slope}, for clause~(1). By \ref{lem:memory-kernel}, $F'(s) = b_0 +
-\int_0^\infty e^{-st}k(t)\,dt$, so $B(s) := sF'(s) = b_0 s + \int_0^\infty e^{-u}\,k(u/s)\,du$
-after the substitution $u = st$. For $0 < s_1 \le s_2$: $b_0 s_1 \le b_0 s_2$, and $k$
-nonincreasing gives $k(u/s_1) \le k(u/s_2)$ pointwise, since $u/s_1 \ge u/s_2$; so $B$ is
-nondecreasing --- no appeal to \ref{lem:selfdecomposable-exponents} or to $B$ being a Bernstein
-function as a class, only to the explicit formula and the definition of nonincreasing. And since
-$k(u/s)$ increases pointwise to $k(0^+)$ as $s \to \infty$, monotone convergence gives
-$B(\infty) = b_0\cdot\infty + k(0^+)\int_0^\infty e^{-u}\,du$: $\infty$ if $b_0 > 0$, and $k(0^+)$
-if $b_0 = 0$ --- the value of~(2) again, reached the other way.
-
-(1) $G(u) := F(e^u)$ has $G'(u) = e^u F'(e^u) = B(e^u)$ nondecreasing by the above, so $G$ is
-convex in $u = \log s$. A convex function's difference quotient $G(u)/u$ increases, past any zero
-of $u$, to its terminal slope, so
-$L := \lim_{s\to\infty} F(s)/\log s = \lim_{u\to\infty} G(u)/u = \lim_{s\to\infty} B(s)$ exists in
-$[0,\infty]$, with value given by clause~(2). To identify $L$ with $z_*$: by Tonelli,
-$\Gamma(\zeta)\,\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}\,ds$ for every $\zeta > 0$,
-the exchange licensed exactly as in \ref{lem:standing-kernel-readings}(2), now at general $\zeta$
-rather than at $\zeta = 1$. For $0 < \zeta < L$, eventually $F(s) \ge (\zeta+\varepsilon)\log s$
-for some $\varepsilon > 0$, so $e^{-F(s)} \le s^{-\zeta-\varepsilon}$ eventually and the integral
-converges; for $\zeta > L$, eventually $F(s) \le (\zeta - \varepsilon)\log s$, so the integrand is
-eventually $\ge s^{\varepsilon - 1}$ and the integral diverges. Hence
+(1) By~(2), $L := \lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$. To identify $L$ with
+$z_*$: by Tonelli, $\Gamma(\zeta)\,\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}\,ds$ for
+every $\zeta > 0$, the inner integral over $T_1$'s law being $\Ex[e^{-sT_1}] = e^{-F(s)}$. The
+exchange is licensed exactly as in \ref{lem:standing-kernel-readings}(2), now at general $\zeta$
+rather than at $\zeta = 1$. On $(0,S]$ the integrand is at most $s^{\zeta-1}$, which is integrable
+since $\zeta > 0$, so only the tail decides. For $0 < \zeta < L$ choose $c$ with $\zeta < c < L$:
+eventually $F(s) \ge c\log s$, so $e^{-F(s)} \le s^{-c}$ and the tail is dominated by
+$s^{\zeta-1-c}$, which is integrable at infinity since $\zeta - 1 - c < -1$. For $\zeta > L$, so that
+$L$ is finite, choose $c$ with $L < c < \zeta$: eventually $F(s) \le c\log s$, so the integrand is
+eventually at least $s^{\zeta-1-c}$ with $\zeta - 1 - c > -1$, and the integral diverges. Hence
 $\{\zeta > 0 : \Ex[T_1^{-\zeta}] < \infty\}$ contains every $\zeta < L$ and excludes every
-$\zeta > L$, so its supremum, $z_*$, is $L$.
+$\zeta > L$, so its supremum, $z_*$, is $L$. When $L = \infty$, which is the drift case, the second
+half is vacuous and nothing further is needed.
 
 (3) is~(1)--(2) read against (H)'s two clauses. The first is automatic here by
 \ref{lem:standing-levy-reading}(2), so (H) reduces to $z_* > 1$, which by~(2) is exactly
 $b_0 > 0$ or $k(0^+) > 1$ --- an equality throughout, so with no boundary subtlety.
 
-(4) $cF$ is admissible by \ref{lem:admissible-cone}, with data $(cb_0, ck)$, so
-$k_{cF}(0^+) = c\,k(0^+)$ and $(cF)$'s drift is $cb_0$; applying~(1)--(2) to $cF$ in place of $F$
-gives $z_*(cF) = c\,z_*(F)$, whether $b_0 > 0$ or $b_0 = 0$.
+(4) $cF$ is admissible by \ref{lem:admissible-cone}, with data $(cb_0, ck)$, and $(cF)(s) = c\,F(s)$.
+So $(cF)(s)/\log s \to c\,L$ with $L = z_*(F)$ by~(1), and~(1) applied to $cF$, which is again
+$\not\equiv 0$, gives $z_*(cF) = c\,z_*(F)$, whether $b_0 > 0$ or $b_0 = 0$.
 \end{proof}
 
 % additive: not in the draft. Theorem 4' ends with an informal gloss and a clause (3) that proves

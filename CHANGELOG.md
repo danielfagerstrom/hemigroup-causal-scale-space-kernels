@@ -6,6 +6,35 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+### `prop:pair-regularity`(2) and `lem:zstar-log-growth`(1), (4) proved; `Skeleton/` is empty of `sorry` (2026-09-26, Q-0021 rounds 3–4)
+
+**`prop:pair-regularity`(2)'s two equivalences are machine-checked, on Lean core.** They are
+`Hemigroup.SelfDecomposableExponent.hasCMDensity_iff`, in `Formalization/Hemigroup/PairRegularity.lean`.
+The node is `\leanok` on statement and proof, and the annotation says both marks cover the two
+equivalences only. The node stays `[A]` on A9 for clause (1) and clause (2)'s second assertion. No
+ledger entry is spent, and fidelity card T2.1h replaces the "nothing claimed" line. What the proof
+cost is the idiom:
+
+- `withDensity` sees a density up to a null set, while `HasCMRep` is pointwise.
+  `hasCMRep_of_ae` closes the gap with `F.k_antitone`, by squeezing between agreement points.
+- It also disposes of the junk Bochner values that neither predicate rules out: a divergent
+  representation forces an antitone function to vanish.
+
+What the proof taught: the blueprint's `a = 0` step is not needed. The backward direction absorbs
+`a/s` as an atom `a δ₀` of the representing measure, via Laplace uniqueness against
+`b δ₀ + (a + ∫e^{-τt}σ(dτ))dt`. The blueprint proof of (2) is rewritten to the checked route.
+
+**`lem:zstar-log-growth` is `\leanok`**, all four declarations on Lean core. Clauses (1) and (4) are
+in `Formalization/Hemigroup/ZStarAbelian.lean`. Clause (1) is an Abelian comparison: the Tonelli
+hinge `Γ(ζ)E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds`, then the two tails against `s^{ζ-1-c}`. It is
+proved for any limit in `[0,∞]`, so the drift case needs no separate reading off `negMoment`,
+contrary to what the record priced. Clause (4) is `exponent_smul` plus the scaled limit. The
+blueprint proof of (1) now takes existence from clause (2), not from convexity through `B = sF'`,
+and the `B` paragraph is removed along with the node's `\uses{lem:memory-kernel}`.
+
+`Skeleton/Chapter9.lean` and `Skeleton/Chapter11.lean` now state nothing, and 71 of 106 nodes are
+`\leanok`. The paper is untouched: the D-D sentences these two routes call for belong to a `v1.1`.
+
 ### `lem:zstar-log-growth`(2) proved in both cases; one obstacle was a route's, not a statement's (2026-09-26, Q-0021 round 2)
 
 **Clause (2)'s driftless case is machine-checked**, as

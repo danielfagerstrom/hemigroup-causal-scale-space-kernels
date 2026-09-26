@@ -11,8 +11,8 @@ import Hemigroup.AdmissibleCone
 # The target types of chapter 11
 
 `thm:signaling-form` is Theorem 4′, and by the author's account the formulation the article exists
-for. Clauses (1) and (3) are proved and have moved; what is stated here is the analytic core of
-clause (2)'s Mellin form.
+for. Every target type this file held is proved and has moved into the library (the table below);
+nothing is stated here any more, and the file is kept for the record of what each cost.
 
 ## What moved, and when
 
@@ -27,6 +27,7 @@ clause (2)'s Mellin form.
 | `lem:standing-levy-reading` (11.22) | `standing_levy_reading` + 2 | `StandingLevyReading.lean` |
 | `lem:zstar-log-growth`(2), drift case | `…_div_log_atTop_of_b₀_pos` | `ZStarLogGrowth.lean` |
 | `lem:zstar-log-growth`(2), driftless case | `…_div_log_atTop_of_b₀_zero` | `ZStarDriftless.lean` |
+| `lem:zstar-log-growth`(1) and (4) | `…_div_log_atTop_zStar`, `zStar_smul` | `ZStarAbelian.lean` |
 
 All of it reduces to Lean core.
 
@@ -139,7 +140,7 @@ a single point where `k` is positive bounds `k` below on all of `(0,t₀]` and t
 the origin. Self-decomposability, not Lévy structure, is what makes the admissible cone have no
 bounded nonzero member.
 
-## `lem:zstar-log-growth` (11.23) — clause (2) discharged, two target types below
+## `lem:zstar-log-growth` (11.23) — **discharged**, all four declarations
 
 **Clause (2) is proved in both cases**, unconditionally. The **drift** case
 (`Hemigroup/ZStarLogGrowth.lean`, Lean core) needs no Tauberian argument: `F(s) ≥ b₀ s` from the
@@ -186,21 +187,11 @@ supremum to check, so the case split disappears with the derivative. Sixth insta
 chapter's pattern, and the first where the recorded obstacle was a *missing Mathlib theorem* rather
 than a cited node: the moral now covers the tools a proof reaches for as well as the lemmas.
 
-**What the two that remain wait on** (routes written out 2026-09-26; neither attempted, and the
-limit they both needed now exists in both cases):
-
-* **(1) is (2) plus an Abelian comparison.** Identifying the limit *with* `z_*` goes through
-  `Γ(ζ)·E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds` — which the library already has in the shape
-  `lintegral_lintegral_gamma_of_ae_mem_Ioi` plus `laplaceL_lawT₁`, the route
-  `stableExponent_negMoment_ne_top` takes — and then compares `e^{-F(s)}` with `s^{-z}` on both
-  sides, which needs the two-sided bound that *is* the limit of (2). That bound now exists in both
-  cases, so (1) waits on nothing but the comparison itself: the two tails of the `ζ`-integral, and
-  the drift case separately, where the limit is `∞` and `z_* = ∞` has to be read off `negMoment`;
-* **(4) is a corollary of (1)**, as priced, and inherits its wait.
-
-Neither of the two is blocked on the trust boundary, and neither is consumed by anything:
-`def:standing-hypothesis`'s own clauses are what every proof in chapters 11–12 uses, per 11.21's
-remark that all of (H)'s bite is in the second clause.
+**Clauses (1) and (4) — discharged 2026-09-26** (Q-0021), in `Hemigroup/ZStarAbelian.lean`, Lean
+core, and the node is `\leanok`. (1) was (2) plus the Abelian comparison through
+`Γ(ζ)·E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds`, as recorded here; what the record over-priced is the
+drift case, which needed no separate reading off `negMoment`: the comparison is proved for any
+limit in `[0,∞]`, and `L = ∞` makes its divergent half vacuous. (4) was the corollary priced.
 -/
 
 namespace Skeleton
@@ -210,22 +201,5 @@ open scoped ENNReal Topology
 
 open Hemigroup Hemigroup.SelfDecomposableExponent
 
-/-- **`lem:zstar-log-growth`(1)**: the log-growth limit `F(s)/log s` exists in `[0,∞]` and equals
-`z_*`. The no-atom hypothesis is load-bearing: `negMoment` and `zStar` integrate over `Ioi 0` and
-are blind to an atom at the origin, exactly as in `lem:mellin-data` and
-`lem:standing-kernel-readings`. -/
-theorem tendsto_toRealExponent_div_log_atTop_zStar (F : SelfDecomposableExponent)
-    (hF : F.lawT₁ {(0 : ℝ)} = 0) :
-    Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop (𝓝 F.zStar) := by
-  sorry
-
-/-- **`lem:zstar-log-growth`(4)**: `z_*` is homogeneous of degree one on the admissible cone.
-Priced as the cheapest of the four target types here — a direct corollary of
-`tendsto_toRealExponent_div_log_atTop_zStar` via `exponent_smul` (already proved) and the
-arithmetic of a scaled limit, once that declaration exists. -/
-theorem zStar_smul (F : SelfDecomposableExponent) (hF : F.lawT₁ {(0 : ℝ)} = 0) {c : ℝ}
-    (hc : 0 < c) :
-    (F.smul hc.le).zStar = ENNReal.ofReal c * F.zStar := by
-  sorry
 
 end Skeleton
