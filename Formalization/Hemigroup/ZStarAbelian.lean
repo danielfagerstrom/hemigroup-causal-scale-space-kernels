@@ -6,6 +6,7 @@ Authors: Daniel Fagerström
 import Hemigroup.ZStarDriftless
 import Hemigroup.MeanDelay
 import Hemigroup.AdmissibleCone
+import Hemigroup.StandingLevyReading
 
 /-!
 # `lem:zstar-log-growth` (11.23), clauses (1) and (4): the limit is `z_*`
@@ -207,6 +208,28 @@ theorem zStar_smul (h0 : F.lawT₁ {(0 : ℝ)} = 0) {c : ℝ} (hc : 0 < c) :
   refine hlim.congr' ?_
   filter_upwards [eventually_ge_atTop (0 : ℝ)] with s hs
   rw [F.toRealExponent_smul hc.le hs, mul_div_assoc, ENNReal.ofReal_mul hc.le]
+
+/-! ## At the node's hypothesis, `F ≢ 0`
+
+The node assumes `F ≢ 0`, not the no-atom hypothesis. The bridge is two proved steps:
+`F ≢ 0` gives `F → ∞` (`tendsto_toRealExponent_atTop_of_ne_zero`, `lem:standing-levy-reading`(2)),
+and `F → ∞` gives no atom at the origin (`lawT₁_singleton_zero`). -/
+
+/-- `F ≢ 0` puts no atom of `T₁` at the origin. -/
+theorem lawT₁_singleton_zero_of_ne_zero (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) :
+    F.lawT₁ {(0 : ℝ)} = 0 :=
+  F.lawT₁_singleton_zero (F.tendsto_toRealExponent_atTop_of_ne_zero hF)
+
+/-- **`lem:zstar-log-growth`(1)**, under the node's `F ≢ 0`. -/
+theorem tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero
+    (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) :
+    Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop (𝓝 F.zStar) :=
+  F.tendsto_toRealExponent_div_log_atTop_zStar (F.lawT₁_singleton_zero_of_ne_zero hF)
+
+/-- **`lem:zstar-log-growth`(4)**, under the node's `F ≢ 0`. -/
+theorem zStar_smul_of_ne_zero (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) {c : ℝ} (hc : 0 < c) :
+    (F.smul hc.le).zStar = ENNReal.ofReal c * F.zStar :=
+  F.zStar_smul (F.lawT₁_singleton_zero_of_ne_zero hF) hc
 
 end SelfDecomposableExponent
 

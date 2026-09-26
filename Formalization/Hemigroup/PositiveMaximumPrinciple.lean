@@ -115,9 +115,11 @@ derivative vanishes".
 
 Ledger A14 --- Courrège --- is the *converse* direction, that the PMP forces order two, and is not
 used here. -/
-theorem satisfiesPMP_of_isLocalOfOrderCore {c : ℝ} {n : ℕ} (hL : F.IsLocalOfOrderCore c n)
-    (hn : n ≤ 2) (h0 : ∀ x : ℝ, 0 < x → (hL.coeff 0 x).re ≤ 0)
-    (h2 : 2 ≤ n → ∀ x : ℝ, 0 < x → 0 ≤ (hL.coeff 2 x).re) :
+theorem satisfiesPMP_of_eq_sum {c : ℝ} {n : ℕ} (coeff : ℕ → ℝ → ℂ)
+    (heq : ∀ {g : ℝ → ℂ}, IsTestFunction g → ∀ {x : ℝ}, 0 < x →
+      F.inversionOperator c g x = ∑ j ∈ Finset.range (n + 1), coeff j x * iteratedDeriv j g x)
+    (hn : n ≤ 2) (h0 : ∀ x : ℝ, 0 < x → (coeff 0 x).re ≤ 0)
+    (h2 : 2 ≤ n → ∀ x : ℝ, 0 < x → 0 ≤ (coeff 2 x).re) :
     F.SatisfiesPMP c := by
   intro g hg x₀ hx₀ hg0 hmaxOn
   have hgr : ContDiff ℝ (⊤ : ℕ∞) g := contDiff_of_isTestFunction_ofReal hg
@@ -144,9 +146,9 @@ theorem satisfiesPMP_of_isLocalOfOrderCore {c : ℝ} {n : ℕ} (hL : F.IsLocalOf
     rw [hrw]
     exact deriv_deriv_nonpos_of_isLocalMax hmax hg1 hg2
   -- the differential expression, in real parts
-  rw [hL.eq_sum_iteratedDeriv hg hx₀, Complex.re_sum]
-  have hterm : ∀ j : ℕ, (hL.coeff j x₀ * iteratedDeriv j (fun x : ℝ => (g x : ℂ)) x₀).re
-      = (hL.coeff j x₀).re * iteratedDeriv j g x₀ := by
+  rw [heq hg hx₀, Complex.re_sum]
+  have hterm : ∀ j : ℕ, (coeff j x₀ * iteratedDeriv j (fun x : ℝ => (g x : ℂ)) x₀).re
+      = (coeff j x₀).re * iteratedDeriv j g x₀ := by
     intro j
     rw [hcast j]
     simp [Complex.mul_re]
@@ -159,11 +161,19 @@ theorem satisfiesPMP_of_isLocalOfOrderCore {c : ℝ} {n : ℕ} (hL : F.IsLocalOf
     exact mul_nonpos_of_nonpos_of_nonneg (h0 x₀ hx₀) hg0
   · rw [Finset.sum_range_succ, Finset.sum_range_succ, Finset.sum_range_one, hzero, hjet1,
       mul_zero, add_zero]
-    have hlead : (hL.coeff 2 x₀).re * iteratedDeriv 2 g x₀ ≤ 0 :=
+    have hlead : (coeff 2 x₀).re * iteratedDeriv 2 g x₀ ≤ 0 :=
       mul_nonpos_of_nonneg_of_nonpos (h2 le_rfl x₀ hx₀) hjet2
-    have hkill : (hL.coeff 0 x₀).re * g x₀ ≤ 0 :=
+    have hkill : (coeff 0 x₀).re * g x₀ ≤ 0 :=
       mul_nonpos_of_nonpos_of_nonneg (h0 x₀ hx₀) hg0
     linarith
+
+/-- `satisfiesPMP_of_eq_sum` for a local operator in the sense of `IsLocalOfOrderCore`, whose
+continuity and leading-coefficient fields the verification does not use. -/
+theorem satisfiesPMP_of_isLocalOfOrderCore {c : ℝ} {n : ℕ} (hL : F.IsLocalOfOrderCore c n)
+    (hn : n ≤ 2) (h0 : ∀ x : ℝ, 0 < x → (hL.coeff 0 x).re ≤ 0)
+    (h2 : 2 ≤ n → ∀ x : ℝ, 0 < x → 0 ≤ (hL.coeff 2 x).re) :
+    F.SatisfiesPMP c :=
+  F.satisfiesPMP_of_eq_sum hL.coeff hL.eq_sum_iteratedDeriv hn h0 h2
 
 /-- **`thm:locality`(⇐), the PMP verification, from the symbol.**
 
