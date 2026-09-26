@@ -6,6 +6,42 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+### `lem:zstar-log-growth`(2) proved in both cases; one obstacle was a route's, not a statement's (2026-09-26, Q-0021 round 2)
+
+**Clause (2)'s driftless case is machine-checked**, as
+`Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero` in
+`Formalization/Hemigroup/ZStarDriftless.lean`, on Lean core. With the drift case from round 1,
+clause (2) is proved in both cases and unconditionally. The file was written in round 1 and left
+unwired — CI compiled it, because the lakefile globs `Hemigroup.*`, but `Hemigroup.lean` did not
+import it, `CIAxiomGuard.lean` did not list it, and `Skeleton/Chapter11.lean` still carried the
+`sorry`. All three are fixed, the skeleton declaration is deleted, and the node's `\lean` tag names
+the proved declaration. Node count unchanged at 69 `\leanok` of 106: clauses (1) and (4) keep
+11.23 `\notready`. Statements unchanged, so no ledger row.
+
+**The recorded obstacle belonged to one route.** Four passages — the blueprint node, the skeleton
+docstring, this changelog and the handoff — said the driftless case waits on an `∞/∞` L'Hôpital that
+Mathlib does not carry, plus a case split on `k(0⁺) = ∞`. Both are true of the blueprint's route,
+through `B(s) = sF'(s)` and a Cesàro step, and false of the statement. The checked proof never
+differentiates: it splits the defining integral, bounds below on `(M/s,t₀]` using `k ≥ k(t₀)` and
+`1 - e^{-st} ≥ 1 - e^{-M}`, bounds above by splitting at `1/s` with `1 - e^{-st} ≤ st` before and
+`≤ 1` after (the tail past `1` being finite because `F(1)` is), and assembles the two with
+`tendsto_order`, which absorbs `k(0⁺) = ∞` with no case split — there is then no level above the
+supremum to check. The blueprint proof of clause (2) is rewritten to that route, per the framework's
+proof-of-record rule (decision D-D governs the *paper*). Sixth instance of chapter 11's pattern and
+the first where the thing reached for was a missing Mathlib theorem rather than a cited node.
+
+**`prop:pair-regularity`(2): the boundary question is answered — off the boundary.** Round 1
+established that "ledger A9 by design" is right about the node and does not follow for the
+declaration, and left open whether the declaration can be discharged without a ledger entry. It
+can, by four steps now recorded at the declaration and in the node: dilating the representing
+measure; the a.e.-to-pointwise upgrade that `HasCMRep`'s form demands, which `F.k_antitone` closes
+in three lines rather than being the hazard it was priced as; a case analysis on where the
+representing measure's Bochner integral is finite, which is what the junk values of `HasCMRep` and
+`HasStieltjesRep` really cost and which is what feeds the upgrade; and Tonelli against
+`hasDerivAt_toRealExponent` forward with the `a = 0` step plus `laplaceL_injective_of_ne_top`
+backward. The proof is not written — that is the open work, and it is off the trust boundary. The
+node stays `[A]`, which clause (1) fixes regardless.
+
 ### `lem:standing-levy-reading` proved; the other two `\notready` nodes surveyed (2026-09-26, Q-0021)
 
 **`lem:standing-levy-reading` (11.22) is machine-checked**, both clauses, as
@@ -48,6 +84,8 @@ is the bottleneck and the only one with real content: its first half is `B(s) = 
 `hasDerivAt_toRealExponent` plus the same monotone convergence 11.22 uses, and its second is the
 Cesàro step `F(s)/log s = (log s)⁻¹∫₁^s B(v)dv/v → lim B`, for which **Mathlib's L'Hôpital is the
 `0/0` form only** — `Mathlib/Analysis/Calculus/LHopital.lean` has no `∞/∞` companion at `atTop`.
+(That reading of the cost is corrected by the entry above: it is the price of *this route*, and the
+statement has a cheaper one that never differentiates.)
 Clause (1) is that limit plus an Abelian comparison through
 `Γ(ζ)E[T₁^{-ζ}] = ∫₀^∞ s^{ζ-1}e^{-F(s)}ds`, already in the library as the route
 `stableExponent_negMoment_ne_top` takes; clause (4) is a corollary of (1). None is blocked on the

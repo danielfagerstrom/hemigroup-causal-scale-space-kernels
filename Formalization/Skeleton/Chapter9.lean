@@ -172,8 +172,9 @@ Crossing to the blueprint's derivative-sign reading of the same classes costs le
 once, in the statement — never inside a proof. That is the discipline `prop:bernstein-toolbox`(3)
 already documents for `BF₀` against `LE`.
 
-**Why it stays `\notready`, and what is *not* settled** (surveyed 2026-09-26, Q-0021; not acted
-on). `prop:pair-regularity` is an `[A]` node on ledger A9, and the handoff has carried
+**Why it stays `\notready`** (surveyed 2026-09-26, Q-0021; the boundary question answered the same
+day, the proof not written). `prop:pair-regularity` is an `[A]` node on ledger A9, and the handoff
+has carried
 "`prop:pair-regularity`(2), ledger A9 by design" as the reason this declaration is not attempted.
 That is right about the *node* and does not follow for the *declaration*:
 
@@ -186,12 +187,47 @@ That is right about the *node* and does not follow for the *declaration*:
   already in the library — by Tonelli in one direction and Laplace uniqueness in the other, citing
   neither theorem.
 
-So the reason it stays open is not the trust boundary. It is that nobody has written the proof,
-and the converse direction is real work: the `a = 0` step (an `a/s` term is an additive constant
-in `k`, which `∫₁^∞ k(t)/t dt < ∞` forbids), then `laplaceL_injective_of_ne_top`, then the
-a.e.-versus-everywhere care `HasCMRep`'s pointwise form imposes. Whether it can be discharged off
-the trust boundary is the open question; the node's `[A]` status is fixed by clause (1) either
-way.
+So the reason it stays open is not the trust boundary. It is that nobody has written the proof.
+
+**The boundary question is settled: yes, off the boundary** (2026-09-26, Q-0021 round 2 — worked
+out at the level of the four steps below, which is what settles it; still not written). Nothing in
+either equivalence needs SSV Thm. 7.3 or Thm. 6.2, and nothing needs a ledger entry. What it needs
+is four steps, and two of them are traps the statement's idiom sets rather than mathematics:
+
+1. **(⇐) of the first equivalence, and the dilation.** `HasCMRep F.k` with measure `σ` gives the
+   density `t ↦ k(t/x)/x` of `memoryKernel x` on `Ioi 0` the representation
+   `∫ e^{-(τ/x)t} d((1/x) · map (· / x) σ)`, so the CM class is dilation-stable by transporting `σ`,
+   with no analysis at all. `memoryKernel`'s atom drops out because `HasCMDensity` restricts to
+   `Ioi 0`.
+2. **(⇒) of the first equivalence is where the pointwise form of `HasCMRep` bites, and
+   antitonicity closes it.** Equality of the two `withDensity` measures gives `k(t) = x·m(xt)` only
+   *a.e.* on `Ioi 0`, while `HasCMRep F.k` demands it at every `t > 0`. That gap is not a defect in
+   the statement: `F.k_antitone` closes it. For any `t > 0` pick `sₙ ↑ t` and `uₙ ↓ t` inside the
+   agreement set (it has full measure, so it meets every interval); antitonicity gives
+   `g(sₙ) ≥ k t ≥ g(uₙ)` for `g := x·m(x·)`, and `g` is continuous at `t`, so both sides converge to
+   `g t`. Hence `k t = g t` everywhere. **So the a.e.-versus-everywhere step is three lines, not a
+   hazard** — the earlier note calling for "care" priced it as an obstacle, on the pattern this
+   chapter's docstring names.
+3. **The junk values of `HasCMRep`/`HasStieltjesRep` are what actually needs the case split.**
+   Neither predicate constrains `σ` beyond `IsCausal`, so `∫ τ, exp (-(τ * t)) ∂σ` may be a Bochner
+   integral of a non-integrable function and evaluate to `0`; and Tonelli, which the second
+   equivalence's (⇒) runs, wants `SFinite σ`. The shapes this admits are harmless but must be
+   handled. `{t > 0 : integrable}` is an up-set with some endpoint `t₀`, and `m` is `0` below `t₀`
+   (junk) and finite and continuous above it (dominated convergence, `e^{-τt} ≤ e^{-τt₁}` for
+   `t ≥ t₁ > t₀`). Either `t₀ > 0`, and then `k` vanishes a.e. near the origin, so — being antitone
+   and nonnegative — it vanishes identically on `Ioi 0` and `σ = 0` serves; or `t₀ = 0` and `m` is
+   continuous on all of `(0,∞)`, which is exactly what step 2 needs. So the case split feeds step 2
+   rather than resting on it.
+4. **(⇒) and (⇐) of the second equivalence.** Forward is Tonelli against
+   `hasDerivAt_toRealExponent` (already in the library):
+   `F'(s) = b₀ + ∫₀^∞ e^{-st}k(t)dt = b₀ + ∫ (s+τ)⁻¹ dσ`, so `a = 0` and `b = b₀`. Backwards is the
+   `a = 0` step — an `a/s` term is an additive constant in `k`, which `∫₁^∞ k(t)t⁻¹dt < ∞` forbids —
+   and then `laplaceL_injective_of_ne_top`, recovering `k` from its transform up to a null set and
+   closing with step 2 again.
+
+So the declaration is off the boundary and is not cheap: four steps, two of which are about the
+idiom rather than the mathematics. The node's `[A]` status is fixed by clause (1) either way, so
+proving this would widen what is machine-checked without moving the trust boundary.
 -/
 
 /-- **`prop:pair-regularity`(2).** `κ^{(x)}` has a completely monotone density iff `k` does,

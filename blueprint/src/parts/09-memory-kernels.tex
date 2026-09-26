@@ -372,13 +372,22 @@ SSV~Thm.~7.3 and Thm.~6.2, are used \emph{only} in that second assertion: the pr
 the two equivalences from \ref{lem:memory-kernel}'s derivative formula (already machine-checked)
 by Tonelli one way and by Laplace uniqueness the other, and cites neither theorem. So "ledger A9
 by design'' is right for the \emph{node} and is \emph{not established} for the \emph{declaration}.
-The declaration is not therefore cheap --- the converse needs the $a = 0$ step
-($a/s$ is an additive constant in $k$, which $\int_1^\infty k(t)t^{-1}dt < \infty$ forbids) and
-then Laplace injectivity, available as \texttt{laplaceL\_injective\_of\_ne\_top}, with the usual
-a.e.-versus-everywhere care that \texttt{HasCMRep}'s pointwise form imposes --- and no attempt was
-made here. Recorded, not scheduled: whether that declaration can be discharged off the trust
-boundary is the open question, and answering it would widen what is machine-checked without
-touching the node's \textbf{[A]} status, which clause~(1) fixes regardless.)}
+\textbf{And the boundary question now has an answer: off the boundary, by four steps}, worked out
+2026-09-26 and recorded in full at the declaration; the proof itself is not written. Forward through
+the second equivalence is Tonelli against \ref{lem:memory-kernel}'s already machine-checked
+derivative formula, giving $F'(s) = b_0 + \int (s+\tau)^{-1}\sigma(d\tau)$ with $a = 0$ and
+$b = b_0$; backwards is the $a = 0$ step ($a/s$ is an additive constant in $k$, which
+$\int_1^\infty k(t)t^{-1}dt < \infty$ forbids) and then Laplace injectivity, available as
+\texttt{laplaceL\_injective\_of\_ne\_top}. The first equivalence is dilation of the representing
+measure one way, and the other way the passage from the a.e.\ equality of densities that
+\texttt{withDensity} gives to the pointwise equality \texttt{HasCMRep} demands --- which is
+\emph{not} the hazard an earlier reading of this node made of it: $k$ is antitone, so squeezing it
+between $g(s_n)$ and $g(u_n)$ for sequences $s_n < t < u_n$ in the agreement set converging to $t$
+closes it in three lines. What does need care is that neither \texttt{HasCMRep} nor
+\texttt{HasStieltjesRep} constrains its representing measure beyond causality, so the Bochner
+integral may be a junk $0$ and Tonelli wants $\sigma$-finiteness; antitonicity of $k$ is again what
+disposes of the shapes that admits. So proving the declaration would widen what is machine-checked
+without touching the node's \textbf{[A]} status, which clause~(1) fixes regardless.)}
 \end{proposition}
 
 \begin{proof}

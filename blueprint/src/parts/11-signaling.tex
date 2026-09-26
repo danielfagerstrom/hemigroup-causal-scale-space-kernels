@@ -1237,7 +1237,7 @@ $F(\infty) = \infty$.
 % split in this chapter.
 \begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
 \uses{def:standing-hypothesis,lem:memory-kernel,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
-\lean{Skeleton.tendsto_toRealExponent_div_log_atTop_zStar,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Skeleton.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Skeleton.zStar_smul}\notready
+\lean{Skeleton.tendsto_toRealExponent_div_log_atTop_zStar,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Skeleton.zStar_smul}\notready
 Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \begin{enumerate}
 \item The limit $\lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$ and equals $z_*$.
@@ -1247,35 +1247,40 @@ Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \item $z_*$ is homogeneous of degree one on the admissible cone: $z_*(cF) = c\,z_*(F)$ for every
 $c > 0$.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{One of four clauses proved.} Clause~(2)'s drift case is machine-checked
-as
+\statusT\quad\emph{(\textbf{Clause~(2) proved, in both cases.}
+The \emph{drift} case is machine-checked as
 \texttt{Hemigroup.SelfDecomposableExponent.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_pos}
-(\texttt{Formalization/Hemigroup/ZStarLogGrowth.lean}, Lean core, listed in
-\texttt{CIAxiomGuard.lean}): it is the one of the four that is unconditional \emph{and} needs no
-Tauberian step, being $F(s) \ge b_0 s$ from (7.1) together with $s/\log s \to \infty$. The other
-three target types remain written and sorry-marked, as
-\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_zStar},
-\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_zero} and
+(\texttt{Formalization/Hemigroup/ZStarLogGrowth.lean}, Lean core): it needs no
+Tauberian step, being $F(s) \ge b_0 s$ from (7.1) together with $s/\log s \to \infty$. The
+\emph{driftless} case, the one with content, is machine-checked as
+\texttt{\ldots\_div\_log\_atTop\_of\_b}$_0$\texttt{\_zero}
+(\texttt{Formalization/Hemigroup/ZStarDriftless.lean}, Lean core). Both are listed in
+\texttt{CIAxiomGuard.lean}. Clauses~(1) and~(4) remain written and sorry-marked, as
+\texttt{Skeleton.tendsto\_toRealExponent\_div\_log\_atTop\_zStar} and
 \texttt{Skeleton.zStar\_smul} in \texttt{Formalization/Skeleton/Chapter11.lean}, so the node keeps
 \texttt{\textbackslash notready}.
-\textbf{What the three that remain wait on} (routes written out 2026-09-26; none attempted).
-The \emph{driftless} case of~(2) is the bottleneck and the only one with real content. Its first
-half is available: $B(s) = sF'(s) = b_0 s + \int_0^\infty e^{-u}k(u/s)du$ from
-\ref{lem:memory-kernel}, already machine-checked, and $B(s) \uparrow k(0^+)$ by the same monotone
-convergence \ref{lem:standing-levy-reading}(1) runs. Its second half is the Ces\`aro step
-$F(s)/\log s = (\log s)^{-1}\int_1^s B(v)\,v^{-1}dv \to \lim B$, and \textbf{Mathlib's L'H\^opital
-is the $0/0$ form only} --- \texttt{Mathlib/Analysis/Calculus/LHopital.lean} carries
+\textbf{The recorded obstacle belonged to one route and not to the statement.} Until 2026-09-26 this
+paragraph said the driftless case waits on the Ces\`aro step
+$F(s)/\log s = (\log s)^{-1}\int_1^s B(v)\,v^{-1}dv \to \lim B$, for which \textbf{Mathlib's
+L'H\^opital is the $0/0$ form only} --- \texttt{Mathlib/Analysis/Calculus/LHopital.lean} carries
 \texttt{lhopital\_zero\_*} in every variant and no $\infty/\infty$ companion at \texttt{atTop} ---
-so that step must be done by hand, with a case split on $k(0^+) = \infty$ that the
-$[0,\infty]$-valued target makes unavoidable. Clause~(1) is that limit plus an Abelian comparison:
-identifying it \emph{with} $z_*$ goes through
+together with a case split on $k(0^+) = \infty$ that the $[0,\infty]$-valued target seemed to force.
+Both are true of the route through $B = sF'$ and false of the obligation: the checked proof, which
+the proof below now follows, never differentiates, and \texttt{tendsto\_order} absorbs
+$k(0^+) = \infty$ with no case split, there being then no level above the supremum to check. That is
+the sixth time in this chapter that what a proof reaches for was an upper bound on what its
+statement needs, and the first where the thing reached for was a missing Mathlib theorem rather than
+a cited node.
+\textbf{What the two that remain wait on.} Clause~(1) is the limit of~(2) plus an Abelian
+comparison: identifying it \emph{with} $z_*$ goes through
 $\Gamma(\zeta)\Ex[T_1^{-\zeta}] = \int_0^\infty s^{\zeta-1}e^{-F(s)}ds$, which the library already
 has in the shape \texttt{lintegral\_lintegral\_gamma\_of\_ae\_mem\_Ioi} plus
 \texttt{laplaceL\_lawT}$_1$ (the route \texttt{stableExponent\_negMoment\_ne\_top} takes), and then
-compares $e^{-F(s)}$ with $s^{-z}$ on both sides --- which needs the two-sided bound that
-\emph{is} the limit of~(2), so it cannot precede it. Clause~(4) is a corollary of~(1), as priced,
-and inherits the wait. None of the three is blocked on the trust boundary; the price is a missing
-Mathlib theorem and a case analysis.
+compares $e^{-F(s)}$ with $s^{-z}$ on both sides. The two-sided bound that comparison needs is
+exactly the limit of~(2), and now exists in both cases, so what is left of~(1) is the comparison
+itself: the two tails of the $\zeta$-integral, and the drift case separately, where the limit is
+$\infty$ and $z_* = \infty$ must be read off \texttt{negMoment}. Clause~(4) is a corollary of~(1),
+as priced, and inherits the wait. Neither is blocked on the trust boundary.
 \textbf{The gap the obvious sketch has.} A subsequence/comparison argument on the Mellin integral
 of \ref{lem:mellin-data} shows only $z_* = \liminf_{s\to\infty} F(s)/\log s$: nothing controls the
 limsup for a general Bernstein $F$, whose $F/\log s$ can oscillate. \textbf{Existence of the limit
@@ -1299,10 +1304,10 @@ $k(u/s) \uparrow k(0^+)$ as $s \to \infty$ --- only clause~(1)'s identification 
 $z_*$ needs it, since \texttt{negMoment} and \texttt{zStar} integrate over \texttt{Ioi 0} and are
 blind to an atom at the origin, the trap \ref{lem:standing-levy-reading}'s target types were
 already written to avoid.
-\textbf{Shares machinery with \ref{lem:standing-levy-reading}}, now proved: both run a
-monotone-convergence argument on \texttt{levyJump} as $s \to \infty$ (there for
-$\int k(t)t^{-1}dt$, here for $k(u/s)$ itself), so the driftless case of~(2) should reuse
-\texttt{tendsto\_levyJump\_atTop\_levyMass}'s shape rather than start from Mathlib.
+\textbf{Shares its subject with \ref{lem:standing-levy-reading}}, now proved --- both are
+statements about \texttt{levyJump} as $s \to \infty$ --- but not, in the end, its machinery: 11.22
+runs monotone convergence along the naturals, while the driftless case of~(2) needs a rate and gets
+it from two explicit bounds on the split integral instead.
 \textbf{Nothing downstream needs this reading.} Every proof through chapter~10 consumes $z_*$ as
 the abscissa \ref{def:standing-hypothesis} states it, never its log-growth rate; this node is a
 detector, not a dependency, and it has already caught one live error --- \S8's Bessel-K proof once
@@ -1324,15 +1329,53 @@ Since $F \not\equiv 0$ is admissible, \ref{lem:standing-levy-reading}(2) gives
 $F(\infty) = \infty$, and \ref{lem:standing-kernel-readings}(1) turns that into $T_1 > 0$ almost
 surely, so $\Ex[T_1^{-\zeta}]$ is an honest integral over $(0,\infty)$ for every $\zeta > 0$.
 
-\textbf{The exponent's slope.} By \ref{lem:memory-kernel}, $F'(s) = b_0 + \int_0^\infty
-e^{-st}k(t)\,dt$, so $B(s) := sF'(s) = b_0 s + \int_0^\infty e^{-u}\,k(u/s)\,du$ after the
-substitution $u = st$. For $0 < s_1 \le s_2$: $b_0 s_1 \le b_0 s_2$, and $k$ nonincreasing gives
-$k(u/s_1) \le k(u/s_2)$ pointwise, since $u/s_1 \ge u/s_2$; so $B$ is nondecreasing --- no appeal
-to \ref{lem:selfdecomposable-exponents} or to $B$ being a Bernstein function as a class, only to
-the explicit formula and the definition of nonincreasing. And since $k(u/s)$ increases pointwise
-to $k(0^+)$ as $s \to \infty$, monotone convergence gives
+\textbf{(2), the drift case.} If $b_0 > 0$ then $F(s) \ge b_0 s$ by (7.1), the jump part being
+nonnegative, and $s/\log s \to \infty$; so $F(s)/\log s \to \infty$.
+
+\textbf{(2), the driftless case.} Let $b_0 = 0$, so that
+$F(s) = \int_0^\infty (1 - e^{-st})k(t)\,t^{-1}dt$, and write $K := k(0^+) = \sup_{t>0}k(t)$. The
+claim is that $F(s)/\log s \to K$ in $[0,\infty]$, and it is proved by two elementary bounds on
+that integral, with no derivative of $F$ anywhere; $\int_a^b t^{-1}dt = \log(b/a)$ is the only
+quadrature used.
+
+\emph{Below $K$.} Let $\alpha < K$. Choose $t_0 > 0$ with $k(t_0) > \alpha$, and then $M > 0$ with
+$(1 - e^{-M})k(t_0) > \alpha$, possible since $(1-e^{-M})k(t_0) \to k(t_0)$ as $M \to \infty$. For
+$s$ large
+enough that $M/s \le t_0$: on $(M/s, t_0]$ we have $k \ge k(t_0)$, because $k$ is nonincreasing and
+$t \le t_0$, and $st > M$, so $1 - e^{-st} \ge 1 - e^{-M}$. Restricting the integral to that
+interval,
+\[
+  F(s) \;\ge\; (1 - e^{-M})\,k(t_0)\int_{M/s}^{t_0}\frac{dt}{t}
+        \;=\; \beta\bigl(\log s + \log(t_0/M)\bigr),
+  \qquad \beta := (1-e^{-M})k(t_0),
+\]
+so $F(s)/\log s \ge \beta + \beta\log(t_0/M)/\log s \to \beta > \alpha$. Hence
+$F(s)/\log s > \alpha$ eventually, for every $\alpha < K$.
+
+\emph{Above $K$.} This is needed only when $K < \infty$, and the argument runs at any finite
+$x \ge K$, i.e.\ with $k \le x$ throughout. Split $(0,\infty)$ at $1/s$ and at $1$, for $s \ge 1$.
+On $(0,1/s]$ use $1 - e^{-st} \le st$: the contribution is at most $x\,s\cdot(1/s) = x$. On
+$(1/s, 1]$ use $1 - e^{-st} \le 1$: the contribution is at most $x\log s$. On $(1,\infty)$ use
+$1 - e^{-st} \le 1$ again: the contribution is at most $\tau := \int_1^\infty k(t)t^{-1}dt$, which
+is finite --- not by assumption but because $F(1) < \infty$ and $1 - e^{-t} \ge 1 - e^{-1}$ on
+$(1,\infty)$, so $\tau \le (1-e^{-1})^{-1}F(1)$. Hence $F(s) \le x + x\log s + \tau$ and
+$F(s)/\log s \le x + (x+\tau)/\log s \to x$. So for every $y > K$ we get $F(s)/\log s < y$
+eventually, choosing $K \le x < y$.
+
+The two halves say that every level below $K$ is eventually passed and no level above $K$ is
+eventually reached, which is convergence to $K$ in the order topology of $[0,\infty]$. When
+$K = \infty$ the second half is vacuous, so the case distinction on $k(0^+) = \infty$ that the
+$[0,\infty]$-valued statement seems to call for never has to be made.
+
+\textbf{The exponent's slope}, for clause~(1). By \ref{lem:memory-kernel}, $F'(s) = b_0 +
+\int_0^\infty e^{-st}k(t)\,dt$, so $B(s) := sF'(s) = b_0 s + \int_0^\infty e^{-u}\,k(u/s)\,du$
+after the substitution $u = st$. For $0 < s_1 \le s_2$: $b_0 s_1 \le b_0 s_2$, and $k$
+nonincreasing gives $k(u/s_1) \le k(u/s_2)$ pointwise, since $u/s_1 \ge u/s_2$; so $B$ is
+nondecreasing --- no appeal to \ref{lem:selfdecomposable-exponents} or to $B$ being a Bernstein
+function as a class, only to the explicit formula and the definition of nonincreasing. And since
+$k(u/s)$ increases pointwise to $k(0^+)$ as $s \to \infty$, monotone convergence gives
 $B(\infty) = b_0\cdot\infty + k(0^+)\int_0^\infty e^{-u}\,du$: $\infty$ if $b_0 > 0$, and $k(0^+)$
-if $b_0 = 0$. That is clause~(2).
+if $b_0 = 0$ --- the value of~(2) again, reached the other way.
 
 (1) $G(u) := F(e^u)$ has $G'(u) = e^u F'(e^u) = B(e^u)$ nondecreasing by the above, so $G$ is
 convex in $u = \log s$. A convex function's difference quotient $G(u)/u$ increases, past any zero

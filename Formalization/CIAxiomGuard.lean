@@ -260,16 +260,27 @@ is `∫₀^{t₀} dt/t = ∞` against a `k` bounded below there by monotonicity.
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_atTop_of_ne_zero
 #print axioms Hemigroup.SelfDecomposableExponent.standing_levy_reading
 
-/-! ### `lem:zstar-log-growth` (11.23), the drift clause only
+/-! ### `lem:zstar-log-growth` (11.23), clause (2) in both cases
 
-The node is **not** `\leanok`: three of its four declarations remain in `Skeleton/Chapter11.lean`
-(see that file, and `records/PLAN-chapters-8-12.md`). What is checked here is clause (2)'s drift
-case, which is unconditional and needs no Tauberian argument — `F(s) ≥ b₀ s` and `s / log s → ∞`.
-Lean core.
+The node is **not** `\leanok`: clauses (1) and (4) remain in `Skeleton/Chapter11.lean` (see that
+file, and `records/PLAN-chapters-8-12.md`). What is checked here is the whole of clause (2), the
+log-growth rate of the exponent, in both cases and unconditionally.
+
+The **drift** case needs no Tauberian argument at all — `F(s) ≥ b₀ s` and `s / log s → ∞`. The
+**driftless** case is the one with content, and the route checked here is not the blueprint's: it
+never differentiates, so the `∞/∞` L'Hôpital that Mathlib lacks never arises. Both bounds come
+from splitting the defining integral and using monotonicity of `k` together with
+`∫_a^b dt/t = log(b/a)`; `tendsto_order` assembles them and absorbs `k(0⁺) = ∞` with no case
+split. `Hemigroup/ZStarDriftless.lean`'s module docstring has the argument. Lean core.
 -/
 
 #print axioms Hemigroup.tendsto_id_div_log_atTop
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos
+#print axioms Hemigroup.lintegral_ofReal_inv_Ioc
+#print axioms Hemigroup.le_levyJump_of_le
+#print axioms Hemigroup.SelfDecomposableExponent.lintegral_tail_ne_top
+#print axioms Hemigroup.SelfDecomposableExponent.levyJump_le_of_le
+#print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero
 
 /-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
 
