@@ -879,6 +879,36 @@ already trusts. @dym1976gaussian is the book-length companion.
 **Blueprint:** `lem:selfdecomposable-derivative` (the direction (1) => (3)) · **Lean:** `Hemigroup.exists_antitone_density_of_dilation_increments`
 **Cite:** @schilling2012bernstein — Proposition 5.17, p. 57, with Definition 5.14, p. 55 (2nd ed.); the `k(t)/t` normalisation is the source's own, from the proof on p. 59
 
+**Verbatim:** @schilling2012bernstein, 2nd ed. (de Gruyter 2012), read off the rendered page images
+(printed pp. 55, 57, 59; pdf 69, 71, 73) through the librarian, 2026-09-26 (queue item Q-0136).
+
+> **Definition 5.14** (p. 55). A completely monotone function `g ∈ CM` with `g(0+) ≤ 1` is said to
+> be *self-decomposable*, if `λ ↦ g(λ)/g(cλ) = g_c(λ)` is completely monotone for all `c ∈ (0,1)`. (5.8)
+>
+> **Proposition 5.17** (p. 57). *Let `f ∈ BF` satisfy `𝓛π = e^{−f}` and let `μ` be the Lévy measure
+> of `f`. Then the following assertions are equivalent. (i) `μ` has a density `m(t)` such that
+> `t ↦ t · m(t)` is non-increasing; (ii) `π ∈ SD`.*
+>
+> Proof of (ii)⇒(i), end (p. 59): "Define a function `k : (0,∞) → ℝ` by `k(v) := ℓ(e^{−v})`. Then
+> `k` is non-negative and non-increasing. … and the proof is finished by defining `m(t) := k(t)/t`."
+>
+> Proof of (i)⇒(ii), end (p. 59): "Let `g := 𝓛π = e^{−f}`. Then `g_c(λ) = g(λ)/g(cλ) =
+> e^{−f(λ)}/e^{−f(cλ)} = e^{−f_c(λ)}`, proving that `g` is completely monotone. Since `g(0+) ≤ 1`, we
+> see that `g` is self-decomposable, i.e. `π ∈ SD`."
+
+*What the citation carries.* (ii)⇒(i): a self-decomposable sub-probability law `π` with exponent
+`f ∈ BF` has a Lévy density `m` with `t·m(t)` non-increasing (and, by the proof, `k = t·m`
+non-negative). The `k(t)/t` shape is the source's own.
+*What it does not carry.* (a) The hypothesis is `π ∈ SD`, i.e. `g_c` completely monotone; our axiom
+assumes `F(b*)−F(a*)` Bernstein. Passing from ours to SD needs `f_c ∈ BF ⇒ e^{−f_c}` completely
+monotone (A2) and the existence of `π` with `𝓛π = e^{−F}` (Theorem 5.2, converse clause, the
+anchor of A17). The printed lines just quoted from the (i)⇒(ii) proof use that same step
+(`f_c ∈ BF ⇒ g_c` CM), but there `f_c ∈ BF` is *derived from* (i); they show the step, not the
+implication we need, which the source never states as one. (b) No uniqueness of `k`, no
+right-continuity (Remark 5.18, p. 59, gives the latter and is not relied on). (c) The Lean
+statement's `AntitoneOn`, nonnegativity and integrability clauses are read from the proof and
+Theorem 3.2 as recorded below, not from a printed sentence.
+
 - **Statement as used.** Let `F(s) = b0 s + INT_0^inf (1 - e^{-st}) nu(dt)` with `b0 >= 0` and
   `nu` a Levy measure on `(0,inf)` — so `F` is Bernstein with `F(0+) = 0`. If
   `F(b*) - F(a*)` is Bernstein and vanishes at `0+` for **every** `0 < a <= b`, then `nu` has a
