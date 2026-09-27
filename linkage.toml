@@ -26,3 +26,30 @@ lean_packages = ["ScaleSpaceCore"]
 #
 # The linkage *macro* names are not configurable at all: they are the framework's
 # vocabulary, and the hub reads every satellite's manifest with one reader.
+
+# The release, read by `linkage release export` / `linkage release zenodo` (article-kit
+# docs/RELEASE.md, "The commands"). Added 2026-09-27 for v1.1.0, the first release of this
+# article through the commands; v1.0.0 was deposited by hand (records/PLAN-publication.md).
+#
+# This repository is public and holds one module, so there is no separate public export
+# repository as for a private multi-module one: the export is a local staging tree that the
+# Zenodo commands read and zip, and `repo_url` is this repository.
+
+[release]
+creators  = [{ name = "Fagerström, Daniel", orcid = "0009-0001-0165-1978" }]
+license   = "cc-by-4.0"
+copyright = "2026 Daniel Fagerström"
+
+[[modules]]
+name     = "kernels"
+chapters = ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14"]
+paper    = "paper"
+tag      = "v1.1.0"
+roots    = ["Hemigroup"]
+headline = "Hemigroup.SelfDecomposableExponent.main_characterization"
+stem     = "hemigroup-causal-scale-space-kernels"
+title    = "Time-Causal Scale Space from Hemigroup Axioms: Characterization of the Kernels"
+repo_url = "https://github.com/danielfagerstrom/hemigroup-causal-scale-space-kernels"
+response_plans = ["notes/PLAN-review-response.md"]
+reviews  = "notes/reviews"
+keywords = ["scale space", "hemigroup", "time-causal", "self-decomposable", "Lean 4"]
