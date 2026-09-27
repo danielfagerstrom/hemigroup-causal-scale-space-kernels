@@ -230,6 +230,10 @@ $k_{cF}(0^+) = c\,k(0^+)$ and $(cF)$'s drift is $cb_0$; applying~(1)--(2) to $cF
 gives $z_*(cF) = c\,z_*(F)$, whether $b_0 > 0$ or $b_0 = 0$.
 \end{proof}
 
+The verified proof never differentiates $F$: it obtains~(2) from two direct bounds on the
+integral in (7.1), and takes the existence of the limit in~(1) from~(2) rather than from the
+convexity of $G$.
+
 The threshold $1$ is not an artifact of one estimate. It arises three separate times, for
 three different reasons: in the convergence of the Mellin integral of the delayed field
 (Lemma~\ref{lem:memory-fractional-integrals}), in the application of that lemma at $z - 1$
@@ -768,6 +772,10 @@ set with no accumulation point in the strip, so by the identity theorem they agr
 it. Dividing by $s^z \ne 0$ gives $\tilde g(z) = \kappa\,s^{-z}\tilde H(z)$ for every
 $z \in (0,z_*)$.
 \end{proof}
+
+The verified proof exchanges the order of the steps: it propagates the bound over the strip
+$(0,z_*)$ and removes the singularities there first, so that only analytic pieces are glued
+into $P$ and nothing meromorphic appears.
 
 % shared with blueprint cor:signaling-wellposed
 \begin{corollary}[the signaling problem: existence and uniqueness in the profile-dominated Mellin class]\label{cor:signaling-wellposed}

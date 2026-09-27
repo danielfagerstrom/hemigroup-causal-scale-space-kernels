@@ -7,77 +7,65 @@ lives").
 
 ## Where the work is
 
-The article is published (`v1.0.0`). Formalization resumed here by the author's decision (hub
-queue Q-0025 and Q-0041), and the queue it resumed for is done:
+The article is published (`v1.0.0`). **`v1.1.0` is prepared up to `RELEASE.md`'s checklist item 3**
+(Q-0158): items 1 and 2 are done, the paper's prose is brought to the development, and what
+remains is the author's.
 
-- **A17 is proved** (Q-0022);
-- **`lem:mode-rigidity`** (Q-0020), **`lem:standing-levy-reading`** and **all of
-  `lem:zstar-log-growth`** are proved (Q-0021);
-- **`prop:pair-regularity`(2)'s two equivalences** are proved on Lean core (Q-0021). The node stays
-  `[A]` on ledger A9, for clause (1).
-
-The trust base is Lean core plus A18. The node count is 71 `\leanok` of 106.
-`Formalization/Skeleton/` holds no `sorry`-marked target type; its files are kept for their record
-of what each node cost. Continuing research runs in the hub (`wiki/hemigroup-programme.md`) and in
-the later papers' repositories. A new version would start at `PROCESS.md`'s release section with a
-`CHANGELOG.md` entry.
+- The trust base is Lean core plus A18. A17 is proved (Q-0022); `lem:mode-rigidity` (Q-0020),
+  `lem:standing-levy-reading`, all of `lem:zstar-log-growth` and `prop:pair-regularity`(2)'s two
+  equivalences (Q-0021) are proved. The node count is 71 `\leanok` of 106.
+- The paper's §1.1 lists all of this; the abstract, §7 and §13 say "one cited fact". The three
+  D-D sentences are in (after the printed proofs of Lemma 9.4, Lemma 9.20 and Proposition A.9).
+  Lemmas 9.9 and 10.4 read in their corrected forms in the built PDF.
+- `CHANGELOG.md` has the `v1.1.0` entry, dated 2026-09-27 provisionally.
+- `Formalization/Skeleton/` holds no `sorry`-marked target type; its files are kept for their
+  record of what each node cost.
 
 ## Read first
 
 1. `CLAUDE.md`: this article's rules (the trust boundary, the collation nodes, the two
    vocabularies, the editorial decisions in force).
-2. `README.md` § State, and `linkage check` for the node counts.
-3. The annotation of any node before working on it. `records/PLAN-chapters-8-12.md` holds the
-   reasoning behind what is formalized and what is not. The module docstrings of
-   `Hemigroup/PairRegularity.lean` and `Hemigroup/ZStarAbelian.lean` hold the routes last checked.
+2. `../article-kit/docs/RELEASE.md` § "The checklist", from item 3, and rule 6.
+3. `CHANGELOG.md`'s `v1.1.0` entry, which the version-history section is reworded from.
 
-## Open
+## Open: the author's steps, in `RELEASE.md`'s numbering
 
-1. **No formalization target is queued.** What stays unformalized is by decision or blocked
-   upstream:
-   - the two `[depend]` advisories (A18 and the collation over it; see `CLAUDE.md`);
-   - the scale-Cauchy problem (C₀-semigroups, distributions);
-   - the locality chapter's ladder (Bessel `K`);
-   - `prop:pair-regularity`'s clause (1) and clause (2)'s second assertion (A9);
-   - the implementation and jet chapters, outside the Lean plan by decision.
-2. **The `v1.1` pass owns the prose** that still says "A17", or calls nodes open that are now proved:
-   - the blueprint annotations in chapters 7, 8, 9 and 11;
-   - the per-declaration comments in `CIAxiomGuard.lean` and the cards in `REVIEW-fidelity.md`;
-   - the paper's §1.1 inventory, which lists `Skeleton/` targets that no longer exist;
-   - the D-D sentences owed where the verified proof takes another route than the printed one. In
-     chapter 9 (`prop:pair-regularity`) the checked route never proves `a = 0`: it absorbs `a/s` as
-     an atom. In chapter 11 (`lem:zstar-log-growth`) existence of the limit comes from clause (2),
-     not from convexity through `B = sF'`.
+3. **Reserve the DOI**: `linkage release export --draft --out <export>`, then
+   `linkage release zenodo reserve --export <export>`, as a new version under concept DOI
+   10.5281/zenodo.22259186.
+4. **Freeze the paper.**
+   - The `\date` in `paper/main.tex` in the later-version form of rule 6: `v1.1.0`, its date and
+     version DOI, then "first released as `v1.0.0`, 2 September 2026 (DOI
+     10.5281/zenodo.22259187)", with the concept DOI as the thing to cite.
+   - §1.1's "Where to look" sentence still names the `v1.0.0` tag and its version DOI; a comment
+     beside it marks it. Set it with the `\date`.
+   - The version-history section, unnumbered, after the conclusions and before the references.
+     Its template, `scaffold/paper/version-history.tex.in`, is **not in this repository** (it is
+     in `article-kit`, and `linkage init --sync` last ran here on 2026-09-26 without bringing
+     it). Seed from article-kit's copy, reworded from the changelog entry.
+   - If the freeze date is not 2026-09-27, change the changelog heading's date to match.
+   - Build into `paper/`, read page 1 and the version history, commit.
+5. to 10. as `RELEASE.md` has them: export with `--doi … --build`, tag, the public repository at
+   the author's word, the deposit, the library, the site, the hub, the next cycle.
 
-   - **two statements corrected in the blueprint by Q-0141** that the paper still transcribes in
-     the old form. `linkage check` reports both as `[shared]` drift advisories.
-     - `lem:log-convexity` (`paper/10-locality.tex`) says only "log-convex on `(0,∞)`". That is
-       true in the `[0,∞]` reading, while the real-valued reading needs `z_* = ∞`. Theorem 5′'s
-       proof uses the real reading only after `lem:moment-recursion`(2), so nothing downstream is
-       wrong; the statement just does not say which reading it means.
-     - `lem:inversion-operator-action` (`paper/09-signaling.tex`) states `Ãg(z) = h̃(z−1)`
-       without the continuity of `h` on `(0,∞)` that it needs. Every use in the paper has a
-       continuous `h` (the profiles), so no consumer is affected.
+## Before the freeze, for the author to judge
 
-   Nothing in the published paper has been touched, deliberately.
-3. **The gates.**
-   - `linkage axioms --check` now exits 0.
-   - `build-blueprint.sh --quick` passes. Its proof-level `\leanok` check made
-     `prop:pair-regularity`'s proof carry `\leanok` too, and the annotation says both marks cover
-     only the two equivalences.
-   - The full `bash scripts/build-blueprint.sh`, web step included, passes on this machine since
-     the scaffold's `PYTHONUTF8=1` adoption.
-4. **A standing caution, seven instances in chapters 9–11.** What a proof reaches for is an upper
-   bound on what its statement needs, and that covers the tools it reaches for as well as the nodes
-   it cites. The latest two instances:
-   - `lem:zstar-log-growth`(1)'s "drift case read off `negMoment` separately" was not needed: the
-     comparison holds for any limit;
-   - `prop:pair-regularity`'s "`a = 0` step" was not needed either.
+- **The AI statement's figures** ("By the numbers", computed 5 September 2026) predate the
+  September Lean work (A17's proof, Q-0020, Q-0021, Q-0141). They are dated, so still true as
+  lower bounds; re-deriving them needs `chronicler stats`, which an unattended session cannot run.
+- **Three proved nodes have no fidelity card** (`lem:mode-rigidity`, `lem:standing-levy-reading`,
+  `lem:zstar-log-growth`; R33 covers the last one's hypotheses only). No *interface* was admitted
+  after the fidelity review: A19–A21 (2026-09-01) have no Lean name, so they are outside the
+  trust boundary the cards audit.
+- The version tag: `v1.1.0` was chosen to match `v1.0.0`'s three-part form. The export writes
+  the plain `vX.Y` in its metadata.
 
-## Waiting on the author
+## Standing
 
-- **Decided (Q-0025, 2026-09-21): (b)**; **decided (Q-0041): (a)**, resume Q-0020 and Q-0021 in
-  rank order; no `v1.1` decided.
-- Q-0022, Q-0020 and Q-0021 are done. The open question is whether a `v1.1` is cut. It would carry
-  the smaller trust base, the newly proved nodes (`lem:mode-rigidity`, `lem:standing-levy-reading`,
-  `lem:zstar-log-growth`, `prop:pair-regularity`(2)) and item 2.
+- **A standing caution, seven instances in chapters 9–11.** What a proof reaches for is an upper
+  bound on what its statement needs, and that covers the tools it reaches for as well as the nodes
+  it cites.
+- No formalization target is queued. What stays unformalized is by decision or blocked upstream:
+  the two `[depend]` advisories (A18 and the collation over it); the scale-Cauchy problem; the
+  locality chapter's ladder (Bessel `K`); `prop:pair-regularity`'s clause (1) and clause (2)'s
+  second assertion (A9); the implementation and jet chapters.
