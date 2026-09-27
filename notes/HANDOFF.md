@@ -30,9 +30,20 @@ remains is the author's.
 
 ## Open: the author's steps, in `RELEASE.md`'s numbering
 
+   **The release goes through `linkage release`** (the author, 2026-09-27), the first time for
+   this article: `linkage.toml` now carries `[release]` and one `[[modules]]` table (`kernels`,
+   tag `v1.1.0`). This repository is public and single-module, so there is no public export
+   repository: `<export>` is a local staging tree, `C:/Users/danie/dev/hcs-release`, which the
+   Zenodo commands read and zip; `repo_url` is this repository. It needs article-kit's fix for
+   three-part tags and primed names (article-kit PR #27); without it the rule 6 gate is skipped
+   silently. `linkage release export --dry-run` passes except for what the freeze sets.
+
+0. **Rehearse on the sandbox first** (the author, `ZENODO_SANDBOX_TOKEN`): `export --draft`,
+   `zenodo reserve --sandbox`, `upload`, `status`, `publish`, as `RELEASE.md` "The commands".
 3. **Reserve the DOI**: `linkage release export --draft --out <export>`, then
-   `linkage release zenodo reserve --export <export>`, as a new version under concept DOI
-   10.5281/zenodo.22259186.
+   `linkage release zenodo reserve --export <export> --record 22259187`, a new version of the
+   v1.0.0 record under concept DOI 10.5281/zenodo.22259186 (without `--record` it would open a
+   new concept).
 4. **Freeze the paper.**
    - The `\date` in `paper/main.tex` in the later-version form of rule 6: `v1.1.0`, its date and
      version DOI, then "first released as `v1.0.0`, 2 September 2026 (DOI
@@ -45,8 +56,9 @@ remains is the author's.
      it). Seed from article-kit's copy, reworded from the changelog entry.
    - If the freeze date is not 2026-09-27, change the changelog heading's date to match.
    - Build into `paper/`, read page 1 and the version history, commit.
-5. to 10. as `RELEASE.md` has them: export with `--doi … --build`, tag, the public repository at
-   the author's word, the deposit, the library, the site, the hub, the next cycle.
+5. to 10. as `RELEASE.md` has them: export with `--doi … --build`; tag `v1.1.0` here; in
+   `<export>`, `git init`, commit and tag `v1.1.0` (the zip `upload --tag v1.1.0` archives), no
+   public repository; the deposit; the library, the site, the hub, the next cycle.
 
 ## Before the freeze, for the author to judge
 
