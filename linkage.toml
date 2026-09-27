@@ -45,7 +45,10 @@ name     = "kernels"
 chapters = ["02", "03", "04", "05", "06", "07", "08", "09", "10", "11", "12", "13", "14"]
 paper    = "paper"
 tag      = "v1.1.0"
-roots    = ["Hemigroup"]
+# The tagged statements give the closure its other roots. Witnesses.lean is imported by no
+# tagged statement, so without it the export drops the fidelity review's non-vacuity
+# witnesses and their 24 guard lines.
+roots    = ["Hemigroup.Witnesses"]
 headline = "Hemigroup.SelfDecomposableExponent.main_characterization"
 stem     = "hemigroup-causal-scale-space-kernels"
 title    = "Time-Causal Scale Space from Hemigroup Axioms: Characterization of the Kernels"
