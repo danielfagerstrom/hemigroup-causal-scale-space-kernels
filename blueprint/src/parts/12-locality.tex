@@ -43,7 +43,7 @@ canonical gauge, write $m(z) := \Ex[T_1^{-z}]$, and take $A$ and $B$ as in Chapt
 % draft: Definition 12.1
 \begin{definition}[locality; positive maximum principle]\label{def:locality-pmp}
 \uses{def:inversion-operator}
-\lean{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.IsLocalOfOrder, Hemigroup.SelfDecomposableExponent.SatisfiesPMP}\leanok
 The inversion operator $A$ is \emph{local of order $n$} if it agrees with a differential
 expression $\sum_{j=0}^{n} c_j(x)\,\partial_x^j$, with $c_j \in C((0,\infty))$ and
 $c_n \not\equiv 0$, on $C_c^\infty((0,\infty))$ \emph{and on the profiles $H(s\,\cdot)$,
@@ -106,7 +106,7 @@ proving that $A$ preserves realness, and therefore the safer of the two.)}
 % draft: Lemma 12.2
 \begin{lemma}[covariant local = polynomial symbol]\label{lem:local-polynomial-symbol}
 \uses{def:locality-pmp,def:inversion-operator,def:covariant-mellin-class,lem:mellin-data,thm:signaling-form}
-\lean{Hemigroup.SelfDecomposableExponent.nonempty_isLocalOfOrder_iff_symbol_eq}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.nonempty_isLocalOfOrder_iff_symbol_eq, Hemigroup.SelfDecomposableExponent.exists_symbol_eq_of_isLocalOfOrder, Hemigroup.SelfDecomposableExponent.coeff_eq_of_isLocalOfOrder}\leanok
 $A$ is local of order $n$ if and only if $B$ is a polynomial of degree $n$; in that case the
 covariance built into the Mellin class (Definition~\ref{def:covariant-mellin-class}) forces the
 coefficients
@@ -685,7 +685,7 @@ nonlocal delay accrual.
 % number the draft does not use, its Section 12 ending at 12.8.
 \begin{lemma}[the symbol vanishes at the origin]\label{lem:symbol-vanishes-at-origin}
 \uses{def:standing-hypothesis,lem:mellin-data,lem:inversion-symbol}
-\lean{Hemigroup.SelfDecomposableExponent.tendsto_inversionSymbol_nhdsGT_zero}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.tendsto_inversionSymbol_nhdsGT_zero, Hemigroup.SelfDecomposableExponent.tendsto_negMoment_nhdsGT_zero}\leanok
 Assume (H). Then, along the reals,
 \[
   m(z) \;\longrightarrow\; 1
@@ -867,7 +867,7 @@ positive reals, which is both the recursion and the positivity.
 \begin{lemma}[the maximum principle on a local operator of order at most two]
 \label{lem:pmp-verification}
 \uses{def:locality-pmp,lem:local-polynomial-symbol,lem:moment-recursion}
-\lean{Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_eq_sum, Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_eq_sum, Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_symbol_eq, Hemigroup.SelfDecomposableExponent.satisfiesPMP_of_isLocalOfOrderCore}\leanok
 Let $A$ agree on $C_c^\infty((0,\infty))$ with $\sum_{j=0}^{n} c_j(x)\partial_x^j$, where
 $n \le 2$. If $\operatorname{Re} c_0 \le 0$ and $\operatorname{Re} c_2 \ge 0$ on $(0,\infty)$,
 then $A$ satisfies the positive maximum principle. In particular, if the symbol is the polynomial
