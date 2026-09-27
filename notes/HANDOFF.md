@@ -33,7 +33,7 @@ remains is the author's.
    **The release goes through `linkage release`** (the author, 2026-09-27), the first time for
    this article: `linkage.toml` now carries `[release]` and one `[[modules]]` table (`kernels`,
    tag `v1.1.0`). This repository is public and single-module, so there is no public export
-   repository: `<export>` is a local staging tree, `C:/Users/danie/dev/hcs-release`, which the
+   repository: `<export>` is a local staging tree, `C:/Users/danie/dev/release/hemigroup-causal-scale-space-kernels` (the zip is named after the folder), which the
    Zenodo commands read and zip; `repo_url` is this repository. It needs article-kit's fix for
    three-part tags and primed names (article-kit PR #27); without it the rule 6 gate is skipped
    silently. `linkage release export --dry-run` passes except for what the freeze sets.
