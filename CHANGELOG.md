@@ -8,9 +8,10 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## v1.1.0 — 2026-09-27 — One cited fact: the subordinator existence proved, four more nodes verified
 
-The second version of the monograph, under the concept DOI 10.5281/zenodo.22259186. The date is
-provisional until the `\date` is frozen (`RELEASE.md` item 4); the two are set together. What a
-reader who cited `v1.0.0` needs to know:
+The second version of the monograph, published on Zenodo 2026-09-27 (version DOI
+10.5281/zenodo.22992450, concept DOI 10.5281/zenodo.22259186), from the tag `v1.1.0` (`7ca1047`),
+the first release of this article through `linkage release`. What a reader who cited `v1.0.0`
+needs to know:
 
 - **The trust base shrank to one cited fact.** The existence of a subordinator from its triple
   (SSV Thm. 5.2, p. 49; ledger A17), cited in `v1.0.0` for the constructive direction of
