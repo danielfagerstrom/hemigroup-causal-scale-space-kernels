@@ -13,6 +13,10 @@ defaultTargets = ["Hemigroup", "Skeleton"]
 pp.unicode.fun = true
 relaxedAutoImplicit = false
 weak.linter.mathlibStandardSet = true
+# The header linter wants Mathlib's licence line ("...described in the file LICENSE."); this
+# repository keeps its licences REUSE-style under LICENSES/, and every file says so. Off, so
+# 72 identical warnings do not bury the ones that matter (2026-09-27, the v1.1.0 export).
+weak.linter.style.header = false
 maxSynthPendingDepth = 3
 
 # The shared core, pinned to a tag. Bumped together with the other articles, deliberately.
