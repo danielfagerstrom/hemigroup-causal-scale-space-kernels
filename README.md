@@ -91,12 +91,14 @@ machine-checked rather than asserted.
 
 ## State
 
-Published as `v1.0.0`. **Both headline theorems are machine-checked in full**: the
+Published as `v1.0.0`; `v1.1.0` is prepared up to the DOI reservation (`CHANGELOG.md` has its
+entry, the paper's prose is brought up to date, the `\date` is not yet frozen). **Both headline
+theorems are machine-checked in full**: the
 characterization (Theorem 7.3: construction, analysis and uniqueness) and the signaling
 form (Theorem 9.17). The blueprint has 106 statement nodes, 71 of them `\leanok`; all 89
 statements the paper shares with it are verbatim; `AXIOMS.md` has 21 ledger entries, each
 with a page anchor; the trust base is Lean core plus A18 (A17, in the trust base of `v1.0.0`,
-is proved on `main` since; no `v1.1` carries it yet). `linkage check` reports
+is proved, and `v1.1.0` will carry that). `linkage check` reports
 two advisories, both deliberate: `lem:selfdecomposable-derivative` is A18 itself, and
 `lem:selfdecomposable-exponents` is a collation over it. The fidelity review
 (`blueprint/REVIEW-fidelity.md`, verdict at its head) found that the Lean proves what the
@@ -104,11 +106,9 @@ article states.
 
 What is not formalized, and why, is inventoried in the paper's §1.1: the scale-Cauchy
 problem waits on distribution theory absent from Mathlib; `Formalization/Skeleton/` holds no
-`sorry`-marked target type any more (§1.1's inventory, like its A17 sentence, is rewritten by
-whichever pass prepares a `v1.1`: since `v1.0.0`, `lem:mode-rigidity`,
-`lem:standing-levy-reading`, all of `lem:zstar-log-growth` and `prop:pair-regularity`(2)'s two
-equivalences have been proved, the last on Lean core with the node still `[A]` for its clause
-(1)); the
+`sorry`-marked target type any more, and §1.1 lists as verified what has been proved since
+`v1.0.0` (`lem:mode-rigidity`, `lem:standing-levy-reading`, all of `lem:zstar-log-growth`, and
+`prop:pair-regularity`(2)'s two equivalences, with the node still `[A]` for its clause (1)); the
 locality chapter's remaining nodes are cited analytic interfaces
 (Widder, Courrège, Krull–Webster, Bondesson) plus the Bessel-K special function; and the
 implementation and jet chapters are outside the Lean plan by decision. History:

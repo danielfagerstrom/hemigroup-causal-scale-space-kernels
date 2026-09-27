@@ -6,6 +6,52 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+## v1.1.0 — 2026-09-27 — One cited fact: the subordinator existence proved, four more nodes verified
+
+The second version of the monograph, under the concept DOI 10.5281/zenodo.22259186. The date is
+provisional until the `\date` is frozen (`RELEASE.md` item 4); the two are set together. What a
+reader who cited `v1.0.0` needs to know:
+
+- **The trust base shrank to one cited fact.** The existence of a subordinator from its triple
+  (SSV Thm. 5.2, p. 49; ledger A17), cited in `v1.0.0` for the constructive direction of
+  Theorem 7.3, is now proved, by the compound-Poisson construction. The constructive direction
+  and the uniqueness rest on Lean core; the analysis direction rests on self-decomposability
+  (SSV Prop. 5.17, p. 57; ledger A18) and nothing else. §1.1, the abstract, the contributions
+  list, §7 and §13 say so.
+- **Newly machine-checked, statements unchanged:** Lemma 9.3 (`lem:standing-levy-reading`),
+  Lemma 9.4 (`lem:zstar-log-growth`), all four clauses; Lemma 9.20 (`lem:mode-rigidity`); and
+  the two equivalences of Proposition A.9(2) (`prop:pair-regularity`), whose clause (1) and
+  second assertion stay cited. §1.1's inventory lists them.
+- **Two statements corrected**, neither affecting a consumer:
+  - Lemma 9.9 (`lem:inversion-operator-action`): the second display, `Ãg(z) = h̃(z−1)`, now
+    carries "if `h` is continuous on `(0,∞)`", which Mellin inversion needs. The one use,
+    Lemma 9.10, has a continuous `h`. Findings-ledger row R31.
+  - Lemma 10.4 (`lem:log-convexity`): "log-convex on `(0,∞)`" now names its two readings, the
+    `[0,∞]`-valued Hölder inequality on `(0,∞)` with no hypothesis, and real convexity of
+    `log m` on `(0, z_*)` when `T₁` has no atom at the origin. Theorem 10.6 uses the real reading
+    only after Lemma 10.3(2) has given `z_* = ∞`. Row R30.
+- **Three sentences on proof routes** (decision D-D): after the printed proofs of Lemma 9.4,
+  Lemma 9.20 and Proposition A.9, one sentence each says where the verified proof takes another
+  route. The printed proofs are unchanged.
+- **Nothing renumbered, strengthened or withdrawn.** Every numbered result keeps its number.
+
+The detail follows, newest first.
+
+### The paper brought to the development: §1.1 and the D-D sentences (2026-09-27, Q-0158)
+
+§1.1 still described `v1.0.0`: two cited facts, and the four nodes above as paper-only or cited.
+It now lists them as verified and rests the results on A18 alone, with one sentence recording
+that the first release cited the subordinator existence and that it is proved. The same "two
+cited facts" is corrected in the abstract, the contributions list, §7's route paragraph and §13.
+The three D-D sentences are the first two the handoff listed (`prop:pair-regularity` absorbs
+`a/s` as an atom and never proves `a = 0`; `lem:zstar-log-growth` takes its limit from clause (2),
+proved by two bounds on the integral, not from convexity through `B = sF'`) and a third, for
+`lem:mode-rigidity`, whose checked route removes the singularities on the strip before gluing.
+That one carries no `% CHANGED` marker and no ledger row, because the statement is unchanged; the
+route exchange is recorded in the node's annotation and in the Q-0020 entry below. The sentence
+in §1.1 naming the `v1.0.0` tag and version DOI is left for the freeze, with a comment beside it.
+No statement, printed proof or `\date` changed. The five gates pass; the paper builds.
+
 ### Six nodes whose Lean assumed more than the node: settled (2026-09-26, Q-0141)
 
 The input was the hypothesis-drift list of `records/formalization/AUDIT-partial-lean-cover.md`
