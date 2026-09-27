@@ -96,6 +96,7 @@ claim that doing so costs no ledger entry.
 -/
 
 #print axioms Hemigroup.levyExponentD_increment
+#print axioms Hemigroup.increment_density_nonneg
 
 /-! ### `def:cascade-family`
 

@@ -173,7 +173,7 @@ scale-Cauchy problem of \sscite{fagerstrom2005temporal}, Thm.~3.
 % draft: Lemma 9.4
 \begin{lemma}[potential kernel]\label{lem:potential-kernel}
 \uses{lem:selfdecomposable-exponents,prop:bernstein-toolbox,lem:vanishing,prop:laplace-uniqueness-sigma-finite}
-\lean{Hemigroup.SelfDecomposableExponent.existsUnique_potentialKernel}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.existsUnique_potentialKernel, Hemigroup.SelfDecomposableExponent.exists_levyTriple_symbol, Hemigroup.SelfDecomposableExponent.symbol_pos}\leanok
 For $x > 0$ set $\varphi_x(s) := s F'(xs)$. Then $\varphi_x$ is a nonzero Bernstein function,
 positive on $(0,\infty)$, and there is a unique positive, locally finite measure $\ell^{(x)}$
 on $[0,\infty)$ --- the \emph{potential kernel} --- with
@@ -243,7 +243,7 @@ $\widehat{\ell^{(x)}}(s) = x/B(xs) = x\,\widehat{\ell^{(1)}}(xs)$.
 % draft: Theorem 9.5
 \begin{theorem}[Sonine conservation]\label{thm:sonine-conservation}
 \uses{lem:memory-kernel,lem:memory-kernel-transform,lem:potential-kernel,prop:laplace-uniqueness-sigma-finite}
-\lean{Hemigroup.SelfDecomposableExponent.sonine_conservation}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.sonine_conservation, Hemigroup.SelfDecomposableExponent.sonine_conservation'}\leanok
 For every $x > 0$,
 \[
   \kappa^{(x)} * \ell^{(x)} \;=\; \mathrm{Leb}_{[0,\infty)},

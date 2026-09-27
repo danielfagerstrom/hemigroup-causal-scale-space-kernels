@@ -129,7 +129,7 @@ $T_{\sigma \tilde x} \stackrel{d}{=} \sigma\, T_{\tilde x}$.
 % draft: Theorem 7.3
 \begin{theorem}[Main theorem]\label{thm:main-characterization}
 \uses{def:cascade-family,thm:main-construction,thm:main-analysis,prop:main-uniqueness}
-\lean{Hemigroup.SelfDecomposableExponent.main_characterization}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.main_characterization, Hemigroup.CascadeFamily.reparam, Hemigroup.SelfDecomposableExponent.cascadeFamily_reparam}\leanok
 A family $(\Phi_{x,y})_{0 \le x \le y}$ satisfies (A1)--(A8) and (ND) \textbf{iff} there exist
 an increasing bijection $\chi$ of $[0,\infty)$ --- the gauge --- and a function $F$ of the
 form (7.1) with $F \not\equiv 0$ such that
@@ -570,7 +570,7 @@ same reason its consumers differ: one is elementary and machine-checked, the oth
 % additive: not in the draft. (3) => (1) of Lemma 7.1, the half the construction consumes.
 \begin{lemma}[the dilation increment of a self-decomposable exponent]\label{lem:selfdecomposable-increment}
 \uses{def:levy-exponent}
-\lean{Hemigroup.levyExponentD_increment}\leanok
+\lean{Hemigroup.levyExponentD_increment, Hemigroup.increment_density_nonneg}\leanok
 Let $F \in \LE$ have drift $b_0 \ge 0$ and Lévy density $k(t)/t$ with $k \ge 0$ nonincreasing on
 $(0,\infty)$. Then for $0 < a \le b$ and $s \ge 0$,
 \[
@@ -703,7 +703,7 @@ Linearity of $(b_0,k) \mapsto F$ is the same computation read forwards.
 % additive: not in the draft. The representation clause of prop:extreme-rays.
 \begin{lemma}[Dickman superposition]\label{lem:dickman-superposition}
 \uses{def:levy-exponent,lem:admissible-cone,prop:admissibility-criterion}
-\lean{Hemigroup.dickman_superposition}\leanok
+\lean{Hemigroup.dickman_superposition, Hemigroup.SelfDecomposableExponent.exponent_eq_lintegral_ein}\leanok
 Write $\mathrm{Ein}(z) := \int_0^z \bigl(1 - e^{-u}\bigr)\,u^{-1}du$.
 \begin{enumerate}
 \item \emph{(The rays.)} For $\tau > 0$ the density $k = \mathbf{1}_{(0,\tau)}$ is admissible,

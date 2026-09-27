@@ -167,7 +167,7 @@ the boundary of (H) as characteristic of the theory rather than of any one argum
 % is the check: #print axioms on mellin_profile gives Lean core, so no path
 % through A7 is used.
 \uses{def:standing-hypothesis,thm:main-characterization}
-\lean{Hemigroup.SelfDecomposableExponent.mellin_profile}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.mellin_profile, Hemigroup.SelfDecomposableExponent.norm_mellin_profile_le}\leanok
 Under (H), for $0 < \operatorname{Re} z < z_*$,
 \[
   \tilde H(z) \;=\; \Gamma(z)\;\Ex\bigl[T_1^{-z}\bigr],
@@ -768,7 +768,7 @@ and $(1+\tau^2)^{-1}$ is integrable on the line.
 
 \begin{lemma}[the inversion symbol]\label{lem:inversion-symbol}
 \uses{lem:mellin-data,def:standing-hypothesis}
-\lean{Hemigroup.SelfDecomposableExponent.meromorphicOn_inversionSymbol}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.meromorphicOn_inversionSymbol, Hemigroup.SelfDecomposableExponent.analyticAt_mellin_profile, Hemigroup.SelfDecomposableExponent.mellin_profile_ofReal_ne_zero, Hemigroup.SelfDecomposableExponent.eventually_mellin_profile_ne_zero, Hemigroup.SelfDecomposableExponent.inversionSymbol_eq, Hemigroup.SelfDecomposableExponent.analyticAt_inversionSymbol}\leanok
 Under (H), $\tilde H$ is analytic on the strip $0 < \operatorname{Re} z < z_*$ and does not
 vanish identically there. Define the \emph{inversion symbol}
 \[
@@ -822,7 +822,7 @@ $\Gamma(z+1) = z\Gamma(z)$ --- is meromorphic with poles only there.
 
 \begin{lemma}[rigidity of the symbol]\label{lem:symbol-rigidity}
 \uses{lem:inversion-symbol}
-\lean{Hemigroup.SelfDecomposableExponent.SameSymbolAction.eventuallyEq}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.SameSymbolAction.eventuallyEq, Hemigroup.SelfDecomposableExponent.SameSymbolAction.eq_of_continuousAt, Hemigroup.SelfDecomposableExponent.SameSymbolAction.eqOn_of_ne_zero, Hemigroup.SelfDecomposableExponent.SameSymbolAction.eqOn}\leanok
 Assume (H), and let $B_1, B_2$ satisfy
 \[
   B_1(-z)\,\tilde H(z) \;=\; B_2(-z)\,\tilde H(z),
@@ -934,7 +934,7 @@ one.
 
 \begin{lemma}[the profiles are eigenfunctions]\label{lem:profile-eigenfunction}
 \uses{def:inversion-operator,lem:inversion-operator-action,lem:inversion-symbol,lem:mellin-vertical}
-\lean{Hemigroup.SelfDecomposableExponent.inversionOperator_profile}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.inversionOperator_profile, Hemigroup.SelfDecomposableExponent.realisesSymbolAction_profile}\leanok
 Assume (H), let $c \in (0, z_*-1)$ and $s > 0$. Then the dilate $H(s\,\cdot)$ lies in the domain of
 \ref{def:inversion-operator} --- its realising function is $h(x) = s\,x\,H(sx)$, exhibited --- and
 \[
@@ -984,7 +984,7 @@ $A[H(s\cdot)](x) = h(x)/x = s\,H(sx)$.
 
 \begin{lemma}[the delayed average is the field, and its transform]\label{lem:delayed-average-mellin}
 \uses{def:standing-hypothesis,lem:mellin-data,prop:canonical-gauge,def:cascade-family}
-\lean{Hemigroup.SelfDecomposableExponent.mellin_delayedField_of_integrable}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.mellin_delayedField_of_integrable, Hemigroup.SelfDecomposableExponent.coeFn_Phi_zero}\leanok
 Assume (H) and work in the canonical gauge; let $f \in L^1$ be causal and $t > 0$. Then for every
 $x > 0$,
 \[
