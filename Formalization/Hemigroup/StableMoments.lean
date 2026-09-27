@@ -23,8 +23,9 @@ probability measure `E T ≤ 1 + E T^n`, and a divergent mean forces every highe
 
 So the route is `meanRate_ne_top_iff` (the mean is finite iff `k` is integrable at infinity) plus
 `t^{-α}` failing that for `α < 1`, and then one elementary inequality. The two supporting lemmas
-below and the statement about `T_x` are all Lean core. What it avoids is A7. The `n = 1` case being cheap is exactly what `prop:moments` was split off to record,
-and this is the first node to collect on it.
+below and the statement about `T_x` are all Lean core. What it avoids is A7. The `n = 1` case
+being cheap is exactly what `prop:moments` was split off to record, and this is the first node
+to collect on it.
 
 ## The mode clause is elsewhere
 

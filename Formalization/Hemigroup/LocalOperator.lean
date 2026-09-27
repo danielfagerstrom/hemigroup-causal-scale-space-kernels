@@ -282,21 +282,22 @@ theorem IsTestFunction.lineDilate {σ : ℝ} (hσ : 0 < σ) {g : ℝ → ℂ} (h
     field_simp
   tsupport_subset := by
     intro x hx
-    have hsub : tsupport (_root_.Hemigroup.lineDilate σ g) ⊆ (fun t : ℝ => σ * t) '' tsupport g := by
+    have hsub : tsupport (_root_.Hemigroup.lineDilate σ g)
+        ⊆ (fun t : ℝ => σ * t) '' tsupport g := by
       refine closure_minimal (fun y hy => ⟨y / σ, subset_tsupport _ hy, by field_simp⟩)
-        (((hg.hasCompactSupport.isCompact.image (by fun_prop : Continuous fun t : ℝ => σ * t))).isClosed)
+        (((hg.hasCompactSupport.isCompact.image
+          (by fun_prop : Continuous fun t : ℝ => σ * t))).isClosed)
     obtain ⟨t, ht, rfl⟩ := hsub hx
     exact mul_pos hσ (hg.tsupport_subset ht)
 
 /-- Dilation scales the iterated derivatives: `(Δ_σ g)^{(j)}(x) = σ^{-j} g^{(j)}(x/σ)`. -/
-theorem iteratedDeriv_lineDilate {σ : ℝ} (hσ : 0 < σ) {g : ℝ → ℂ} (hg : IsTestFunction g)
+theorem iteratedDeriv_lineDilate {σ : ℝ} (_hσ : 0 < σ) {g : ℝ → ℂ} (hg : IsTestFunction g)
     (j : ℕ) (x : ℝ) :
     iteratedDeriv j (lineDilate σ g) x = ((σ⁻¹ : ℝ) ^ j) • iteratedDeriv j g (x / σ) := by
   have hfun : lineDilate σ g = fun t : ℝ => g (σ⁻¹ * t) := by
     funext t; simp [lineDilate, div_eq_inv_mul]
   have hcd : ContDiff ℝ (j : ℕ∞) g := hg.contDiff.of_le (by exact_mod_cast le_top)
   rw [hfun, iteratedDeriv_comp_const_smul hcd σ⁻¹]
-  congr 2
   rw [div_eq_inv_mul]
 
 /-! ## Prescribed jets
@@ -389,16 +390,15 @@ theorem exists_isTestFunction_jet {x₀ : ℝ} (hx₀ : 0 < x₀) (m : ℕ) :
       filter_upwards [hball] with t ht
       rw [φ.one_of_mem_closedBall (Metric.ball_subset_closedBall ht)]
       simp
-    have hcongr : iteratedDeriv j (fun t : ℝ => ((φ t : ℝ) : ℂ) * p t) x₀ = iteratedDeriv j p x₀ := by
+    have hcongr :
+        iteratedDeriv j (fun t : ℝ => ((φ t : ℝ) : ℂ) * p t) x₀ = iteratedDeriv j p x₀ := by
       rw [← iteratedDerivWithin_univ, ← iteratedDerivWithin_univ]
       exact Filter.EventuallyEq.iteratedDerivWithin_eq
         (by rwa [nhdsWithin_univ]) (by simpa using hloc.eq_of_nhds)
     rw [hcongr, hp]
     have hdiv : iteratedDeriv j (fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) ^ m / (m.factorial : ℂ)) x₀
         = iteratedDeriv j (fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) ^ m) x₀ / (m.factorial : ℂ) := by
-      simpa [div_eq_mul_inv] using
-        iteratedDeriv_const_mul (𝕜 := ℝ) (c := ((m.factorial : ℂ))⁻¹) (n := j)
-          (f := fun t : ℝ => ((t : ℂ) - (x₀ : ℂ)) ^ m) x₀
+      simp [div_eq_mul_inv]
     rw [hdiv, iteratedDeriv_ofReal_sub_pow]
     rcases lt_trichotomy j m with h | h | h
     · rw [if_neg (by omega)]

@@ -192,8 +192,9 @@ theorem tendsto_lintegral_enorm_mconv_kernel_sub (F : SelfDecomposableExponent)
   have hbound : ∀ n t, ‖d n t‖ₑ ≤ ENNReal.ofReal (2 * C) := by
     intro n t
     have h1 : ‖mconv (F.kernel (u n) (v n)) f t‖ ≤ C := by
-      simpa [mconv_apply] using norm_integral_le_of_norm_le_const (μ := F.kernel (u n) (v n)) (C := C)
-        (Filter.Eventually.of_forall fun r => hC (t - r))
+      simpa [mconv_apply] using
+        norm_integral_le_of_norm_le_const (μ := F.kernel (u n) (v n)) (C := C)
+          (Filter.Eventually.of_forall fun r => hC (t - r))
     have h2 : ‖mconv (F.kernel α β) f t‖ ≤ C := by
       simpa [mconv_apply] using norm_integral_le_of_norm_le_const (μ := F.kernel α β) (C := C)
         (Filter.Eventually.of_forall fun r => hC (t - r))

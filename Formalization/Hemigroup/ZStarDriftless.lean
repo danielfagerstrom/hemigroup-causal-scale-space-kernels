@@ -340,12 +340,12 @@ theorem tendsto_toRealExponent_div_log_atTop_of_b₀_zero (hb : F.b₀ = 0) :
     have hup := F.levyJump_le_of_le hx0 hs1.le hkx
     have hsum : (ENNReal.ofReal x + ENNReal.ofReal (x * Real.log s) + T).toReal
         = x + x * Real.log s + τ := by
-      rw [ENNReal.toReal_add (by simp [ENNReal.add_ne_top]) hTne,
+      rw [ENNReal.toReal_add (by simp) hTne,
         ENNReal.toReal_add ENNReal.ofReal_ne_top ENNReal.ofReal_ne_top,
         ENNReal.toReal_ofReal hx0, ENNReal.toReal_ofReal (by positivity)]
     have hreal : F.toRealExponent s ≤ x + x * Real.log s + τ := by
       rw [hFval s, ← hsum]
-      exact ENNReal.toReal_mono (by simp [ENNReal.add_ne_top, hTne]) hup
+      exact ENNReal.toReal_mono (by simp [hTne]) hup
     have hlogne : Real.log s ≠ 0 := hlog.ne'
     have hdiv : F.toRealExponent s / Real.log s ≤ x + (x + τ) / Real.log s := by
       have heq : x + (x + τ) / Real.log s = (x * Real.log s + (x + τ)) / Real.log s := by

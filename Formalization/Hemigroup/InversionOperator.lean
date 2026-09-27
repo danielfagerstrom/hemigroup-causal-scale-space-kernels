@@ -153,7 +153,8 @@ theorem inversionOperator_eq_of_ae {c : ℝ} {g h : ℝ → ℂ}
 /-- `inversionOperator_eq_of_ae` for a realising function in the sense of `RealisesSymbolAction`,
 whose transform identity is asked for off the zeros of `H̃`: (H) and the strip are what make those
 zeros null on the line. -/
-theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar)
+theorem inversionOperator_eq (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
+    (hc' : ENNReal.ofReal c < F.zStar)
     {g h : ℝ → ℂ} (hrep : F.RealisesSymbolAction c g h) {x : ℝ}
     (hx : 0 < x) (hcont : ContinuousAt h x) :
     F.inversionOperator c g x = x⁻¹ * h x :=

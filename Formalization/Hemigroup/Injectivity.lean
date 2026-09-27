@@ -285,7 +285,7 @@ theorem laplaceL_injective_of_ne_top {μ ρ : Measure ℝ} (hμ : IsCausal μ) (
 
 /-- Local finiteness is a *consequence* of the transform converging, not a hypothesis: a causal
 measure with `laplaceL μ s₀ < ∞` for some `s₀ > 0` is finite on every `[0,T]`. -/
-theorem measure_Icc_ne_top_of_laplaceL_ne_top {μ : Measure ℝ} (hμ : IsCausal μ) {s₀ : ℝ}
+theorem measure_Icc_ne_top_of_laplaceL_ne_top {μ : Measure ℝ} (_hμ : IsCausal μ) {s₀ : ℝ}
     (hs₀ : 0 < s₀) (hfin : laplaceL μ s₀ ≠ ⊤) (T : ℝ) : μ (Icc 0 T) ≠ ⊤ := by
   have hle : μ (Icc 0 T) ≤ ENNReal.ofReal (Real.exp (s₀ * T)) * laplaceL μ s₀ := by
     rw [laplaceL, ← lintegral_const_mul _ (by fun_prop)]

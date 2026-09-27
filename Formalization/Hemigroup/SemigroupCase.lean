@@ -139,7 +139,7 @@ theorem exists_rpow_of_mul {c : ℝ → ℝ} (hpos : ∀ σ : ℝ, 0 < σ → 0 
   rw [smul_eq_mul, mul_one, smul_eq_mul] at hlin
   have hval : Real.log (c σ) = Real.log σ * Real.log (c (Real.exp 1)) := by
     have h1 : D (Real.log σ) = Real.log (c σ) := by
-      show Real.log (c (Real.exp (Real.log σ))) = _
+      change Real.log (c (Real.exp (Real.log σ))) = _
       rw [Real.exp_log hσ]
     have h2 : D 1 = Real.log (c (Real.exp 1)) := rfl
     rw [h1, h2] at hlin

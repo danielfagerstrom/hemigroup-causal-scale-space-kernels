@@ -174,7 +174,7 @@ theorem box_ne_ae_shift {r : ℝ} (hr : 0 < r) :
     have hb1 : box t = 1 := indicator_of_mem ht1 _
     have hb0 : box (t - r) = 0 :=
       indicator_of_notMem (fun h => absurd h.1 (not_lt.mpr ht2.le)) _
-    show box t ≠ box (t - r)
+    change box t ≠ box (t - r)
     rw [hb1, hb0]
     norm_num
   have hnull : volume {t : ℝ | box t ≠ box (t - r)} = 0 := ae_iff.mp hae
@@ -240,7 +240,7 @@ theorem witness_main_characterization_delayCore :
       simp only [mem_Ici] at hx ⊢
       exact mul_nonneg (inv_nonneg.mpr hσ.le) hx, by field_simp⟩
   scale σ hσ _ x y _ _ := by
-    show (dilL1 hσ).comp (transL1 (y - x)) = (transL1 (σ * y - σ * x)).comp (dilL1 hσ)
+    change (dilL1 hσ).comp (transL1 (y - x)) = (transL1 (σ * y - σ * x)).comp (dilL1 hσ)
     rw [show σ * y - σ * x = σ * (y - x) by ring]
     exact ContinuousLinearMap.ext fun f => dilL1_comp_transL1 hσ (y - x) f
 
@@ -713,7 +713,7 @@ theorem stableExponent_negMoment_ne_top (hα : 0 < α) (hα1 : α < 1) {ζ : ℝ
       funext t
       rw [← ENNReal.ofReal_mul (Real.rpow_nonneg hs'.le _), show t * s = s * t from mul_comm t s]
     rw [hcongr, lintegral_const_mul' _ _ ENNReal.ofReal_ne_top]
-    show ENNReal.ofReal (s ^ (ζ - 1)) * laplaceL (stableExponent α hα hα1).lawT₁ s = _
+    change ENNReal.ofReal (s ^ (ζ - 1)) * laplaceL (stableExponent α hα hα1).lawT₁ s = _
     rw [(stableExponent α hα hα1).laplaceL_lawT₁ hs'.le, stableExponent_toRealExponent hα hα1 hs',
       ← ENNReal.ofReal_mul (Real.rpow_nonneg hs'.le _)]
   have hswap' : (∫⁻ s in Ioi (0 : ℝ), ∫⁻ t,

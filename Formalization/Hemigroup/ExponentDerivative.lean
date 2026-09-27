@@ -339,7 +339,8 @@ theorem hasDerivAt_toRealExponent (hs : 0 < s) :
       (F.aestronglyMeasurable_deriv s subset_rfl)
       ?bound (F.integrableOn_exp_mul_k hhalf) ?diff
   case bound =>
-    refine (ae_restrict_iff' measurableSet_Ioi).mpr (Filter.Eventually.of_forall fun t ht x hx => ?_)
+    refine (ae_restrict_iff' measurableSet_Ioi).mpr
+      (Filter.Eventually.of_forall fun t ht x hx => ?_)
     have htpos : (0 : ℝ) < t := mem_Ioi.mp ht
     have hkt : 0 ≤ F.k t := F.k_nonneg t ht
     rw [Real.norm_eq_abs, abs_of_nonneg (mul_nonneg (Real.exp_pos _).le hkt)]

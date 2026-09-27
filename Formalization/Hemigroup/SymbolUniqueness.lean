@@ -189,7 +189,7 @@ theorem eventuallyEq_inversionSymbol_of_realisesAction (hH : F.StandingHypothesi
     {z : ℂ} (hz : z ∈ verticalStrip 0 (F.zStar - 1)) :
     F.inversionSymbol =ᶠ[𝓝[≠] z] B :=
   (F.sameSymbolAction_of_realisesAction hs
-    (fun c hc hc' => F.realisesSymbolAction_profile hH hc hc' hs) hB).eventuallyEq hH hz
+    (fun _c hc hc' => F.realisesSymbolAction_profile hH hc hc' hs) hB).eventuallyEq hH hz
 
 end SelfDecomposableExponent
 

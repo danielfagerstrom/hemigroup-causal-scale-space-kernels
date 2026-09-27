@@ -6,6 +6,15 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+- Cleared the 34 genuine style-lint warnings the v1.1.0 export build printed (14
+  `linter.style.longLine`, 9 `linter.style.show`, 7 `linter.unusedVariables`, 3
+  `linter.unusedSimpArgs`, 1 `linter.unnecessarySimpa`, 1 `linter.unusedTactic`), across 17 files
+  in `Formalization/Hemigroup/`. Each is fixed at its source — long lines broken, `show` changed
+  to `change` where the tactic altered the goal, unused hypotheses renamed with a leading
+  underscore rather than dropped, unused `simp` arguments and an unnecessary `simpa`/`congr`
+  trimmed. No statement, hypothesis, or declaration name changed; `CIAxiomGuard.lean`'s output is
+  byte-identical before and after.
+
 ## v1.1.0 — 2026-09-27 — One cited fact: the subordinator existence proved, four more nodes verified
 
 The second version of the monograph, published on Zenodo 2026-09-27 (version DOI

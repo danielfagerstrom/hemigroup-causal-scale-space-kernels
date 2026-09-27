@@ -166,7 +166,7 @@ theorem setIntegral_Ioc_of_causal {g : ℝ → ℝ} (hg : Integrable g)
 /-- **The primitive of a causal integrand is an interval integral at every real point**, the
 negative half-line included, where both sides vanish. Having it everywhere rather than on
 `[0,∞)` is what lets Chasles be applied without a case split. -/
-theorem setIntegral_Ioc_eq_intervalIntegral_of_causal {g : ℝ → ℝ} (hg : Integrable g)
+theorem setIntegral_Ioc_eq_intervalIntegral_of_causal {g : ℝ → ℝ} (_hg : Integrable g)
     (hgc : ∀ r : ℝ, r < 0 → g r = 0) (t : ℝ) :
     (∫ ρ in Ioc (0 : ℝ) t, g ρ) = ∫ ρ in (0 : ℝ)..t, g ρ := by
   rcases le_or_gt 0 t with ht | ht
@@ -741,7 +741,7 @@ theorem hasCoreDerivL1_bconv_approxId {ε : ℝ} (hε : 0 < ε) {F : X} (hF : F 
   have hbconv : (bconv (approxId ε) F : ℝ → ℝ) =ᵐ[volume] φ := by
     refine (coeFn_bconv (integrable_approxId ε) F).trans ?_
     refine .of_forall fun t => ?_
-    show (∫ r, approxId ε r * (F : ℝ → ℝ) (t - r)) = φ t
+    change (∫ r, approxId ε r * (F : ℝ → ℝ) (t - r)) = φ t
     have hswap : (∫ r, approxId ε r * (F : ℝ → ℝ) (t - r)) = ∫ r, approxId ε r * f (t - r) := by
       refine integral_congr_ae ?_
       filter_upwards [(measurePreserving_const_sub t).quasiMeasurePreserving.ae hFf] with r hr

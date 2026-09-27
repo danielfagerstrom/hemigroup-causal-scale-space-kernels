@@ -166,7 +166,7 @@ theorem isCausal_levyMeasure (ρ : Measure ℝ) : IsCausal (levyMeasure ρ) := b
 /-- **The substitution.** Pairing `1 - e^{-st}` against the Lévy measure is pairing the test
 function against `ρ` on the interior — which is the change of variable of `LevyLimit.lean` read
 backwards. -/
-theorem lintegral_levyMeasure (ρ : Measure ℝ) {s : ℝ} (hs : 0 ≤ s) :
+theorem lintegral_levyMeasure (ρ : Measure ℝ) {s : ℝ} (_hs : 0 ≤ s) :
     ∫⁻ t, ENNReal.ofReal (1 - Real.exp (-(s * t))) ∂(levyMeasure ρ)
       = ∫⁻ v in Ioo (0 : ℝ) 1, ENNReal.ofReal (levyRatio s v) ∂ρ := by
   have hf : Measurable fun t : ℝ => ENNReal.ofReal (1 - Real.exp (-(s * t))) := by fun_prop
@@ -182,7 +182,7 @@ theorem lintegral_levyMeasure (ρ : Measure ℝ) {s : ℝ} (hs : 0 ≤ s) :
   have hexp : Real.exp (-(s * logTrans v)) = (1 - v) ^ s := by
     rw [Real.rpow_def_of_pos hw, logTrans]
     ring_nf
-  simp only [Pi.mul_apply, Function.comp_apply, hexp]
+  simp only [Pi.mul_apply, hexp]
   rw [← ENNReal.ofReal_mul (by positivity), levyRatio_of_ne hv0.ne', div_eq_inv_mul]
 
 /-! ## The splitting
