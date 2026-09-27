@@ -1,0 +1,30 @@
+% Version history — `\input` at the end of the paper, after the conclusions and before the
+% references (never as an appendix or a first-page footnote; article-kit docs/RELEASE.md rule 6
+% says why). One entry per released version, newest first, substantive changes only: results
+% added (with their statement numbers), results corrected or strengthened, the renumbering map
+% when numbers moved (old -> new), and a change to the trust base. Reworded from CHANGELOG.md
+% for a reader of the paper; the full history stays in CHANGELOG.md, git and Zenodo.
+% Seeded 2026-09-27 from article-kit's scaffold/paper/version-history.tex.in.
+
+\section*{Version history}
+\addcontentsline{toc}{section}{Version history}
+
+\paragraph{v1.1.0 (2026-09-27, DOI 10.5281/zenodo.22992450).}
+The trust base is one cited fact. The existence of a subordinator with a given triple
+\cite[Thm.~5.2]{schilling2012bernstein}, cited in v1.0.0 for the constructive direction of
+Theorem~\ref{thm:main-characterization}, is now proved, by a compound-Poisson construction; the
+constructive direction and the uniqueness rest on Lean's core axioms alone, and the analysis
+direction on self-decomposability \cite[Prop.~5.17]{schilling2012bernstein} alone. Newly
+machine-checked, with statements unchanged: Lemma~\ref{lem:standing-levy-reading},
+Lemma~\ref{lem:zstar-log-growth} (all four clauses), Lemma~\ref{lem:mode-rigidity}, and the two
+equivalences of Proposition~\ref{prop:pair-regularity}(2). Two statements corrected, neither
+affecting a result that uses them: the second display of Lemma~\ref{lem:inversion-operator-action}
+now assumes $h$ continuous on $(0,\infty)$, which Mellin inversion needs and which its one use
+satisfies; and Lemma~\ref{lem:log-convexity} now names its two readings of log-convexity, of which
+the locality theorem uses only the real one, and only where $z_* = \infty$. After the printed proofs
+of Lemmas~\ref{lem:zstar-log-growth} and~\ref{lem:mode-rigidity} and of
+Proposition~\ref{prop:pair-regularity}, one sentence each says where the machine-checked proof
+takes another route. No result is renumbered, strengthened or withdrawn.
+
+\paragraph{v1.0.0 (2026-09-02, DOI 10.5281/zenodo.22259187).}
+First release.
