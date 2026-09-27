@@ -80,8 +80,8 @@ leaves exactly two possibilities for the negative moments of `T₁`:
 
 Order `0` is ruled out by `not_isLocalOfOrder_zero` and orders above `2` by the hypothesis `hn`,
 which is what ledger **A14** concludes from the positive maximum principle; `hA13` is
-`lem:moment-recursion`(2). Both are hypotheses rather than axioms, so `#print axioms` shows Lean core,
-with neither. -/
+`lem:moment-recursion`(2). Both are hypotheses rather than axioms, so `#print axioms` shows
+Lean core, with neither. -/
 theorem exists_moment_form_of_isLocalOfOrder (hH : F.StandingHypothesis)
     (hA13 : F.AllNegMomentsFinite) {c : ℝ} (hc : 0 < c) {n : ℕ} (hn : n ≤ 2)
     (hL : F.IsLocalOfOrder c n) :

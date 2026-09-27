@@ -105,7 +105,7 @@ limit into a value at the origin. -/
 theorem continuous_sum_mellinEulerFactor (γ : ℕ → ℂ) (n : ℕ) :
     Continuous fun z : ℂ => ∑ j ∈ Finset.range (n + 1), γ j * mellinEulerFactor j z := by
   refine continuous_finsetSum _ fun j _ => continuous_const.mul ?_
-  show Continuous fun z : ℂ => ∏ i ∈ Finset.range j, (-z - (i : ℂ))
+  change Continuous fun z : ℂ => ∏ i ∈ Finset.range j, (-z - (i : ℂ))
   exact continuous_finsetProd _ fun i _ => by fun_prop
 
 namespace SelfDecomposableExponent

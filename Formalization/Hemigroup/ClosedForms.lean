@@ -54,7 +54,7 @@ theorem gammaExponent_integral {γ : ℝ} (hγ : 0 ≤ γ) {s : ℝ} (hs : 0 < s
   have hpt : ∀ t ∈ Ioi (0 : ℝ), Real.exp (-(s * t)) * (gammaExponent γ hγ).k t
       = γ * Real.exp (-((1 + s) * t)) := by
     intro t ht
-    show Real.exp (-(s * t)) * gammaDensity γ t = γ * Real.exp (-((1 + s) * t))
+    change Real.exp (-(s * t)) * gammaDensity γ t = γ * Real.exp (-((1 + s) * t))
     rw [gammaDensity, if_pos (mem_Ioi.mp ht),
       show -((1 + s) * t) = -(s * t) + -t by ring, Real.exp_add]
     ring
@@ -80,7 +80,7 @@ theorem gammaExponent_toRealExponent {γ : ℝ} (hγ : 0 ≤ γ) {s : ℝ} (hs :
         + ∫ t in Ioi (0 : ℝ), Real.exp (-(x * t)) * (gammaExponent γ hγ).k t
         = γ * (1 / (1 + x)) := by
       rw [gammaExponent_integral hγ hx]
-      show (0 : ℝ) + γ / (1 + x) = γ * (1 / (1 + x))
+      change (0 : ℝ) + γ / (1 + x) = γ * (1 / (1 + x))
       ring
     rw [hval]
     exact hlog
@@ -124,7 +124,7 @@ lemma stableDensity_antitoneOn (hα : 0 < α) (hα1 : α < 1) :
   exact inv_anti₀ (Real.rpow_pos_of_pos hxpos _) (Real.rpow_le_rpow hxpos.le hxy hα.le)
 
 /-- The stable kernel is integrable at the origin exactly because `α < 1`. -/
-lemma integrableOn_stableDensity (hα : 0 < α) (hα1 : α < 1) :
+lemma integrableOn_stableDensity (_hα : 0 < α) (hα1 : α < 1) :
     IntegrableOn (stableDensity α) (Ioc 0 1) := by
   have hrpow : IntegrableOn (fun t : ℝ => t ^ (-α)) (Ioc 0 1) :=
     (intervalIntegral.intervalIntegrable_rpow' (by linarith : (-1 : ℝ) < -α)).1
@@ -133,7 +133,7 @@ lemma integrableOn_stableDensity (hα : 0 < α) (hα1 : α < 1) :
   rw [stableDensity, if_pos ht.1]
 
 /-- And integrable against `dt/t` at infinity exactly because `α > 0`. -/
-lemma integrableOn_stableDensity_div (hα : 0 < α) (hα1 : α < 1) :
+lemma integrableOn_stableDensity_div (hα : 0 < α) (_hα1 : α < 1) :
     IntegrableOn (fun t => stableDensity α t / t) (Ioi 1) := by
   have hrpow : IntegrableOn (fun t : ℝ => t ^ (-α - 1)) (Ioi 1) :=
     integrableOn_Ioi_rpow_of_lt (by linarith : -α - 1 < -1) zero_lt_one
@@ -166,7 +166,7 @@ theorem stableExponent_integral (hα : 0 < α) (hα1 : α < 1) {s : ℝ} (hs : 0
   have hpt : ∀ t ∈ Ioi (0 : ℝ), Real.exp (-(s * t)) * (stableExponent α hα hα1).k t
       = α / Real.Gamma (1 - α) * (t ^ ((1 - α) - 1) * Real.exp (-(s * t))) := by
     intro t ht
-    show Real.exp (-(s * t)) * stableDensity α t = _
+    change Real.exp (-(s * t)) * stableDensity α t = _
     rw [stableDensity, if_pos (mem_Ioi.mp ht), show (1 - α) - 1 = -α by ring]
     ring
   rw [setIntegral_congr_fun measurableSet_Ioi hpt, integral_const_mul,

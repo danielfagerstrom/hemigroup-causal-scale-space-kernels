@@ -442,8 +442,8 @@ which the height `c` of the contour no longer appears --- which is why locality 
 The weight `x` is what turns `c_j(x) = γ_j x^{j-1}` into the Euler form `γ_j xʲ`; it is the same
 `x⁻¹` of `def:inversion-operator`, cleared. -/
 theorem mul_profile_eq_sum_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s) {x : ℝ}
-    (hx : 0 < x) :
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ}
+    (hs : 0 < s) {x : ℝ} (hx : 0 < x) :
     (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)
       = ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 *
           ((x : ℂ) ^ j * iteratedDeriv j (fun v : ℝ => (F.profile (s * v) : ℂ)) x) := by
@@ -469,8 +469,8 @@ theorem mul_profile_eq_sum_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : �
 
 The pointwise identity says `h` *is* the Euler expression, so this is `mellin_eulerExpression`. -/
 theorem mellin_profile_weight_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s)
-    {w : ℂ} (hw : 0 < w.re) (hw' : ENNReal.ofReal w.re < F.zStar) :
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n)
+    {s : ℝ} (hs : 0 < s) {w : ℂ} (hw : 0 < w.re) (hw' : ENNReal.ofReal w.re < F.zStar) :
     mellin (fun x : ℝ => (s : ℂ) * (x : ℂ) * (F.profile (s * x) : ℂ)) w
       = (∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j w) *
         mellin (fun u : ℝ => (F.profile (s * u) : ℂ)) w := by
@@ -506,8 +506,8 @@ theorem mellin_profile_shift_eq_of_isLocalOfOrder (hH : F.StandingHypothesis) {c
 is the same one --- so what has to be supplied is only the transform identity, which is the
 display above. -/
 theorem realisesAction_sum_mellinEulerFactor (hH : F.StandingHypothesis) {c : ℝ} (hc : 0 < c)
-    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ} (hs : 0 < s) {c' : ℝ}
-    (hc0 : 0 < c') (hc1 : ENNReal.ofReal (c' + 1) < F.zStar) :
+    (hc' : ENNReal.ofReal c < F.zStar - 1) {n : ℕ} (hL : F.IsLocalOfOrder c n) {s : ℝ}
+    (hs : 0 < s) {c' : ℝ} (hc0 : 0 < c') (hc1 : ENNReal.ofReal (c' + 1) < F.zStar) :
     F.RealisesAction c'
       (fun z => ∑ j ∈ Finset.range (n + 1), hL.coeff j 1 * mellinEulerFactor j z)
       (fun u : ℝ => (F.profile (s * u) : ℂ))

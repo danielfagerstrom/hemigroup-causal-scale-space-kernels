@@ -359,7 +359,8 @@ theorem negMoment_le_of_le {c ζ : ℝ} (hc : 0 ≤ c) (hcζ : c ≤ ζ) :
 merely a supremum. -/
 theorem negMoment_ne_top_of_le {c ζ : ℝ} (hc : 0 < c) (hcζ : c ≤ ζ)
     (h : F.negMoment ζ ≠ ⊤) : F.negMoment c ≠ ⊤ :=
-  ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨h, ENNReal.one_ne_top⟩) (F.negMoment_le_of_le hc.le hcζ)
+  ne_top_of_le_ne_top (ENNReal.add_ne_top.mpr ⟨h, ENNReal.one_ne_top⟩)
+    (F.negMoment_le_of_le hc.le hcζ)
 
 /-- A finite moment is below the abscissa. One of the two directions anything downstream uses. -/
 theorem le_zStar_of_negMoment_ne_top {ζ : ℝ} (hζ : 0 < ζ) (h : F.negMoment ζ ≠ ⊤) :
@@ -376,7 +377,8 @@ theorem negMoment_ne_top_of_lt_zStar {c : ℝ} (hc : 0 < c)
     (hc' : ENNReal.ofReal c < F.zStar) : F.negMoment c ≠ ⊤ := by
   rw [zStar, lt_sSup_iff] at hc'
   obtain ⟨x, ⟨ζ, ⟨hζ0, hζ⟩, rfl⟩, hlt⟩ := hc'
-  exact F.negMoment_ne_top_of_le hc (le_of_lt (by exact_mod_cast ENNReal.ofReal_lt_ofReal_iff_of_nonneg hc.le |>.mp hlt)) hζ
+  exact F.negMoment_ne_top_of_le hc
+    (le_of_lt (by exact_mod_cast ENNReal.ofReal_lt_ofReal_iff_of_nonneg hc.le |>.mp hlt)) hζ
 
 /-- Monotonicity in the argument, which is what call sites want: everything below something known
 to be below the abscissa is below it. In `ℝ` this was `linarith`; here it is a lemma, and having
@@ -622,7 +624,8 @@ Chapter 11 uses it as the outer factor of a Fubini side condition; chapter 12 us
 dominating function of a dominated-convergence argument. It belongs here rather than at either
 use, being a statement about `negMoment` and nothing else. -/
 theorem integrable_rpow_neg (F : SelfDecomposableExponent) (hH : F.StandingHypothesis) {c : ℝ}
-    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar) : Integrable (fun τ : ℝ => τ ^ (-c)) F.lawT₁ := by
+    (hc : 0 < c) (hc' : ENNReal.ofReal c < F.zStar) :
+    Integrable (fun τ : ℝ => τ ^ (-c)) F.lawT₁ := by
   have h0 := F.lawT₁_singleton_zero hH.1
   have hae := F.ae_mem_Ioi_lawT₁ h0
   refine ⟨by fun_prop, ?_⟩
