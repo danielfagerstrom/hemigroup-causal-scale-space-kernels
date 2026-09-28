@@ -6,6 +6,10 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+- Docstring of `Formalization/Hemigroup/Basic.lean`: clarified that the `require` of
+  `ScaleSpaceCore` records where this article's causal cone mathematics went (extracted to the
+  trunk in v0.1.1), not a dependency; the article uses none of the trunk's declarations and is
+  frozen at v1.0.0.
 - Cleared the 34 genuine style-lint warnings the v1.1.0 export build printed (14
   `linter.style.longLine`, 9 `linter.style.show`, 7 `linter.unusedVariables`, 3
   `linter.unusedSimpArgs`, 1 `linter.unnecessarySimpa`, 1 `linter.unusedTactic`), across 17 files
