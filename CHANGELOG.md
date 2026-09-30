@@ -6,6 +6,10 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+- Fidelity ledger row R35: `lem:mode-rigidity`, `lem:standing-levy-reading` and
+  `lem:zstar-log-growth`, proved after the fidelity review closed, have no card; `v1.1.0` lists
+  them as machine-checked on the Q-0138 clause-cover audit alone, and a card per node is owed at
+  the next fidelity pass. No statement changed.
 - Docstring of `Formalization/Hemigroup/Basic.lean`: clarified that the `require` of
   `ScaleSpaceCore` records where this article's causal cone mathematics went (extracted to the
   trunk in v0.1.1), not a dependency; the article uses none of the trunk's declarations and is

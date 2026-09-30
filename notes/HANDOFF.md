@@ -34,10 +34,9 @@ version. The post-release steps are done: the hub's pin and `site` block, the so
 ## Open
 
 1. **Three proved nodes have no fidelity card** (`lem:mode-rigidity`, `lem:standing-levy-reading`,
-   `lem:zstar-log-growth`; R33 covers the last one's hypotheses only). The author let `v1.1.0` go
-   without them (hub Q-0230, (a)); the line in `blueprint/REVIEW-fidelity.md` saying why is not
-   written yet: A19–A21 (2026-09-01) have no Lean name, so they are outside the trust boundary the
-   cards audit.
+   `lem:zstar-log-growth`): they were proved after the review closed, and only the Q-0138
+   clause-cover audit has read them. `v1.1.0` went out so (hub Q-0230, (a)); R35 records it. A
+   card per node is owed at the next fidelity pass, before a later version cites them as audited.
 2. **The AI statement's figures** ("By the numbers", computed 5 September 2026) predate the
    September Lean work. They are printed as dated lower bounds in `v1.1.0`; a next version
    re-derives them with `chronicler stats`, which an unattended session cannot run.
