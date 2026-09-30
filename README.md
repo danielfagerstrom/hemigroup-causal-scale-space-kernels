@@ -27,9 +27,8 @@ both directions, and the temporal N-jet.
 [blueprint.pdf](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/blueprint.pdf) · the
 [web blueprint](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/blueprint/) with its
 [dependency graph](https://research.danielfagerstrom.com/papers/hemigroup-time-causal-kernels/blueprint/dep_graph_document.html),
-every node colored by verification status. That URL names the `v1.0.0` release and is
-permanent; `.../v1.0.0/` addresses it explicitly, and the unversioned path follows the
-latest release. The same CI-built PDFs are on the
+every node colored by verification status. That URL is permanent and follows the latest
+release, now `v1.1.0`, which `.../v1.1.0/` addresses explicitly. The same CI-built PDFs are on the
 [`artifacts`](../../tree/artifacts) branch
 ([paper.pdf](../../raw/artifacts/paper.pdf) ·
 [blueprint.pdf](../../raw/artifacts/blueprint.pdf)), and `paper/main.pdf` builds from
@@ -79,8 +78,8 @@ axiom (`blueprint/trust-boundary.txt`):
   Bernstein functions, which is the derivative-sign vocabulary this development excludes
   by design.
 
-The released `v1.0.0` also rested on **A17**, the existence half of the subordinator
-correspondence, which the *constructive* direction needs. It has since been proved (the
+The first version, `v1.0.0`, also rested on **A17**, the existence half of the subordinator
+correspondence, which the *constructive* direction needs. `v1.1.0` proves it (the
 compound-Poisson construction with Mathlib's Prokhorov theorem,
 `Formalization/Hemigroup/CompoundPoisson.lean`) with its statement unchanged, so the
 constructive direction and the uniqueness clause now reduce to Lean core.
@@ -91,14 +90,14 @@ machine-checked rather than asserted.
 
 ## State
 
-Published as `v1.0.0`; `v1.1.0` is prepared up to the DOI reservation (`CHANGELOG.md` has its
-entry, the paper's prose is brought up to date, the `\date` is not yet frozen). **Both headline
+Published as `v1.1.0` (2026-09-27), the second version; `v1.0.0` (2 September 2026) was the
+first, and `CHANGELOG.md` says what changed between them. **Both headline
 theorems are machine-checked in full**: the
 characterization (Theorem 7.3: construction, analysis and uniqueness) and the signaling
 form (Theorem 9.17). The blueprint has 106 statement nodes, 71 of them `\leanok`; all 89
 statements the paper shares with it are verbatim; `AXIOMS.md` has 21 ledger entries, each
 with a page anchor; the trust base is Lean core plus A18 (A17, in the trust base of `v1.0.0`,
-is proved, and `v1.1.0` will carry that). `linkage check` reports
+is proved in `v1.1.0`). `linkage check` reports
 two advisories, both deliberate: `lem:selfdecomposable-derivative` is A18 itself, and
 `lem:selfdecomposable-exponents` is a collation over it. The fidelity review
 (`blueprint/REVIEW-fidelity.md`, verdict at its head) found that the Lean proves what the
@@ -143,10 +142,12 @@ figures (`paper/`, `blueprint/`, `draft/`, `figures/`, `notes/`, `records/`) und
 
 ## Citing
 
-The v1.0.0 release (September 2, 2026) is archived on Zenodo. To cite the work
-independently of version, use the concept DOI
+Both versions are archived on Zenodo: `v1.1.0` (September 27, 2026,
+[10.5281/zenodo.22992450](https://doi.org/10.5281/zenodo.22992450)) and `v1.0.0`
+(September 2, 2026, [10.5281/zenodo.22259187](https://doi.org/10.5281/zenodo.22259187)). To
+cite the work independently of version, use the concept DOI
 [10.5281/zenodo.22259186](https://doi.org/10.5281/zenodo.22259186), which always
-resolves to the latest version; the citation below pins this release:
+resolves to the latest version; the citation below pins the current release:
 
 ```bibtex
 @misc{fagerstrom2026hemigroup,
@@ -155,8 +156,8 @@ resolves to the latest version; the citation below pins this release:
              Characterization of the Kernels},
   year    = {2026},
   month   = {9},
-  doi     = {10.5281/zenodo.22259187},
-  version = {v1.0.0},
+  doi     = {10.5281/zenodo.22992450},
+  version = {v1.1.0},
   url     = {https://github.com/danielfagerstrom/hemigroup-causal-scale-space-kernels}
 }
 ```

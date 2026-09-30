@@ -7,17 +7,20 @@ lives").
 
 ## Where the work is
 
-The article is published (`v1.0.0`). **`v1.1.0` is prepared up to `RELEASE.md`'s checklist item 3**
-(Q-0158): items 1 and 2 are done, the paper's prose is brought to the development, and what
-remains is the author's.
+The article is published as **`v1.1.0`** (2026-09-27; version DOI 10.5281/zenodo.22992450,
+concept DOI 10.5281/zenodo.22259186, the tag at `7ca1047`), the first release of this article
+through `linkage release`. `v1.0.0` (2 September 2026, DOI 10.5281/zenodo.22259187) is its first
+version. The post-release steps are done: the hub's pin and `site` block, the source page
+`@fagerstrom2026hemigroup`, the programme page and the log, and the site's `/papers/` route.
 
-- The trust base is Lean core plus A18. A17 is proved (Q-0022); `lem:mode-rigidity` (Q-0020),
-  `lem:standing-levy-reading`, all of `lem:zstar-log-growth` and `prop:pair-regularity`(2)'s two
-  equivalences (Q-0021) are proved. The node count is 71 `\leanok` of 106.
-- The paper's §1.1 lists all of this; the abstract, §7 and §13 say "one cited fact". The three
-  D-D sentences are in (after the printed proofs of Lemma 9.4, Lemma 9.20 and Proposition A.9).
-  Lemmas 9.9 and 10.4 read in their corrected forms in the built PDF.
-- `CHANGELOG.md` has the `v1.1.0` entry, dated 2026-09-27 provisionally.
+- The trust base is Lean core plus A18. A17 is proved; the node count is 71 `\leanok` of 106.
+- `CHANGELOG.md`'s Unreleased section holds two code-only changes since the tag, toward the next
+  version: the 34 Lean style warnings of the export build cleared (Q-0178, no statement changed,
+  `CIAxiomGuard.lean`'s output byte-identical), and `Basic.lean`'s docstring saying that
+  `ScaleSpaceCore` is provenance, not a dependency (Q-0183).
+- The export's staging tree is `C:/Users/danie/dev/hemigroup-causal-scale-space-kernels-export`,
+  beside this repository where `lake-store` links it. The repository is public and single-module,
+  so there is no separate public export repository; `repo_url` in `linkage.toml` is this one.
 - `Formalization/Skeleton/` holds no `sorry`-marked target type; its files are kept for their
   record of what each node cost.
 
@@ -25,55 +28,26 @@ remains is the author's.
 
 1. `CLAUDE.md`: this article's rules (the trust boundary, the collation nodes, the two
    vocabularies, the editorial decisions in force).
-2. `../article-kit/docs/RELEASE.md` § "The checklist", from item 3, and rule 6.
-3. `CHANGELOG.md`'s `v1.1.0` entry, which the version-history section is reworded from.
+2. `CHANGELOG.md`'s `v1.1.0` entry and its Unreleased section.
+3. `../article-kit/docs/RELEASE.md` rule 6 (a version after the first), before any next version.
 
-## Open: the author's steps, in `RELEASE.md`'s numbering
+## Open
 
-   **The release goes through `linkage release`** (the author, 2026-09-27), the first time for
-   this article: `linkage.toml` now carries `[release]` and one `[[modules]]` table (`kernels`,
-   tag `v1.1.0`). This repository is public and single-module, so there is no public export
-   repository: `<export>` is a local staging tree, `C:/Users/danie/dev/hemigroup-causal-scale-space-kernels-export`, beside this repository where `lake-store` links it (the zip is named after the PDF), which the
-   Zenodo commands read and zip; `repo_url` is this repository. It needs article-kit's fix for
-   three-part tags and primed names (article-kit PR #27); without it the rule 6 gate is skipped
-   silently. `linkage release export --dry-run` passes except for what the freeze sets.
-
-0. **Rehearse on the sandbox first** (the author, `ZENODO_SANDBOX_TOKEN`): `export --draft`,
-   `zenodo reserve --sandbox`, `upload`, `status`, `publish`, as `RELEASE.md` "The commands".
-3. **Reserve the DOI**: `linkage release export --draft --out <export>`, then
-   `linkage release zenodo reserve --export <export> --record 22259187`, a new version of the
-   v1.0.0 record under concept DOI 10.5281/zenodo.22259186 (without `--record` it would open a
-   new concept).
-4. **Freeze the paper.**
-   - The `\date` in `paper/main.tex` in the later-version form of rule 6: `v1.1.0`, its date and
-     version DOI, then "first released as `v1.0.0`, 2 September 2026 (DOI
-     10.5281/zenodo.22259187)", with the concept DOI as the thing to cite.
-   - §1.1's "Where to look" sentence still names the `v1.0.0` tag and its version DOI; a comment
-     beside it marks it. Set it with the `\date`.
-   - The version-history section, unnumbered, after the conclusions and before the references.
-     Its template, `scaffold/paper/version-history.tex.in`, is **not in this repository** (it is
-     in `article-kit`, and `linkage init --sync` last ran here on 2026-09-26 without bringing
-     it). Seed from article-kit's copy, reworded from the changelog entry.
-   - If the freeze date is not 2026-09-27, change the changelog heading's date to match.
-   - Build into `paper/`, read page 1 and the version history, commit.
-5. to 10. as `RELEASE.md` has them: export with `--doi … --build`; tag `v1.1.0` here; in
-   `<export>`, `git init`, commit and tag `v1.1.0` (the zip `upload --tag v1.1.0` archives), no
-   public repository; the deposit; the library, the site, the hub, the next cycle.
-
-## Before the freeze, for the author to judge
-
-- **The AI statement's figures** ("By the numbers", computed 5 September 2026) predate the
-  September Lean work (A17's proof, Q-0020, Q-0021, Q-0141). They are dated, so still true as
-  lower bounds; re-deriving them needs `chronicler stats`, which an unattended session cannot run.
-- **Three proved nodes have no fidelity card** (`lem:mode-rigidity`, `lem:standing-levy-reading`,
-  `lem:zstar-log-growth`; R33 covers the last one's hypotheses only). No *interface* was admitted
-  after the fidelity review: A19–A21 (2026-09-01) have no Lean name, so they are outside the
-  trust boundary the cards audit.
-- The version tag: `v1.1.0` was chosen to match `v1.0.0`'s three-part form. The export writes
-  the plain `vX.Y` in its metadata.
+1. **Three proved nodes have no fidelity card** (`lem:mode-rigidity`, `lem:standing-levy-reading`,
+   `lem:zstar-log-growth`; R33 covers the last one's hypotheses only). The author let `v1.1.0` go
+   without them (hub Q-0230, (a)); the line in `blueprint/REVIEW-fidelity.md` saying why is not
+   written yet: A19–A21 (2026-09-01) have no Lean name, so they are outside the trust boundary the
+   cards audit.
+2. **The AI statement's figures** ("By the numbers", computed 5 September 2026) predate the
+   September Lean work. They are printed as dated lower bounds in `v1.1.0`; a next version
+   re-derives them with `chronicler stats`, which an unattended session cannot run.
+3. **Nothing is queued for a next version.** Q-0023 (the scale-Cauchy problem and the locality
+   ladder) is blocked on Mathlib.
 
 ## Standing
 
+- **Version tags are three-part** (`v1.0.0`, `v1.1.0`); the export writes the plain `vX.Y` in its
+  own metadata, which the author accepted as cosmetic.
 - **A standing caution, seven instances in chapters 9–11.** What a proof reaches for is an upper
   bound on what its statement needs, and that covers the tools it reaches for as well as the nodes
   it cites.
