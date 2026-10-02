@@ -87,7 +87,8 @@ subsequently done; nothing is owed.
 | R32 | F3 | statement-tightening (Lean side) | `lem:pmp-verification`, `satisfiesPMP_of_symbol_eq` (`PositiveMaximumPrinciple.lean`) | The tag named only the "in particular" symbol form (under (H), `c ∈ (0, z_*−1)`, `γ n ≠ 0`); the general first sentence was `satisfiesPMP_of_isLocalOfOrderCore`, untagged, whose hypothesis carries continuous coefficients and `c_n ≢ 0` that the sentence does not assume. Q-0138 audit, hypothesis drift and kind L. | **resolved (Q-0141), Lean strengthened** — `satisfiesPMP_of_eq_sum`: bare coefficients, agreement on test functions, any height; `satisfiesPMP_of_isLocalOfOrderCore` its instance; tag lists it. The symbol form's (H) and height are chapter 12's standing hypotheses, and `γ n ≠ 0` names the degree (`B ≢ 0`): no drift there, recorded in the annotation. Statement unchanged |
 | R33 | F3 | note-only (Lean side) | `lem:zstar-log-growth` (1), (4); `tendsto_toRealExponent_div_log_atTop_zStar`, `zStar_smul` (`ZStarAbelian.lean`) | Both take `lawT₁ {0} = 0` where the node assumes `F ≢ 0`. Verified **not a mismatch in substance**: `F ≢ 0 → F → ∞` (`tendsto_toRealExponent_atTop_of_ne_zero`) and `F → ∞ → no atom` (`lawT₁_singleton_zero`) are both proved, so the node's hypothesis implies the Lean's; only the chain was left to the reader. Q-0138 audit, hypothesis drift. | **resolved (Q-0141), Lean stated at the node's hypothesis** — `lawT₁_singleton_zero_of_ne_zero`, `tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero`, `zStar_smul_of_ne_zero`, taking `∃ s₀ > 0, F.exponent s₀ ≠ 0` (the R4 rendering of `F ≢ 0`); tag moved to them; statement unchanged; clause (3) untouched (Q-0139's business) |
 | R34 | F3 | note-only (Lean side) | `lem:delayed-average-mellin`, `mellin_delayedField` (`MemoryFractional.lean`) | The tagged declaration takes `hpast` (integrability of the past integrand) in place of the node's `f ∈ L¹`, `1 < Re z`; the bridge `integrableOn_pastIntegrand` is proved. Not stronger in substance, and the Lean's strip `0 < Re z < z_*` is wider; the node's "both sides absolutely convergent" sat in other declarations. Q-0138 audit, hypothesis drift. | **resolved (Q-0141), Lean stated at the node's hypotheses** — `mellin_delayedField_of_integrable`: `Measurable f`, `Integrable f`, causal, `1 < Re z < z_*`, concluding `MellinConvergent` of the field, integrability of the past integrand, and the identity; tag moved to it; statement unchanged. The first display (`coeFn_Phi_zero`) is still not in `\lean{}`: that is Q-0142's kind-L work |
-| R35 | — | note-only (coverage of the review) | `lem:mode-rigidity` (`Hemigroup.mode_rigidity`), `lem:standing-levy-reading` (`SelfDecomposableExponent.standing_levy_reading`), `lem:zstar-log-growth` (`ZStarAbelian.lean`) | Three nodes went `\leanok` after P6 closed the review (Q-0020, 2026-09-25; Q-0021, 2026-09-26), so none has a card: no unfolding to Mathlib primitives, no junk-value audit, no blind restatement. What they have had is the Q-0138 audit (`records/formalization/AUDIT-partial-lean-cover.md`, 2026-09-26), which read each node's clauses against its tagged declarations' types: `lem:mode-rigidity` and `lem:standing-levy-reading` fully covered, `lem:zstar-log-growth` covered in (1), (2), (4), with (3) stated in its annotation as having no declaration; its hypothesis drift is R33. | **accepted without cards for `v1.1.0`** (the author, hub Q-0230 (a), 2026-09-30). `v1.1.0` lists the three as machine-checked (§1.1) on the Q-0138 audit alone. A card per node is owed at the next fidelity pass, before a later version cites them as audited. No statement changed |
+| R35 | — | note-only (coverage of the review) | `lem:mode-rigidity` (`Hemigroup.mode_rigidity`), `lem:standing-levy-reading` (`SelfDecomposableExponent.standing_levy_reading`), `lem:zstar-log-growth` (`ZStarAbelian.lean`) | Three nodes went `\leanok` after P6 closed the review (Q-0020, 2026-09-25; Q-0021, 2026-09-26), so none has a card: no unfolding to Mathlib primitives, no junk-value audit, no blind restatement. What they have had is the Q-0138 audit (`records/formalization/AUDIT-partial-lean-cover.md`, 2026-09-26), which read each node's clauses against its tagged declarations' types: `lem:mode-rigidity` and `lem:standing-levy-reading` fully covered, `lem:zstar-log-growth` covered in (1), (2), (4), with (3) stated in its annotation as having no declaration; its hypothesis drift is R33. | **resolved (Q-0248), cards T2.4a–c** — accepted without cards for `v1.1.0` (the author, hub Q-0230 (a), 2026-09-30); the cards were written 2026-10-02, each unfolding its declarations to Mathlib primitives, with a junk-value audit, a witness, a blind restatement from the node and an adversarial-vacuity pass. `lem:mode-rigidity` **faithful**; `lem:standing-levy-reading` and `lem:zstar-log-growth` **faithful-with-note**: no junk value, no vacuous hypothesis and no blind-restatement difference in any tagged declaration; the note is R36. All six tagged declarations print Lean core. No statement changed |
+| R36 | F3 | statement-tightening (Lean side, or §1.1 down) | `lem:zstar-log-growth`(3); `lem:standing-levy-reading`(2), closing gloss | Two claims under `\leanok` nodes that no declaration states. (a) `lem:zstar-log-growth`(3), "(H) holds iff `b₀ > 0` or `k(0⁺) > 1`": the node's annotation says it has no declaration, but `paper/01-introduction.tex` §1.1 lists the log-growth lemma as verified without naming the exception. (b) `lem:standing-levy-reading`(2)'s "within the admissible class the standing hypothesis therefore reduces to its second clause, `z_* > 1`": a closing gloss, an iff, with no declaration and no annotation saying so. Both are **true**: each was elaborated in a scratch file against this worktree's build (Q-0248; not committed), `F ≢ 0 → (StandingHypothesis ↔ 1 < zStar)` in two lines from `tendsto_toRealExponent_atTop_of_ne_zero`, and `F ≢ 0 → (StandingHypothesis ↔ 0 < b₀ ∨ 1 < ⨆ t ∈ Ioi 0, ofReal (k t))` in ten lines from the four tagged declarations of 11.23 by `tendsto_nhds_unique`. Both print Lean core. Card T2.4b, T2.4c. | **open** — proposed: Lean up (the two corollaries into `ZStarAbelian.lean`, added to both nodes' `\lean` tags and to `CIAxiomGuard.lean`, and the annotation's "Clause (3) … has no declaration of its own" corrected). The alternative is §1.1 down ("clauses (1), (2) and (4) of the log-growth lemma"). No statement changes either way. **Siblings checked:** the other clauses of both nodes, all stated by their tagged declarations (cards T2.4b, T2.4c); `lem:standing-kernel-readings`, the third (H)-reading node, whose "consequently" clauses each have their own declaration (`negMoment_one_ne_top_of_one_lt_zStar`, `one_le_zStar_of_negMoment_one_ne_top`); `lem:mode-rigidity`, no gloss |
 
 Ledger entries are added as cards are written; a resolved entry keeps its row with the commit.
 
@@ -958,6 +959,229 @@ conclusion the pure-power / shifted-Gamma dichotomy on `Ioi 0`; guard prints Lea
 **T2.3h `thm:locality` (Thm 12.5).** No `\lean` tag (`[A]` on A14; A13 transitively; A15
 discharged; A16 belongs to `prop:local-ladder`). Machine-checked beneath it: the four `[T]`
 nodes above. **faithful as an `[A]` collation.**
+
+### T2.4 Chapter 11 — three nodes proved after the review closed (Q-0248, 2026-10-02)
+
+These nodes went `\leanok` after P6 (R35) and are carded here in the full Tier 0/1 shape rather
+than abbreviated, because no earlier pass read them past their types. All three are additive
+(`% additive: not in the draft`), so there is no draft statement: the "article" column is the
+blueprint node, which `paper/09-signaling.tex` transcribes. **Method, and its limits.** The blind
+restatement for each node was written by the carding session from the blueprint statement alone,
+before any of the Lean was opened, and kept outside the repository. It was not a fresh agent: an
+unattended queue session spawns none. The adversarial-vacuity pass was likewise run inline. The
+axiom lines and the scratch checks below were run against this worktree's build
+(`lake env lean` on a scratch file outside the repository; nothing in it is committed): every
+tagged declaration of the three nodes prints `[propext, Classical.choice, Quot.sound]`.
+
+#### T2.4a `lem:mode-rigidity` (11.25) · `Hemigroup.mode_rigidity` (`ModeRigidity.lean:511`)
+
+**Blueprint says.** Assume (H), fix `s > 0`. Let `g̃` be analytic on `0 < Re z < z_*` and satisfy
+`s g̃(z) H̃(z−1) = H̃(z) g̃(z−1)` on `1 < Re z < z_*`, an identity with no exceptional set. If the
+periodic factor `p(z) := s^z g̃(z)/H̃(z)` is bounded on some period substrip
+`{c ≤ Re z ≤ c+1} ⊂ (0, z_*)`, off the zeros of `H̃`, then `p` is constant: `∃ κ ∈ ℂ` with
+`g̃(z) = κ s^{−z} H̃(z)` on `0 < Re z < z_*`.
+
+**Lean says (unfolded).** `H̃` is written out as Mathlib's `mellin (fun u => (F.profile u : ℂ))`,
+i.e. `z ↦ ∫ t in Ioi 0, (t : ℂ)^(z−1) • F.profile t` (Bochner), with `F.profile = laplace F.lawT₁`
+(T0.4). The strip is `verticalStrip a b = {z | a < z.re ∧ ENNReal.ofReal z.re < b}`, `b : ℝ≥0∞`
+(T0.5); `zStar` is the `ℝ≥0∞`-valued `sSup` of T0.4; `StandingHypothesis` is
+`Tendsto F.toRealExponent atTop atTop ∧ 1 < F.zStar`. `s^z` is `Complex.cpow (s : ℂ) z`, which is
+`exp (log s · z)` for `s ≠ 0`. Hypotheses: `hH`; `hs : 0 < s`;
+`hgt : AnalyticOnNhd ℂ gt (verticalStrip 0 F.zStar)`;
+`hrec : ∀ z ∈ verticalStrip 1 F.zStar, (s : ℂ) * gt z * H̃ (z − 1) = H̃ z * gt (z − 1)`;
+`hc0 : 0 < c`; `hc1 : ENNReal.ofReal (c + 1) < F.zStar`;
+`hbdd : BddAbove ((fun z => ‖(s : ℂ)^z * gt z / H̃ z‖) '' ({z | c ≤ z.re ∧ z.re ≤ c + 1} \ {z | H̃ z = 0}))`.
+Conclusion: `∃ κ : ℂ, ∀ z ∈ verticalStrip 0 F.zStar, gt z = κ * (s : ℂ)^(−z) * H̃ z`. The proof's
+analysis is Mathlib's `Complex.differentiableOn_update_limUnder_of_bddAbove` (Riemann
+removability), `Differentiable.exists_const_forall_eq_of_bounded` (Liouville) and
+`Set.Countable.dense_compl`; the project facts it consumes are `analyticAt_mellin_profile` and
+`countable_zeros_mellin_profile` (`InversionSymbol.lean`), both under `hH`.
+
+**Hypotheses/clauses.**
+| article | Lean | class |
+|---|---|---|
+| (H) | `hH : F.StandingHypothesis` | same |
+| `s > 0` | `hs : 0 < s` | same |
+| `g̃` analytic on `0 < Re z < z_*` | `AnalyticOnNhd ℂ gt (verticalStrip 0 F.zStar)` | same (the strip is open; at `z_* = ∞` it is the half-plane, since `ofReal x < ⊤` always) |
+| recursion on `1 < Re z < z_*`, no exceptional set | `hrec`, every `z ∈ verticalStrip 1 F.zStar`, no `H̃ ≠ 0` guard | same — the pole-free form, multiplied out, exactly as printed |
+| substrip `{c ≤ Re z ≤ c+1} ⊂ (0, z_*)` | `0 < c`, `ofReal (c+1) < zStar` | same: the closed substrip lies in the open strip iff both hold |
+| `p` bounded on the substrip, off the zeros of `H̃` | `BddAbove` of `‖s^z g̃ z / H̃ z‖` over the substrip minus `{H̃ = 0}` | same; the excluded set is countable (`countable_zeros_mellin_profile`), so the bound is not over an empty or thin set |
+| `p` constant, `g̃ = κ s^{−z} H̃` on the strip | `∃ κ, ∀ z ∈ strip, gt z = κ * s^(−z) * H̃ z` | same: the formula is stated; "`p` constant" is the formula divided by `s^{−z}H̃(z)` off the zeros, where alone `p` is defined. `κ = 0` allowed, as in the node (`κ ∈ ℂ`) |
+
+**Junk-value audit.** `mellin` is a Bochner integral, `0` off convergence: every point where the
+statement evaluates `H̃` lies in `verticalStrip 0 F.zStar` (`hrec`: `z` and `z − 1` both do, by
+`mem_strip_one_iff`; `hbdd`: the substrip does, by `hc0`, `hc1`; the conclusion: by its
+quantifier), and there the integral converges (`mellinConvergent_profile` under `hH`), so `H̃` is
+the article's. Division by `H̃ z` in `hbdd`: the zeros are removed from the set explicitly, so
+Lean's `x / 0 = 0` never enters the bound; `H̃` is not identically zero on the strip (its zeros are
+countable), so the removal does not empty the set. `Complex.cpow` at base `0` (junk `0^z`):
+excluded by `hs`; `(s : ℂ)^z ≠ 0` (`Complex.cpow_eq_zero_iff`). `ModeRigidity.factor` and `ext`
+carry their own junk (`factor` is `0` at a zero of `H̃`, `ext` takes `limUnder` there), but neither
+appears in the statement; they are proof-internal and every lemma about `factor` carries
+`symbol F z ≠ 0`. No `.toReal`, no `sSup` over a possibly empty real set (`zStar` is the
+`ℝ≥0∞` one of T0.4).
+
+**Witness.** Two models, both checked in the scratch file. The zero mode `gt = 0` meets every
+hypothesis (the norms are all `0`), so the hypothesis class is inhabited whenever (H) is (drift and
+Gamma `γ > 1`: `Witnesses.lean`). The informative one is the profile's own mode
+`gt z = s^{−z} H̃(z)`, whose periodic factor is `1`: under `hH` and `0 < s` it is analytic on the
+strip (`Differentiable.const_cpow` with `analyticAt_mellin_profile`), satisfies `hrec` by
+`s · s^{−z} = s^{−(z−1)}`, and has `BddAbove` with bound `1` for every `c`. So the hypotheses hold
+jointly at a nonzero mode, the one the well-posedness corollary needs. Neither witness is in
+`Witnesses.lean` (the brief was audit-only); the second is a twenty-line addition if wanted.
+
+**Blind restatement (this session, from the node).** Predicted the statement nearly verbatim:
+`DifferentiableOn` on the strip (Lean: `AnalyticOnNhd`, equivalent on an open set in `ℂ`), the
+recursion multiplied out over `1 < Re z < z_*` with no zero guard, `0 < c` and `c + 1 < z_*`
+against an `ℝ≥0∞` `zStar`, the bound as `∃ M, ∀ z` off the zeros (Lean: `BddAbove` of the image,
+the same), and the conclusion `∃ κ, ∀ z ∈ strip, g̃ z = κ s^{−z} H̃ z`. Its three risk flags were
+`mellin`'s junk `0` off the strip, `cpow` at `s = 0`, and a vacuous bound if `H̃` vanished on the
+whole substrip; each is closed above. No difference found.
+
+**Adversarial vacuity.** Attacks tried: (i) make `hbdd` vacuous by emptying its set — fails, the
+removed set is countable; (ii) make `hrec` trivial by reading `H̃` as junk `0` — fails, both
+arguments are in the convergence strip; (iii) satisfy everything at `z_* ≤ 1` so the strip of
+`hrec` is empty — excluded by `hH`'s `1 < zStar`; (iv) a conclusion true by `κ = 0` — the
+conclusion is universally quantified over the strip, so `κ = 0` forces `gt = 0`, false for the
+profile mode. No attack.
+
+**Tag.** `\lean{Hemigroup.mode_rigidity}`: one declaration, every clause. **Route.** The printed
+proof is the checked route (the node's annotation says so; the module docstring agrees).
+
+**Verdict.** **faithful.** No junk value, no vacuous hypothesis, no blind-restatement difference.
+
+**Actions.** none.
+
+#### T2.4b `lem:standing-levy-reading` (11.22) · `SelfDecomposableExponent.standing_levy_reading` (`StandingLevyReading.lean:217`)
+
+**Blueprint says.** `F` admissible with representation (7.1). (1) `F(∞) = ∞` iff `b₀ > 0` or
+`∫₀^∞ k(t) t^{−1} dt = ∞`. (2) If `F ≢ 0` then `F(∞) = ∞`; "within the admissible class the
+standing hypothesis therefore reduces to its second clause, `z_* > 1`."
+
+**Lean says (unfolded).** `F.toRealExponent s = (levyExponentD F.b₀ F.k s).toReal`, where
+`levyExponentD b₀ k s = ENNReal.ofReal (b₀ * s) + levyJump k s` and
+`levyJump k s = ∫⁻ t in Ioi 0, ENNReal.ofReal ((1 − Real.exp (−(s * t))) * k t / t)` (T0.2). The
+statement is
+`(Tendsto F.toRealExponent atTop atTop ↔ 0 < F.b₀ ∨ ∫⁻ t in Ioi 0, ENNReal.ofReal (F.k t / t) = ⊤)
+∧ ((∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) → Tendsto F.toRealExponent atTop atTop)`, the Lévy mass
+written out as the lower Lebesgue integral (the file names it `levyMass`). The proof uses
+Mathlib's `lintegral_tendsto_of_tendsto_of_monotone` (monotone convergence, along `ℕ`),
+`intervalIntegrable_inv_iff` and `hasFiniteIntegral_iff_ofReal` (for `∫₀^{t₀} dt/t = ∞`), and the
+structure fields `b₀_nonneg`, `k_nonneg`, `k_antitone`, `ne_top`.
+
+**Hypotheses/clauses.**
+| article | Lean | class |
+|---|---|---|
+| `F` admissible, (7.1) | `F : SelfDecomposableExponent` | same (T0.2) |
+| `F(∞) = ∞` | `Tendsto F.toRealExponent atTop atTop` | same: `F` is nondecreasing, so `F(∞) = lim F` exists in `[0,∞]`, and `= ∞` is this `Tendsto`; the reading `def:standing-hypothesis` uses (T0.4) |
+| `b₀ > 0` | `0 < F.b₀` | same |
+| `∫₀^∞ k(t)t^{−1}dt = ∞` | `∫⁻ t in Ioi 0, ofReal (k t / t) = ⊤` | same: `k ≥ 0` on `Ioi 0`, so `ofReal` truncates nothing |
+| `F ≢ 0` | `∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0` | same (the R4 rendering, T0.2) |
+| (2)'s gloss: (H) reduces to `z_* > 1` in the class | no declaration | **R36** — true, and a two-line corollary (scratch `standing_reduces`, Lean core), but stated by no declaration under a `\leanok` node |
+
+**Junk-value audit.** `.toReal` of the exponent: `ne_top` for `s ≥ 0`, and `atTop` reads only
+large `s`; for `s < 0` the drift term and the jump integrand are truncated to `0` by `ofReal`, so
+`F(s) = 0` there, unread. The Lévy mass is an `∫⁻`, never a Bochner integral, whose junk `0` at
+non-integrability would have inverted the iff's right side exactly when the mass is infinite.
+`k t / t` at `t = 0`: excluded by `Ioi 0`. `k 0 = 0` (the normalisation) is not read.
+
+**Witness.** Each side of the iff is reached by a model: drift (`b₀ > 0`), Gamma (`b₀ = 0`,
+`k = γe^{−t}`, mass `∞`), and `F ≡ 0` (`b₀ = 0`, `k = 0`, mass `0`, `F` bounded). Clause (2)'s
+hypothesis is met by every nonzero witness in `Witnesses.lean`. The iff's right side, read inside
+the class, is equivalent to `F ≢ 0` (clause (2) and its proof), so (1) and (2) together say
+`F(∞) = ∞ ⇔ F ≢ 0` on admissible exponents: a consistency check, and the node's own remark that
+(2) is false in `LE`.
+
+**Blind restatement (this session, from the node).** Predicted (1) as a `Tendsto … atTop atTop`
+iff with the mass as `∫⁻`, and flagged the Bochner junk and the `toReal`-at-`⊤` junk; (2) with
+`F ≢ 0` as `∃ s₀ > 0`. All as the Lean has them. It also wrote down the gloss as a separate
+`StandingHypothesis ↔ 1 < zStar` under `F ≢ 0`, which no declaration states: that is R36.
+
+**Adversarial vacuity.** (i) A `Tendsto` made true by `toReal` junk: excluded by `ne_top`. (ii)
+The iff made trivial by a mass that is always `⊤`: the `F ≡ 0` model has mass `0`. (iii) Clause
+(2)'s hypothesis unsatisfiable: Gamma satisfies it. No attack.
+
+**Tag.** `\lean{…standing_levy_reading}`, the bundle of both clauses; the two halves are guarded
+separately in `CIAxiomGuard.lean`. **Route.** Printed proof and Lean agree step by step (the
+contrapositive bound, monotone convergence along `ℕ`, `∫₀^{t₀}dt/t = ∞` from `k` nonincreasing).
+
+**Verdict.** **faithful-with-note.** Both numbered clauses are proved as printed; no junk value, no
+vacuous hypothesis. The closing gloss of (2) is a third claim no declaration states (R36).
+
+**Actions.** R36.
+
+#### T2.4c `lem:zstar-log-growth` (11.23) · `tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero`, `zStar_smul_of_ne_zero` (`ZStarAbelian.lean:224,230`), `tendsto_toRealExponent_div_log_atTop_of_b₀_pos` (`ZStarLogGrowth.lean:51`), `tendsto_toRealExponent_div_log_atTop_of_b₀_zero` (`ZStarDriftless.lean:241`)
+
+**Blueprint says.** `F ≢ 0` admissible with `(b₀, k)` as in (7.1). (1) `lim_{s→∞} F(s)/log s`
+exists in `[0,∞]` and equals `z_*`. (2) It is `∞` if `b₀ > 0`, and `k(0⁺) := sup_{t>0} k(t)` if
+`b₀ = 0`. (3) Consequently (H) holds iff `b₀ > 0` or `k(0⁺) > 1`. (4)
+`z_*(cF) = c z_*(F)` for every `c > 0`.
+
+**Lean says (unfolded).** With `toRealExponent`, `levyJump` as in T2.4b and `zStar`, `lawT₁`,
+`negMoment` as in T0.4:
+(1) `(∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) →
+Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop (𝓝 F.zStar)`, in
+`ℝ≥0∞` with its order topology;
+(2a) `0 < F.b₀ → Tendsto (fun s => F.toRealExponent s / Real.log s) atTop atTop`, in `ℝ`;
+(2b) `F.b₀ = 0 → Tendsto (fun s => ENNReal.ofReal (F.toRealExponent s / Real.log s)) atTop
+(𝓝 (⨆ t ∈ Ioi 0, ENNReal.ofReal (F.k t)))`;
+(4) `(∃ s₀, …) → 0 < c → (F.smul hc.le).zStar = ENNReal.ofReal c * F.zStar`, where `F.smul` has
+data `(c * b₀, c • k)` and `exponent_smul` gives `(cF)(s) = ofReal c * F(s)` for `s ≥ 0`
+(`AdmissibleCone.lean`). (1) reaches the no-atom hypothesis `lawT₁ {0} = 0` through
+`lawT₁_singleton_zero_of_ne_zero` (T2.4b's clause (2), then `lawT₁_singleton_zero`). Mathlib used:
+`lintegral_lintegral_swap` (Tonelli), `Real.Gamma`, `integrableOn_Ioi_rpow_iff`,
+`intervalIntegral.intervalIntegrable_rpow'`, `Real.isLittleO_log_id_atTop`, `tendsto_order`; the
+project's `lintegral_lintegral_gamma_of_ae_mem_Ioi` and `laplaceL_lawT₁` for the hinge
+`Γ(ζ) E[T₁^{−ζ}] = ∫₀^∞ s^{ζ−1} e^{−F(s)} ds`.
+
+**Hypotheses/clauses.**
+| article | Lean | class |
+|---|---|---|
+| `F ≢ 0` | `∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0` on (1), (4); none on (2a), (2b) | same on (1), (4) (R33's bridge); (2) is proved **without** it, a weaker hypothesis, as the node's annotation records |
+| (1) limit exists in `[0,∞]` and `= z_*` | `Tendsto (ofReal (F/log)) atTop (𝓝 zStar)` in `ℝ≥0∞` | same: existence and value in one `Tendsto`, `[0,∞]` as `ℝ≥0∞` |
+| (2) `= ∞` if `b₀ > 0` | `Tendsto (F/log) atTop atTop` in `ℝ` | same in content; the codomain differs from (2b)'s, and `ENNReal.tendsto_ofReal_atTop` converts it (used inside (1)'s proof) — note only |
+| (2) `= k(0⁺) = sup_{t>0} k(t)` if `b₀ = 0`, finite or infinite | `𝓝 (⨆ t ∈ Ioi 0, ofReal (k t))` in `ℝ≥0∞` | same: the sup over `t > 0` as the node defines `k(0⁺)`, in `[0,∞]` |
+| (3) (H) ⇔ `b₀ > 0 ∨ k(0⁺) > 1` | no declaration | **R36** — the annotation says so; but `paper/01-introduction.tex` §1.1 calls the lemma verified without exception. True: scratch `zstar_clause3` (ten lines from the tagged declarations, Lean core) |
+| (4) `z_*(cF) = c z_*(F)`, `c > 0` | `(F.smul hc.le).zStar = ofReal c * F.zStar` | same; at `zStar = ⊤`, `ofReal c * ⊤ = ⊤` since `c > 0` |
+| `cF` admissible with data `(cb₀, ck)` | `F.smul`, fields proved | same (`lem:admissible-cone`) |
+
+**Junk-value audit.** `F(s) / log s` at `s = 1` (`log 1 = 0`, Lean's `x/0 = 0`) and for `s < 1`
+(`log s < 0`, quotient `≤ 0`, truncated to `0` by `ofReal`): finitely many and bounded-below
+points respectively, all left behind by `atTop`; for `s > 1` the quotient is `≥ 0`, so `ofReal` is
+the identity on it. `toReal` of the exponent: `ne_top` for `s ≥ 0`. `k(0⁺)` as an `ℝ≥0∞`
+supremum: a real `sSup` would be junk `0` exactly in the stable and Bessel-K cases, where `k` is
+unbounded near `0`; avoided, and `ofReal (k t)` truncates nothing since `k ≥ 0` on `Ioi 0`.
+`zStar`'s `sSup ∅ = 0`: under `F ≢ 0` the limit is `> 0` (`b₀ > 0`, or some `k(t₀) > 0`), so `zStar`
+is not reached through the empty set; and were it `0` the statement would still be the article's
+sentence, since the article's `z_*` is the same supremum. `negMoment` integrates over `Ioi 0`, blind
+to an atom at `0`: that is why (1) and (4) need `F ≢ 0`, and they have it.
+
+**Witness.** The node's own checks against the families: Gamma (`b₀ = 0`, `k(0⁺) = γ = z_*`),
+drift and pure delay (`z_* = ∞`), Dickman rays (`k = 𝟙_{(0,τ)}`, `z_* = 1`). The hypotheses of (1)
+and (4) are met by every nonzero witness in `Witnesses.lean`; (2a)'s by drift, (2b)'s by Gamma.
+
+**Blind restatement (this session, from the node).** Predicted `ℝ≥0∞`-valued limits throughout,
+the supremum as an `ℝ≥0∞` `⨆` (flagging the real-`sSup` junk), `F ≢ 0` as `∃ s₀ > 0`, and (4) as
+`ofReal c * zStar`. Two differences, neither a defect: (2a) is in `ℝ` (`atTop`) rather than as
+`𝓝 ⊤` in `ℝ≥0∞`, the same statement; and (2) carries no `F ≢ 0`, which is weaker. It also wrote
+(3) as `StandingHypothesis ↔ 0 < b₀ ∨ 1 < ⨆ …` under `F ≢ 0`, which no declaration states (R36).
+
+**Adversarial vacuity.** (i) A limit obtained from junk at `log s ≤ 0`: excluded by `atTop`. (ii)
+(1) true because `zStar` and the limit are both junk `0`: under `F ≢ 0` the limit is positive, and
+the identification `zStar_eq_of_tendsto` is proved for every limit in `[0,∞]`, not read off a
+special value. (iii) (2b) true at `k(0⁺) = ∞` by a real-valued `⊤`-collapse: the codomain is
+`ℝ≥0∞`. (iv) (4) by `ofReal c = 0`: `c > 0`. No attack.
+
+**Tag.** The four declarations named in `\lean{…}` cover (1), (2) both cases, and (4); (3) has
+none, as the annotation says. **Route.** The printed proof is the checked one (split integral, no
+derivative; Abelian comparison through the Gamma hinge).
+
+**Verdict.** **faithful-with-note.** Clauses (1), (2), (4) are proved as printed, with no junk value
+and no vacuous hypothesis; (2) is proved under a weaker hypothesis than printed. Clause (3) is true
+and follows from (1) and (2) in ten lines, but no declaration states it while §1.1 lists the lemma
+as verified (R36).
+
+**Actions.** R36.
 
 ## Tier 3 and the sweeps (P5)
 
