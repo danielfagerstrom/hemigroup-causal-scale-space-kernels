@@ -10,6 +10,13 @@ rule 2). Work since the last release accumulates under Unreleased.
   `lem:zstar-log-growth`, proved after the fidelity review closed, have no card; `v1.1.0` lists
   them as machine-checked on the Q-0138 clause-cover audit alone, and a card per node is owed at
   the next fidelity pass. No statement changed.
+- Fidelity cards T2.4a–c (Q-0248) for those three nodes, which closes R35. Each card unfolds the
+  tagged declarations to Mathlib primitives and includes a junk-value audit, witnesses, a blind
+  restatement from the node and an adversarial-vacuity pass. `lem:mode-rigidity` is faithful;
+  `lem:standing-levy-reading` and `lem:zstar-log-growth` are faithful-with-note. The note is new
+  row R36, open: `lem:zstar-log-growth`(3) and the closing gloss of `lem:standing-levy-reading`(2)
+  are true but stated by no declaration, and §1.1 counts the former as verified. No statement or
+  declaration changed.
 - Docstring of `Formalization/Hemigroup/Basic.lean`: clarified that the `require` of
   `ScaleSpaceCore` records where this article's causal cone mathematics went (extracted to the
   trunk in v0.1.1), not a dependency; the article uses none of the trunk's declarations and is

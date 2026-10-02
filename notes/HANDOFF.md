@@ -33,10 +33,13 @@ version. The post-release steps are done: the hub's pin and `site` block, the so
 
 ## Open
 
-1. **Three proved nodes have no fidelity card** (`lem:mode-rigidity`, `lem:standing-levy-reading`,
-   `lem:zstar-log-growth`): they were proved after the review closed, and only the Q-0138
-   clause-cover audit has read them. `v1.1.0` went out so (hub Q-0230, (a)); R35 records it. A
-   card per node is owed at the next fidelity pass, before a later version cites them as audited.
+1. **Fidelity ledger R36 is open.** Two claims under `\leanok` nodes have no declaration:
+   `lem:zstar-log-growth`(3), which §1.1 counts as verified, and the closing gloss of
+   `lem:standing-levy-reading`(2). Both are true, and both elaborate in a few lines from the tagged
+   declarations (Lean core). The proposed fix is Lean up: two corollaries in `ZStarAbelian.lean`,
+   added to the tags and the axiom guard. The alternative is to narrow §1.1. Cards T2.4a–c in
+   `blueprint/REVIEW-fidelity.md` now cover the three nodes R35 recorded as uncarded, so they
+   may be cited as audited.
 2. **The AI statement's figures** ("By the numbers", computed 5 September 2026) predate the
    September Lean work. They are printed as dated lower bounds in `v1.1.0`; a next version
    re-derives them with `chronicler stats`, which an unattended session cannot run.
