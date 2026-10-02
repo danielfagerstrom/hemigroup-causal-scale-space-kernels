@@ -6,6 +6,13 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+- The AI statement's "By the numbers" re-derived with `chronicler stats` on 2 October 2026 (hub
+  Q-0249), over the same window as `v1.1.0` (April to 27 September 2026, the author's choice): about
+  560 hours (was 520), 106,000 words from the author against 1.87 million from the agents (was
+  99,000 and 1.75 million; still about eighteen to one), and the Lean week's 205 turns and 9,710
+  words (was 198 and 9,296). Every figure moved up, all of it recovered material; the Lean line
+  counts, from git, are unchanged. The queue's briefs would now inflate the author's count by some
+  four fifths, not three quarters. The method and the commands are in the file's header comment.
 - Fidelity ledger row R35: `lem:mode-rigidity`, `lem:standing-levy-reading` and
   `lem:zstar-log-growth`, proved after the fidelity review closed, have no card; `v1.1.0` lists
   them as machine-checked on the Q-0138 clause-cover audit alone, and a card per node is owed at

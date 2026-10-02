@@ -40,9 +40,10 @@ version. The post-release steps are done: the hub's pin and `site` block, the so
    added to the tags and the axiom guard. The alternative is to narrow §1.1. Cards T2.4a–c in
    `blueprint/REVIEW-fidelity.md` now cover the three nodes R35 recorded as uncarded, so they
    may be cited as audited.
-2. **The AI statement's figures** ("By the numbers", computed 5 September 2026) predate the
-   September Lean work. They are printed as dated lower bounds in `v1.1.0`; a next version
-   re-derives them with `chronicler stats`, which an unattended session cannot run.
+2. **The AI statement's figures are re-derived** for the next version (2 October 2026, over
+   `v1.1.0`'s window, April to 27 September; the commands are in `paper/ai-statement.tex`'s header
+   comment). Re-derive again only if the archive recovers more of that window, never by widening
+   it (the author's choice).
 3. **Nothing is queued for a next version.** Q-0023 (the scale-Cauchy problem and the locality
    ladder) is blocked on Mathlib.
 

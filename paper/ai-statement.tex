@@ -16,7 +16,14 @@
 % The "By the numbers" figures come from the session archive (ai-archive / chronicler). They
 % have been revised four times as missing material was recovered — always upward, never down:
 % 265 h -> 302 -> 305 -> 330. The 2026-09-05 revision followed the cloud-staging mechanism
-% landing that session's full transcript with its sidecars. Do NOT restate them without
+% landing that session's full transcript with its sidecars. v1.1.0 printed 520 h (computed
+% 2026-09-27, window April to 27 September); re-derived 2026-10-02 over the SAME window, after a
+% full `chronicler run`: `chronicler stats --research --since 2026-04-01 --until 2026-09-27`
+% gives 559.1 h, 105 884 typed words, 1 873 611 assistant words (17.7x), 86 302 directed words;
+% the Lean week is `--since 2026-08-09 --until 2026-08-15` (205 human turns, 9 710 typed words),
+% and its lines are git's (`--numstat` on Formalization/*.lean over those days: 24 698 added;
+% 21 772 lines standing at the end of 15 August). The window is the work up to this article's
+% v1.1.0 (the author, 2026-10-02), so later work on other papers is not counted. Do NOT restate them without
 % re-deriving; `chronicler stats` is the source, and the computation date now appears in the
 % prose because these numbers have a shelf life.
 %
@@ -80,26 +87,26 @@ and revised the article throughout; beyond him, no human reader has yet reviewed
 
 \paragraph{By the numbers.} The sessions were archived as the work went on, so the division of
 labour can be stated rather than estimated. Between April and September 2026 the work ran to
-some 520 hours of recorded active session time. The author contributed about 99\,000 words of
-direction and the agents about 1.75 million words of response, a ratio of roughly eighteen to
-one. The seven days that produced the Lean development wrote 24\,700 lines of it, and took 198
-turns and 9\,296 words from the author --- under four tenths of a word per line of proof.
+some 560 hours of recorded active session time. The author contributed about 106\,000 words of
+direction and the agents about 1.87 million words of response, a ratio of roughly eighteen to
+one. The seven days that produced the Lean development wrote 24\,700 lines of it, and took 205
+turns and 9\,710 words from the author --- under four tenths of a word per line of proof.
 
-These totals are lower bounds, and they were computed on 27 September 2026. Both qualifications
-are load-bearing. A handful of sessions leave no transcript; some subagent traces were lost to
+These totals cover the work up to 27 September 2026, when version 1.1.0 was released; they are
+lower bounds, and they were computed on 2 October 2026. Both qualifications are load-bearing. A handful of sessions leave no transcript; some subagent traces were lost to
 context compaction before they could be archived; and reading on paper, thinking away from a
 keyboard, and work done under a separate professional obligation whose records cannot be
 exported leave no trace at all. The figures have also only ever moved in one direction as
 missing material was recovered --- by roughly a fifth over the week the first version of this
-statement was written --- so they understate rather than overstate the agents' share. The rise
-since then is additional work rather than further recovery.
+statement was written, and by about seven per cent more when they were computed again for this
+version over the same period --- so they understate rather than overstate the agents' share.
 
 Two conventions, because neither is self-evident. The line count is of lines of Lean \emph{written}
 in those seven days, not of lines standing at the end of them: the development stood at 21\,800
 lines on 15 August 2026, having been edited as well as extended. And the author's word count
 excludes the task briefs of unattended sessions, which this programme has dispatched from a
 work queue since 21 September 2026: those briefs are written by an agent, not typed by the
-author, and counting them as direction would have inflated it by some three quarters and made
+author, and counting them as direction would have inflated it by some four fifths and made
 the ratio read as ten to one.
 
 \paragraph{What this article would otherwise have been.} The author would not, realistically,
