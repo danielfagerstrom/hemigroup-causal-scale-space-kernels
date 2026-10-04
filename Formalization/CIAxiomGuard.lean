@@ -262,6 +262,8 @@ is `∫₀^{t₀} dt/t = ∞` against a `k` bounded below there by monotonicity.
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_atTop_iff_levy
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_atTop_of_ne_zero
 #print axioms Hemigroup.SelfDecomposableExponent.standing_levy_reading
+-- (2)'s closing gloss, (H) ⇔ `z_* > 1` under `F ≢ 0` (Q-0260, R36; in `ZStarAbelian.lean`)
+#print axioms Hemigroup.SelfDecomposableExponent.standingHypothesis_iff_one_lt_zStar_of_ne_zero
 
 /-! ### `lem:zstar-log-growth` (11.23), clause (2) in both cases
 
@@ -303,6 +305,8 @@ limit in `[0,∞]` so that the drift case needs nothing of its own. Clause (4) i
 #print axioms Hemigroup.SelfDecomposableExponent.lawT₁_singleton_zero_of_ne_zero
 #print axioms Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero
 #print axioms Hemigroup.SelfDecomposableExponent.zStar_smul_of_ne_zero
+-- (3) from (1) and (2), under `F ≢ 0` (Q-0260, R36)
+#print axioms Hemigroup.SelfDecomposableExponent.standingHypothesis_iff_b₀_pos_or_one_lt_k_zero_of_ne_zero
 
 /-! ### `lem:inversion-symbol` (11.14), the complex-analytic half of chapter 11
 

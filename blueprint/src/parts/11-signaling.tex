@@ -1191,7 +1191,7 @@ then $1$ is itself a member of the set whose supremum is $z_*$, so $z_* \ge 1$.
 % \notready, with the target types written and sorry-marked rather than attempted inline.
 \begin{lemma}[Lévy-data reading; the first clause is automatic]\label{lem:standing-levy-reading}
 \uses{def:standing-hypothesis,lem:selfdecomposable-exponents}
-\lean{Hemigroup.SelfDecomposableExponent.standing_levy_reading}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.standing_levy_reading,Hemigroup.SelfDecomposableExponent.standingHypothesis_iff_one_lt_zStar_of_ne_zero}\leanok
 Let $F$ be admissible with representation (7.1). Then:
 \begin{enumerate}
 \item $F(\infty) = \infty$ if and only if $b_0 > 0$ or $\int_0^\infty k(t)\,t^{-1}dt = \infty$
@@ -1205,6 +1205,9 @@ hypothesis therefore reduces to its second clause, $z_* > 1$.
 \texttt{tendsto\_toRealExponent\_atTop\_iff\_levy} and
 \texttt{tendsto\_toRealExponent\_atTop\_of\_ne\_zero} listed separately in
 \texttt{CIAxiomGuard.lean} so that each is checked on its own. Lean core, both of them.
+Clause~(2)'s closing reduction, (H) if and only if $z_* > 1$ under $F \not\equiv 0$, is
+\texttt{standingHypothesis\_iff\_one\_lt\_zStar\_of\_ne\_zero}
+(\texttt{Formalization/Hemigroup/ZStarAbelian.lean}; Q-0260, finding R36), also Lean core.
 \textbf{Why this clause and not \ref{lem:standing-kernel-readings}'s.} That node's clause~1 is
 stated in $T_1$'s law and its proof is a direct dominated-convergence limit plus a
 change-of-variables that was already in the library
@@ -1259,7 +1262,7 @@ $F(\infty) = \infty$.
 % split in this chapter.
 \begin{lemma}[the log-growth reading of $z_*$]\label{lem:zstar-log-growth}
 \uses{def:standing-hypothesis,lem:standing-levy-reading,lem:standing-kernel-readings,thm:main-characterization,lem:admissible-cone}
-\lean{Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Hemigroup.SelfDecomposableExponent.zStar_smul_of_ne_zero}\leanok
+\lean{Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_pos,Hemigroup.SelfDecomposableExponent.tendsto_toRealExponent_div_log_atTop_of_b₀_zero,Hemigroup.SelfDecomposableExponent.zStar_smul_of_ne_zero,Hemigroup.SelfDecomposableExponent.standingHypothesis_iff_b₀_pos_or_one_lt_k_zero_of_ne_zero}\leanok
 Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \begin{enumerate}
 \item The limit $\lim_{s\to\infty} F(s)/\log s$ exists in $[0,\infty]$ and equals $z_*$.
@@ -1269,7 +1272,7 @@ Let $F \not\equiv 0$ be admissible, with $(b_0, k)$ as in (7.1). Then:
 \item $z_*$ is homogeneous of degree one on the admissible cone: $z_*(cF) = c\,z_*(F)$ for every
 $c > 0$.
 \end{enumerate}
-\statusT\quad\emph{(\textbf{Machine-checked on Lean core: clauses (1), (2) and (4).}
+\statusT\quad\emph{(\textbf{Machine-checked on Lean core: every clause.}
 Clause~(2)'s \emph{drift} case is
 \texttt{Hemigroup.SelfDecomposableExponent.tendsto\_toRealExponent\_div\_log\_atTop\_of\_b}$_0$\texttt{\_pos}
 (\texttt{Formalization/Hemigroup/ZStarLogGrowth.lean}). It needs no Tauberian step: $F(s) \ge b_0 s$
@@ -1285,8 +1288,12 @@ which take $F \not\equiv 0$ itself and reach the no-atom hypothesis through
 \texttt{lawT}$_1$\texttt{\_singleton\_zero\_of\_ne\_zero}, that is \ref{lem:standing-levy-reading}(2)
 followed by (H)'s first-clause reading. The statement is unchanged. All six declarations are listed
 in \texttt{CIAxiomGuard.lean}.
-Clause~(3) is~(1) and~(2) read against \ref{def:standing-hypothesis}, and has no declaration of its
-own.
+Clause~(3) is~(1) and~(2) read against \ref{def:standing-hypothesis}:
+\texttt{standingHypothesis\_iff\_b}$_0$\texttt{\_pos\_or\_one\_lt\_k\_zero\_of\_ne\_zero}, in
+\texttt{ZStarAbelian.lean} under $F \not\equiv 0$, reduces (H) to $z_* > 1$ by
+\ref{lem:standing-levy-reading}(2) (\texttt{standingHypothesis\_iff\_one\_lt\_zStar\_of\_ne\_zero})
+and identifies $z_*$ with~(2)'s limit by uniqueness of limits, $\infty$ with drift and $k(0^+)$
+without (Q-0260, finding R36; Lean core, listed in \texttt{CIAxiomGuard.lean}).
 \textbf{The route checked, and the obstacles it never met.} The limit's \emph{existence} comes from
 clause~(2), which computes it. So the convexity argument through $B(s) := sF'(s)$ is not needed, and
 neither is the $\infty/\infty$ L'H\^opital that route asks for, which Mathlib does not carry

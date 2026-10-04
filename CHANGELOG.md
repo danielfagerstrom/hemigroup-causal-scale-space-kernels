@@ -24,6 +24,12 @@ rule 2). Work since the last release accumulates under Unreleased.
   row R36, open: `lem:zstar-log-growth`(3) and the closing gloss of `lem:standing-levy-reading`(2)
   are true but stated by no declaration, and §1.1 counts the former as verified. No statement or
   declaration changed.
+- Fidelity ledger R36 closed (Q-0260), Lean up: `standingHypothesis_iff_one_lt_zStar_of_ne_zero`
+  (`lem:standing-levy-reading`(2)'s gloss) and
+  `standingHypothesis_iff_b₀_pos_or_one_lt_k_zero_of_ne_zero` (`lem:zstar-log-growth`(3)), both
+  in `ZStarAbelian.lean` under `F ≢ 0`, Lean core, each in its node's `\lean` tag and in
+  `CIAxiomGuard.lean`. §1.1's "verified" is now exact as written. No statement or existing
+  declaration changed.
 - Docstring of `Formalization/Hemigroup/Basic.lean`: clarified that the `require` of
   `ScaleSpaceCore` records where this article's causal cone mathematics went (extracted to the
   trunk in v0.1.1), not a dependency; the article uses none of the trunk's declarations and is

@@ -14,7 +14,8 @@ import Hemigroup.StandingLevyReading
 Clause (2) (`Hemigroup/ZStarLogGrowth.lean`, `Hemigroup/ZStarDriftless.lean`) gives the limit
 `L = lim F(s)/log s` in `[0,∞]`: `∞` with drift, the catalogue height `k(0⁺)` without. Clause (1)
 identifies it with `z_*`, the abscissa of the negative moments of `T₁`; clause (4) is then the
-homogeneity of `z_*` on the admissible cone.
+homogeneity of `z_*` on the admissible cone. Clause (3), and `lem:standing-levy-reading`(2)'s
+closing gloss that it rests on, are corollaries at the end of the file.
 
 ## The route: an Abelian comparison, and nothing else
 
@@ -230,6 +231,27 @@ theorem tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero
 theorem zStar_smul_of_ne_zero (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) {c : ℝ} (hc : 0 < c) :
     (F.smul hc.le).zStar = ENNReal.ofReal c * F.zStar :=
   F.zStar_smul (F.lawT₁_singleton_zero_of_ne_zero hF) hc
+
+/-- **`lem:standing-levy-reading`(2), the closing gloss**: under `F ≢ 0` the standing hypothesis
+reduces to its second clause, `z_* > 1`; the first, `F → ∞`, is clause (2) itself. -/
+theorem standingHypothesis_iff_one_lt_zStar_of_ne_zero (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) :
+    F.StandingHypothesis ↔ 1 < F.zStar :=
+  ⟨And.right, fun h => ⟨F.tendsto_toRealExponent_atTop_of_ne_zero hF, h⟩⟩
+
+/-- **`lem:zstar-log-growth`(3)**: under `F ≢ 0`, (H) holds iff `b₀ > 0` or `k(0⁺) > 1`, with
+`k(0⁺) = sup_{t>0} k(t)` in `[0,∞]`. Clause (1) and either case of clause (2) are limits of the
+same function, so `z_*` is `∞` with drift and `k(0⁺)` without. -/
+theorem standingHypothesis_iff_b₀_pos_or_one_lt_k_zero_of_ne_zero
+    (hF : ∃ s₀, 0 < s₀ ∧ F.exponent s₀ ≠ 0) :
+    F.StandingHypothesis ↔ 0 < F.b₀ ∨ 1 < ⨆ t ∈ Ioi (0 : ℝ), ENNReal.ofReal (F.k t) := by
+  rw [F.standingHypothesis_iff_one_lt_zStar_of_ne_zero hF]
+  have hz := F.tendsto_toRealExponent_div_log_atTop_zStar_of_ne_zero hF
+  rcases F.b₀_nonneg.lt_or_eq with hb | hb
+  · rw [tendsto_nhds_unique hz (ENNReal.tendsto_ofReal_atTop.comp
+      (F.tendsto_toRealExponent_div_log_atTop_of_b₀_pos hb))]
+    exact iff_of_true ENNReal.one_lt_top (Or.inl hb)
+  · rw [tendsto_nhds_unique hz (F.tendsto_toRealExponent_div_log_atTop_of_b₀_zero hb.symm), ← hb]
+    simp
 
 end SelfDecomposableExponent
 
