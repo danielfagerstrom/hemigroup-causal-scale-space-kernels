@@ -8,8 +8,9 @@ article-kit, where every article gets it. The framework's docs are in the siblin
 **This repository is an article module.** The process it follows, phase by phase, is
 `../article-kit/docs/PROCESS.md`; read the section of the phase you are in before starting work in
 it. The writing standard is `../article-kit/docs/WRITING.md`, the release discipline
-`../article-kit/docs/RELEASE.md`, the linkage rules `../article-kit/docs/LINKAGE.md`. This
-repository's own rules are its `CLAUDE.md`.
+`../article-kit/docs/RELEASE.md`, the linkage rules `../article-kit/docs/LINKAGE.md`; the first two
+and the drafting gate are also the skills `/article-kit:write`, `/article-kit:release` and
+`/article-kit:gate`, which survive a compaction. This repository's own rules are its `CLAUDE.md`.
 
 ## Open a session
 
@@ -36,7 +37,11 @@ one of them buries the instructions under it; the account goes to the changelog.
 
 In order: `CHANGELOG.md` under Unreleased; an `adr/` file for a decision taken; `README.md`'s state
 if it changed; `notes/HANDOFF.md` rewritten; a general lesson to the wishlist; the hub ritual (pull,
-the pin in `constellation.json`, one `wiki/log.md` line, `wiki lint`, commit, push).
+one log entry as a fragment `wiki/log.d/<YYYYMMDD-HHMM>[-<n>].md` headed `## [YYYY-MM-DD]
+operation | Label`, `wiki lint`, commit, push). A fragment in `wiki/log.d/`, never `wiki/log.md`,
+as "a branch never touches `log.md`" (hub `CLAUDE.md`, ADR-0031).
+The pin in `constellation.json` moves only at a release ("Session closes do not move it", hub
+`RELEASES.md`).
 
 ## Standing authorizations
 
