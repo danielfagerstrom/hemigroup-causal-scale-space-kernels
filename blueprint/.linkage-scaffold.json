@@ -6,6 +6,7 @@
     "blueprint/src/latexmkrc": "6144b47148bd",
     "scripts/build-blueprint.sh": "14d757516a0d",
     "scripts/check-swallowed-prose.py": "0090b9b183fb",
+    "scripts/check-control-chars.py": "769733d028bd",
     ".claude/rules/article-kit/core.md": "d7ddb4d40827",
     ".claude/rules/article-kit/writing.md": "1a1c4cb1544c",
     ".claude/rules/article-kit/blueprint.md": "02f52593cb55",
