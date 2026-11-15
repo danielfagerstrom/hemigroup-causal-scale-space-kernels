@@ -6,6 +6,8 @@ rule 2). Work since the last release accumulates under Unreleased.
 
 ## Unreleased
 
+- `linkage.toml` declares what this repository is in an `[article]` table: its parts, its phase and its site (article-kit ADR-0002). `linkage check` from article-kit v0.7.0 checks it; the workflow pins move when the repository next runs.
+
 - The AI statement's "By the numbers" re-derived with `chronicler stats` on 2 October 2026 (hub
   Q-0249), over the same window as `v1.1.0` (April to 27 September 2026, the author's choice): about
   560 hours (was 520), 106,000 words from the author against 1.87 million from the agents (was

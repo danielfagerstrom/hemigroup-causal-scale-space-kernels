@@ -6,6 +6,14 @@
 
 slug = "hcs"
 
+# What this repository is (article-kit ADR-0002; docs/LINKAGE.md, "Parts and phase"):
+# the parts it will ever have, its phase in PROCESS.md, and its site. `linkage phase`
+# says what the next phase lacks.
+[article]
+parts = ["draft", "blueprint", "lean", "paper"]
+phase = "released"
+site  = "hemigroup-time-causal-kernels"
+
 [paths]
 blueprint = "blueprint/src/content.tex"
 axioms    = "blueprint/AXIOMS.md"
