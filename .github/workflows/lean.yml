@@ -30,13 +30,13 @@ jobs:
     # for review runs this, which is why `ready_for_review` is in the trigger's types — it is
     # not one of the defaults.
     if: github.event_name != 'pull_request' || !github.event.pull_request.draft
-    uses: danielfagerstrom/article-kit/.github/workflows/lean.yml@v0.1.0
+    uses: danielfagerstrom/article-kit/.github/workflows/lean.yml@v0.7.0
     with:
       lean_dir: Formalization
       build_args: Hemigroup
       sorry_guard_dir: Formalization/Hemigroup
       axiom_guard_file: CIAxiomGuard.lean
-      linkage_ref: v0.1.0
+      linkage_ref: v0.7.0
     secrets:
       # needs Contents:read on article-kit AND scale-space-lean (a private Lake dependency)
       ARTICLE_KIT_TOKEN: ${{ secrets.ARTICLE_KIT_TOKEN }}
