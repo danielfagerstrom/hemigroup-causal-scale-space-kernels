@@ -36,6 +36,12 @@ DEFAULT_GLOBS = [
     "adr/*.md",
 ]
 
+# Captured tool output, kept as a record (`records/<x>/freeze-gates-q0451-output.txt`): what a
+# command printed, terminal escapes and PDF glyph codes included, not text a session wrote. Its
+# control bytes are the program's, faithfully kept; the gate is for corruption in written text.
+# The default scan skips these; a path given on the command line is still checked.
+CAPTURED_OUTPUT_SUFFIX = "-output.txt"
+
 # Per paper directory (`linkage.toml`'s `paths.paper`, one or a list; `paper` without a config).
 # Added 2026-08-24: two corruption incidents (a CR in 10-locality.tex, four BELLs in
 # 08-examples.tex) reached commits because the paper tree was not scanned; `linkage check`'s
@@ -64,16 +70,23 @@ def default_globs(root: Path) -> list[str]:
 
 LF = 0x0A
 CR = 0x0D
+TAB = 0x09
 
 
-def offenders(data: bytes) -> list[tuple[int, int]]:
-    """Return (offset, byte) for each illegal control character."""
+def offenders(data: bytes, indent_tabs: bool = False) -> list[tuple[int, int]]:
+    """Return (offset, byte) for each illegal control character.
+
+    `indent_tabs` allows TABs that only indent a line, as a Better BibTeX export of a `.bib`
+    writes every field; a TAB after the line's first other character (a `\\t` swallowed from
+    `\\textit` in a title) is still caught."""
     bad = []
     for i, c in enumerate(data):
         if c >= 0x20 or c == LF:
             continue
         if c == CR and i + 1 < len(data) and data[i + 1] == LF:
             continue  # CRLF line ending
+        if indent_tabs and c == TAB and (i == 0 or data[i - 1] in (LF, TAB)):
+            continue  # indentation
         bad.append((i, c))
     return bad
 
@@ -89,14 +102,15 @@ def main(argv: list[str]) -> int:
     else:
         paths = []
         for pattern in default_globs(root):
-            paths.extend(sorted(root.glob(pattern)))
+            paths.extend(p for p in sorted(root.glob(pattern))
+                         if not p.name.endswith(CAPTURED_OUTPUT_SUFFIX))
 
     failed = False
     for path in paths:
         if not path.is_file():
             continue
         data = path.read_bytes()
-        for offset, char in offenders(data):
+        for offset, char in offenders(data, indent_tabs=path.suffix == ".bib"):
             failed = True
             snippet = data[max(0, offset - 40):offset + 40]
             print(
