@@ -8,7 +8,7 @@
     "scripts/check-swallowed-prose.py": "0090b9b183fb",
     "scripts/check-control-chars.py": "c4c9fb03a797",
     ".claude/rules/article-kit/core.md": "d7ddb4d40827",
-    ".claude/rules/article-kit/writing.md": "1a1c4cb1544c",
+    ".claude/rules/article-kit/writing.md": "6511b3947ea6",
     ".claude/rules/article-kit/blueprint.md": "02f52593cb55",
     ".claude/rules/article-kit/ledger.md": "00fd8032dfc2",
     ".claude/rules/article-kit/lean.md": "5f833a0654d5"
